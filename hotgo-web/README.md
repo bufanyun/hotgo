@@ -1,4 +1,1 @@
-## HotGo-UI
-
-#####git地址：
-https://gitee.com/bufanyun/hotgo-ui/
+# hotgo web端代码

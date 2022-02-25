@@ -6,6 +6,7 @@
 .swp
 .idea/
 .settings/
+config/config.yaml
 runtime/log/logger/*.log
 runtime/log/logger/exception/*.log
 runtime/log/logger/queue/*.log
