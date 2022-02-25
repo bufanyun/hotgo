@@ -1,11 +1,12 @@
 # hotgo
 
-#### HotGo 开发框架是一款 Golang 语言 web 开发框架
+
+#### HotGo 是一个基于 vue 和 goframe 开发的全栈前后端分离的开发基础平台和移动应用平台，集成jwt鉴权，动态路由，动态菜单，casbin鉴权，消息队列，定时任务等功能，提供多种常用场景文件，让您把更多时间专注在业务开发上。
 
 ## 技术选型
 
-* 前端：用基于 JeeSite Mobile Uni-App+aidex-sharp 构建基础页面。
 * 后端：用 goframe 快速搭建基础API，goframe 是一个go语言编写的Web框架。
+* 前端：用基于 JeeSite Mobile Uni-App+aidex-sharp 构建基础页面。
 * 数据库：采用MySql(5.7)版本，使用 gorm 实现对数据库的基本操作。
 * 缓存：使用Redis实现记录当前活跃用户的jwt令牌并实现多点登录限制。
 * API文档：使用Swagger构建自动化文档。
