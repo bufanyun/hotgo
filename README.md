@@ -27,7 +27,7 @@
 
 ## 环境要求
 - node版本 >= v14.0.0
-- golang版本 >= v1.16，IDE推荐：Goland
+- golang版本 >= v1.16
 - IDE推荐：Goland
 - mysql版本 >=5.7
 - redis版本 >=5.0
