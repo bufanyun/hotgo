@@ -8,4 +8,4 @@ set Today=%t:~0,4%-%t:~4,2%-%t:~6,2% %t:~8,2%:%t:~10,2%
 
 git commit -m  "%Today%"
 
-git push git@gitee.com:bufanyun/hotgo.git master
+git push git@github.com:bufanyun/hotgo.git master

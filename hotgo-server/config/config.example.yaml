@@ -96,13 +96,13 @@ queue:
 redis:
   default:
     address:        "127.0.0.1:6379"
-    db:             "5"
-    pass:           "meng133814250"
+    db:             "1"
+    pass:           "hg123456."
     idleTimeout:    "20"
 #  cache:
 #    address:        "127.0.0.1:6379"
-#    db:             "5"
-#    pass:           "meng133814250"
+#    db:             "1"
+#    pass:           "hg123456."
 #    idleTimeout:    "20"
 
 # Database.
