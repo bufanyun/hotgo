@@ -73,7 +73,7 @@ uinapp端：
 
 ## 特别感谢(以下排名不分先后)
 
-* goframe2.0 https://goframe2.0.org
+* goframe2.0 https://goframe.org
 * JeeSite Mobile Uni-App https://gitee.com/thinkgem/jeesite4-uniapp
 * aidex-sharp https://gitee.com/big-hedgehog/aidex-sharp
 
