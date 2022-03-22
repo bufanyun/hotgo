@@ -8,6 +8,7 @@ hotgo:
     module: ["admin", "api"]              # 需要记录的模块
     skipCode: []                          # 不记录的状态码，如： ["0", "-1"]
 
+
 # 路由配置
 router:
   # 后台
@@ -65,6 +66,7 @@ logger:
     level:    "all"
     file:     "{Y-m-d}.log"
 
+
 #JWT
 jwt:
   version:        "1.0"                       # 版本号
@@ -72,25 +74,27 @@ jwt:
   sign:           "hotgo"                     # 秘钥，考虑安全问题请修改默认值
   multiPort:      true                        # 是否允许多端登录，默认为true
 
+
 #消息队列
 queue:
-  switch: true                                      # 队列开关，默认为true
+  switch: false                                     # 队列开关，默认为false
   driver: "redis"                                   # 队列驱动，可选：redis|rocketmq|kafka
   retry: 2                                          # 重试次数
   multiComsumer: true                               # 是否支持创建多个消费者
   groupName: "hotgo"                                # mq群组名称
   redis:
-    address:        "127.0.0.1:6379"           # redis服务地址，默认为127.0.0.1:6379
+    address:        "127.0.0.1:6379"                # redis服务地址，默认为127.0.0.1:6379
     db:             5                               # 指定redis库
     pass:           "meng133814250"                 # redis密码
     timeout:        0                               # 队列超时时间(s) ，0为永不超时，当队列一直没有被消费到达超时时间则队列会被销毁
   rocketmq:
-    address: "127.0.0.1:9876"                  # brocker地址+端口
+    address: "127.0.0.1:9876"                       # brocker地址+端口
     logLevel: "all"                                 # 系统日志级别，可选：all|close|debug|info|warn|error|fatal
   kafka:
-    address: "127.0.0.1:9092"                  # kafka地址+端口
+    address: "127.0.0.1:9092"                       # kafka地址+端口
     version: "2.0.0.0"                              # kafka专属配置，默认2.0.0.0
     randClient: true                                # 开启随机生成clientID，可以实现启动多实例同时一起消费相同topic，加速消费能力的特性，默认为true
+
 
 # Redis数据库配置
 redis:
@@ -105,6 +109,7 @@ redis:
 #    pass:           "hg123456."
 #    idleTimeout:    "20"
 
+
 # Database.
 database:
   logger:
@@ -115,6 +120,7 @@ database:
     link:   "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo"
     debug:  true
     Prefix: "hg_"
+
 
 # CLI.
 gfcli:

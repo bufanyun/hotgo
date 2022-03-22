@@ -15,6 +15,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 )
 
+// 角色
 var Role = role{}
 
 type role struct{}

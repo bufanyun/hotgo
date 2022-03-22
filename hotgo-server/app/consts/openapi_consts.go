@@ -8,8 +8,8 @@ package consts
 
 // 开放API
 const (
-	OpenAPITitle        = `HotGo`
-	OpenAPIDescription  = `这是一个使用HotGo的简单演示HTTP服务器项目。 `
-	OpenAPIName         = `HotGo`
-	OpenAPIURL          = `http://hotgo.bufanyun.cn`
+	OpenAPITitle       = `HotGo`
+	OpenAPIDescription = `这是一个使用HotGo的简单演示HTTP服务器项目。 `
+	OpenAPIName        = `HotGo`
+	OpenAPIURL         = `https://github.com/bufanyun/hotgo`
 )

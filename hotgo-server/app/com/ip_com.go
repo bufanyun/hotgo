@@ -19,6 +19,7 @@ import (
 	"time"
 )
 
+// IP归属地
 var Ip = new(ip)
 
 type ip struct{}

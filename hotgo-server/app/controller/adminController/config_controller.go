@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 )
 
+// 配置
 var Config = config{}
 
 type config struct{}

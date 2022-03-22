@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 )
 
+// 公告
 var Notice = notice{}
 
 type notice struct{}

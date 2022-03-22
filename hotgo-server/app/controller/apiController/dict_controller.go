@@ -6,6 +6,7 @@ import (
 	"github.com/bufanyun/hotgo/app/service/sysService"
 )
 
+// 字典
 var Dict = dict{}
 
 type dict struct{}

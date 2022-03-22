@@ -13,9 +13,10 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 
-type comContext struct{}
-
+// 上下文
 var Context = new(comContext)
+
+type comContext struct{}
 
 //
 //  @Title  初始化上下文对象指针到上下文对象中，以便后续的请求流程中可以修改

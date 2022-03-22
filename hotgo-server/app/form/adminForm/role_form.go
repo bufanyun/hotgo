@@ -14,6 +14,7 @@ import (
 
 //  查询列表
 type RoleMemberListReq struct {
+	g.Meta `path:"/role/member_list" method:"get" tags:"角色" summary:"获取角色下的会员列表"`
 	form.PageReq
 	form.RangeDateReq
 	form.StatusReq
@@ -26,7 +27,6 @@ type RoleMemberListReq struct {
 	EndTime   string `json:"end_time"   description:"结束时间"`
 	Name      string `json:"name"   description:"岗位名称"`
 	Code      string `json:"code"   description:"岗位编码"`
-	g.Meta    `path:"/role/member_list" method:"get" tags:"角色" summary:"获取角色下的会员列表"`
 }
 
 type RoleMemberListRes struct {
@@ -36,6 +36,7 @@ type RoleMemberListRes struct {
 
 //  查询列表
 type RoleListReq struct {
+	g.Meta `path:"/role/list" method:"get" tags:"角色" summary:"获取角色列表"`
 	form.PageReq
 	form.RangeDateReq
 	form.StatusReq
@@ -47,7 +48,6 @@ type RoleListReq struct {
 	EndTime   string `json:"end_time"   description:"结束时间"`
 	Name      string `json:"name"   description:"岗位名称"`
 	Code      string `json:"code"   description:"岗位编码"`
-	g.Meta    `path:"/role/list" method:"get" tags:"角色" summary:"获取角色列表"`
 }
 
 type RoleListRes struct {

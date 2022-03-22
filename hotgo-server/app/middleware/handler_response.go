@@ -11,7 +11,6 @@ import (
 	"github.com/bufanyun/hotgo/app/consts"
 	"github.com/bufanyun/hotgo/app/utils"
 	"github.com/gogf/gf/v2/errors/gcode"
-	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 )
@@ -60,13 +59,17 @@ func (s *sMiddleware) HandlerResponse(r *ghttp.Request) {
 			data = utils.Charset.GetStack(err)
 		}
 
-	} else if data, err = r.GetHandlerResponse(); err != nil {
-		errCode := gerror.Code(err)
-		if errCode == gcode.CodeNil {
-			errCode = gcode.CodeInternalError
-		}
-		code = errCode.Code()
-		message = err.Error()
+		//} else if data, err = r.GetHandlerResponse(); err != nil {
+		//	errCode := gerror.Code(err)
+		//	if errCode == gcode.CodeNil {
+		//		errCode = gcode.CodeInternalError
+		//	}
+		//	code = errCode.Code()
+		//	message = err.Error()
+		//}
+
+	} else {
+		data = r.GetHandlerResponse()
 	}
 
 	// TODO  返回固定的友好信息

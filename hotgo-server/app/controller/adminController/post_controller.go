@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 )
 
+// 岗位
 var Post = post{}
 
 type post struct{}

@@ -12,6 +12,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 )
 
+// 登录
 var Login = login{}
 
 type login struct{}

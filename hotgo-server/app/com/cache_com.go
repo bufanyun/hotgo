@@ -11,12 +11,10 @@ import (
 	"github.com/gogf/gf/v2/os/gcache"
 )
 
-type cache struct {
-}
+// 缓存
+var Cache = new(cache)
 
-var (
-	Cache       = new(cache)
-)
+type cache struct{}
 
 func (component *cache) New() *gcache.Cache {
 	c := gcache.New()

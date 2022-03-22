@@ -14,6 +14,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 )
 
+// 菜单
 var Menu = menu{}
 
 type menu struct{}

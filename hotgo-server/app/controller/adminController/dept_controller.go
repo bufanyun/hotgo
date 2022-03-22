@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 )
 
+// 部门
 var Dept = dept{}
 
 type dept struct{}

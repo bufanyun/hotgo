@@ -1,3 +1,9 @@
+//
+// @Link  https://github.com/bufanyun/hotgo
+// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Author  Ms <133814250@qq.com>
+// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
+//
 package queue
 
 import (
@@ -6,7 +12,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 )
-
 
 // 消费日志
 func ConsumerLog(ctx context.Context, topic string, mqMsg MqMsg, err error) {
@@ -33,7 +38,7 @@ func FatalLog(ctx context.Context, text string, err error) {
 	g.Log(consts.QueueLogPath).Fatal(ctx, text+":", err)
 }
 
-// 通用
+// 通用日志
 func Log(ctx context.Context, text string) {
 	g.Log(consts.QueueLogPath).Print(ctx, text)
 }

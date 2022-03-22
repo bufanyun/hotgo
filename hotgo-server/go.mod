@@ -8,10 +8,9 @@ require (
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
 	github.com/bufanyun/pool v0.2.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/gogf/gf/v2 v2.0.0-rc2
+	github.com/gogf/gf/v2 v2.0.4
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/google/btree v1.0.1 // indirect
-	github.com/ip2location/ip2location-go v8.3.0+incompatible
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/kayon/iploc v0.0.0-20200312105652-bda3e968a794
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect

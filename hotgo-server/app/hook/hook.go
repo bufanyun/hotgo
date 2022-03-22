@@ -39,6 +39,13 @@ func (s *sHook) GlobalLog(r *ghttp.Request) {
 		ctx = r.Context()
 	)
 
+	// 没有上下文的请求不记录，如：doc、favicon.ico等非服务类业务
+	modelCtx := com.Context.Get(ctx)
+	if modelCtx == nil {
+		return
+	}
+
+	// 计算运行耗时
 	com.Context.SetTakeUpTime(ctx, gtime.TimestampMilli()-r.EnterTime)
 
 	go sysService.Log.AutoLog(ctx)

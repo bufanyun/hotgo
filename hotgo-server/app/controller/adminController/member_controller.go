@@ -16,6 +16,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 )
 
+// 会员
 var Member = member{}
 
 type member struct{}

@@ -6,9 +6,9 @@
 //
 package consts
 
-//
+// 状态码
 const (
 	StatusEnabled = "1" // 启用
 	StatusDisable = "2" // 禁用
-	StatusDelete  = "3" //已删除
+	StatusDelete  = "3" // 已删除
 )

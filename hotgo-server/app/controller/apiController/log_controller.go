@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 )
 
+// 日志
 var Log = log{}
 
 type log struct{}

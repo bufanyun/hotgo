@@ -17,6 +17,7 @@ import (
 	"time"
 )
 
+// 基础
 var Base = base{}
 
 type base struct{}

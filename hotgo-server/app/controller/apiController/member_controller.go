@@ -9,6 +9,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 )
 
+// 会员
 var Member = member{}
 
 type member struct{}

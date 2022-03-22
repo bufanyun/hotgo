@@ -14,6 +14,7 @@ import (
 	"time"
 )
 
+// 统一响应
 var Response = new(response)
 
 type response struct{}

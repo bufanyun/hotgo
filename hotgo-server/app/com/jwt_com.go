@@ -21,6 +21,7 @@ import (
 	"time"
 )
 
+// jwt鉴权
 type JWT struct{}
 
 var Jwt = new(JWT)
