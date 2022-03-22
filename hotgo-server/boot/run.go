@@ -25,6 +25,11 @@ var (
 		Usage: "main",
 		Brief: "start http server of HotGo!",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+
+			if _, err := g.Cfg().Get(ctx, "hotgo.debug"); err != nil {
+				g.Log().Fatal(ctx, "配置读取异常:", err, "\r\n你确定 config/config.yaml 文件存在且格式正确吗？\r\n")
+			}
+
 			s := g.Server()
 
 			// 错误状态码接管
