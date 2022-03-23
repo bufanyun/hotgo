@@ -29,7 +29,7 @@
 - node版本 >= v14.0.0
 - golang版本 >= v1.16
 - IDE推荐：Goland
-- mysql版本 >=5.7
+- mysql版本 >=8.0
 - redis版本 >=5.0
 
 ## 快速开始
