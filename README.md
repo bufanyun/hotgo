@@ -42,7 +42,7 @@ git clone https://github.com/bufanyun/hotgo.git
 
 服务端：
  - 创建mysql数据库，将数据库文件导入你的mysql，目录地址：/hotgo-server/storage/hotgo.sql
- - 将/hotgo-server/config/config.example.yaml 改为：config.example.yaml，并根据你实际环境情况进行配置
+ - 将/hotgo-server/config/config.example.yaml 改为：config.yaml，并根据你实际环境情况进行配置
 
 web+uinapp端：
  - 配置服务端地址，包含在一下文件中：
