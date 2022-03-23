@@ -7,7 +7,7 @@
 
 * 后端：用 goframe2.0 快速搭建基础API，goframe2.0 是一个go语言编写的Web框架。
 * 前端：用基于 JeeSite Mobile Uni-App+aidex-sharp 构建基础页面。
-* 数据库：采用MySql(5.7)版本，使用 gorm 实现对数据库的基本操作。
+* 数据库：采用MySql(8.0)版本，使用 gorm 实现对数据库的基本操作。
 * 缓存：使用Redis实现记录当前活跃用户的jwt令牌并实现多点登录限制。
 * API文档：使用Swagger构建自动化文档。
 * 消息队列：同时兼容 kafka、redis、rocketmq，一键配置切换到自己想用的MQ。
@@ -26,7 +26,7 @@
 ![image](https://user-images.githubusercontent.com/26652343/155689738-ac97f9c0-47ae-499b-b3fe-0cb4ce97f3bc.png)
 
 ## 环境要求
-- node版本 >= v14.0.0
+- node版本 >= v14.0.0 
 - golang版本 >= v1.16
 - IDE推荐：Goland
 - mysql版本 >=8.0
@@ -73,7 +73,7 @@ uinapp端：
 
 ## 特别感谢(以下排名不分先后)
 
-* goframe2.0 https://goframe2.0.org
+* goframe2.0 https://goframe.org
 * JeeSite Mobile Uni-App https://gitee.com/thinkgem/jeesite4-uniapp
 * aidex-sharp https://gitee.com/big-hedgehog/aidex-sharp
 
