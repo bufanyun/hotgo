@@ -7,9 +7,10 @@
 package adminForm
 
 import (
+	"github.com/gogf/gf/v2/frame/g"
+
 	"github.com/bufanyun/hotgo/app/form"
 	"github.com/bufanyun/hotgo/app/form/input"
-	"github.com/gogf/gf/v2/frame/g"
 )
 
 //  查询列表
@@ -87,3 +88,11 @@ type RoleDynamicMenu struct {
 }
 
 type RoleDynamicRes []*RoleDynamicMenu
+
+type RoleMenuEditReq struct {
+	g.Meta  `path:"/role/edit" method:"post" tags:"角色" summary:"编辑角色菜单权限"`
+	RoleId  int64   `json:"id"`
+	MenuIds []int64 `json:"menuIds"`
+}
+
+type RoleMenuEditRes struct{}

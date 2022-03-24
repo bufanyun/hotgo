@@ -8,13 +8,17 @@ package adminService
 
 import (
 	"context"
+
+	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+
 	"github.com/bufanyun/hotgo/app/consts"
+	"github.com/bufanyun/hotgo/app/form/adminForm"
 	"github.com/bufanyun/hotgo/app/form/input"
 	"github.com/bufanyun/hotgo/app/service/internal/dao"
 	"github.com/bufanyun/hotgo/app/service/internal/dto"
 	"github.com/bufanyun/hotgo/app/utils"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 )
 
 var Role = new(role)
@@ -127,4 +131,35 @@ func (service *role) GetMemberList(ctx context.Context, RoleId int64) (list []*i
 	}
 
 	return list, err
+}
+
+//
+//  @Title  更改角色菜单权限
+//  @Description
+//  @Author  Ms <133814250@qq.com>
+//  @Param   ctx
+//  @Param   req
+//  @Return  err
+//
+func (service *role) EditRoleMenu(ctx context.Context, reqInfo *adminForm.RoleMenuEditReq) error {
+	return dao.AdminRoleMenu.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) (err error) {
+		_, err = dao.AdminRoleMenu.Ctx(ctx).Where("role_id", reqInfo.RoleId).Delete()
+		if err != nil {
+			err = gerror.Wrap(err, consts.ErrorORM)
+			return err
+		}
+		addMap := make(g.List, 0, len(reqInfo.MenuIds))
+		for _, v := range reqInfo.MenuIds {
+			addMap = append(addMap, g.Map{
+				"role_id": reqInfo.RoleId,
+				"menu_id": v,
+			})
+		}
+		_, err = dao.AdminRoleMenu.Ctx(ctx).Data(addMap).Insert()
+		if err != nil {
+			err = gerror.Wrap(err, consts.ErrorORM)
+			return err
+		}
+		return nil
+	})
 }
