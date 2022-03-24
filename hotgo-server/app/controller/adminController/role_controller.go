@@ -8,11 +8,13 @@ package adminController
 
 import (
 	"context"
+
+	"github.com/gogf/gf/v2/util/gconv"
+
 	"github.com/bufanyun/hotgo/app/com"
 	"github.com/bufanyun/hotgo/app/form/adminForm"
 	"github.com/bufanyun/hotgo/app/form/input"
 	"github.com/bufanyun/hotgo/app/service/adminService"
-	"github.com/gogf/gf/v2/util/gconv"
 )
 
 // 角色
@@ -89,6 +91,23 @@ func (controller *role) List(ctx context.Context, req *adminForm.RoleListReq) (*
 func (controller *role) Dynamic(ctx context.Context, req *adminForm.RoleDynamicReq) (res *adminForm.RoleDynamicRes, err error) {
 
 	res, err = adminService.Menu.GetMenuList(ctx, com.Context.GetUserId(ctx))
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+//
+//  @Title  修改角色菜单权限
+//  @Description
+//  @Author  Ms <133814250@qq.com>
+//  @Param   ctx
+//  @Param   req
+//  @Return  res
+//  @Return  err
+//
+func (controller *role) Edit(ctx context.Context, req *adminForm.RoleMenuEditReq) (res *adminForm.RoleMenuEditRes, err error) {
+	err = adminService.Role.EditRoleMenu(ctx, req)
 	if err != nil {
 		return nil, err
 	}
