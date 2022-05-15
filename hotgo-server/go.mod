@@ -17,9 +17,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/spf13/pflag v1.0.5
 	github.com/xuri/excelize/v2 v2.5.0
 	go.opentelemetry.io/otel/trace v1.0.0
 	go.uber.org/atomic v1.6.0 // indirect
-	golang.org/x/text v0.3.8-0.20211105212822-18b340fc7af2
 )
