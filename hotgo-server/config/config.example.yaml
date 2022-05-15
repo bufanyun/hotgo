@@ -19,6 +19,7 @@ router:
     exceptLogin: [
       "/login/captcha",         # 登录验证码
       "/login/sign",            # 登录
+      "/login/logout",          # 退出
     ]
     # 不需要验证权限的路由地址
     exceptAuth: [
