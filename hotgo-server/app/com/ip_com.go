@@ -8,6 +8,8 @@ package com
 
 import (
 	"context"
+	"time"
+
 	"github.com/axgle/mahonia"
 	"github.com/bufanyun/hotgo/app/model/entity"
 	"github.com/bufanyun/hotgo/app/utils"
@@ -16,7 +18,6 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/kayon/iploc"
-	"time"
 )
 
 // IP归属地
@@ -151,7 +152,7 @@ func (component *ip) Cz88Find(ctx context.Context, ip string) IpLocationData {
 		areaModel     *entity.SysProvinces
 	)
 
-	err = g.DB().Model("hg_common_provinces").
+	err = g.DB().Model("hg_sys_provinces").
 		Where("level", 1).
 		WhereLike("title", "%"+locationData.Province+"%").
 		Scan(&provinceModel)
@@ -178,7 +179,7 @@ func (component *ip) Cz88Find(ctx context.Context, ip string) IpLocationData {
 		//替换掉
 		locationData.City = gstr.Replace(locationData.City, "地区", "")
 
-		err = g.DB().Model("hg_common_provinces").
+		err = g.DB().Model("hg_sys_provinces").
 			Where("level", 2).
 			Where("pid", locationData.ProvinceCode).
 			WhereLike("title", "%"+locationData.City+"%").
@@ -199,7 +200,7 @@ func (component *ip) Cz88Find(ctx context.Context, ip string) IpLocationData {
 		return locationData
 	}
 
-	err = g.DB().Model("hg_common_provinces").
+	err = g.DB().Model("hg_sys_provinces").
 		Where("level", 3).
 		Where("pid", locationData.CityCode).
 		WhereLike("title", "%"+locationData.Area+"%").
