@@ -1,0 +1,24 @@
+# CLI tool, only in development environment.
+# https://goframe.org/pages/viewpage.action?pageId=3673173
+gfcli:
+  build:
+    name: "hotgo"
+    arch: "amd64"
+    system: "linux"
+    mod: "none"
+    cgo: 0
+    packSrc: "resource"
+    packDst: "internal/packed/packed.go"
+    version: ""
+    output: "./bin"
+    extra: ""
+  gen:
+    dao:
+      - link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
+        #        path: "./app"
+        #        tables:          "" #指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
+        #        tablesEx:        "" #指定当前数据库中需要排除代码生成的数据表。
+        removePrefix: "hg_"
+        descriptionTag: true
+        noModelComment: true
+        jsonCase: "CamelLower"

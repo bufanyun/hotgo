@@ -1,0 +1,131 @@
+# hotgo配置
+hotgo:
+  debug: true                                     # debug开关，开启后：接口出现错误时会输出堆栈信息，默认为true
+  ipMethod: "cz88"                                # IP归属地解析方法，可选：cz88|whois，默认为cz88
+  wsAddr: "ws://填你的公网IP或本地IP:8000/socket"  # 客户端websocket连接地址，如果项目在公网，请填写公网IP:运行端口
+  isDemo: false                                   # 是否為演示系統 false | true
+  ssl: # https
+    switch: false                                 # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
+    crtPath: "resource/ssl/server.crt"
+    keyPath: "resource/ssl/server.key"
+  log: # 全局请求日志
+    switch: true                            # 日志开关，默认为true
+    queue: true                             # 是否启用队列，启用时需要配置队列信息，默认为true
+    module: [ "admin", "api", "default" ]   # 需要记录的模块
+    skipCode: [ ]                           # 不记录的状态码，如： ["0", "-1"]
+  admin:
+    superIds: [ 1,2 ]                       # 后台超管账号ID，通过ID验证超管
+    superRoleKey: "super"                   # 超管角色唯一标识符，通过角色验证超管
+    defaultPage: 10                         # 列表分页默认加载数量
+    defaultPageSize: 1                      # 列表分页默认加载页码
+
+
+# gf配置
+server:
+  address: ":8000"
+  openapiPath: "/api.json"
+  swaggerPath: "/swagger"
+  serverRoot: "resource/public"
+  DumpRouterMap: false
+  logPath: "logs/server"
+  ErrorStack: true                            # 当Server捕获到异常时是否记录堆栈信息到日志中。默认为true
+  ErrorLogEnabled: true                       # 是否记录异常日志信息到日志中。默认为true
+  errorLogPattern: "error/{Y-m-d}.log"        # 异常错误日志文件格式。默认为"error-{Ymd}.log"
+  accessLogEnabled: true                      # 是否记录访问日志。默认为false
+  accessLogPattern: "access/{Y-m-d}.log"      # 访问日志文件格式。默认为"access-{Ymd}.log"
+  serverAgent: "HG HTTP Server"
+
+  # Global logging.
+  logger:
+    level: "all"
+    stdout: true
+    headerPrint: false
+    ctxKeys: [ ]
+    path: "logs/logger"             # 日志文件路径。默认为空，表示关闭，仅输出到终端
+    file: "{Y-m-d}.log"                     # 日志文件格式。默认为"{Y-m-d}.log"
+    stdoutColorDisabled: true               # 关闭终端的颜色打印。默认开启
+    writerColorEnable: true                 # 日志文件是否带上颜色。默认false，表示不带颜色
+
+  # PProf配置
+  pprofEnabled: true                        # 是否开启PProf性能调试特性。默认为false
+  pprofPattern: "/pprof"                    # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
+
+
+# 路由配置
+router:
+  # 后台
+  admin:
+    # 前缀
+    prefix: "/admin"
+    # 不需要验证登录的路由地址
+    exceptLogin: [
+      "/site/captcha",          # 登录验证码
+      "/site/login",            # 登录
+      "/site/ping",             # ping
+    ]
+    # 不需要验证权限的路由地址
+    exceptAuth: [
+      "/member/info",      # 登录用户信息
+      "/role/dynamic",     # 获取动态路由
+      "/site/config",     # 获取后台配置
+    ]
+  # 接口
+  api:
+    # 前缀
+    prefix: "/api"
+    # 不需要验证登录的路由地址
+    exceptPath: [ ]
+  # ws
+  ws:
+    # 前缀
+    prefix: "/socket"
+    # 不需要验证登录的路由地址
+    exceptLogin: [
+    ]
+
+#JWT
+jwt:
+  version: "1.0"                         # 版本号
+  expires: "864000"                      # 有效期，单位：秒
+  sign: "hotgo"                          # 秘钥，考虑安全问题请修改默认值
+  multiPort: true                        # 是否允许多端登录，默认为true
+
+
+#消息队列
+queue:
+  switch: true                                      # 队列开关，默认为false
+  driver: "redis"                                   # 队列驱动，可选：redis|rocketmq|kafka
+  retry: 2                                          # 重试次数
+  multiComsumer: true                               # 是否支持创建多个消费者
+  groupName: "hotgo"                                # mq群组名称
+  redis:
+    address: "127.0.0.1:6379"                       # redis服务地址，默认为127.0.0.1:6379
+    db: 0                                           # 指定redis库
+    pass: ""                                        # redis密码
+    timeout: 0                                      # 队列超时时间(s) ，0为永不超时，当队列一直没有被消费到达超时时间则队列会被销毁
+  rocketmq:
+    address: "127.0.0.1:9876"                       # brocker地址+端口
+    logLevel: "all"                                 # 系统日志级别，可选：all|close|debug|info|warn|error|fatal
+  kafka:
+    address: "127.0.0.1:9092"                       # kafka地址+端口
+    version: "2.0.0.0"                              # kafka专属配置，默认2.0.0.0
+    randClient: true                                # 开启随机生成clientID，可以实现启动多实例同时一起消费相同topic，加速消费能力的特性，默认为true
+
+
+# Redis
+redis:
+  default:
+    address: "127.0.0.1:6379"
+    db: "1"
+    pass: ""
+    idleTimeout: "20"
+
+# Database.
+database:
+  logger:
+    level: "all"
+    stdout: true
+  default:
+    link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
+    debug: true
+    Prefix: "hg_"
