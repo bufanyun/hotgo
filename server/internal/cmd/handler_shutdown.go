@@ -8,11 +8,10 @@ package cmd
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gproc"
-	"github.com/gogf/gf/v2/os/grpool"
 	"hotgo/internal/crons"
 	"hotgo/internal/websocket"
+	"hotgo/utility/simple"
 	"os"
 )
 
@@ -29,12 +28,9 @@ func signalHandlerForOverall(sig os.Signal) {
 }
 
 func signalListen(ctx context.Context, handler ...gproc.SigHandler) {
-	err := grpool.AddWithRecover(ctx, func(ctx context.Context) {
+	simple.SafeGo(ctx, func(ctx context.Context) {
 		gproc.AddSigHandlerShutdown(handler...)
 		gproc.Listen()
 	})
-	if err != nil {
-		g.Log().Fatal(ctx, "signalListen Fatal:", err)
-		return
-	}
+
 }

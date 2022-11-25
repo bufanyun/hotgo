@@ -10,11 +10,11 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/grpool"
 	"hotgo/api/backend/monitor"
 	"hotgo/internal/consts"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/websocket"
+	"hotgo/utility/simple"
 	"hotgo/utility/useragent"
 	"sort"
 )
@@ -36,13 +36,11 @@ func (c *cMonitor) Offline(ctx context.Context, req *monitor.OfflineReq) (res *m
 		return
 	}
 
-	err = grpool.AddWithRecover(ctx, func(ctx context.Context) {
+	simple.SafeGo(ctx, func(ctx context.Context) {
 		websocket.SendSuccess(client, "kick")
 		websocket.Close(client)
 	})
-	if err != nil {
-		return nil, err
-	}
+
 	return res, nil
 }
 

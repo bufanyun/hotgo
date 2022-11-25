@@ -9,7 +9,6 @@ package admin
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
@@ -18,6 +17,7 @@ import (
 	"hotgo/internal/websocket"
 	"hotgo/utility/charset"
 	"hotgo/utility/convert"
+	"hotgo/utility/simple"
 	"strings"
 )
 
@@ -75,7 +75,7 @@ func (s *sAdminNotice) Edit(ctx context.Context, in adminin.NoticeEditInp) (err 
 		Event: "notice",
 		Data:  in,
 	}
-	grpool.AddWithRecover(ctx, func(ctx context.Context) {
+	simple.SafeGo(ctx, func(ctx context.Context) {
 		if len(memberIds) == 0 {
 			websocket.SendToAll(response)
 		} else {

@@ -127,8 +127,8 @@ github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0/go.mod h1:fyg78
 github.com/gogf/gf/contrib/drivers/mysql/v2 v2.2.0-beta2 h1:QgVPXrGp8wJx18HIOsNATaIiHjXsd/Rk1F1QyxfWv+g=
 github.com/gogf/gf/contrib/drivers/mysql/v2 v2.2.0-beta2/go.mod h1:z+/0qiOwMroAnj5ESuobTv0l5P83rf+XR3r6Fj8WJyk=
 github.com/gogf/gf/v2 v2.0.0/go.mod h1:apktt6TleWtCIwpz63vBqUnw8MX8gWKoZyxgDpXFtgM=
-github.com/gogf/gf/v2 v2.2.0-beta2 h1:XDx9dzUf3/9HRkSSZdW7XnI3gvtgpoKpDkP2ZsKlf/4=
-github.com/gogf/gf/v2 v2.2.0-beta2/go.mod h1:thvkyb43RWUu/m05sRm4CbH9r7t7/FrW2M56L9Ystwk=
+github.com/gogf/gf/v2 v2.2.4 h1:Y2c0F4dDDYlQswHPtoGJ0l9kvQjE0a9jmM02qCAZoqo=
+github.com/gogf/gf/v2 v2.2.4/go.mod h1:thvkyb43RWUu/m05sRm4CbH9r7t7/FrW2M56L9Ystwk=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 h1:DACJavvAHhabrF08vX0COfcOBJRhZ8lUbR+ZWIs0Y5g=
 github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0/go.mod h1:E/TSTwGwJL78qG/PmXZO1EjYhfJinVAhrmmHX6Z8B9k=
@@ -208,8 +208,6 @@ github.com/gorilla/websocket v1.5.0 h1:PPwGk2jz7EePpoHN/+ClbZu8SPxiqlu12wZP/3sWm
 github.com/gorilla/websocket v1.5.0/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/grokify/html-strip-tags-go v0.0.1 h1:0fThFwLbW7P/kOiTBs03FsJSV9RM2M/Q/MOnCQxKMo0=
 github.com/grokify/html-strip-tags-go v0.0.1/go.mod h1:2Su6romC5/1VXOQMaWL2yb618ARB8iVo6/DR99A6d78=
-github.com/h2non/filetype v1.1.3 h1:FKkx9QbD7HR/zjK1Ia5XiBsq9zdLi5Kf3zGyFTAFkGg=
-github.com/h2non/filetype v1.1.3/go.mod h1:319b3zT68BvV+WRj7cwy856M2ehB3HqNOt6sy1HndBY=
 github.com/hashicorp/errwrap v1.0.0 h1:hLrqtEDnRye3+sgx6z4qVLNuviH3MR5aQ0ykNJa/UYA=
 github.com/hashicorp/errwrap v1.0.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
 github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+lD48awMYo=

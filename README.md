@@ -1,8 +1,8 @@
-# HotGO-V2
+# HotGo-V2
 <div align="center">
 	<img width="140px" src="https://bufanyun.cn-bj.ufileos.com/hotgo/logo.sig.png">
     <p>
-        <h1>HotGO V2.0</h1>
+        <h1>HotGo V2.0</h1>
     </p>
     <p align="center">
         <a href="https://goframe.org/pages/viewpage.action?pageId=1114119" target="_blank">
@@ -74,7 +74,7 @@
 ## 环境要求
 - node版本 >= v16.0.0
 - golang版本 >= v1.18
-- gf版本 >=2.1
+- gf版本 >=v2.2.4 (会保持同步gf最新版本，gf小版本更新可能存在兼容问题，旧版本需自行处理，如非必要不建议更新！)
 - IDE推荐：Goland
 - mysql版本 >=5.7
 - redis版本 >=3.0
@@ -130,6 +130,9 @@ VITE_PROXY=[["/admin","http://你的IP:8000/admin"]]
    ```shell script
       cd server
       
+      # 设置国内代理，如果已经设置好了代理可以跳过
+      go env -w GOPROXY=https://goproxy.io,direct
+      
       # 更新包
       go mod tidy  
       
@@ -137,7 +140,7 @@ VITE_PROXY=[["/admin","http://你的IP:8000/admin"]]
       go run main.go  
       
       # 启动所有服务
-      gf run main.go --args "all"
+      go run main.go all
       
       # 如果顺利，至此到浏览器打开：http://你的IP:8000/admin，即可看到后台登录地址
       # 登录账号：admin, 密码：123456
@@ -155,7 +158,7 @@ web端：
     yarn install 
     
     # 启动web项目
-    npm run dev 
+    yarn dev 
     
     # 如果顺利，至此到浏览器打开：http://你的IP:8001/admin
 ```
@@ -203,7 +206,7 @@ web端：
 
 
 ## 交流QQ群
-交流群①：190966648  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=mJafkvme3VNyiQlCFIFNRtY8Xlr7pj9U&jump_from=webapi&authKey=jL10vIESr+vO8wpxwyd6DlChzkrbHpzN9uhAsIHgAinL/Vvd+nvuRyilf2UqUlCy"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="HotGo框架交流1群" title="HotGo框架交流1群"></a>
+交流群①：190966648  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=mJafkvme3VNyiQlCFIFNRtY8Xlr7pj9U&jump_from=webapi&authKey=jL10vIESr+vO8wpxwyd6DlChzkrbHpzN9uhAsIHgAinL/Vvd+nvuRyilf2UqUlCy"><img border="0" src="https://bufanyun.cn-bj.ufileos.com/hotgo/group.png" alt="HotGo框架交流1群" title="HotGo框架交流1群"></a>
 > <img src="https://bufanyun.cn-bj.ufileos.com/hotgo/hotgo1qun.png" width="400px"/>  
 
 

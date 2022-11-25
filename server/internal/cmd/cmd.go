@@ -10,7 +10,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcmd"
-	"github.com/gogf/gf/v2/os/grpool"
+	"hotgo/utility/simple"
 )
 
 var (
@@ -20,13 +20,13 @@ var (
 		欢迎使用HotGo!
 		---------------------------------------------------------------------------------
 		启动服务
-		>> HTTP服务  [gf run main.go --args "http"]
-		>> 消息队列  [gf run main.go --args "queue"]
-		>> 所有服务  [gf run main.go --args "all"]
+		>> HTTP服务  [go run main.go http]
+		>> 消息队列  [go run main.go queue]
+		>> 所有服务  [go run main.go all]
 
 		---------------------------------------------------------------------------------
 		工具
-		>> 释放casbin权限，用于清理无效的权限设置  [gf run main.go --args "tools -m=casbin -a1=refresh"]
+		>> 释放casbin权限，用于清理无效的权限设置  [go run main.go tools -m=casbin -a1=refresh]
 `,
 	}
 
@@ -46,22 +46,17 @@ var (
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			g.Log().Info(ctx, "start all server")
 
-			if err = grpool.AddWithRecover(ctx, func(ctx context.Context) {
+			simple.SafeGo(ctx, func(ctx context.Context) {
 				if err := Http.Func(ctx, parser); err != nil {
 					g.Log().Fatal(ctx, "http server start fail:", err)
 				}
-			}); err != nil {
-				return
-			}
+			})
 
-			if err = grpool.AddWithRecover(ctx, func(ctx context.Context) {
+			simple.SafeGo(ctx, func(ctx context.Context) {
 				if err := Queue.Func(ctx, parser); err != nil {
 					g.Log().Fatal(ctx, "queue consumer start fail:", err)
 				}
-			}); err != nil {
-				g.Log().Fatal(ctx, "queue consumer start fail2:", err)
-				return
-			}
+			})
 
 			// 信号监听
 			signalListen(ctx, signalHandlerForOverall)

@@ -9,10 +9,9 @@ package global
 import (
 	"context"
 	"fmt"
-	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/library/location"
+	"hotgo/utility/simple"
 	"os"
 )
 
@@ -29,14 +28,9 @@ func Init(ctx context.Context) {
 }
 
 func loadMonitor(ctx context.Context) {
-	err := grpool.AddWithRecover(ctx, func(ctx context.Context) {
+	simple.SafeGo(ctx, func(ctx context.Context) {
 		MonitorData.STartTime = gtime.Now()
 		MonitorData.IntranetIP, _ = location.GetLocalIP()
 		MonitorData.PublicIP, _ = location.GetPublicIP()
-
 	})
-	if err != nil {
-		g.Log().Fatal(ctx, "global loadMonitor Fatal:", err)
-		return
-	}
 }
