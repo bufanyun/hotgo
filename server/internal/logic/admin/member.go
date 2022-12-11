@@ -292,7 +292,7 @@ func (s *sAdminMember) View(ctx context.Context, in adminin.MemberViewInp) (res 
 }
 
 // List 获取列表
-func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list []*adminin.MemberListModel, totalCount int, err error) {
+func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list []*adminin.MemberListModel, totalCount int64, err error) {
 	g.Log().Printf(ctx, "in:%#v", in)
 	mod := dao.AdminMember.Ctx(ctx)
 	if in.Realname != "" {
@@ -325,7 +325,7 @@ func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
 		return nil, 0, gerror.Wrap(err, consts.ErrorORM)
 	}
 
@@ -509,7 +509,7 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 }
 
 // RoleMemberList 获取角色下的会员列表
-func (s *sAdminMember) RoleMemberList(ctx context.Context, in adminin.RoleMemberListInp) (list []*adminin.MemberListModel, totalCount int, err error) {
+func (s *sAdminMember) RoleMemberList(ctx context.Context, in adminin.RoleMemberListInp) (list []*adminin.MemberListModel, totalCount int64, err error) {
 	mod := dao.AdminMember.Ctx(ctx)
 	if in.Role > 0 {
 		mod = mod.Where("role", in.Role)
@@ -521,7 +521,7 @@ func (s *sAdminMember) RoleMemberList(ctx context.Context, in adminin.RoleMember
 		return list, totalCount, err
 	}
 
-	err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list)
+	err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err

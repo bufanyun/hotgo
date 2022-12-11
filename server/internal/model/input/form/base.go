@@ -12,17 +12,17 @@ import (
 )
 
 var (
-	page     int
-	pageSize int
+	page     int64
+	pageSize int64
 )
 
 // DefaultPageSize 列表分页默认加载页码
-func DefaultPageSize(ctx context.Context) int {
+func DefaultPageSize(ctx context.Context) int64 {
 	if pageSize > 0 {
 		return pageSize
 	}
 	defaultPageSize, _ := g.Cfg().Get(ctx, "hotgo.admin.defaultPageSize", 10)
-	pageSize = defaultPageSize.Int()
+	pageSize = defaultPageSize.Int64()
 	if pageSize <= 0 {
 		pageSize = 10
 	}
@@ -30,12 +30,12 @@ func DefaultPageSize(ctx context.Context) int {
 }
 
 // DefaultPage 列表分页默认加载数量
-func DefaultPage(ctx context.Context) int {
+func DefaultPage(ctx context.Context) int64 {
 	if page > 0 {
 		return page
 	}
 	defaultPage, _ := g.Cfg().Get(ctx, "hotgo.admin.defaultPage", 1)
-	page = defaultPage.Int()
+	page = defaultPage.Int64()
 	if page <= 0 {
 		page = 10
 	}
@@ -44,12 +44,12 @@ func DefaultPage(ctx context.Context) int {
 
 // PageReq 分页
 type PageReq struct {
-	Page    int `json:"page" example:"10" d:"1" v:"min:1#页码最小值不能低于1"  dc:"当前页码"`
-	PerPage int `json:"pageSize" example:"1" d:"10" v:"min:1|max:100#|每页数量最小值不能低于1|最大值不能大于100" dc:"每页数量"`
+	Page    int64 `json:"page" example:"10" d:"1" v:"min:1#页码最小值不能低于1"  dc:"当前页码"`
+	PerPage int64 `json:"pageSize" example:"1" d:"10" v:"min:1|max:100#|每页数量最小值不能低于1|最大值不能大于100" dc:"每页数量"`
 }
 type PageRes struct {
 	PageReq
-	PageCount int `json:"pageCount" example:"0" dc:"全部数据量"`
+	PageCount int64 `json:"pageCount" example:"0" dc:"全部数据量"`
 }
 
 // RangeDateReq 时间查询
@@ -64,7 +64,7 @@ type StatusReq struct {
 }
 
 // CalPage 解析分页
-func CalPage(ctx context.Context, page, perPage int) (newPage, newPerPage int, offset int) {
+func CalPage(ctx context.Context, page, perPage int64) (newPage, newPerPage int64, offset int64) {
 	if page <= 0 {
 		newPage = DefaultPage(ctx)
 	} else {
@@ -80,6 +80,6 @@ func CalPage(ctx context.Context, page, perPage int) (newPage, newPerPage int, o
 	return
 }
 
-func CalPageCount(totalCount, perPage int) int {
+func CalPageCount(totalCount int64, perPage int64) int64 {
 	return (totalCount + perPage - 1) / perPage
 }

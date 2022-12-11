@@ -11,7 +11,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.2.0-beta2
-	github.com/gogf/gf/v2 v2.2.4
+	github.com/gogf/gf/v2 v2.2.5
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/gomodule/redigo v1.8.8
 	github.com/google/btree v1.1.2 // indirect

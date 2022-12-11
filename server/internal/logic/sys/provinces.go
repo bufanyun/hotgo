@@ -123,7 +123,7 @@ func (s *sSysProvinces) View(ctx context.Context, in sysin.ProvincesViewInp) (re
 }
 
 // List 获取列表
-func (s *sSysProvinces) List(ctx context.Context, in sysin.ProvincesListInp) (list []*sysin.ProvincesListModel, totalCount int, err error) {
+func (s *sSysProvinces) List(ctx context.Context, in sysin.ProvincesListInp) (list []*sysin.ProvincesListModel, totalCount int64, err error) {
 	mod := dao.SysProvinces.Ctx(ctx)
 
 	// 访问路径
@@ -146,7 +146,7 @@ func (s *sSysProvinces) List(ctx context.Context, in sysin.ProvincesListInp) (li
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}

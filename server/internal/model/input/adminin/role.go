@@ -14,8 +14,8 @@ import (
 
 // RoleListInp 获取列表
 type RoleListInp struct {
-	Page    int
-	PerPage int
+	Page    int64
+	PerPage int64
 }
 
 type RoleListModel struct {

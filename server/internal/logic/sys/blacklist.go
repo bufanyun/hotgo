@@ -118,7 +118,7 @@ func (s *sSysBlacklist) View(ctx context.Context, in sysin.BlacklistViewInp) (re
 }
 
 // List 获取列表
-func (s *sSysBlacklist) List(ctx context.Context, in sysin.BlacklistListInp) (list []*sysin.BlacklistListModel, totalCount int, err error) {
+func (s *sSysBlacklist) List(ctx context.Context, in sysin.BlacklistListInp) (list []*sysin.BlacklistListModel, totalCount int64, err error) {
 	mod := dao.SysBlacklist.Ctx(ctx)
 
 	// 访问路径
@@ -141,7 +141,7 @@ func (s *sSysBlacklist) List(ctx context.Context, in sysin.BlacklistListInp) (li
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}

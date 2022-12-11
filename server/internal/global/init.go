@@ -9,7 +9,9 @@ package global
 import (
 	"context"
 	"fmt"
+	"github.com/gogf/gf/v2"
 	"github.com/gogf/gf/v2/os/gtime"
+	"hotgo/internal/consts"
 	"hotgo/internal/library/location"
 	"hotgo/utility/simple"
 	"os"
@@ -23,7 +25,7 @@ func Init(ctx context.Context) {
 	}
 
 	RootPtah, _ = os.Getwd()
-	fmt.Printf("欢迎使用HotGo！\r\n当前运行环境：%v, 运行根路径为：%v \r\n", SysType, RootPtah)
+	fmt.Printf("欢迎使用HotGo！\r\n当前运行环境：%v, 运行根路径为：%v \r\nHotGo版本：v%v, gf版本：%v \n", SysType, RootPtah, consts.VersionApp, gf.VERSION)
 	loadMonitor(ctx)
 }
 

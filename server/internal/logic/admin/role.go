@@ -61,7 +61,7 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 }
 
 // List 获取列表
-func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (list []*adminin.RoleListModel, totalCount int, err error) {
+func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (list []*adminin.RoleListModel, totalCount int64, err error) {
 	mod := dao.AdminRole.Ctx(ctx)
 	totalCount, err = mod.Count()
 	if err != nil {
@@ -69,7 +69,7 @@ func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (list []*
 		return list, totalCount, err
 	}
 
-	err = mod.Page(in.Page, in.PerPage).Order("id asc").Scan(&list)
+	err = mod.Page(int(in.Page), int(in.PerPage)).Order("id asc").Scan(&list)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err

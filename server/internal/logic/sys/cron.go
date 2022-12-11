@@ -147,7 +147,7 @@ func (s *sSysCron) View(ctx context.Context, in sysin.CronViewInp) (res *sysin.C
 }
 
 // List 获取列表
-func (s *sSysCron) List(ctx context.Context, in sysin.CronListInp) (list []*sysin.CronListModel, totalCount int, err error) {
+func (s *sSysCron) List(ctx context.Context, in sysin.CronListInp) (list []*sysin.CronListModel, totalCount int64, err error) {
 	mod := dao.SysCron.Ctx(ctx)
 
 	// 访问路径
@@ -170,7 +170,7 @@ func (s *sSysCron) List(ctx context.Context, in sysin.CronListInp) (list []*sysi
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}

@@ -82,7 +82,7 @@ func (s *sSysDictData) Edit(ctx context.Context, in sysin.DictDataEditInp) (err 
 }
 
 // List 获取列表
-func (s *sSysDictData) List(ctx context.Context, in sysin.DictDataListInp) (list []*sysin.DictDataListModel, totalCount int, err error) {
+func (s *sSysDictData) List(ctx context.Context, in sysin.DictDataListInp) (list []*sysin.DictDataListModel, totalCount int64, err error) {
 	mod := dao.SysDictData.Ctx(ctx)
 	// 类型ID
 	if in.TypeID > 0 {
@@ -117,7 +117,7 @@ func (s *sSysDictData) List(ctx context.Context, in sysin.DictDataListInp) (list
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}
