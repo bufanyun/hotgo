@@ -16,12 +16,6 @@ import (
 )
 
 type (
-	ISysDictType interface {
-		Tree(ctx context.Context) (list []g.Map, err error)
-		Delete(ctx context.Context, in sysin.DictTypeDeleteInp) error
-		Edit(ctx context.Context, in sysin.DictTypeEditInp) (err error)
-		Select(ctx context.Context, in sysin.DictTypeSelectInp) (list sysin.DictTypeSelectModel, err error)
-	}
 	ISysLog interface {
 		Export(ctx context.Context, in sysin.LogListInp) (err error)
 		RealWrite(ctx context.Context, commonLog entity.SysLog) error
@@ -32,6 +26,15 @@ type (
 		Delete(ctx context.Context, in sysin.LogDeleteInp) error
 		List(ctx context.Context, in sysin.LogListInp) (list []*sysin.LogListModel, totalCount int64, err error)
 	}
+	ISysAttachment interface {
+		Delete(ctx context.Context, in sysin.AttachmentDeleteInp) error
+		Edit(ctx context.Context, in sysin.AttachmentEditInp) (err error)
+		Status(ctx context.Context, in sysin.AttachmentStatusInp) (err error)
+		MaxSort(ctx context.Context, in sysin.AttachmentMaxSortInp) (*sysin.AttachmentMaxSortModel, error)
+		View(ctx context.Context, in sysin.AttachmentViewInp) (res *sysin.AttachmentViewModel, err error)
+		List(ctx context.Context, in sysin.AttachmentListInp) (list []*sysin.AttachmentListModel, totalCount int64, err error)
+		Add(ctx context.Context, meta *sysin.UploadFileMeta, fullPath, drive string) (data *entity.SysAttachment, err error)
+	}
 	ISysBlacklist interface {
 		Delete(ctx context.Context, in sysin.BlacklistDeleteInp) error
 		Edit(ctx context.Context, in sysin.BlacklistEditInp) (err error)
@@ -39,12 +42,6 @@ type (
 		MaxSort(ctx context.Context, in sysin.BlacklistMaxSortInp) (*sysin.BlacklistMaxSortModel, error)
 		View(ctx context.Context, in sysin.BlacklistViewInp) (res *sysin.BlacklistViewModel, err error)
 		List(ctx context.Context, in sysin.BlacklistListInp) (list []*sysin.BlacklistListModel, totalCount int64, err error)
-	}
-	ISysConfig interface {
-		GetSmtp(ctx context.Context) (conf *model.EmailConfig, err error)
-		GetConfigByGroup(ctx context.Context, in sysin.GetConfigInp) (*sysin.GetConfigModel, error)
-		ConversionType(ctx context.Context, models *entity.SysConfig) (value interface{}, err error)
-		UpdateConfigByGroup(ctx context.Context, in sysin.UpdateConfigInp) error
 	}
 	ISysCron interface {
 		StartCron(ctx context.Context)
@@ -55,6 +52,23 @@ type (
 		View(ctx context.Context, in sysin.CronViewInp) (res *sysin.CronViewModel, err error)
 		List(ctx context.Context, in sysin.CronListInp) (list []*sysin.CronListModel, totalCount int64, err error)
 	}
+	ISysDictData interface {
+		Delete(ctx context.Context, in sysin.DictDataDeleteInp) error
+		Edit(ctx context.Context, in sysin.DictDataEditInp) (err error)
+		List(ctx context.Context, in sysin.DictDataListInp) (list []*sysin.DictDataListModel, totalCount int64, err error)
+	}
+	ISysDictType interface {
+		Tree(ctx context.Context) (list []g.Map, err error)
+		Delete(ctx context.Context, in sysin.DictTypeDeleteInp) error
+		Edit(ctx context.Context, in sysin.DictTypeEditInp) (err error)
+		Select(ctx context.Context, in sysin.DictTypeSelectInp) (list sysin.DictTypeSelectModel, err error)
+	}
+	ISysConfig interface {
+		GetSmtp(ctx context.Context) (conf *model.EmailConfig, err error)
+		GetConfigByGroup(ctx context.Context, in sysin.GetConfigInp) (*sysin.GetConfigModel, error)
+		ConversionType(ctx context.Context, models *entity.SysConfig) (value interface{}, err error)
+		UpdateConfigByGroup(ctx context.Context, in sysin.UpdateConfigInp) error
+	}
 	ISysCronGroup interface {
 		Delete(ctx context.Context, in sysin.CronGroupDeleteInp) error
 		Edit(ctx context.Context, in sysin.CronGroupEditInp) (err error)
@@ -63,20 +77,6 @@ type (
 		View(ctx context.Context, in sysin.CronGroupViewInp) (res *sysin.CronGroupViewModel, err error)
 		List(ctx context.Context, in sysin.CronGroupListInp) (list []*sysin.CronGroupListModel, totalCount int64, err error)
 		Select(ctx context.Context, in sysin.CronGroupSelectInp) (list sysin.CronGroupSelectModel, err error)
-	}
-	ISysDictData interface {
-		Delete(ctx context.Context, in sysin.DictDataDeleteInp) error
-		Edit(ctx context.Context, in sysin.DictDataEditInp) (err error)
-		List(ctx context.Context, in sysin.DictDataListInp) (list []*sysin.DictDataListModel, totalCount int64, err error)
-	}
-	ISysAttachment interface {
-		Delete(ctx context.Context, in sysin.AttachmentDeleteInp) error
-		Edit(ctx context.Context, in sysin.AttachmentEditInp) (err error)
-		Status(ctx context.Context, in sysin.AttachmentStatusInp) (err error)
-		MaxSort(ctx context.Context, in sysin.AttachmentMaxSortInp) (*sysin.AttachmentMaxSortModel, error)
-		View(ctx context.Context, in sysin.AttachmentViewInp) (res *sysin.AttachmentViewModel, err error)
-		List(ctx context.Context, in sysin.AttachmentListInp) (list []*sysin.AttachmentListModel, totalCount int64, err error)
-		Add(ctx context.Context, meta *sysin.UploadFileMeta, fullPath, drive string) (data *entity.SysAttachment, err error)
 	}
 	ISysProvinces interface {
 		Delete(ctx context.Context, in sysin.ProvincesDeleteInp) error
@@ -89,49 +89,16 @@ type (
 )
 
 var (
-	localSysConfig     ISysConfig
+	localSysBlacklist  ISysBlacklist
 	localSysCron       ISysCron
-	localSysCronGroup  ISysCronGroup
 	localSysDictData   ISysDictData
 	localSysDictType   ISysDictType
 	localSysLog        ISysLog
-	localSysBlacklist  ISysBlacklist
-	localSysProvinces  ISysProvinces
 	localSysAttachment ISysAttachment
+	localSysCronGroup  ISysCronGroup
+	localSysProvinces  ISysProvinces
+	localSysConfig     ISysConfig
 )
-
-func SysAttachment() ISysAttachment {
-	if localSysAttachment == nil {
-		panic("implement not found for interface ISysAttachment, forgot register?")
-	}
-	return localSysAttachment
-}
-
-func RegisterSysAttachment(i ISysAttachment) {
-	localSysAttachment = i
-}
-
-func SysProvinces() ISysProvinces {
-	if localSysProvinces == nil {
-		panic("implement not found for interface ISysProvinces, forgot register?")
-	}
-	return localSysProvinces
-}
-
-func RegisterSysProvinces(i ISysProvinces) {
-	localSysProvinces = i
-}
-
-func SysBlacklist() ISysBlacklist {
-	if localSysBlacklist == nil {
-		panic("implement not found for interface ISysBlacklist, forgot register?")
-	}
-	return localSysBlacklist
-}
-
-func RegisterSysBlacklist(i ISysBlacklist) {
-	localSysBlacklist = i
-}
 
 func SysConfig() ISysConfig {
 	if localSysConfig == nil {
@@ -144,17 +111,6 @@ func RegisterSysConfig(i ISysConfig) {
 	localSysConfig = i
 }
 
-func SysCron() ISysCron {
-	if localSysCron == nil {
-		panic("implement not found for interface ISysCron, forgot register?")
-	}
-	return localSysCron
-}
-
-func RegisterSysCron(i ISysCron) {
-	localSysCron = i
-}
-
 func SysCronGroup() ISysCronGroup {
 	if localSysCronGroup == nil {
 		panic("implement not found for interface ISysCronGroup, forgot register?")
@@ -164,6 +120,17 @@ func SysCronGroup() ISysCronGroup {
 
 func RegisterSysCronGroup(i ISysCronGroup) {
 	localSysCronGroup = i
+}
+
+func SysProvinces() ISysProvinces {
+	if localSysProvinces == nil {
+		panic("implement not found for interface ISysProvinces, forgot register?")
+	}
+	return localSysProvinces
+}
+
+func RegisterSysProvinces(i ISysProvinces) {
+	localSysProvinces = i
 }
 
 func SysDictData() ISysDictData {
@@ -197,4 +164,37 @@ func SysLog() ISysLog {
 
 func RegisterSysLog(i ISysLog) {
 	localSysLog = i
+}
+
+func SysAttachment() ISysAttachment {
+	if localSysAttachment == nil {
+		panic("implement not found for interface ISysAttachment, forgot register?")
+	}
+	return localSysAttachment
+}
+
+func RegisterSysAttachment(i ISysAttachment) {
+	localSysAttachment = i
+}
+
+func SysBlacklist() ISysBlacklist {
+	if localSysBlacklist == nil {
+		panic("implement not found for interface ISysBlacklist, forgot register?")
+	}
+	return localSysBlacklist
+}
+
+func RegisterSysBlacklist(i ISysBlacklist) {
+	localSysBlacklist = i
+}
+
+func SysCron() ISysCron {
+	if localSysCron == nil {
+		panic("implement not found for interface ISysCron, forgot register?")
+	}
+	return localSysCron
+}
+
+func RegisterSysCron(i ISysCron) {
+	localSysCron = i
 }

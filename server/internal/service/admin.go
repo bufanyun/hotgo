@@ -92,13 +92,13 @@ type (
 )
 
 var (
+	localAdminMemberPost IAdminMemberPost
+	localAdminMenu       IAdminMenu
 	localAdminNotice     IAdminNotice
 	localAdminPost       IAdminPost
 	localAdminRole       IAdminRole
 	localAdminDept       IAdminDept
 	localAdminMember     IAdminMember
-	localAdminMemberPost IAdminMemberPost
-	localAdminMenu       IAdminMenu
 )
 
 func AdminMemberPost() IAdminMemberPost {

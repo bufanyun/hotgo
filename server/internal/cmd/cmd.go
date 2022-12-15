@@ -17,7 +17,7 @@ var (
 	serverCloseSignal chan struct{}
 	Main              = &gcmd.Command{
 		Description: `
-		欢迎使用HotGo!
+		命令提示符
 		---------------------------------------------------------------------------------
 		启动服务
 		>> HTTP服务  [go run main.go http]
@@ -34,8 +34,8 @@ var (
 		Name:  "help",
 		Brief: "查看帮助",
 		Description: `
-       欢迎使用 HotGo
-       当前版本:v2.0.0
+       	github地址:https://github.com/bufanyun/hotgo
+		文档地址:文档正在书写中，请耐心等一等。	
     `,
 	}
 

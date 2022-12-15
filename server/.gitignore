@@ -24,6 +24,7 @@ resource/ssl/server.key
 temp/
 main.exe
 main.exe~
+*.exe
 *.log
 *.zip
 .idea

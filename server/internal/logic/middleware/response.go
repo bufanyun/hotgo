@@ -29,6 +29,12 @@ func (s *sMiddleware) ResponseHandler(r *ghttp.Request) {
 		err         error
 	)
 
+	// 模板页面响应
+	if "text/html" == r.Response.Header().Get("Content-Type") {
+		r.Middleware.Next()
+		return
+	}
+
 	if err := r.GetError(); err != nil {
 		g.Log().Print(ctx, err)
 		// 记录到自定义错误日志文件

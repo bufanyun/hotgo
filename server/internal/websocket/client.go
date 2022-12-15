@@ -46,6 +46,7 @@ type Client struct {
 	Socket        *websocket.Conn // 用户连接
 	Send          chan *WResponse // 待发送的数据
 	SendClose     bool            // 发送是否关闭
+	closeSignal   chan struct{}   // 关闭信号
 	FirstTime     uint64          // 首次连接时间
 	HeartbeatTime uint64          // 用户上次心跳时间
 	Tags          garray.StrArray // 标签
@@ -63,6 +64,7 @@ func NewClient(r *ghttp.Request, socket *websocket.Conn, firstTime uint64) (clie
 		Socket:        socket,
 		Send:          make(chan *WResponse, 100),
 		SendClose:     false,
+		closeSignal:   make(chan struct{}, 1),
 		FirstTime:     firstTime,
 		HeartbeatTime: firstTime,
 		User:          contexts.Get(r.Context()).User,
@@ -107,6 +109,9 @@ func (c *Client) write() {
 	}()
 	for {
 		select {
+		case <-c.closeSignal:
+			g.Log().Infof(ctxManager, "websocket client quit, user:%+v", c.User)
+			return
 		case message, ok := <-c.Send:
 			if !ok {
 				// 发送数据错误 关闭连接
@@ -159,12 +164,13 @@ func (c *Client) close() {
 		return
 	}
 	c.SendClose = true
-	if _, ok := <-c.Send; !ok {
-		g.Log().Warningf(ctxManager, "close of closed channel, client.id:%v", c.ID)
-	} else {
-		// 关闭 chan
-		close(c.Send)
-	}
+	//if _, ok := <-c.Send; !ok {
+	//	g.Log().Warningf(ctxManager, "close of closed channel, client.id:%v", c.ID)
+	//} else {
+	//	// 关闭 chan
+	//	close(c.Send)
+	//}
+	c.closeSignal <- struct{}{}
 }
 
 // Close 关闭指定客户端连接

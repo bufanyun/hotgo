@@ -50,6 +50,18 @@ server:
   pprofEnabled: true                        # 是否开启PProf性能调试特性。默认为false
   pprofPattern: "/pprof"                    # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
 
+viewer:
+  paths: "resource/template"
+  defaultFile:  "index.html"
+  delimiters: ["@{", "}"]
+  homeLayout:     "home/index.html"
+
+# 内容设置
+setting:
+  title:       "HotGo"
+  keywords:    "中后台解决方案,gf框架,vue3"
+  description: "hotgo 是一个基于 goframe2，vue3，vite2，TypeScript，uinapp 的中后台解决方案，它可以帮助你快速搭建企业级中后台项目，相信不管是从新技术使用还是其他方面，都能帮助到你，持续更新中。"
+
 
 # 路由配置
 router:
@@ -82,6 +94,12 @@ router:
     # 不需要验证登录的路由地址
     exceptLogin: [
     ]
+  # 前台页面
+  home:
+    # 前缀
+    prefix: "/home"
+    # 不需要验证登录的路由地址
+    exceptPath: [ ]
 
 #JWT
 jwt:

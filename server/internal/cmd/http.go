@@ -11,6 +11,8 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
+	baseApi "hotgo/api/home/base"
+	"hotgo/internal/controller/home/base"
 	"hotgo/internal/library/casbin"
 	"hotgo/internal/model"
 	"hotgo/internal/router"
@@ -55,7 +57,7 @@ var (
 
 				// 注册默认首页路由
 				group.ALL("/", func(r *ghttp.Request) {
-					r.Response.Write("hello hotGo!!")
+					_, _ = base.Site.Index(r.Context(), &baseApi.SiteIndexReq{})
 					return
 				})
 
@@ -72,6 +74,8 @@ var (
 				// 注册websocket路由
 				router.WebSocket(ctx, group)
 
+				// 注册前台页面路由
+				router.Home(ctx, group)
 			})
 
 			// 启动定时任务
