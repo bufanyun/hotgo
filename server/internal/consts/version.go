@@ -8,5 +8,5 @@ package consts
 
 // VersionApp 应用版本
 const (
-	VersionApp = "2.0.2"
+	VersionApp = "2.0.3"
 )

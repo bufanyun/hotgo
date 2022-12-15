@@ -15,7 +15,7 @@
     >
       <n-descriptions bordered label-placement="left" class="py-2">
         <n-descriptions-item label="版本">
-          <n-tag type="info"> 2.0.2 </n-tag>
+          <n-tag type="info"> 2.0.3 </n-tag>
         </n-descriptions-item>
         <n-descriptions-item label="最后编译时间">
           <n-tag type="info"> {{ lastBuildTime }} </n-tag>
