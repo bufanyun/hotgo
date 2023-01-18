@@ -31,3 +31,11 @@ export function Delete(params) {
     params,
   });
 }
+
+export function ResetPwd(params) {
+  return http.request({
+    url: '/member/reset_pwd',
+    method: 'POST',
+    params,
+  });
+}

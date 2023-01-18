@@ -22,7 +22,7 @@ type AdminNoticeDao struct {
 type AdminNoticeColumns struct {
 	Id        string // 公告ID
 	Title     string // 公告标题
-	Type      string // 公告类型（1通知 2公告）
+	Type      string // 公告类型
 	Content   string // 公告内容
 	Receiver  string // 接收者
 	Reader    string // 已读人
@@ -33,7 +33,7 @@ type AdminNoticeColumns struct {
 	UpdatedAt string // 更新时间
 }
 
-//  adminNoticeColumns holds the columns for table hg_admin_notice.
+// adminNoticeColumns holds the columns for table hg_admin_notice.
 var adminNoticeColumns = AdminNoticeColumns{
 	Id:        "id",
 	Title:     "title",
@@ -88,6 +88,6 @@ func (dao *AdminNoticeDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *AdminNoticeDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *AdminNoticeDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

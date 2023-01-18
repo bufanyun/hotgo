@@ -28,7 +28,12 @@
       </template>
     </BasicTable>
 
-    <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="新建">
+    <n-modal
+      v-model:show="showModal"
+      :show-icon="false"
+      preset="dialog"
+      :title="formParams?.id > 0 ? '编辑' : '新建'"
+    >
       <n-form
         :model="formParams"
         :rules="rules"
@@ -51,11 +56,14 @@
         <n-form-item label="字典键值" path="value">
           <n-input placeholder="请输入键值" v-model:value="formParams.value" />
         </n-form-item>
-        <n-form-item label="表格回显" path="listClass">
-          <n-input placeholder="请输入表格回显样式" v-model:value="formParams.listClass" />
+        <n-form-item label="键值类型" path="valueType">
+          <n-select v-model:value="formParams.valueType" :options="options" />
+        </n-form-item>
+        <n-form-item label="标签样式" path="listClass">
+          <n-select v-model:value="formParams.listClass" :options="tagOptions" />
         </n-form-item>
         <n-form-item label="排序" path="sort">
-          <n-input placeholder="请输入" v-model:value="formParams.sort" />
+          <n-input-number placeholder="请输入" v-model:value="formParams.sort" />
         </n-form-item>
         <n-form-item label="状态" path="status">
           <n-radio-group v-model:value="formParams.status" name="status">
@@ -91,8 +99,10 @@
   import { getDataList, getDictSelect, EditData, DeleteData } from '@/api/dict/dict';
   import { columns } from './columns';
   import { PlusOutlined } from '@vicons/antd';
-  import { statusOptions } from '@/enums/optionsiEnum';
-
+  import { statusOptions, tagOptions } from '@/enums/optionsiEnum';
+  import { TypeSelect } from '@/api/sys/config';
+  import { Option } from '@/utils/hotgo';
+  const options = ref<Option>();
   interface Props {
     checkedId?: number;
   }
@@ -115,7 +125,6 @@
   const schemas: FormSchema[] = [
     {
       field: 'label',
-      // labelMessage: '请输入字典标签名称',
       component: 'NInput',
       label: '标签',
       componentProps: {
@@ -135,18 +144,7 @@
   const actionRef = ref();
   const showModal = ref(false);
   const formBtnLoading = ref(false);
-
-  const resetFormParams = {
-    typeId: props.checkedId,
-    label: '',
-    value: '',
-    listClass: '',
-    sort: 0,
-    status: 1,
-    remark: '',
-  };
-  const formParams = ref(resetFormParams);
-
+  const formParams = ref<any>({ typeId: 0 });
   const params = ref({
     pageSize: 10,
     typeId: props.checkedId,
@@ -163,12 +161,12 @@
         style: 'button',
         actions: [
           {
-            label: '删除',
-            onClick: handleDelete.bind(null, record),
-          },
-          {
             label: '编辑',
             onClick: handleEdit.bind(null, record),
+          },
+          {
+            label: '删除',
+            onClick: handleDelete.bind(null, record),
           },
         ],
       });
@@ -183,7 +181,16 @@
 
   function addTable() {
     showModal.value = true;
-    formParams.value = resetFormParams;
+    formParams.value = {
+      typeId: props.checkedId,
+      label: '',
+      value: '',
+      listClass: 'default',
+      valueType: 'string',
+      sort: 0,
+      status: 1,
+      remark: '',
+    };
   }
 
   const loadDataTable = async (res) => {
@@ -203,20 +210,13 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formParams:' + JSON.stringify(formParams.value));
-        EditData(formParams.value)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            setTimeout(() => {
-              showModal.value = false;
-              reloadTable();
-              formParams.value = ref(resetFormParams);
-            });
-          })
-          .catch((e: Error) => {
-            message.error(e.message ?? '操作失败');
+        EditData(formParams.value).then((_res) => {
+          message.success('操作成功');
+          setTimeout(() => {
+            showModal.value = false;
+            reloadTable();
           });
+        });
       } else {
         message.error('请填写完整信息');
       }
@@ -230,47 +230,37 @@
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
-        DeleteData(record)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((e: Error) => {
-            // message.error(e.message ?? '操作失败');
-          });
+        DeleteData(record).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
 
   function handleEdit(record: Recordable) {
-    console.log('点击了编辑', record);
     showModal.value = true;
     formParams.value = record;
   }
 
-  function handleSubmit(values: Recordable) {
-    console.log(values);
+  function handleSubmit(_values: Recordable) {
     reloadTable();
   }
 
-  function handleReset(values: Recordable) {
-    console.log(values);
+  function handleReset(_values: Recordable) {
     params.value.label = '';
     reloadTable();
   }
 
   watch(props, (_newVal, _oldVal) => {
-    console.log('_newVal:' + JSON.stringify(_newVal));
     params.value.typeId = _newVal.checkedId;
     formParams.value.typeId = _newVal.checkedId;
     actionRef.value.reload();
-
     setDictSelect();
   });
 
@@ -283,15 +273,18 @@
 
   function handleUpdateTypeIdValue(
     value: string | number | Array<string | number> | null,
-    option: TreeSelectOption | null | Array<TreeSelectOption | null>
+    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
   ) {
-    console.log(value, option);
-
     formParams.value.typeId = value;
   }
 
-  onMounted(() => {
-    setDictSelect();
+  async function loadOptions() {
+    options.value = await TypeSelect();
+  }
+
+  onMounted(async () => {
+    await setDictSelect();
+    await loadOptions();
   });
 </script>
 

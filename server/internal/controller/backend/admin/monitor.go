@@ -56,7 +56,7 @@ func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (
 	var (
 		res     monitor.OnlineListRes
 		clients []*monitor.OnlineModel
-		i       int64
+		i       int
 	)
 
 	if c.wsManager.GetClientsLen() == 0 {
@@ -86,16 +86,16 @@ func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (
 		})
 	}
 
-	res.PageCount = form.CalPageCount(int64(len(clients)), req.PerPage)
+	res.PageCount = form.CalPageCount(len(clients), req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
 
 	sort.Sort(monitor.OnlineModels(clients))
-	isDemo, _ := g.Cfg().Get(ctx, "hotgo.isDemo", false)
+	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false)
 	_, perPage, offset := form.CalPage(ctx, req.Page, req.PerPage)
 
 	for k, v := range clients {
-		if int64(k) >= offset && i <= perPage {
+		if k >= offset && i <= perPage {
 			i++
 			if isDemo.Bool() {
 				v.Addr = consts.DemoTips

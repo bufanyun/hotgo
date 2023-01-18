@@ -5,7 +5,7 @@ export const columns = [
   {
     title: 'ID',
     key: 'id',
-    width: 50,
+    width: 60,
   },
   {
     title: '用户名',
@@ -14,7 +14,7 @@ export const columns = [
   },
   {
     title: '姓名',
-    key: 'realname',
+    key: 'realName',
     width: 100,
   },
   {
@@ -37,7 +37,7 @@ export const columns = [
           },
           {
             default: () =>
-              row.realname !== '' ? row.realname.substring(0, 1) : row.username.substring(0, 2),
+              row.realName !== '' ? row.realName.substring(0, 1) : row.username.substring(0, 2),
           }
         );
       }
@@ -45,7 +45,7 @@ export const columns = [
   },
   {
     title: '绑定角色',
-    key: 'role_name',
+    key: 'roleName',
     width: 100,
     render(row) {
       return h(
@@ -58,14 +58,14 @@ export const columns = [
           bordered: false,
         },
         {
-          default: () => row.role_name,
+          default: () => row.roleName,
         }
       );
     },
   },
   {
     title: '所属部门',
-    key: 'dept_name',
+    key: 'deptName',
     width: 100,
     render(row) {
       return h(
@@ -78,7 +78,7 @@ export const columns = [
           bordered: false,
         },
         {
-          default: () => row.dept_name,
+          default: () => row.deptName,
         }
       );
     },
@@ -86,7 +86,7 @@ export const columns = [
   {
     title: '状态',
     key: 'status',
-    width: 50,
+    width: 80,
     render(row) {
       return h(
         NTag,
@@ -106,12 +106,12 @@ export const columns = [
   {
     title: '访问次数',
     key: 'visitCount',
-    width: 80,
+    width: 100,
   },
   {
     title: '创建时间',
     key: 'createdAt',
-    width: 100,
+    width: 150,
     render: (rows, _) => {
       return rows.createdAt;
     },

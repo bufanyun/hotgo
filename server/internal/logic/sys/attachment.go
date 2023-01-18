@@ -16,8 +16,8 @@ import (
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/convert"
 	"hotgo/utility/format"
+	"hotgo/utility/validate"
 )
 
 type sSysAttachment struct{}
@@ -82,7 +82,7 @@ func (s *sSysAttachment) Status(ctx context.Context, in sysin.AttachmentStatusIn
 		return err
 	}
 
-	if !convert.InSliceInt(consts.StatusMap, in.Status) {
+	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
 		return err
 	}
@@ -124,7 +124,7 @@ func (s *sSysAttachment) View(ctx context.Context, in sysin.AttachmentViewInp) (
 }
 
 // List 获取列表
-func (s *sSysAttachment) List(ctx context.Context, in sysin.AttachmentListInp) (list []*sysin.AttachmentListModel, totalCount int64, err error) {
+func (s *sSysAttachment) List(ctx context.Context, in sysin.AttachmentListInp) (list []*sysin.AttachmentListModel, totalCount int, err error) {
 	mod := dao.SysAttachment.Ctx(ctx)
 
 	// 访问路径
@@ -152,14 +152,18 @@ func (s *sSysAttachment) List(ctx context.Context, in sysin.AttachmentListInp) (
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(in.Page, in.PerPage).Order("updated_at desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}
 
+	conf, err := service.SysConfig().GetUpload(ctx)
+	if err != nil {
+		return list, totalCount, err
+	}
 	for _, v := range list {
 		v.SizeFormat = format.FileSize(v.Size)
-		v.FileUrl = service.CommonUpload().LastUrl(ctx, v.FileUrl, consts.UploadDriveLocal)
+		v.FileUrl = service.CommonUpload().LastUrl(ctx, conf, v.FileUrl, v.Drive)
 	}
 
 	return list, totalCount, err

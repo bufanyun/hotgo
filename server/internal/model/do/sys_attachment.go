@@ -12,18 +12,18 @@ import (
 // SysAttachment is the golang structure of table hg_sys_attachment for DAO operations like Where/Data.
 type SysAttachment struct {
 	g.Meta    `orm:"table:hg_sys_attachment, do:true"`
-	Id        interface{} //
+	Id        interface{} // 文件ID
 	AppId     interface{} // 应用ID
-	MemberId  interface{} // 用户
-	CateId    interface{} // 分类
-	Drive     interface{} // 驱动
+	MemberId  interface{} // 管理员ID
+	CateId    interface{} // 上传分类
+	Drive     interface{} // 上传驱动
 	Name      interface{} // 文件原始名
 	Kind      interface{} // 上传类型
-	MetaType  interface{} // 类别
+	MetaType  interface{} // 文件类型
 	NaiveType interface{} // NaiveUI类型
 	Path      interface{} // 本地路径
 	FileUrl   interface{} // url
-	Size      interface{} // 长度
+	Size      interface{} // 文件大小
 	Ext       interface{} // 扩展名
 	Md5       interface{} // md5校验码
 	Status    interface{} // 状态

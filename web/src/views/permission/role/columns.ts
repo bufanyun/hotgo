@@ -3,16 +3,27 @@ import { NTag } from 'naive-ui';
 
 export const columns = [
   {
-    title: 'id',
+    title: '角色ID',
     key: 'id',
   },
   {
     title: '角色名称',
     key: 'name',
+    render(row) {
+      return h(
+        NTag,
+        {
+          type: 'info',
+        },
+        {
+          default: () => row.name,
+        }
+      );
+    },
   },
   {
-    title: '说明',
-    key: 'remark',
+    title: '上级角色',
+    key: 'pid',
   },
   {
     title: '是否默认角色',
@@ -28,6 +39,14 @@ export const columns = [
         }
       );
     },
+  },
+  {
+    title: '排序',
+    key: 'sort',
+  },
+  {
+    title: '备注',
+    key: 'remark',
   },
   {
     title: '创建时间',

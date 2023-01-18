@@ -1,11 +1,11 @@
 # hotgo配置
 hotgo:
-  debug: true                                     # debug开关，开启后：接口出现错误时会输出堆栈信息，默认为true
-  ipMethod: "cz88"                                # IP归属地解析方法，可选：cz88|whois，默认为cz88
-  wsAddr: "ws://填你的公网IP或本地IP:8000/socket"  # 客户端websocket连接地址，如果项目在公网，请填写公网IP:运行端口
-  isDemo: false                                   # 是否為演示系統 false | true
+  debug: true                                      # debug开关，开启后：接口出现错误时会输出堆栈信息，默认为true
+  ipMethod: "whois"                                # IP归属地解析方法，可选：cz88|whois，默认为whois
+  wsAddr: "ws://127.0.0.1:8000/socket"             # 客户端websocket连接地址，如果项目在公网，请填写公网IP:运行端口
+  isDemo: false                                    # 是否為演示系統 false | true
   ssl: # https
-    switch: false                                 # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
+    switch: false                                  # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
     crtPath: "resource/ssl/server.crt"
     keyPath: "resource/ssl/server.key"
   log: # 全局请求日志
@@ -14,10 +14,11 @@ hotgo:
     module: [ "admin", "api", "default" ]   # 需要记录的模块
     skipCode: [ ]                           # 不记录的状态码，如： ["0", "-1"]
   admin:
-    superIds: [ 1,2 ]                       # 后台超管账号ID，通过ID验证超管
+    superIds: [ 1,2,3 ]                     # 后台超管账号ID，通过ID验证超管
     superRoleKey: "super"                   # 超管角色唯一标识符，通过角色验证超管
     defaultPage: 10                         # 列表分页默认加载数量
     defaultPageSize: 1                      # 列表分页默认加载页码
+    maxSortIncrement: 10                    # 最大排序值增量
 
 
 # gf配置
@@ -41,7 +42,7 @@ server:
     stdout: true
     headerPrint: false
     ctxKeys: [ ]
-    path: "logs/logger"             # 日志文件路径。默认为空，表示关闭，仅输出到终端
+    path: "logs/logger"                     # 日志文件路径。默认为空，表示关闭，仅输出到终端
     file: "{Y-m-d}.log"                     # 日志文件格式。默认为"{Y-m-d}.log"
     stdoutColorDisabled: true               # 关闭终端的颜色打印。默认开启
     writerColorEnable: true                 # 日志文件是否带上颜色。默认false，表示不带颜色
@@ -50,11 +51,13 @@ server:
   pprofEnabled: true                        # 是否开启PProf性能调试特性。默认为false
   pprofPattern: "/pprof"                    # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
 
+
 viewer:
   paths: "resource/template"
   defaultFile:  "index.html"
   delimiters: ["@{", "}"]
   homeLayout:     "home/index.html"
+
 
 # 内容设置
 setting:
@@ -77,9 +80,14 @@ router:
     ]
     # 不需要验证权限的路由地址
     exceptAuth: [
-      "/member/info",      # 登录用户信息
-      "/role/dynamic",     # 获取动态路由
-      "/site/config",     # 获取后台配置
+      "/member/info",                   # 登录用户信息
+      "/role/dynamic",                  # 获取动态路由
+      "/site/config",                   # 获取后台配置
+      "/notice/pullUnreadList",         # 获取未读公告
+      "/notice/readAll",                # 设置全部已读公告
+      "/notice/upRead",                 # 更新已读公告
+      "/dictData/option",               # 数据字典
+      "/dictData/options",              # 多个数据字典
     ]
   # 接口
   api:
@@ -101,6 +109,7 @@ router:
     # 不需要验证登录的路由地址
     exceptPath: [ ]
 
+
 #JWT
 jwt:
   version: "1.0"                         # 版本号
@@ -118,7 +127,7 @@ queue:
   groupName: "hotgo"                                # mq群组名称
   redis:
     address: "127.0.0.1:6379"                       # redis服务地址，默认为127.0.0.1:6379
-    db: 0                                           # 指定redis库
+    db: 2                                           # 指定redis库
     pass: ""                                        # redis密码
     timeout: 0                                      # 队列超时时间(s) ，0为永不超时，当队列一直没有被消费到达超时时间则队列会被销毁
   rocketmq:
@@ -134,9 +143,10 @@ queue:
 redis:
   default:
     address: "127.0.0.1:6379"
-    db: "1"
+    db: "2"
     pass: ""
     idleTimeout: "20"
+
 
 # Database.
 database:
@@ -147,3 +157,44 @@ database:
     link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
     debug: true
     Prefix: "hg_"
+
+
+# 生成代码
+hggen:
+  allowedIPs: ["127.0.0.1", "*"]                                      # 白名单，*代表所有，只有允许的IP后台才能使用生成代码功能
+  selectDbs: [ "default" ]                                            # 可选生成表的数据库配置名称，支持多库
+  disableTables : ["hg_sys_gen_codes","hg_admin_role_casbin"]         # 禁用的表，禁用以后将不会在选择表中看到
+  delimiters: ["@{", "}"]                                             # 模板引擎变量分隔符号
+  # 生成应用模型，所有生成模板允许自定义，可以参考default模板进行改造
+  application:
+    # CRUD模板
+    crud:
+      templates:
+        - group: "default"                                              # 分组名称
+          templatePath: "./resource/template/generate/default/curd"     # 模板路径
+          apiPath: "./api/backend"                                      # gfApi生成路径
+          controllerPath: "./internal/controller/backend/sys"           # 控制器生成路径
+          logicPath : "./internal/logic/sys"                            # 主要业务生成路径
+          inputPath: "./internal/model/input/sysin"                     # 表单过滤器生成路径
+          routerPath : "./internal/router/genrouter"                    # 生成路由表路径
+          sqlPath : "./resource/data/generate"                          # 生成sql语句路径
+          webApiPath: "../web/src/api"                                  # webApi生成路径
+          webViewsPath : "../web/src/views"                             # web页面生成路径
+
+    # 关系树列表模板
+    tree:
+      templates:
+        - group: "default"
+          templatePath: "./resource/template/generate/default/tree"
+
+    # 消息队列模板
+    queue:
+      templates:
+        - group: "default"
+          templatePath: "./resource/template/generate/default/queue"
+
+    # 定时任务模板
+    cron:
+      templates:
+        - group: "default"
+          templatePath: "./resource/template/generate/default/cron"

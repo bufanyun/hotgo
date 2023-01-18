@@ -17,10 +17,8 @@ import (
 
 // Api 前台路由
 func Api(ctx context.Context, group *ghttp.RouterGroup) {
-
-	routerPrefix, _ := g.Cfg().Get(ctx, "router.api.prefix", "/api")
-
-	group.Group(routerPrefix.String(), func(group *ghttp.RouterGroup) {
+	prefix := g.Cfg().MustGet(ctx, "router.api.prefix", "/api")
+	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
 		group.Middleware(service.Middleware().ApiAuth)
 		group.Bind(
 			user.Hello,

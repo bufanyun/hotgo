@@ -20,32 +20,36 @@ type AdminRoleDao struct {
 
 // AdminRoleColumns defines and stores column names for table hg_admin_role.
 type AdminRoleColumns struct {
-	Id                string // 角色ID
-	Name              string // 角色名称
-	Key               string // 角色权限字符串
-	DataScope         string // 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）
-	MenuCheckStrictly string // 菜单树选择项是否关联显示
-	DeptCheckStrictly string // 部门树选择项是否关联显示
-	Remark            string // 备注
-	Sort              string // 排序
-	Status            string // 角色状态
-	CreatedAt         string // 创建时间
-	UpdatedAt         string // 更新时间
+	Id         string // 角色ID
+	Name       string // 角色名称
+	Key        string // 角色权限字符串
+	DataScope  string // 数据范围
+	CustomDept string // 自定义部门权限
+	Pid        string // 上级角色ID
+	Level      string // 关系树等级
+	Tree       string // 关系树
+	Remark     string // 备注
+	Sort       string // 排序
+	Status     string // 角色状态
+	CreatedAt  string // 创建时间
+	UpdatedAt  string // 更新时间
 }
 
-//  adminRoleColumns holds the columns for table hg_admin_role.
+// adminRoleColumns holds the columns for table hg_admin_role.
 var adminRoleColumns = AdminRoleColumns{
-	Id:                "id",
-	Name:              "name",
-	Key:               "key",
-	DataScope:         "data_scope",
-	MenuCheckStrictly: "menu_check_strictly",
-	DeptCheckStrictly: "dept_check_strictly",
-	Remark:            "remark",
-	Sort:              "sort",
-	Status:            "status",
-	CreatedAt:         "created_at",
-	UpdatedAt:         "updated_at",
+	Id:         "id",
+	Name:       "name",
+	Key:        "key",
+	DataScope:  "data_scope",
+	CustomDept: "custom_dept",
+	Pid:        "pid",
+	Level:      "level",
+	Tree:       "tree",
+	Remark:     "remark",
+	Sort:       "sort",
+	Status:     "status",
+	CreatedAt:  "created_at",
+	UpdatedAt:  "updated_at",
 }
 
 // NewAdminRoleDao creates and returns a new DAO object for table data access.
@@ -88,6 +92,6 @@ func (dao *AdminRoleDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *AdminRoleDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *AdminRoleDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

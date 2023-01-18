@@ -14,8 +14,7 @@ import (
 
 // RoleListInp 获取列表
 type RoleListInp struct {
-	Page    int64
-	PerPage int64
+	form.PageReq
 }
 
 type RoleListModel struct {
@@ -28,7 +27,7 @@ type RoleMemberListInp struct {
 	form.RangeDateReq
 	form.StatusReq
 	Role      int    `json:"role"   description:"角色ID"`
-	DeptId    int    `json:"dept_id"   description:"部门ID"`
+	DeptId    int    `json:"deptId"   description:"部门ID"`
 	Mobile    int    `json:"mobile"   description:"手机号"`
 	Username  string `json:"username"   description:"用户名"`
 	Realname  string `json:"realname"   description:"真实姓名"`
@@ -47,4 +46,10 @@ type MenuRoleListInp struct {
 type MenuRoleListModel struct {
 	Menus       []*model.LabelTreeMenu `json:"menus"   description:"菜单列表"`
 	CheckedKeys []int64                `json:"checkedKeys"   description:"选择的菜单ID"`
+}
+
+type DataScopeEditInp struct {
+	Id         int64   `json:"id" v:"required" dc:"角色ID"`
+	DataScope  int     `json:"dataScope" v:"required" dc:"数据范围"`
+	CustomDept []int64 `json:"customDept" dc:"自定义部门权限"`
 }

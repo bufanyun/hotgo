@@ -16,26 +16,33 @@ import (
 var (
 	serverCloseSignal chan struct{}
 	Main              = &gcmd.Command{
-		Description: `
-		命令提示符
-		---------------------------------------------------------------------------------
-		启动服务
-		>> HTTP服务  [go run main.go http]
-		>> 消息队列  [go run main.go queue]
-		>> 所有服务  [go run main.go all]
-
-		---------------------------------------------------------------------------------
-		工具
-		>> 释放casbin权限，用于清理无效的权限设置  [go run main.go tools -m=casbin -a1=refresh]
-`,
+		Description: `默认启动所有服务`,
+		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+			return All.Func(ctx, parser)
+		},
 	}
 
 	Help = &gcmd.Command{
 		Name:  "help",
 		Brief: "查看帮助",
 		Description: `
-       	github地址:https://github.com/bufanyun/hotgo
-		文档地址:文档正在书写中，请耐心等一等。	
+		命令提示符
+		---------------------------------------------------------------------------------
+		启动服务
+		>> 所有服务  [go run main.go]   热编译  [gf run main.go]
+		>> HTTP服务  [go run main.go http]
+		>> 消息队列  [go run main.go queue]
+		>> 查看帮助  [go run main.go help]
+
+		---------------------------------------------------------------------------------
+		工具
+		>> 释放casbin权限，用于清理无效的权限设置  [go run main.go tools -m=casbin -a1=refresh]
+
+		---------------------------------------------------------------------------------
+		更多
+       	github地址：https://github.com/bufanyun/hotgo
+		文档地址：文档正在书写中，请耐心等一等。	
+		HotGo框架交流1群：190966648
     `,
 	}
 
@@ -44,7 +51,7 @@ var (
 		Brief:       "start all server",
 		Description: "this is the command entry for starting all server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			g.Log().Info(ctx, "start all server")
+			g.Log().Debug(ctx, "starting all server")
 
 			simple.SafeGo(ctx, func(ctx context.Context) {
 				if err := Http.Func(ctx, parser); err != nil {

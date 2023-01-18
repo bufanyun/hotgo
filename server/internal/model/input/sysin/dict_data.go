@@ -35,6 +35,23 @@ type DictDataListInp struct {
 }
 
 type DictDataListModel struct {
-	TypeID int64 `json:"typeId"`
+	TypeID int64  `json:"typeId"`
+	Key    string `json:"key"`
 	entity.SysDictData
+}
+
+// DataSelectInp 获取指定字典选项
+type DataSelectInp struct {
+	Type string
+}
+
+type DataSelectModel []*SelectData
+
+type SelectData struct {
+	Key       interface{} `json:"key"`
+	Label     string      `json:"label"     description:"字典标签"`
+	Value     interface{} `json:"value"     description:"字典键值"`
+	ValueType string      `json:"valueType" description:"键值数据类型：string,int,uint,bool,datetime,date"`
+	Type      string      `json:"type"      description:"字典类型"`
+	ListClass string      `json:"listClass" description:"表格回显样式"`
 }

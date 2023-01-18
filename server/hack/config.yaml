@@ -15,6 +15,7 @@ gfcli:
   gen:
     dao:
       - link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
+        group: "default"          # 分组。使用hotgo代码生成功能时必须填
         #        path: "./app"
         #        tables:          "" #指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
         #        tablesEx:        "" #指定当前数据库中需要排除代码生成的数据表。
@@ -22,3 +23,10 @@ gfcli:
         descriptionTag: true
         noModelComment: true
         jsonCase: "CamelLower"
+        gJsonSupport: true
+
+#    service:
+#      srcFolder: "internal/logic"
+#      dstFolder: "internal/service"
+#      dstFileNameCase: "CamelLower"
+#      clear: true

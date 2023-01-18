@@ -11,10 +11,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
-	baseApi "hotgo/api/home/base"
-	"hotgo/internal/controller/home/base"
 	"hotgo/internal/library/casbin"
-	"hotgo/internal/model"
 	"hotgo/internal/router"
 	"hotgo/internal/service"
 )
@@ -25,10 +22,6 @@ var (
 		Usage: "http",
 		Brief: "HTTP服务",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			if _, err := g.Cfg().Get(ctx, "hotgo.debug"); err != nil {
-				g.Log().Fatal(ctx, "配置读取异常:", err, "\r\n你确定 config/config.yaml 文件存在且格式正确吗？\r\n")
-			}
-
 			// 加载权限
 			casbin.InitEnforcer(ctx)
 
@@ -55,20 +48,10 @@ var (
 					service.Middleware().ResponseHandler,
 				)
 
-				// 注册默认首页路由
-				group.ALL("/", func(r *ghttp.Request) {
-					_, _ = base.Site.Index(r.Context(), &baseApi.SiteIndexReq{})
-					return
-				})
-
-				group.ALL("/login", func(r *ghttp.Request) {
-					r.Response.RedirectTo("/admin")
-				})
-
 				// 注册后台路由
 				router.Admin(ctx, group)
 
-				// 注册前台路由
+				// 注册Api路由
 				router.Api(ctx, group)
 
 				// 注册websocket路由
@@ -84,18 +67,8 @@ var (
 			// 信号监听
 			signalListen(ctx, signalHandlerForCron, signalHandlerForWebSocket)
 
-			// 开启https访问
-			var (
-				sSLConfig *model.SSLConfig
-				ssl, _    = g.Cfg().Get(ctx, "hotgo.ssl")
-			)
-			if err := ssl.Struct(&sSLConfig); err != nil {
-				g.Log().Fatalf(ctx, "hotgo启动失败, ssl err:", err)
-				return err
-			}
-			if sSLConfig != nil && sSLConfig.Switch {
-				s.EnableHTTPS(sSLConfig.CrtPath, sSLConfig.KeyPath)
-			}
+			// https
+			setSSL(ctx, s)
 
 			// Just run the server.
 			s.Run()
@@ -104,3 +77,14 @@ var (
 		},
 	}
 )
+
+func setSSL(ctx context.Context, s *ghttp.Server) {
+	config, err := service.SysConfig().GetLoadSSL(ctx)
+	if err != nil {
+		g.Log().Fatal(ctx, "ssl配置获取失败：err:%+v", err)
+		return
+	}
+	if config != nil && config.Switch {
+		s.EnableHTTPS(config.CrtPath, config.KeyPath)
+	}
+}

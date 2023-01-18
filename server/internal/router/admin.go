@@ -13,13 +13,16 @@ import (
 	"hotgo/internal/controller/backend/admin"
 	"hotgo/internal/controller/backend/common"
 	"hotgo/internal/controller/backend/sys"
+	"hotgo/internal/router/genrouter"
 	"hotgo/internal/service"
 )
 
 func Admin(ctx context.Context, group *ghttp.RouterGroup) {
-
-	routerPrefix, _ := g.Cfg().Get(ctx, "router.admin.prefix", "/admin")
-	group.Group(routerPrefix.String(), func(group *ghttp.RouterGroup) {
+	group.ALL("/login", func(r *ghttp.Request) {
+		r.Response.RedirectTo("/admin")
+	})
+	prefix := g.Cfg().MustGet(ctx, "router.admin.prefix", "/admin")
+	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
 		group.Middleware(service.Middleware().AdminAuth)
 		group.Bind(
 			common.Site,    // 基础
@@ -35,6 +38,7 @@ func Admin(ctx context.Context, group *ghttp.RouterGroup) {
 			sys.Cron,       // 定时任务
 			sys.CronGroup,  // 定时任务分组
 			sys.Blacklist,  // 黑名单
+			sys.GenCodes,   // 生成代码
 			admin.Member,   // 用户
 			admin.Monitor,  // 监控
 			admin.Role,     // 路由
@@ -42,6 +46,10 @@ func Admin(ctx context.Context, group *ghttp.RouterGroup) {
 			admin.Menu,     // 菜单
 			admin.Notice,   // 公告
 			admin.Post,     // 岗位
+			admin.Test,     // 测试
 		)
 	})
+
+	// 注册生成路由
+	genrouter.Register(ctx, group)
 }

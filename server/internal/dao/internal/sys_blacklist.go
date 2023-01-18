@@ -20,15 +20,15 @@ type SysBlacklistDao struct {
 
 // SysBlacklistColumns defines and stores column names for table hg_sys_blacklist.
 type SysBlacklistColumns struct {
-	Id        string // 主键
-	Ip        string // ip地址
+	Id        string // 黑名单ID
+	Ip        string // IP地址
 	Remark    string // 备注
 	Status    string // 状态
 	CreatedAt string // 创建时间
 	UpdatedAt string // 更新时间
 }
 
-//  sysBlacklistColumns holds the columns for table hg_sys_blacklist.
+// sysBlacklistColumns holds the columns for table hg_sys_blacklist.
 var sysBlacklistColumns = SysBlacklistColumns{
 	Id:        "id",
 	Ip:        "ip",
@@ -78,6 +78,6 @@ func (dao *SysBlacklistDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *SysBlacklistDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *SysBlacklistDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

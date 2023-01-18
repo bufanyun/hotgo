@@ -14,7 +14,7 @@ type AdminNotice struct {
 	g.Meta    `orm:"table:hg_admin_notice, do:true"`
 	Id        interface{} // 公告ID
 	Title     interface{} // 公告标题
-	Type      interface{} // 公告类型（1通知 2公告）
+	Type      interface{} // 公告类型
 	Content   interface{} // 公告内容
 	Receiver  interface{} // 接收者
 	Reader    interface{} // 已读人

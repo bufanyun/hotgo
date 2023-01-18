@@ -20,18 +20,18 @@ type SysAttachmentDao struct {
 
 // SysAttachmentColumns defines and stores column names for table hg_sys_attachment.
 type SysAttachmentColumns struct {
-	Id        string //
+	Id        string // 文件ID
 	AppId     string // 应用ID
-	MemberId  string // 用户
-	CateId    string // 分类
-	Drive     string // 驱动
+	MemberId  string // 管理员ID
+	CateId    string // 上传分类
+	Drive     string // 上传驱动
 	Name      string // 文件原始名
 	Kind      string // 上传类型
-	MetaType  string // 类别
+	MetaType  string // 文件类型
 	NaiveType string // NaiveUI类型
 	Path      string // 本地路径
 	FileUrl   string // url
-	Size      string // 长度
+	Size      string // 文件大小
 	Ext       string // 扩展名
 	Md5       string // md5校验码
 	Status    string // 状态
@@ -39,7 +39,7 @@ type SysAttachmentColumns struct {
 	UpdatedAt string // 修改时间
 }
 
-//  sysAttachmentColumns holds the columns for table hg_sys_attachment.
+// sysAttachmentColumns holds the columns for table hg_sys_attachment.
 var sysAttachmentColumns = SysAttachmentColumns{
 	Id:        "id",
 	AppId:     "app_id",
@@ -100,6 +100,6 @@ func (dao *SysAttachmentDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *SysAttachmentDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *SysAttachmentDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

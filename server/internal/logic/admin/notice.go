@@ -16,8 +16,8 @@ import (
 	"hotgo/internal/service"
 	"hotgo/internal/websocket"
 	"hotgo/utility/charset"
-	"hotgo/utility/convert"
 	"hotgo/utility/simple"
+	"hotgo/utility/validate"
 	"strings"
 )
 
@@ -100,7 +100,7 @@ func (s *sAdminNotice) Status(ctx context.Context, in adminin.NoticeStatusInp) (
 		return err
 	}
 
-	if !convert.InSliceInt(consts.StatusMap, in.Status) {
+	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
 		return err
 	}
@@ -140,7 +140,7 @@ func (s *sAdminNotice) View(ctx context.Context, in adminin.NoticeViewInp) (res 
 }
 
 // List 获取列表
-func (s *sAdminNotice) List(ctx context.Context, in adminin.NoticeListInp) (list []*adminin.NoticeListModel, totalCount int64, err error) {
+func (s *sAdminNotice) List(ctx context.Context, in adminin.NoticeListInp) (list []*adminin.NoticeListModel, totalCount int, err error) {
 	mod := dao.AdminNotice.Ctx(ctx)
 
 	// 访问路径
@@ -168,7 +168,7 @@ func (s *sAdminNotice) List(ctx context.Context, in adminin.NoticeListInp) (list
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}

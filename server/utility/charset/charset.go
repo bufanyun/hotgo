@@ -69,12 +69,11 @@ func RandomCreateBytes(n int, alphabets ...byte) []byte {
 
 // GetStack 格式化错误的堆栈信息
 func GetStack(err error) []string {
-	stackList := gstr.Split(gerror.Stack(err), "\n")
-	for i := 0; i < len(stackList); i++ {
-		stackList[i] = gstr.Replace(stackList[i], "\t", "--> ")
+	stack := gstr.Split(gerror.Stack(err), "\n")
+	for i := 0; i < len(stack); i++ {
+		stack[i] = gstr.Replace(stack[i], "\t", "--> ")
 	}
-
-	return stackList
+	return stack
 }
 
 // SubstrAfter 截取指定字符后的内容

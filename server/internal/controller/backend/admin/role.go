@@ -45,11 +45,11 @@ func (c *cRole) RoleMemberList(ctx context.Context, req *role.MemberListReq) (*r
 
 // List 获取列表
 func (c *cRole) List(ctx context.Context, req *role.ListReq) (*role.ListRes, error) {
-
-	list, totalCount, err := service.AdminRole().List(ctx, adminin.RoleListInp{
-		Page:    req.Page,
-		PerPage: req.PerPage,
-	})
+	var in adminin.RoleListInp
+	if err := gconv.Scan(req, &in); err != nil {
+		return nil, err
+	}
+	list, totalCount, err := service.AdminRole().List(ctx, in)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *cRole) List(ctx context.Context, req *role.ListReq) (*role.ListRes, err
 	var res role.ListRes
 	res.List = list
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
-	res.PerPage = req.Page
+	res.Page = req.Page
 	res.PerPage = req.PerPage
 
 	return &res, nil
@@ -113,5 +113,29 @@ func (c *cRole) UpdatePermissions(ctx context.Context, req *role.UpdatePermissio
 	if err != nil {
 		return nil, err
 	}
+	return res, nil
+}
+
+// DataScopeSelect 获取数据权限选项
+func (c *cRole) DataScopeSelect(ctx context.Context, req *role.DataScopeSelectReq) (res *role.DataScopeSelectRes, err error) {
+	data := service.AdminRole().DataScopeSelect(ctx)
+	res = new(role.DataScopeSelectRes)
+	res.List = data
+	return res, nil
+}
+
+// DataScopeEdit 获取数据权限选项
+func (c *cRole) DataScopeEdit(ctx context.Context, req *role.DataScopeEditReq) (res *role.DataScopeEditRes, err error) {
+	var in adminin.DataScopeEditInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return nil, err
+	}
+
+	in.CustomDept = req.CustomDept
+	err = service.AdminRole().DataScopeEdit(ctx, &in)
+	if err != nil {
+		return nil, err
+	}
+
 	return res, nil
 }

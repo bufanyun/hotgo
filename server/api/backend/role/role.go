@@ -20,7 +20,7 @@ type MemberListReq struct {
 	form.RangeDateReq
 	form.StatusReq
 	Role      int    `json:"role"   description:"角色ID"`
-	DeptId    int    `json:"dept_id"   description:"部门ID"`
+	DeptId    int    `json:"deptId"   description:"部门ID"`
 	Mobile    int    `json:"mobile"   description:"手机号"`
 	Username  string `json:"username"   description:"用户名"`
 	Realname  string `json:"realname"   description:"真实姓名"`
@@ -41,7 +41,7 @@ type ListReq struct {
 	form.PageReq
 	form.RangeDateReq
 	form.StatusReq
-	DeptId    int    `json:"dept_id"   description:"部门ID"`
+	DeptId    int    `json:"deptId"   description:"部门ID"`
 	Mobile    int    `json:"mobile"   description:"手机号"`
 	Username  string `json:"username"   description:"用户名"`
 	Realname  string `json:"realname"   description:"真实姓名"`
@@ -129,3 +129,18 @@ type DeleteReq struct {
 	Id     int64 `json:"id" v:"required"`
 }
 type DeleteRes struct{}
+
+// DataScopeSelectReq 获取数据权限选项
+type DataScopeSelectReq struct {
+	g.Meta `path:"/role/dataScope/select" method:"get" summary:"角色" tags:"获取数据权限选项"`
+}
+type DataScopeSelectRes struct {
+	List form.Selects `json:"list" dc:"数据选项"`
+}
+
+// DataScopeEditReq 修改指定角色的数据权限
+type DataScopeEditReq struct {
+	g.Meta `path:"/role/dataScope/edit" method:"post" tags:"角色" summary:"修改指定角色的数据权限"`
+	adminin.DataScopeEditInp
+}
+type DataScopeEditRes struct{}

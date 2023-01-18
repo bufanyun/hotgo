@@ -22,3 +22,22 @@ export function setObjToUrlParams(baseUrl: string, obj: object): string {
   }
   return url;
 }
+
+export function encodeParams(obj) {
+  const arr = [];
+  for (const p in obj) {
+    // @ts-ignore
+    arr.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+  }
+  return arr.join('&');
+}
+
+/**
+ * 获取文件后缀
+ */
+export function getFileExt(fileName: string) {
+  if (fileName === undefined || fileName === '') {
+    return ``;
+  }
+  return fileName.substring(fileName.lastIndexOf('.') + 1);
+}

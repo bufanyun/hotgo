@@ -9,5 +9,6 @@ package consts
 // 碎片
 
 const (
-	DemoTips = "演示系统已隐藏"
+	DemoTips        = "演示系统已隐藏"
+	NilJsonToString = "{}" // 空json初始化值
 )

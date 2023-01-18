@@ -1,0 +1,34 @@
+import { h, ref } from 'vue';
+import { NAvatar, NImage, NTag, NSwitch, NRate } from 'naive-ui';
+import { cloneDeep } from 'lodash-es';
+import { FormSchema } from '@/components/Form';
+import { Dicts } from '@/api/dict/dict';
+@{ if eq .options.Step.HasSwitch true }import { Switch } from '@/api/@{.varName | LcFirst}';@{end}
+import { isArray, isNullObject } from '@/utils/is';
+import { getFileExt } from '@/utils/urlUtils';
+import { defRangeShortcuts, defShortcuts, formatToDate } from '@/utils/dateUtil';
+import { validate } from '@/utils/validateUtil';
+import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
+@{ if eq .options.Step.HasSwitch true }
+import { usePermission } from '@/hooks/web/usePermission';
+const { hasPermission } = usePermission();
+const $message = window['$message'];
+@{end}
+
+@{.state}
+
+@{.defaultState}
+
+export function newState(state: State | null): State {
+  if (state !== null) {
+    return cloneDeep(state);
+  }
+  return cloneDeep(defaultState);
+}
+
+@{.dictOptions.const}
+@{.rules}
+@{.formSchema}
+@{.columns}
+@{.dictOptions.load}
+

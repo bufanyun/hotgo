@@ -78,7 +78,7 @@ func (c *cMonitor) RunInfo(client *websocket.Client, req *websocket.WRequest) {
 		"goSize":    file.DirSize(pwd),
 	}
 
-	isDemo, _ := g.Cfg().Get(client.Context(), "hotgo.isDemo", false)
+	isDemo := g.Cfg().MustGet(client.Context(), "hotgo.isDemo", false)
 	if isDemo.Bool() {
 		data["rootPath"] = consts.DemoTips
 		data["pwd"] = consts.DemoTips

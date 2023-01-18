@@ -28,3 +28,9 @@ type DictTypeSelectInp struct {
 }
 
 type DictTypeSelectModel []g.Map
+
+// DictTreeSelectInp 获取类型关系树选项
+type DictTreeSelectInp struct {
+}
+
+type DictTreeSelectModel []g.Map

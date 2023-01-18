@@ -20,8 +20,8 @@ type AdminDeptDao struct {
 
 // AdminDeptColumns defines and stores column names for table hg_admin_dept.
 type AdminDeptColumns struct {
-	Id        string // 部门id
-	Pid       string // 父部门id
+	Id        string // 部门ID
+	Pid       string // 父部门ID
 	Name      string // 部门名称
 	Code      string // 部门编码
 	Type      string // 部门类型
@@ -34,7 +34,7 @@ type AdminDeptColumns struct {
 	UpdatedAt string // 更新时间
 }
 
-//  adminDeptColumns holds the columns for table hg_admin_dept.
+// adminDeptColumns holds the columns for table hg_admin_dept.
 var adminDeptColumns = AdminDeptColumns{
 	Id:        "id",
 	Pid:       "pid",
@@ -90,6 +90,6 @@ func (dao *AdminDeptDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *AdminDeptDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *AdminDeptDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

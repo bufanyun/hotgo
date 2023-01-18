@@ -81,6 +81,23 @@ export function isArray(val: any): val is Array<any> {
 }
 
 /**
+ * @description:  是否为转为string的json
+ */
+export function isJsonString(value: any) {
+  try {
+    const toObj = JSON.parse(value);
+    if (toObj && typeof toObj === 'object') {
+      return true;
+    }
+  } catch {}
+  return false;
+}
+
+export function isNullObject(value: object) {
+  return isNullOrUnDef(value) || JSON.stringify(value) === '{}' || JSON.stringify(value) === '[]';
+}
+
+/**
  * @description: 是否客户端
  */
 export const isClient = () => {
@@ -115,4 +132,9 @@ export function isNullAndUnDef(val: unknown): val is null | undefined {
 
 export function isNullOrUnDef(val: unknown): val is null | undefined {
   return isUnDef(val) || isNull(val);
+}
+
+// 判断字串符是否以字母开头
+export function isLetterBegin(str) {
+  return /^[A-z]/.test(str);
 }

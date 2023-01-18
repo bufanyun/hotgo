@@ -31,8 +31,8 @@ type AdminMenu struct {
 	KeepAlive      interface{} // 缓存该路由
 	Hidden         interface{} // 是否隐藏
 	Affix          interface{} // 是否固定
-	Level          interface{} // 级别
-	Tree           interface{} // 树
+	Level          interface{} // 关系树等级
+	Tree           interface{} // 关系树
 	Sort           interface{} // 排序
 	Remark         interface{} // 备注
 	Status         interface{} // 菜单状态

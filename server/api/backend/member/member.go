@@ -16,16 +16,16 @@ import (
 
 // UpdateProfileReq 更新会员资料
 type UpdateProfileReq struct {
-	g.Meta   `path:"/member/update_profile" method:"post" tags:"会员" summary:"更新会员资料"`
+	g.Meta   `path:"/member/updateProfile" method:"post" tags:"会员" summary:"更新会员资料"`
 	Mobile   int    `json:"mobile"   dc:"手机号"`
 	Email    string `json:"email"   dc:"邮箱"`
-	RealName string `json:"realname"   dc:"真实姓名"`
+	RealName string `json:"realName"   dc:"真实姓名"`
 }
 type UpdateProfileRes struct{}
 
 // UpdatePwdReq 修改登录密码
 type UpdatePwdReq struct {
-	g.Meta      `path:"/member/update_pwd" method:"post" tags:"会员" summary:"重置密码"`
+	g.Meta      `path:"/member/updatePwd" method:"post" tags:"会员" summary:"重置密码"`
 	OldPassword string `json:"oldPassword" v:"required#原密码不能为空"  dc:"原密码"`
 	NewPassword string `json:"newPassword" v:"required|length:6,16#新密码不能为空#新密码需在6~16之间"  dc:"新密码"`
 }
@@ -47,7 +47,7 @@ type ProfileRes struct {
 
 // ResetPwdReq 重置密码
 type ResetPwdReq struct {
-	g.Meta   `path:"/member/reset_pwd" method:"post" tags:"会员" summary:"重置密码"`
+	g.Meta   `path:"/member/resetPwd" method:"post" tags:"会员" summary:"重置密码"`
 	Password string `json:"password" v:"required#密码不能为空"  dc:"密码"`
 	Id       int64  `json:"id" dc:"会员ID"`
 }
@@ -55,7 +55,7 @@ type ResetPwdRes struct{}
 
 // EmailUniqueReq 邮箱是否唯一
 type EmailUniqueReq struct {
-	g.Meta `path:"/member/email_unique" method:"get" tags:"会员" summary:"邮箱是否唯一"`
+	g.Meta `path:"/member/emailUnique" method:"get" tags:"会员" summary:"邮箱是否唯一"`
 	Email  string `json:"email" v:"required#邮箱不能为空"  dc:"邮箱"`
 	Id     int64  `json:"id" dc:"会员ID"`
 }
@@ -65,7 +65,7 @@ type EmailUniqueRes struct {
 
 // MobileUniqueReq 手机号是否唯一
 type MobileUniqueReq struct {
-	g.Meta `path:"/member/mobile_unique" method:"get" tags:"会员" summary:"手机号是否唯一"`
+	g.Meta `path:"/member/mobileUnique" method:"get" tags:"会员" summary:"手机号是否唯一"`
 	Mobile string `json:"mobile" v:"required#手机号不能为空"  dc:"手机号"`
 	Id     int64  `json:"id" dc:"会员ID"`
 }
@@ -75,7 +75,7 @@ type MobileUniqueRes struct {
 
 // NameUniqueReq 名称是否唯一
 type NameUniqueReq struct {
-	g.Meta   `path:"/member/name_unique" method:"get" tags:"会员" summary:"会员名称是否唯一"`
+	g.Meta   `path:"/member/nameUnique" method:"get" tags:"会员" summary:"会员名称是否唯一"`
 	Username string `json:"username" v:"required#会员名称不能为空"  dc:"会员名称"`
 	Id       int64  `json:"id" dc:"会员ID"`
 }
@@ -89,13 +89,13 @@ type ListReq struct {
 	form.PageReq
 	form.RangeDateReq
 	form.StatusReq
-	DeptId    int     `json:"dept_id"   dc:"部门ID"`
+	DeptId    int     `json:"deptId"   dc:"部门ID"`
 	Mobile    int     `json:"mobile"   dc:"手机号"`
 	Username  string  `json:"username"   dc:"用户名"`
-	Realname  string  `json:"realname"   dc:"真实姓名"`
+	Realname  string  `json:"realName"   dc:"真实姓名"`
 	Name      string  `json:"name"   dc:"岗位名称"`
 	Code      string  `json:"code"   dc:"岗位编码"`
-	CreatedAt []int64 `json:"created_at"   dc:"创建时间"`
+	CreatedAt []int64 `json:"createdAt"   dc:"创建时间"`
 }
 
 type ListRes struct {
@@ -114,7 +114,7 @@ type ViewRes struct {
 	PostIds  []int64                  `json:"postIds" dc:"当前岗位"`
 	Roles    []*adminin.RoleListModel `json:"roles" dc:"可选角色"`
 	RoleIds  []int64                  `json:"roleIds" dc:"当前角色"`
-	DeptName string                   `json:"dept_name" dc:"部门名称"`
+	DeptName string                   `json:"deptName" dc:"部门名称"`
 }
 
 // EditReq 修改/新增
@@ -147,13 +147,6 @@ type InfoReq struct {
 
 type InfoRes struct {
 	adminin.MemberLoginModel
-	//DefaultPortalConfig []*PortalConfig       `json:"defaultPortalConfig"  dc:"默认用户配置"`
-	//LincenseInfo        string                `json:"lincenseInfo"  dc:"应用版本号"`
-	//Permissions         []string              `json:"permissions" dc:"权限"`
-	//Roles               []string              `json:"roles" dc:"角色"`
-	//SysNoticeList       []*entity.AdminNotice `json:"sysNoticeList" dc:"系统公告"`
-	//UserPortalConfig    []*PortalConfig       `json:"userPortalConfig" dc:"用户配置"`
-	//User                model.Identity        `json:"member"  dc:"用户信息"`
 }
 
 type PortalConfigContentOptions struct {

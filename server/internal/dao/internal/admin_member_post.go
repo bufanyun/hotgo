@@ -20,11 +20,11 @@ type AdminMemberPostDao struct {
 
 // AdminMemberPostColumns defines and stores column names for table hg_admin_member_post.
 type AdminMemberPostColumns struct {
-	MemberId string // 用户ID
+	MemberId string // 管理员ID
 	PostId   string // 岗位ID
 }
 
-//  adminMemberPostColumns holds the columns for table hg_admin_member_post.
+// adminMemberPostColumns holds the columns for table hg_admin_member_post.
 var adminMemberPostColumns = AdminMemberPostColumns{
 	MemberId: "member_id",
 	PostId:   "post_id",
@@ -70,6 +70,6 @@ func (dao *AdminMemberPostDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *AdminMemberPostDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *AdminMemberPostDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

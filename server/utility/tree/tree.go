@@ -1,18 +1,48 @@
 // Package tree
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
 package tree
 
 import (
+	"fmt"
 	"github.com/gogf/gf/v2/util/gconv"
+	"strings"
 )
 
-var pidName = "pid"
+var (
+	pidName      = "pid"
+	treeBeginCut = "tr_" // 树标识开头
+	treeEndCut   = " "   // 树标识结尾
+)
 
-// GenTree 生成关系树 参考：https://blog.csdn.net/weixin_51546892/article/details/122876793
+// GenLabel 生成关系树标识
+func GenLabel(basic string, appendId int64) string {
+	return fmt.Sprintf("%v%v%v%v", basic, treeBeginCut, appendId, treeEndCut)
+}
+
+// GetIds 获取上级ID集合
+func GetIds(tree string) (ids []int64) {
+	idsStr := strings.Split(tree, treeEndCut)
+	if len(idsStr) == 0 {
+		return
+	}
+
+	for _, v := range idsStr {
+		newId := gconv.Int64(strings.ReplaceAll(v, treeBeginCut, ""))
+		if newId > 0 {
+			ids = append(ids, newId)
+		}
+	}
+
+	return
+}
+
+/////////////////////////// 转换类
+
+// GenTree 生成关系树
 func GenTree(menus []map[string]interface{}) (realMenu []map[string]interface{}) {
 	if len(menus) < 1 {
 		return nil

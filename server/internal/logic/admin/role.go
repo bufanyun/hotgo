@@ -9,6 +9,7 @@ package admin
 import (
 	"context"
 	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
@@ -17,9 +18,14 @@ import (
 	"hotgo/internal/dao"
 	"hotgo/internal/library/casbin"
 	"hotgo/internal/library/contexts"
+	"hotgo/internal/library/hgorm"
+	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
+	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
 	"hotgo/utility/auth"
+	"hotgo/utility/convert"
+	"sort"
 )
 
 type sAdminRole struct{}
@@ -38,9 +44,9 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 		return true
 	}
 	var (
-		user            = contexts.Get(ctx).User
-		superRoleKey, _ = g.Cfg().Get(ctx, "hotgo.admin.superRoleKey")
-		err             error
+		user         = contexts.Get(ctx).User
+		superRoleKey = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
+		err          error
 	)
 
 	if user == nil {
@@ -61,7 +67,7 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 }
 
 // List 获取列表
-func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (list []*adminin.RoleListModel, totalCount int64, err error) {
+func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (list []*adminin.RoleListModel, totalCount int, err error) {
 	mod := dao.AdminRole.Ctx(ctx)
 	totalCount, err = mod.Count()
 	if err != nil {
@@ -69,7 +75,7 @@ func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (list []*
 		return list, totalCount, err
 	}
 
-	err = mod.Page(int(in.Page), int(in.PerPage)).Order("id asc").Scan(&list)
+	err = mod.Page(in.Page, in.PerPage).Order("id asc").Scan(&list)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
@@ -128,7 +134,7 @@ func (s *sAdminRole) GetPermissions(ctx context.Context, reqInfo *role.GetPermis
 
 // UpdatePermissions 更改角色菜单权限
 func (s *sAdminRole) UpdatePermissions(ctx context.Context, reqInfo *role.UpdatePermissionsReq) error {
-	return dao.AdminRoleMenu.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) (err error) {
+	return dao.AdminRoleMenu.Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
 		_, err = dao.AdminRoleMenu.Ctx(ctx).Where("role_id", reqInfo.RoleId).Delete()
 		if err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
@@ -185,6 +191,11 @@ func (s *sAdminRole) Edit(ctx context.Context, in *role.EditReq) (err error) {
 		return err
 	}
 
+	in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, dao.AdminRole, in.Pid)
+	if err != nil {
+		return err
+	}
+
 	// 修改
 	in.UpdatedAt = gtime.Now()
 	if in.Id > 0 {
@@ -212,6 +223,61 @@ func (s *sAdminRole) Delete(ctx context.Context, in *role.DeleteReq) (err error)
 		return gerror.New("ID不正确！")
 	}
 	_, err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Delete()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return err
+	}
+
+	return nil
+}
+
+func (s *sAdminRole) DataScopeSelect(ctx context.Context) (res form.Selects) {
+	for k, v := range consts.RoleDataNameMap {
+		res = append(res, &form.Select{
+			Value: k,
+			Name:  v,
+			Label: v,
+		})
+	}
+	sort.Sort(res)
+	return res
+}
+
+func (s *sAdminRole) DataScopeEdit(ctx context.Context, in *adminin.DataScopeEditInp) (err error) {
+	if in.Id <= 0 {
+		return gerror.New("角色ID不正确！")
+	}
+
+	var (
+		models       *entity.AdminRole
+		superRoleKey = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
+	)
+
+	err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Scan(&models)
+	if err != nil {
+		return
+	}
+
+	if models == nil {
+		return gerror.New("角色不存在")
+	}
+
+	if models.Key == superRoleKey.String() {
+		return gerror.New("超管角色拥有全部权限，无需修改！")
+	}
+
+	if in.DataScope == consts.RoleDataDeptCustom && len(convert.UniqueSliceInt64(in.CustomDept)) == 0 {
+		return gerror.New("自定义权限必须配置自定义部门！")
+	}
+
+	models.DataScope = in.DataScope
+	models.CustomDept = gjson.New(convert.UniqueSliceInt64(in.CustomDept))
+
+	_, err = dao.AdminRole.Ctx(ctx).
+		Fields(dao.AdminRole.Columns().DataScope, dao.AdminRole.Columns().CustomDept).
+		Where("id", in.Id).
+		Data(models).
+		Update()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err

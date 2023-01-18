@@ -30,7 +30,7 @@ type AdminPostColumns struct {
 	UpdatedAt string // 更新时间
 }
 
-//  adminPostColumns holds the columns for table hg_admin_post.
+// adminPostColumns holds the columns for table hg_admin_post.
 var adminPostColumns = AdminPostColumns{
 	Id:        "id",
 	Code:      "code",
@@ -82,6 +82,6 @@ func (dao *AdminPostDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *AdminPostDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *AdminPostDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

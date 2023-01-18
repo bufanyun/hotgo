@@ -32,6 +32,55 @@ func init() {
 	service.RegisterSysConfig(NewSysConfig())
 }
 
+// GetLoadGenerate 获取本地生成配置
+func (s *sSysConfig) GetLoadGenerate(ctx context.Context) (conf *model.GenerateConfig, err error) {
+	generate := g.Cfg().MustGet(ctx, "hggen")
+	if err = gconv.Struct(generate, &conf); err != nil {
+		return nil, err
+	}
+
+	return conf, nil
+}
+
+// GetSms 获取短信配置
+func (s *sSysConfig) GetSms(ctx context.Context) (conf *model.SmsConfig, err error) {
+	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "sms"})
+	if err != nil {
+		return nil, err
+	}
+	if err = gconv.Struct(models.List, &conf); err != nil {
+		return nil, err
+	}
+
+	return conf, nil
+}
+
+// GetGeo 获取地理配置
+func (s *sSysConfig) GetGeo(ctx context.Context) (conf *model.GeoConfig, err error) {
+	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "geo"})
+	if err != nil {
+		return nil, err
+	}
+	if err = gconv.Struct(models.List, &conf); err != nil {
+		return nil, err
+	}
+
+	return conf, nil
+}
+
+// GetUpload 获取上传配置
+func (s *sSysConfig) GetUpload(ctx context.Context) (conf *model.UploadConfig, err error) {
+	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "upload"})
+	if err != nil {
+		return nil, err
+	}
+	if err = gconv.Struct(models.List, &conf); err != nil {
+		return nil, err
+	}
+
+	return conf, nil
+}
+
 // GetSmtp 获取邮件配置
 func (s *sSysConfig) GetSmtp(ctx context.Context) (conf *model.EmailConfig, err error) {
 	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "smtp"})
@@ -44,6 +93,22 @@ func (s *sSysConfig) GetSmtp(ctx context.Context) (conf *model.EmailConfig, err 
 
 	conf.Addr = fmt.Sprintf("%s:%d", conf.Host, conf.Port)
 
+	return conf, nil
+}
+
+// GetLoadSSL 获取本地日志配置
+func (s *sSysConfig) GetLoadSSL(ctx context.Context) (conf *model.SSLConfig, err error) {
+	if err = g.Cfg().MustGet(ctx, "hotgo.ssl").Struct(&conf); err != nil {
+		return nil, err
+	}
+	return conf, nil
+}
+
+// GetLoadLog 获取本地日志配置
+func (s *sSysConfig) GetLoadLog(ctx context.Context) (conf *model.LogConfig, err error) {
+	if err = g.Cfg().MustGet(ctx, "hotgo.log").Struct(&conf); err != nil {
+		return nil, err
+	}
 	return conf, nil
 }
 
@@ -60,7 +125,7 @@ func (s *sSysConfig) GetConfigByGroup(ctx context.Context, in sysin.GetConfigInp
 	if err := mod.Fields("key", "value", "type").Where("group", in.Group).Scan(&models); err != nil {
 		return nil, err
 	}
-	isDemo, _ := g.Cfg().Get(ctx, "hotgo.isDemo", false)
+	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false)
 
 	if len(models) > 0 {
 		res.List = make(g.Map, len(models))
@@ -84,19 +149,7 @@ func (s *sSysConfig) ConversionType(ctx context.Context, models *entity.SysConfi
 	if models == nil {
 		return nil, gerror.New("数据不存在")
 	}
-
-	switch models.Type {
-	case consts.ConfigTypeInt:
-		value = gconv.Int64(models.Value)
-		return
-	case consts.ConfigTypeBool:
-		value = gconv.Bool(models.Value)
-		return
-	default:
-		value = gconv.String(models.Value)
-	}
-
-	return value, nil
+	return consts.ConvType(models.Value, models.Type), nil
 }
 
 // UpdateConfigByGroup 更新指定分组的配置
@@ -112,7 +165,7 @@ func (s *sSysConfig) UpdateConfigByGroup(ctx context.Context, in sysin.UpdateCon
 		return err
 	}
 
-	err := dao.SysConfig.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	err := dao.SysConfig.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		for k, v := range in.List {
 			row := s.getConfigByKey(k, models)
 			// 新增

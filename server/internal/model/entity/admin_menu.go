@@ -29,8 +29,8 @@ type AdminMenu struct {
 	KeepAlive      int         `json:"keepAlive"      description:"缓存该路由"`
 	Hidden         int         `json:"hidden"         description:"是否隐藏"`
 	Affix          int         `json:"affix"          description:"是否固定"`
-	Level          int         `json:"level"          description:"级别"`
-	Tree           string      `json:"tree"           description:"树"`
+	Level          int         `json:"level"          description:"关系树等级"`
+	Tree           string      `json:"tree"           description:"关系树"`
 	Sort           int         `json:"sort"           description:"排序"`
 	Remark         string      `json:"remark"         description:"备注"`
 	Status         int         `json:"status"         description:"菜单状态"`

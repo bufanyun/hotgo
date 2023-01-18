@@ -55,7 +55,9 @@ export const useTabsViewStore = defineStore({
     },
     closeOtherTabs(route) {
       // 关闭其他
-      this.tabsList = this.tabsList.filter((item) => item.fullPath == route.fullPath || (item?.meta?.affix ?? false));
+      this.tabsList = this.tabsList.filter(
+        (item) => item.fullPath == route.fullPath || (item?.meta?.affix ?? false)
+      );
     },
     closeCurrentTab(route) {
       // 关闭当前页

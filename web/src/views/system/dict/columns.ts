@@ -12,17 +12,46 @@ export const columns = [
   },
   {
     title: '字典标签',
-    key: 'label',
+    key: 'type',
+    render(row) {
+      return h(
+        NTag,
+        {
+          style: {
+            marginRight: '6px',
+          },
+          type: row.listClass,
+          bordered: false,
+        },
+        {
+          default: () => row.label,
+        }
+      );
+    },
   },
   {
     title: '字典键值',
     key: 'value',
   },
-
-  // {
-  //   title: '备注',
-  //   key: 'remark',
-  // },
+  {
+    title: '键值类型',
+    key: 'valueType',
+    render(row) {
+      return h(
+        NTag,
+        {
+          style: {
+            marginRight: '6px',
+          },
+          type: 'default',
+          bordered: false,
+        },
+        {
+          default: () => row.valueType,
+        }
+      );
+    },
+  },
   {
     title: '状态',
     key: 'status',
@@ -42,9 +71,4 @@ export const columns = [
       );
     },
   },
-  // {
-  //   title: '创建时间',
-  //   key: 'createdAt',
-  //   width: 100,
-  // },
 ];

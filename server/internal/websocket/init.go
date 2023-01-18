@@ -31,7 +31,7 @@ var (
 // Start 启动
 func Start(c context.Context) {
 	ctxManager = c
-	g.Log().Info(ctxManager, "启动：WebSocket")
+	g.Log().Debug(ctxManager, "start websocket..")
 	go clientManager.start()
 	go clientManager.ping()
 }

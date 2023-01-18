@@ -7,6 +7,7 @@
 package consts
 
 const (
-	UploadDriveLocal = "local" // 本地驱动
-	UploadDriveOss   = "oss"   // 阿里云oss
+	UploadDriveLocal  = "local"  // 本地驱动
+	UploadDriveOss    = "oss"    // 阿里云oss
+	UploadDriveUCloud = "ucloud" // ucloud对象存储
 )

@@ -20,12 +20,13 @@ type SysDictDataDao struct {
 
 // SysDictDataColumns defines and stores column names for table hg_sys_dict_data.
 type SysDictDataColumns struct {
-	Id        string // 字典编码
+	Id        string // 字典数据ID
 	Label     string // 字典标签
 	Value     string // 字典键值
+	ValueType string // 键值数据类型：string,int,uint,bool,datetime,date
 	Type      string // 字典类型
 	ListClass string // 表格回显样式
-	IsDefault string // 是否默认
+	IsDefault string // 是否为系统默认
 	Sort      string // 字典排序
 	Remark    string // 备注
 	Status    string // 状态
@@ -33,11 +34,12 @@ type SysDictDataColumns struct {
 	UpdatedAt string // 更新时间
 }
 
-//  sysDictDataColumns holds the columns for table hg_sys_dict_data.
+// sysDictDataColumns holds the columns for table hg_sys_dict_data.
 var sysDictDataColumns = SysDictDataColumns{
 	Id:        "id",
 	Label:     "label",
 	Value:     "value",
+	ValueType: "value_type",
 	Type:      "type",
 	ListClass: "list_class",
 	IsDefault: "is_default",
@@ -88,6 +90,6 @@ func (dao *SysDictDataDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *SysDictDataDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *SysDictDataDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

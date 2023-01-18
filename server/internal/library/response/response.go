@@ -7,9 +7,9 @@
 package response
 
 import (
+	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gctx"
-	"hotgo/internal/consts"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/model"
 	"time"
@@ -33,7 +33,7 @@ func RJson(r *ghttp.Request, code int, message string, data ...interface{}) {
 	if len(data) > 0 {
 		responseData = data[0]
 	}
-	Res := &model.Response{
+	res := &model.Response{
 		Code:      code,
 		Message:   message,
 		Timestamp: time.Now().Unix(),
@@ -41,36 +41,38 @@ func RJson(r *ghttp.Request, code int, message string, data ...interface{}) {
 	}
 
 	// 如果不是正常的返回，则将data转为error
-	if consts.CodeOK == code {
-		Res.Data = responseData
+	if gcode.CodeOK.Code() == code {
+		res.Data = responseData
 	} else {
-		Res.Error = responseData
+		res.Error = responseData
 	}
 
 	// 清空响应
 	r.Response.ClearBuffer()
 
 	// 写入响应
-	r.Response.WriteJson(Res)
+	r.Response.WriteJson(res)
 
 	// 加入到上下文
-	contexts.SetResponse(r.Context(), Res)
+	contexts.SetResponse(r.Context(), res)
 }
 
 // SusJson 返回成功JSON
 func SusJson(isExit bool, r *ghttp.Request, message string, data ...interface{}) {
 	if isExit {
-		JsonExit(r, consts.CodeOK, message, data...)
+		JsonExit(r, gcode.CodeOK.Code(), message, data...)
+		return
 	}
-	RJson(r, consts.CodeOK, message, data...)
+	RJson(r, gcode.CodeOK.Code(), message, data...)
 }
 
 // FailJson 返回失败JSON
 func FailJson(isExit bool, r *ghttp.Request, message string, data ...interface{}) {
 	if isExit {
-		JsonExit(r, consts.CodeNil, message, data...)
+		JsonExit(r, gcode.CodeNil.Code(), message, data...)
+		return
 	}
-	RJson(r, consts.CodeNil, message, data...)
+	RJson(r, gcode.CodeNil.Code(), message, data...)
 }
 
 // Redirect 重定向

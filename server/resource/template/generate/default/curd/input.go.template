@@ -1,0 +1,96 @@
+// Package @{.templateGroup}in
+// @Link  https://github.com/bufanyun/hotgo
+// @Copyright  Copyright (c) @{NowYear} HotGo CLI
+// @Author  Ms <133814250@qq.com>
+// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
+// @AutoGenerate Version @{.hgVersion}
+// @AutoGenerate Date @{.nowTime}
+//
+package @{.templateGroup}in
+
+import (
+	"context"
+	"errors"
+	"github.com/gogf/gf/v2/encoding/gjson"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
+	"hotgo/internal/consts"
+	"hotgo/internal/model/entity"
+	"hotgo/internal/model/input/form"
+	"hotgo/utility/validate"
+)
+@{ if eq .options.Step.HasEdit true }
+// @{.varName}EditInp 修改/新增@{.tableComment}
+type @{.varName}EditInp struct {
+	entity.Test
+}
+
+func (in *@{.varName}EditInp) Filter(ctx context.Context) (err error) {
+	return
+}
+
+type @{.varName}EditModel struct{}
+@{end}
+@{ if eq .options.Step.HasDel true }
+// @{.varName}DeleteInp 删除@{.tableComment}
+type @{.varName}DeleteInp struct {
+	@{.pk.GoName} interface{} `json:"@{.pk.TsName}" v:"required#@{.pk.Dc}不能为空" dc:"@{.pk.Dc}"`
+}
+
+type @{.varName}DeleteModel struct{}
+@{end}
+@{ if eq .options.Step.HasView true }
+// @{.varName}ViewInp 获取指定@{.tableComment}信息
+type @{.varName}ViewInp struct {
+	@{.pk.GoName} @{.pk.GoType} `json:"@{.pk.TsName}" v:"required#@{.pk.Dc}不能为空" dc:"@{.pk.Dc}"`
+}
+
+type @{.varName}ViewModel struct {
+	entity.Test
+}@{end}
+
+// @{.varName}ListInp 获取@{.tableComment}列表
+type @{.varName}ListInp struct {
+	form.PageReq
+@{.listInpColumns}
+}
+
+type @{.varName}ListModel struct {
+@{.listModelColumns}
+}
+
+func (in *@{.varName}ListInp) Filter(ctx context.Context) (err error) {
+	return
+}
+@{ if eq .options.Step.HasExport true }
+// @{.varName}ExportModel 导出@{.tableComment}
+type @{.varName}ExportModel struct {
+@{.exportModelColumns}
+}@{end}
+@{ if and (eq .options.Step.HasEdit true) (eq .options.Step.HasMaxSort true) }
+// @{.varName}MaxSortInp 获取@{.tableComment}最大排序
+type @{.varName}MaxSortInp struct{}
+
+type @{.varName}MaxSortModel struct {
+	Sort int `json:"sort"  description:"排序"`
+}
+@{end}
+@{ if eq .options.Step.HasStatus true }
+// @{.varName}StatusInp 更新@{.tableComment}状态
+type @{.varName}StatusInp struct {
+	@{.pk.GoName} @{.pk.GoType} `json:"@{.pk.TsName}" v:"required#@{.pk.Dc}不能为空" dc:"@{.pk.Dc}"`
+	Status int   `json:"status" dc:"状态"`
+}
+
+type @{.varName}StatusModel struct{}
+@{end}
+@{ if eq .options.Step.HasSwitch true }
+// @{.varName}SwitchInp 更新@{.tableComment}开关状态
+type @{.varName}SwitchInp struct {
+	form.SwitchReq
+	@{.pk.GoName} @{.pk.GoType} `json:"@{.pk.TsName}" v:"required#@{.pk.Dc}不能为空" dc:"@{.pk.Dc}"`
+}
+
+type @{.varName}SwitchModel struct{}
+@{end}

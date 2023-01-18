@@ -6,9 +6,13 @@ Object.keys(allModules).forEach((path) => {
 });
 
 // export default modules
+// @ts-ignore
 import asyncRoute from './async-route';
+// @ts-ignore
 import user from './user';
+// @ts-ignore
 import tabsView from './tabs-view';
+// @ts-ignore
 import lockscreen from './lockscreen';
 
 export default {

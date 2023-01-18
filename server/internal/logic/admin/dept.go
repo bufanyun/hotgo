@@ -19,6 +19,7 @@ import (
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
 	"hotgo/utility/tree"
+	"hotgo/utility/validate"
 )
 
 type sAdminDept struct{}
@@ -47,16 +48,7 @@ func (s *sAdminDept) NameUnique(ctx context.Context, in adminin.DeptNameUniqueIn
 
 // Delete 删除
 func (s *sAdminDept) Delete(ctx context.Context, in adminin.DeptDeleteInp) error {
-
-	exist, err := dao.AdminRoleDept.Ctx(ctx).Where("dept_id", in.Id).One()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-	if !exist.IsEmpty() {
-		return gerror.New("请先解除该部门下所有已关联用户关联关系！")
-	}
-	_, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Delete()
+	_, err := dao.AdminDept.Ctx(ctx).Where("id", in.Id).Delete()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
@@ -118,7 +110,7 @@ func (s *sAdminDept) Status(ctx context.Context, in adminin.DeptStatusInp) (err 
 		return err
 	}
 
-	if !convert.InSliceInt(consts.StatusMap, in.Status) {
+	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
 		return err
 	}

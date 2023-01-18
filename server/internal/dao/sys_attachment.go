@@ -7,6 +7,8 @@ package dao
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao/internal"
 	"hotgo/internal/model/input/sysin"
@@ -31,10 +33,8 @@ var (
 )
 
 func (dao *sysAttachmentDao) GetMd5File(ctx context.Context, md5 string) (data *sysin.AttachmentListModel, err error) {
-
 	if err = dao.Ctx(ctx).
 		Where("md5", md5).
-		Where("status", consts.StatusEnabled).
 		Scan(&data); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return nil, err
@@ -44,8 +44,21 @@ func (dao *sysAttachmentDao) GetMd5File(ctx context.Context, md5 string) (data *
 		return nil, nil
 	}
 
+	conf, err := service.SysConfig().GetUpload(ctx)
+	if err != nil {
+		return nil, nil
+	}
+
 	data.SizeFormat = format.FileSize(data.Size)
-	data.FileUrl = service.CommonUpload().LastUrl(ctx, data.FileUrl, data.Drive)
+	data.FileUrl = service.CommonUpload().LastUrl(ctx, conf, data.FileUrl, data.Drive)
+
+	// 只有在上传时才会检查md5值，如果文件存在则更新最后上传时间，保证上传列表更新显示在最前面
+	if data.Id > 0 {
+		_, _ = dao.Ctx(ctx).Where("id", data.Id).Data(g.Map{
+			"status":     consts.StatusEnabled,
+			"updated_at": gtime.Now(),
+		}).Update()
+	}
 
 	return data, nil
 }

@@ -21,6 +21,9 @@
           <ThemeSetting v-if="type === 2" />
           <RevealSetting v-if="type === 3" />
           <EmailSetting v-if="type === 4" />
+          <UploadSetting v-if="type === 8" />
+          <GeoSetting v-if="type === 9" />
+          <SmsSetting v-if="type === 10" />
         </n-card>
       </n-grid-item>
     </n-grid>
@@ -32,7 +35,9 @@
   import RevealSetting from './RevealSetting.vue';
   import EmailSetting from './EmailSetting.vue';
   import ThemeSetting from './ThemeSetting.vue';
-
+  import UploadSetting from './UploadSetting.vue';
+  import GeoSetting from './GeoSetting.vue';
+  import SmsSetting from './SmsSetting.vue';
   const typeTabList = [
     {
       name: '基本设置',
@@ -54,9 +59,47 @@
       desc: '系统邮件设置',
       key: 4,
     },
+    // {
+    //   name: '客服设置',
+    //   desc: '系统客服设置',
+    //   key: 5,
+    // },
+    // {
+    //   name: '下游配置',
+    //   desc: '默认设置和权限屏蔽',
+    //   key: 6,
+    // },
+    // {
+    //   name: '提现配置',
+    //   desc: '提现规则配置',
+    //   key: 7,
+    // },
+    {
+      name: '云存储',
+      desc: '配置上传文件驱动',
+      key: 8,
+    },
+    {
+      name: '地理位置',
+      desc: '配置地理位置工具',
+      key: 9,
+    },
+    {
+      name: '短信配置',
+      desc: '短信验证码平台',
+      key: 10,
+    },
   ];
   export default defineComponent({
-    components: { BasicSetting, RevealSetting, EmailSetting, ThemeSetting },
+    components: {
+      BasicSetting,
+      RevealSetting,
+      EmailSetting,
+      ThemeSetting,
+      UploadSetting,
+      GeoSetting,
+      SmsSetting,
+    },
     setup() {
       const state = reactive({
         type: 1,

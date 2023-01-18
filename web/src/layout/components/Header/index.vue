@@ -555,13 +555,13 @@
     z-index: 11;
   }
 
-  //::v-deep(.menu-server-link) {
-  //  color: #515a6e;
-  //
-  //  &:hover {
-  //    color: #1890ff;
-  //  }
-  //}
+  ::v-deep(.menu-server-link) {
+    color: #515a6e;
+
+    &:hover {
+      color: #1890ff;
+    }
+  }
 
   .action-items-wrapper {
     position: relative;
@@ -600,7 +600,7 @@
     background-color: transparent !important;
   }
 
-  /deep/ sup {
+  :deep(sup) {
     top: 1.3em;
   }
 </style>

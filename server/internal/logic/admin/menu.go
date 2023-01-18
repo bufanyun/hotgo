@@ -10,6 +10,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/backend/menu"
 	"hotgo/api/backend/role"
@@ -198,8 +199,8 @@ func (s *sAdminMenu) Edit(ctx context.Context, req *menu.EditReq) (err error) {
 		err = gerror.New("菜单名称不能为空")
 		return err
 	}
-	if req.Path == "" {
-		err = gerror.New("菜单路径不能为空")
+	if req.Type != 3 && req.Path == "" {
+		err = gerror.New("路由地址不能为空")
 		return err
 	}
 	if req.Name == "" {
@@ -365,5 +366,52 @@ func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (lists rol
 	}
 
 	lists.List = append(lists.List, s.genNaiveMenus(menus)...)
+	return
+}
+
+// LoginPermissions 获取登录成功后的细分权限
+func (s *sAdminMenu) LoginPermissions(ctx context.Context, memberId int64) (lists []*adminin.MemberLoginPermissions, err error) {
+	// 空跑
+	lists = append(lists, &adminin.MemberLoginPermissions{
+		Value: "value",
+	})
+
+	type Permissions struct {
+		Permissions string `json:"permissions"`
+	}
+
+	var (
+		allPermissions []*Permissions
+		mod            = dao.AdminMenu.Ctx(ctx).Fields("permissions").Where("status", consts.StatusEnabled).Where("permissions != ?", "")
+	)
+
+	// 非超管验证允许的菜单列表
+	if !service.AdminMember().VerifySuperId(ctx, memberId) {
+		array, err := dao.AdminRoleMenu.Ctx(ctx).
+			Fields("menu_id").
+			Where("role_id", contexts.GetRoleId(ctx)).
+			Array()
+		if err != nil {
+			return nil, err
+		}
+		mod = mod.Where("id", array)
+	}
+
+	if err = mod.Scan(&allPermissions); err != nil {
+		return lists, err
+	}
+
+	if len(allPermissions) == 0 {
+		return
+	}
+
+	for _, v := range allPermissions {
+		for _, p := range gstr.Explode(`,`, v.Permissions) {
+			lists = append(lists, &adminin.MemberLoginPermissions{
+				Value: p,
+			})
+		}
+	}
+
 	return
 }

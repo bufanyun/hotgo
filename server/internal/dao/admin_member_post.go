@@ -29,15 +29,9 @@ var (
 	}
 )
 
-// UpdatePostIds
-// @Description:
-// @receiver dao
-// @param ctx
-// @param memberId
-// @param postIds
-// @return err
-//
+// UpdatePostIds 更新管理员岗位
 func (dao *adminMemberPostDao) UpdatePostIds(ctx context.Context, memberId int64, postIds []int64) (err error) {
+	g.DumpWithType(postIds)
 	_, err = dao.Ctx(ctx).
 		Where("member_id", memberId).
 		Delete()
@@ -61,16 +55,8 @@ func (dao *adminMemberPostDao) UpdatePostIds(ctx context.Context, memberId int64
 	return nil
 }
 
-// GetMemberByIds 获取指定会员的岗位ids
-// @Description:
-// @receiver dao
-// @param ctx
-// @param memberId
-// @return postIds
-// @return err
-//
+// GetMemberByIds 获取指定关联员的岗位ids
 func (dao *adminMemberPostDao) GetMemberByIds(ctx context.Context, memberId int64) (postIds []int64, err error) {
-
 	var list []*entity.AdminMemberPost
 	err = dao.Ctx(ctx).
 		Fields("post_id").
@@ -85,6 +71,5 @@ func (dao *adminMemberPostDao) GetMemberByIds(ctx context.Context, memberId int6
 		postIds = append(postIds, list[i].PostId)
 	}
 
-	g.Log().Print(ctx, "post_ids:", postIds)
 	return postIds, nil
 }

@@ -15,7 +15,7 @@
     >
       <n-descriptions bordered label-placement="left" class="py-2">
         <n-descriptions-item label="版本">
-          <n-tag type="info"> 2.0.3 </n-tag>
+          <n-tag type="info"> {{ config?.version }}</n-tag>
         </n-descriptions-item>
         <n-descriptions-item label="最后编译时间">
           <n-tag type="info"> {{ lastBuildTime }} </n-tag>
@@ -29,9 +29,7 @@
         </n-descriptions-item>
         <n-descriptions-item label="预览地址">
           <div class="flex items-center">
-            <a href="https://hotgo.facms.cn/admin" class="py-2" target="_blank"
-              >查看预览地址</a
-            >
+            <a href="https://hotgo.facms.cn/admin" class="py-2" target="_blank">查看预览地址</a>
           </div>
         </n-descriptions-item>
         <n-descriptions-item label="Github">
@@ -82,6 +80,11 @@
 </template>
 
 <script lang="ts" setup>
+  import { ref } from 'vue';
+  import { useUserStoreWidthOut } from '@/store/modules/user';
+
+  const useUserStore = useUserStoreWidthOut();
+  const config = ref(useUserStore.config);
   export interface schemaItem {
     field: string;
     label: string;

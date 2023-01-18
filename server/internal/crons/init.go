@@ -130,7 +130,7 @@ func StartALL(sysCron []*entity.SysCron) error {
 		}
 	}
 
-	g.Log().Info(ct, "定时任务启动完毕...")
+	g.Log().Debug(ct, "load scheduled task complete..")
 	return nil
 }
 

@@ -25,7 +25,6 @@
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
   import { OnlineList, Offline } from '@/api/monitor/monitor';
   import { columns } from './columns';
-  import { useRouter } from 'vue-router';
 
   const dialog = useDialog();
   const schemas: FormSchema[] = [
@@ -43,8 +42,6 @@
     },
   ];
 
-  const router = useRouter();
-  const formRef: any = ref(null);
   const message = useMessage();
   const actionRef = ref();
   const formParams = ref({});
@@ -62,10 +59,6 @@
       return h(TableAction as any, {
         style: 'button',
         actions: [
-          // {
-          //   label: '查看详情',
-          //   onClick: handleEdit.bind(null, record),
-          // },
           {
             label: '强制退出',
             onClick: handleDelete.bind(null, record),
@@ -82,25 +75,19 @@
   });
 
   function handleDelete(record: Recordable) {
-    console.log('点击了删除', record);
     dialog.warning({
       title: '警告',
       content: '你确定要强制退出该用户？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
-        Offline(record)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((e: Error) => {
-            // message.error(e.message ?? '操作失败');
-          });
+        Offline(record).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
@@ -113,19 +100,12 @@
     actionRef.value.reload();
   }
 
-  function handleEdit(record: Recordable) {
-    console.log('点击了编辑', record);
-    router.push({ name: 'serve_log_view', params: { id: record.id } });
-  }
-
   function handleSubmit(values: Recordable) {
-    console.log(values);
     formParams.value = values;
     reloadTable();
   }
 
-  function handleReset(values: Recordable) {
-    console.log(values);
+  function handleReset(_values: Recordable) {
     formParams.value = {};
     reloadTable();
   }

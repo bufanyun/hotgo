@@ -7,6 +7,7 @@
     </BasicForm>
 
     <BasicTable
+      :openChecked="true"
       :columns="columns"
       :request="loadDataTable"
       :row-key="(row) => row.id"
@@ -223,7 +224,7 @@
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
         Delete(record)
           .then((_res) => {
@@ -236,7 +237,7 @@
           });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
@@ -246,7 +247,7 @@
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
         Delete({ id: checkedIds.value })
           .then((_res) => {
@@ -259,7 +260,7 @@
           });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }

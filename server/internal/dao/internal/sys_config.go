@@ -21,21 +21,21 @@ type SysConfigDao struct {
 // SysConfigColumns defines and stores column names for table hg_sys_config.
 type SysConfigColumns struct {
 	Id           string // 配置ID
-	Group        string // 分组
+	Group        string // 配置分组
 	Name         string // 参数名称
-	Type         string // 类型:string,text,int,bool,array,datetime,date,file
+	Type         string // 键值类型:string,int,uint,bool,datetime,date
 	Key          string // 参数键名
 	Value        string // 参数键值
 	DefaultValue string // 默认值
 	Sort         string // 排序
 	Tip          string // 变量描述
-	IsDefault    string // 是否默认
+	IsDefault    string // 是否为系统默认
 	Status       string // 状态
 	CreatedAt    string // 创建时间
 	UpdatedAt    string // 更新时间
 }
 
-//  sysConfigColumns holds the columns for table hg_sys_config.
+// sysConfigColumns holds the columns for table hg_sys_config.
 var sysConfigColumns = SysConfigColumns{
 	Id:           "id",
 	Group:        "group",
@@ -92,6 +92,6 @@ func (dao *SysConfigDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *SysConfigDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *SysConfigDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

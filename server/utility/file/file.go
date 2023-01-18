@@ -7,6 +7,7 @@
 package file
 
 import (
+	"github.com/gogf/gf/v2/os/gfile"
 	"hotgo/utility/format"
 	"io/ioutil"
 	"os"
@@ -110,4 +111,10 @@ func DirSize(dirname string) string {
 	}
 
 	return format.FileSize(ss)
+}
+
+func MergeAbs(path string, fileName ...string) string {
+	var paths = []string{gfile.RealPath(path)}
+	paths = append(paths, fileName...)
+	return gfile.Join(paths...)
 }

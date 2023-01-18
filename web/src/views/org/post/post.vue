@@ -14,6 +14,7 @@
       </BasicForm>
 
       <BasicTable
+        :openChecked="true"
         :columns="columns"
         :request="loadDataTable"
         :row-key="(row) => row.id"
@@ -29,7 +30,7 @@
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建
+            新建岗位
           </n-button>
           &nbsp;
           <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
@@ -43,7 +44,12 @@
         </template>
       </BasicTable>
 
-      <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="新建">
+      <n-modal
+        v-model:show="showModal"
+        :show-icon="false"
+        preset="dialog"
+        :title="formParams?.id > 0 ? '编辑岗位 #' + formParams?.id : '新建岗位'"
+      >
         <n-form
           :model="formParams"
           :rules="rules"
@@ -100,7 +106,7 @@
   import { DeleteOutlined, PlusOutlined } from '@vicons/antd';
   import { statusActions, statusOptions } from '@/enums/optionsiEnum';
 
-  const params = ref({
+  const params = ref<any>({
     pageSize: 10,
     name: '',
     code: '',
@@ -160,8 +166,8 @@
   const dialog = useDialog();
   const showModal = ref(false);
   const formBtnLoading = ref(false);
-  const searchFormRef = ref({});
-  const formRef = ref({});
+  const searchFormRef = ref<any>({});
+  const formRef = ref<any>({});
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
 
@@ -179,7 +185,7 @@
     created_at: '',
     updated_at: '',
   };
-  let formParams = ref(resetFormParams);
+  let formParams = ref<any>(resetFormParams);
 
   const actionColumn = reactive({
     width: 220,
@@ -219,16 +225,12 @@
   }
 
   const loadDataTable = async (res) => {
-    return await getPostList({ ...params.value, ...res, ...searchFormRef.value.formModel });
+    return await getPostList({ ...params.value, ...res, ...searchFormRef.value?.formModel });
   };
 
   function onCheckedRow(rowKeys) {
     console.log(rowKeys);
-    if (rowKeys.length > 0) {
-      batchDeleteDisabled.value = false;
-    } else {
-      batchDeleteDisabled.value = true;
-    }
+    batchDeleteDisabled.value = rowKeys.length <= 0;
 
     checkedIds.value = rowKeys;
   }
@@ -242,10 +244,8 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formParams:' + JSON.stringify(formParams.value));
         Edit(formParams.value)
           .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
             message.success('操作成功');
             setTimeout(() => {
               showModal.value = false;
@@ -264,31 +264,24 @@
   }
 
   function handleEdit(record: Recordable) {
-    console.log('点击了编辑', record);
     showModal.value = true;
     formParams.value = record;
   }
 
   function handleDelete(record: Recordable) {
-    console.log('点击了删除', record);
     dialog.warning({
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
-        Delete(record)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((e: Error) => {
-            // message.error(e.message ?? '操作失败');
-          });
+        Delete(record).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
@@ -298,7 +291,7 @@
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
         Delete({ id: checkedIds.value })
           .then((_res) => {
@@ -311,7 +304,7 @@
           });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
@@ -328,17 +321,12 @@
   }
 
   function updateStatus(id, status) {
-    Status({ id: id, status: status })
-      .then((_res) => {
-        console.log('_res:' + JSON.stringify(_res));
-        message.success('操作成功');
-        setTimeout(() => {
-          reloadTable({});
-        });
-      })
-      .catch((e: Error) => {
-        message.error(e.message ?? '操作失败');
+    Status({ id: id, status: status }).then((_res) => {
+      message.success('操作成功');
+      setTimeout(() => {
+        reloadTable();
       });
+    });
   }
 </script>
 

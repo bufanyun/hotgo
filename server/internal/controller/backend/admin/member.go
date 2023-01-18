@@ -81,14 +81,14 @@ func (c *cMember) Profile(ctx context.Context, req *member.ProfileReq) (*member.
 	res.SysDept = sysDept
 
 	// 角色列表
-	sysRoles, err := service.AdminRole().GetMemberList(ctx, memberInfo.Role)
+	sysRoles, err := service.AdminRole().GetMemberList(ctx, memberInfo.RoleId)
 	if err != nil {
 		return nil, err
 	}
 	res.SysRoles = sysRoles
 
 	// 获取角色名称
-	roleGroup, err := service.AdminRole().GetName(ctx, memberInfo.Role)
+	roleGroup, err := service.AdminRole().GetName(ctx, memberInfo.RoleId)
 	if err != nil {
 		return nil, err
 	}
@@ -174,6 +174,8 @@ func (c *cMember) Edit(ctx context.Context, req *member.EditReq) (res *member.Ed
 	if err = gconv.Scan(req, &in); err != nil {
 		return nil, err
 	}
+
+	in.PostIds = req.PostIds
 	if err = service.AdminMember().Edit(ctx, in); err != nil {
 		return nil, err
 	}
@@ -227,7 +229,7 @@ func (c *cMember) View(ctx context.Context, req *member.ViewReq) (*member.ViewRe
 		return nil, err
 	}
 
-	res.RoleIds = []int64{memberInfo.Role}
+	res.RoleIds = []int64{memberInfo.RoleId}
 	res.DeptName, err = service.AdminDept().GetName(ctx, memberInfo.DeptId)
 	if err != nil {
 		return nil, err

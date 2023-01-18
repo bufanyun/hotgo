@@ -18,6 +18,7 @@ import { CreateAxiosOptions, RequestOptions, Result } from './types';
 import { useUserStoreWidthOut } from '@/store/modules/user';
 import router from '@/router';
 import { storage } from '@/utils/Storage';
+import { encodeParams } from '@/utils/urlUtils';
 
 const globSetting = useGlobSetting();
 const urlPrefix = globSetting.urlPrefix || '';
@@ -60,7 +61,7 @@ const transform: AxiosTransform = {
     }
 
     //  这里 code，result，message为 后台统一的字段，需要修改为项目自己的接口返回格式
-    let { code, data, message } = response;
+    const { code, data, message } = response;
 
     // 请求成功
     const hasSuccess = response && Reflect.has(response, 'code') && code === ResultEnum.SUCCESS;
@@ -118,8 +119,11 @@ const transform: AxiosTransform = {
           onNegativeClick: () => {},
         });
         break;
+      default:
+        console.log('unknown status code:' + code);
+        $message.error(errorMsg);
     }
-    $message.error(errorMsg);
+
     throw new Error(errorMsg);
   },
 
@@ -276,6 +280,15 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
 }
 
 export const http = createAxios();
+
+// 导出
+export const jumpExport = function (url, params) {
+  window.location.href =
+    urlPrefix +
+    url +
+    '?' +
+    encodeParams({ ...params, ...{ authorization: useUserStoreWidthOut().token } });
+};
 
 // 项目，多个不同 api 地址，直接在这里导出多个
 // src/api ts 里面接口，就可以单独使用这个请求，

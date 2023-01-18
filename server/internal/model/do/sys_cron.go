@@ -12,7 +12,7 @@ import (
 // SysCron is the golang structure of table hg_sys_cron for DAO operations like Where/Data.
 type SysCron struct {
 	g.Meta    `orm:"table:hg_sys_cron, do:true"`
-	Id        interface{} // 主键
+	Id        interface{} // 任务ID
 	GroupId   interface{} // 分组ID
 	Name      interface{} // 任务名称
 	Params    interface{} // 函数参数
@@ -21,7 +21,7 @@ type SysCron struct {
 	Count     interface{} // 执行次数
 	Sort      interface{} // 排序
 	Remark    interface{} // 备注
-	Status    interface{} // 状态
+	Status    interface{} // 任务状态
 	CreatedAt *gtime.Time // 创建时间
 	UpdatedAt *gtime.Time // 更新时间
 }

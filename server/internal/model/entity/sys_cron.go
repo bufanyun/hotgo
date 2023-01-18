@@ -10,7 +10,7 @@ import (
 
 // SysCron is the golang structure for table sys_cron.
 type SysCron struct {
-	Id        int64       `json:"id"        description:"主键"`
+	Id        int64       `json:"id"        description:"任务ID"`
 	GroupId   int64       `json:"groupId"   description:"分组ID"`
 	Name      string      `json:"name"      description:"任务名称"`
 	Params    string      `json:"params"    description:"函数参数"`
@@ -19,7 +19,7 @@ type SysCron struct {
 	Count     int64       `json:"count"     description:"执行次数"`
 	Sort      int         `json:"sort"      description:"排序"`
 	Remark    string      `json:"remark"    description:"备注"`
-	Status    int         `json:"status"    description:"状态"`
+	Status    int         `json:"status"    description:"任务状态"`
 	CreatedAt *gtime.Time `json:"createdAt" description:"创建时间"`
 	UpdatedAt *gtime.Time `json:"updatedAt" description:"更新时间"`
 }

@@ -15,6 +15,13 @@ export function updateConfig(params) {
   });
 }
 
+export function TypeSelect() {
+  return http.request({
+    url: '/config/typeSelect',
+    method: 'get',
+  });
+}
+
 export function sendTestEmail(params) {
   return http.request({
     url: '/ems/sendTest',

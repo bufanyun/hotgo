@@ -79,11 +79,7 @@ var (
 func init() {
 	mqProducerInstanceMap = make(map[string]MqProducer)
 	mqConsumerInstanceMap = make(map[string]MqConsumer)
-	get, err := g.Cfg().Get(ctx, "queue")
-	if err != nil {
-		g.Log().Fatalf(ctx, "queue config load fail, err .%v", err)
-		return
-	}
+	get := g.Cfg().MustGet(ctx, "queue")
 	get.Scan(&config)
 }
 
@@ -123,7 +119,7 @@ func NewProducer(groupName string) (mqClient MqProducer, err error) {
 			Version: config.Kafka.Version,
 		})
 	case "redis":
-		address, _ := g.Cfg().Get(ctx, "queue.redis.address", nil)
+		address := g.Cfg().MustGet(ctx, "queue.redis.address", nil)
 		if len(address.String()) == 0 {
 			g.Log().Fatal(ctx, "queue redis address is not support")
 		}

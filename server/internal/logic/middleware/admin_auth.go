@@ -26,7 +26,7 @@ func (s *sMiddleware) AdminAuth(r *ghttp.Request) {
 	)
 
 	// 替换掉模块前缀
-	routerPrefix, _ := g.Cfg().Get(ctx, "router.admin.prefix", "/admin")
+	routerPrefix := g.Cfg().MustGet(ctx, "router.admin.prefix", "/admin")
 	path := gstr.Replace(r.URL.Path, routerPrefix.String(), "", 1)
 
 	/// 不需要验证登录的路由地址

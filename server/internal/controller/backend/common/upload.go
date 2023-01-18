@@ -34,3 +34,20 @@ func (c *cUpload) UploadImage(ctx context.Context, req *common.UploadImageReq) (
 
 	return
 }
+
+// UploadFile 上传附件
+func (c *cUpload) UploadFile(ctx context.Context, req *common.UploadFileReq) (res common.UploadFileRes, err error) {
+	r := g.RequestFromCtx(ctx)
+	file := r.GetUploadFile("file")
+	if file == nil {
+		err = gerror.New("没有找到上传的文件")
+		return
+	}
+
+	res, err = service.CommonUpload().UploadFile(ctx, file)
+	if err != nil {
+		return
+	}
+
+	return
+}

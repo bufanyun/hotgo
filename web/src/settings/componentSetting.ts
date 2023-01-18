@@ -13,7 +13,7 @@ export default {
     //默认分页数量
     defaultPageSize: 10,
     //可切换每页数量集合
-    pageSizes: [10, 20, 30, 40, 50],
+    pageSizes: [10, 20, 30, 40, 50, 100, 200],
   },
   upload: {
     //考虑接口规范不同
@@ -26,6 +26,29 @@ export default {
     //最大上传图片大小
     maxSize: 10,
     //图片上传类型
-    fileType: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'image/svg+xml'],
+    imageType: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'image/svg+xml'],
+    //文件上传类型
+    fileType: [
+      // 图片
+      'image/png',
+      'image/jpg',
+      'image/jpeg',
+      'image/gif',
+      'image/svg+xml',
+      // 文档
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      // 音频
+      'audio/mpeg',
+      'audio/midi',
+      // 视频
+      'audio/mp4',
+      'video/webm',
+      'video/x-flv',
+    ],
   },
 };

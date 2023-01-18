@@ -75,7 +75,7 @@ func (s *sMiddleware) CORS(r *ghttp.Request) {
 
 // DemoLimit 演示系統操作限制
 func (s *sMiddleware) DemoLimit(r *ghttp.Request) {
-	isDemo, _ := g.Cfg().Get(r.Context(), "hotgo.isDemo", false)
+	isDemo := g.Cfg().MustGet(r.Context(), "hotgo.isDemo", false)
 	if !isDemo.Bool() {
 		r.Middleware.Next()
 		return
@@ -86,7 +86,7 @@ func (s *sMiddleware) DemoLimit(r *ghttp.Request) {
 			r.Middleware.Next()
 			return
 		}
-		response.JsonExit(r, gcode.CodeInvalidRequest.Code(), "演示系統禁止操作！")
+		response.JsonExit(r, gcode.CodeNotSupported.Code(), "演示系统禁止操作！")
 		return
 	}
 
@@ -109,7 +109,7 @@ func inspectAuth(r *ghttp.Request, appName string) error {
 
 	// 获取jwtToken
 	jwtToken := consts.RedisJwtToken + gmd5.MustEncryptString(authorization)
-	jwtSign, _ := g.Cfg().Get(ctx, "jwt.sign", "hotgo")
+	jwtSign := g.Cfg().MustGet(ctx, "jwt.sign", "hotgo")
 
 	data, ParseErr := jwt.ParseToken(authorization, jwtSign.Bytes())
 	if ParseErr != nil {
@@ -131,7 +131,7 @@ func inspectAuth(r *ghttp.Request, appName string) error {
 	}
 
 	// 是否开启多端登录
-	if multiPort, _ := g.Cfg().Get(ctx, "jwt.multiPort", true); !multiPort.Bool() {
+	if multiPort := g.Cfg().MustGet(ctx, "jwt.multiPort", true); !multiPort.Bool() {
 		key := consts.RedisJwtUserBind + appName + ":" + gconv.String(user.Id)
 		originJwtToken, originErr := c.Get(ctx, key)
 		if originErr != nil {
@@ -151,6 +151,10 @@ func inspectAuth(r *ghttp.Request, appName string) error {
 	if user != nil {
 		customCtx.User = &model.Identity{
 			Id:         user.Id,
+			Pid:        user.Pid,
+			DeptId:     user.DeptId,
+			RoleId:     user.RoleId,
+			RoleKey:    user.RoleKey,
 			Username:   user.Username,
 			RealName:   user.RealName,
 			Avatar:     user.Avatar,
@@ -159,8 +163,6 @@ func inspectAuth(r *ghttp.Request, appName string) error {
 			VisitCount: user.VisitCount,
 			LastTime:   user.LastTime,
 			LastIp:     user.LastIp,
-			Role:       user.Role,
-			RoleKey:    user.RoleKey,
 			Exp:        user.Exp,
 			Expires:    user.Expires,
 			App:        user.App,

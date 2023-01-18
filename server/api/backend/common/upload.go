@@ -17,3 +17,10 @@ type UploadImageReq struct {
 }
 
 type UploadImageRes *sysin.AttachmentListModel
+
+// UploadFileReq 上传文件
+type UploadFileReq struct {
+	g.Meta `path:"/upload/file" tags:"上传" method:"post" summary:"上传附件"`
+}
+
+type UploadFileRes *sysin.AttachmentListModel

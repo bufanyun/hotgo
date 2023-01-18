@@ -1,5 +1,5 @@
 <template>
-  <n-drawer v-model:show="isDrawer" :width="width" :placement="placement">
+  <n-drawer v-model:show="isDrawer" :width="width" :placement="placement" :mask-closable="false">
     <n-drawer-content :title="title" closable>
       <n-form
         :model="formParams"
@@ -19,12 +19,7 @@
             />
           </n-radio-group>
         </n-form-item>
-        <n-form-item
-          :label="
-            formParams.type === 1 ? '上级目录' : formParams.type === 2 ? '上级菜单' : '上级按钮'
-          "
-          path="pid"
-        >
+        <n-form-item label="上级目录" path="pid">
           <n-tree-select
             :options="optionTreeData"
             default-value="0"
@@ -37,102 +32,85 @@
           "
           path="title"
         >
-          <n-input
-            :placeholder="
-              formParams.type === 1 ? '目录名称' : formParams.type === 2 ? '菜单名称' : '按钮名称'
-            "
-            v-model:value="formParams.title"
-          />
-        </n-form-item>
-        <n-form-item label="" path="icon">
-          <div style="width: 120px">
-            <span>
-              <n-tooltip trigger="hover">
-                <template #trigger>
-                  <n-icon :component="QuestionCircleOutlined" :size="18" :depth="3" />
-                </template>
-                请填写图标编码，可以参考图标库，也可以不填使用默认图标
-              </n-tooltip>
-              <span>&nbsp;&nbsp;图标 </span>
-            </span>
-          </div>
-          <n-input placeholder="图标映射路径" v-model:value="formParams.icon" />
-        </n-form-item>
-        <n-form-item label="" path="path">
-          <div style="width: 120px">
-            <span>
-              <n-tooltip trigger="hover">
-                <template #trigger>
-                  <n-icon :component="QuestionCircleOutlined" :size="18" :depth="3" />
-                </template>
-                路由地址，如：user
-              </n-tooltip>
-              <span>&nbsp;&nbsp;路由地址 </span>
-            </span>
-          </div>
-          <n-input placeholder="路由地址" v-model:value="formParams.path" />
-        </n-form-item>
-        <n-form-item label="" path="name">
-          <div style="width: 120px">
-            <span>
-              <n-tooltip trigger="hover">
-                <template #trigger>
-                  <n-icon :component="QuestionCircleOutlined" :size="18" :depth="3" />
-                </template>
-                对应路由配置文件中 `name` 只能是唯一性，配置 `http(s)://` 开头地址 则会新窗口打开
-              </n-tooltip>
-              <span>&nbsp;&nbsp;路由别名 </span>
-            </span>
-          </div>
-          <n-input placeholder="路由别名" v-model:value="formParams.name" />
-        </n-form-item>
-        <n-form-item label="" path="component">
-          <div style="width: 120px">
-            <span>
-              <n-tooltip trigger="hover">
-                <template #trigger>
-                  <n-icon :component="QuestionCircleOutlined" :size="18" :depth="3" />
-                </template>
-                访问的组件路径，如：`/system/menu/menu`，默认在`views`目录下，默认 `LAYOUT`
-                如果是多级菜单 `ParentLayout`
-              </n-tooltip>
-              <span>&nbsp;&nbsp;组件路径 </span>
-            </span>
-          </div>
-          <n-input placeholder="组件路径" v-model:value="formParams.component" />
-        </n-form-item>
-        <n-form-item label="" path="redirect" v-show="formParams.type === 1">
-          <div style="width: 120px">
-            <span>
-              <n-tooltip trigger="hover">
-                <template #trigger>
-                  <n-icon :component="QuestionCircleOutlined" :size="18" :depth="3" />
-                </template>
-                默认跳转路由地址，如：`/system/menu/menu` 多级路由情况下适用
-              </n-tooltip>
-              <span>&nbsp;&nbsp;默认跳转 </span>
-            </span>
-          </div>
-          <n-input placeholder="默认路由跳转地址" v-model:value="formParams.redirect" />
-        </n-form-item>
-        <n-divider title-placement="left">功能设置</n-divider>
-        <n-form-item label="API权限" path="permissions">
-          <n-input
-            placeholder="请输入API权限，多个权限用,分割"
-            v-model:value="formParams.permissions"
-          />
-        </n-form-item>
-        <!--        <n-form-item label="权限名称" path="permissionName">-->
-        <!--          <n-input placeholder="权限名称" v-model:value="formParams.permissionName" />-->
-        <!--        </n-form-item>-->
-        <n-form-item label="高亮路由" path="activeMenu">
-          <n-input placeholder="高亮路由" v-model:value="formParams.activeMenu" />
-        </n-form-item>
-        <n-form-item label="排序" path="sort">
-          <n-input-number v-model:value="formParams.sort" clearable />
+          <n-input placeholder="请输入" v-model:value="formParams.title" />
         </n-form-item>
 
-        <n-grid x-gap="24" :cols="2">
+        <n-form-item path="icon" v-if="formParams.type !== 3">
+          <IconSelector style="width: 100%" v-model:value="formParams.icon" option="antd" />
+          <template #label>
+            <n-tooltip trigger="hover">
+              <template #trigger>
+                <n-icon :component="QuestionCircleOutlined" :size="18" :depth="3" />
+              </template>
+              请填写图标编码，可以参考图标库，也可以不填使用默认图标
+            </n-tooltip>
+            菜单图标</template
+          >
+        </n-form-item>
+        <n-form-item path="path" v-if="formParams.type !== 3">
+          <n-input placeholder="路由地址" v-model:value="formParams.path" />
+          <template #label>
+            <n-tooltip trigger="hover">
+              <template #trigger>
+                <n-icon :component="QuestionCircleOutlined" :size="18" :depth="3" />
+              </template>
+              请路由地址，如：user
+            </n-tooltip>
+            路由地址</template
+          >
+        </n-form-item>
+        <n-form-item path="name">
+          <n-input placeholder="路由别名" v-model:value="formParams.name" />
+          <template #label>
+            <n-tooltip trigger="hover">
+              <template #trigger>
+                <n-icon :component="QuestionCircleOutlined" :size="18" :depth="3" />
+              </template>
+              对应路由配置文件中 `name` 只能是唯一性，配置 `http(s)://` 开头地址 则会新窗口打开
+            </n-tooltip>
+            路由别名</template
+          >
+        </n-form-item>
+        <n-form-item label="组件路径" path="component" v-if="formParams.type !== 3">
+          <n-input placeholder="组件路径" v-model:value="formParams.component" />
+          <template #feedback>
+            主目录填 `LAYOUT`;多级父目录填
+            `ParentLayout`;页面填具体的组件路径，如：`/system/menu/menu`</template
+          >
+        </n-form-item>
+        <n-form-item label="默认跳转" path="redirect" v-if="formParams.type === 1">
+          <n-input placeholder="默认路由跳转地址" v-model:value="formParams.redirect" />
+          <template #feedback
+            >默认跳转路由地址，如：`/system/menu/menu` 多级路由情况下适用</template
+          >
+        </n-form-item>
+        <n-divider title-placement="left">功能设置</n-divider>
+        <n-form-item label="分配权限" path="permissions">
+          <n-input
+            placeholder="请输入分配权限，多个权限用,分割"
+            v-model:value="formParams.permissions"
+          />
+          <template #label>
+            <n-tooltip trigger="hover">
+              <template #trigger>
+                <n-icon :component="QuestionCircleOutlined" :size="18" :depth="3" />
+              </template>
+              请填写API路由地址，可同时作用于服务端和web端。多个权限用,分割
+            </n-tooltip>
+            分配权限</template
+          >
+        </n-form-item>
+        <!--                <n-form-item label="权限名称" path="permissionName">-->
+        <!--                  <n-input placeholder="权限名称" v-model:value="formParams.permissionName" />-->
+        <!--                </n-form-item>-->
+        <n-form-item label="高亮路由" path="activeMenu" v-if="formParams.type !== 3">
+          <n-input placeholder="高亮路由" v-model:value="formParams.activeMenu" />
+        </n-form-item>
+        <n-form-item label="菜单排序" path="sort">
+          <n-input-number style="width: 100%" v-model:value="formParams.sort" clearable />
+        </n-form-item>
+
+        <n-grid x-gap="24" :cols="2" v-if="formParams.type !== 3">
           <n-gi>
             <n-form-item label="根路由" path="isRoot">
               <n-radio-group v-model:value="formParams.isRoot" name="isRoot">
@@ -159,7 +137,7 @@
           </n-gi>
         </n-grid>
 
-        <n-grid x-gap="24" :cols="2">
+        <n-grid x-gap="24" :cols="2" v-if="formParams.type !== 3">
           <n-gi>
             <n-form-item label="缓存路由" path="keepAlive">
               <n-radio-group v-model:value="formParams.keepAlive" name="keepAlive">
@@ -186,7 +164,7 @@
           </n-gi>
         </n-grid>
 
-        <n-grid x-gap="24" :cols="2">
+        <n-grid x-gap="24" :cols="2" v-if="formParams.type !== 3">
           <n-gi>
             <n-form-item label="是否外链" path="isFrame">
               <n-radio-group v-model:value="formParams.isFrame" name="isFrame">
@@ -200,33 +178,29 @@
             </n-form-item>
           </n-gi>
           <n-gi>
-            <n-form-item label="状态" path="status">
-              <n-radio-group v-model:value="formParams.status" name="status">
-                <n-radio-button
-                  v-for="status in statusMap"
-                  :key="status.value"
-                  :value="status.value"
-                  :label="status.label"
-                />
-              </n-radio-group>
+            <n-form-item label="外部地址" path="frameSrc" v-show="formParams.isFrame === 1">
+              <n-input placeholder="内联外部地址" v-model:value="formParams.frameSrc" />
             </n-form-item>
           </n-gi>
         </n-grid>
 
-        <n-grid x-gap="24" :cols="2">
-          <n-gi>
-            <n-form-item label="外部地址" path="frameSrc" v-show="formParams.isFrame === true">
-              <n-input placeholder="内联外部地址" v-model:value="formParams.frameSrc" />
-            </n-form-item>
-          </n-gi>
-          <n-gi />
-        </n-grid>
+        <n-form-item label="状态" path="status">
+          <n-radio-group v-model:value="formParams.status" name="status">
+            <n-radio-button
+              v-for="status in statusMap"
+              :key="status.value"
+              :value="status.value"
+              :label="status.label"
+            />
+          </n-radio-group>
+        </n-form-item>
       </n-form>
 
       <template #footer>
         <n-space>
-          <n-button type="primary" :loading="subLoading" @click="formSubmit">提交</n-button>
+          <n-button type="primary" :loading="subLoading" @click="formSubmit">确认添加</n-button>
           <n-button @click="handleReset">重置</n-button>
+          <n-button @click="closeDrawer">取消</n-button>
         </n-space>
       </template>
     </n-drawer-content>
@@ -235,9 +209,10 @@
 
 <script lang="ts">
   import { defineComponent, reactive, ref, toRefs } from 'vue';
-  import { TreeSelectOption, useMessage } from 'naive-ui';
+  import { FormItemRule, TreeSelectOption, useMessage } from 'naive-ui';
   import { QuestionCircleOutlined } from '@vicons/antd';
   import { EditMenu } from '@/api/system/menu';
+  import { newState } from '@/views/permission/menu/model';
 
   const menuTypes = [
     {
@@ -295,18 +270,6 @@
     return s;
   });
 
-  const rules = {
-    label: {
-      required: true,
-      message: '请输入标题',
-      trigger: 'blur',
-    },
-    path: {
-      required: true,
-      message: '请输入路径',
-      trigger: 'blur',
-    },
-  };
   export default defineComponent({
     name: 'CreateDrawer',
     components: {},
@@ -316,8 +279,7 @@
         default: '添加顶级菜单',
       },
       optionTreeData: {
-        type: Object,
-        // eslint-disable-next-line vue/require-valid-default-prop
+        type: Object || Array,
         default: [],
       },
     },
@@ -325,47 +287,42 @@
     setup(_props, context) {
       const message = useMessage();
       const formRef: any = ref(null);
-      const defaultValueRef = () => ({
-        id: 0,
-        pid: 0,
-        title: '',
-        name: '',
-        path: '',
-        label: '',
-        icon: '',
-        type: 1,
-        redirect: '',
-        permissions: '',
-        permissionName: '',
-        component: '',
-        alwaysShow: 1,
-        activeMenu: '',
-        isRoot: 0,
-        isFrame: 0,
-        frameSrc: '',
-        keepAlive: 0,
-        hidden: 0,
-        affix: 0,
-        status: 1,
-        sort: 10,
-      });
-
-      const state = reactive({
+      const state = reactive<any>({
         width: 700,
         isDrawer: false,
         subLoading: false,
-        formParams: defaultValueRef(),
+        formParams: newState(null),
         placement: 'right',
-        icon: '',
-        alertText:
-          '该功能主要实时预览各种布局效果，更多完整配置在 projectSetting.ts 中设置，建议在生产环境关闭该布局预览功能。',
       });
+      const rules = {
+        title: {
+          required: true,
+          message: '请输入名称',
+          trigger: 'blur',
+        },
+        label: {
+          required: true,
+          message: '请输入标题',
+          trigger: 'blur',
+        },
+        path: {
+          required: false,
+          message: '请输入路由地址',
+          trigger: 'blur',
+          validator: function (_rule: FormItemRule, value: any, callback: Function) {
+            if (state.formParams.type != 3 && !value) {
+              callback(new Error('请输入路由地址'));
+            }
+          },
+        },
+      };
 
       function openDrawer() {
         if (document.body.clientWidth < 700) {
           state.width = document.body.clientWidth;
         }
         state.isDrawer = true;
+        state.formParams = newState(null);
       }
 
       function closeDrawer() {
@@ -375,17 +332,17 @@
       function formSubmit() {
         formRef.value.validate((errors) => {
           if (!errors) {
-            console.log('state.formParams:' + JSON.stringify(state.formParams));
+            state.subLoading = true;
             EditMenu({ ...state.formParams })
               .then(async (_res) => {
-                console.log('_res:' + JSON.stringify(_res));
+                state.subLoading = false;
                 message.success('操作成功');
                 handleReset();
                 await context.emit('loadData');
                 closeDrawer();
               })
-              .catch((e: Error) => {
-                message.error(e.message ?? '操作失败');
+              .catch((_e: Error) => {
+                state.subLoading = false;
               });
           } else {
             message.error('请填写完整信息');
@@ -395,15 +352,14 @@
 
       function handleReset() {
         formRef.value.restoreValidation();
-        state.formParams = Object.assign(state.formParams, defaultValueRef());
+        state.formParams = newState(null);
       }
 
       // 处理选项更新
       function handleUpdateValue(
         value: string | number | Array<string | number> | null,
-        option: TreeSelectOption | null | Array<TreeSelectOption | null>
+        _option: TreeSelectOption | null | Array<TreeSelectOption | null>
       ) {
-        console.log(value, option);
         state.formParams.pid = value;
       }
 

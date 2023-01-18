@@ -19,9 +19,8 @@ import (
 
 // WebSocket ws路由配置
 func WebSocket(ctx context.Context, group *ghttp.RouterGroup) {
-	router, _ := g.Cfg().Get(ctx, "router.ws.prefix", "/socket")
-
-	group.Group(router.String(), func(group *ghttp.RouterGroup) {
+	prefix := g.Cfg().MustGet(ctx, "router.ws.prefix", "/socket")
+	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
 		group.Middleware()
 		group.Bind(
 			controller.Send, // 发送

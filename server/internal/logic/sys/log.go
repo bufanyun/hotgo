@@ -9,6 +9,7 @@ package sys
 import (
 	"context"
 	"encoding/json"
+	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -21,13 +22,11 @@ import (
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/location"
 	"hotgo/internal/library/queue"
-	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/excel"
 	"hotgo/utility/validate"
-	"time"
 )
 
 type sSysLog struct{}
@@ -90,22 +89,9 @@ func (s *sSysLog) Export(ctx context.Context, in sysin.LogListInp) (err error) {
 		exportList = append(exportList, row)
 	}
 
-	// 强转类型
-	writer := ghttp.RequestFromCtx(ctx).Response.Writer
-	w, _ := interface{}(writer).(*ghttp.ResponseWriter)
-
-	if err = excel.ExportByStruct(w, titleList, gconv.Interfaces(exportList), fileName, sheetName); err != nil {
-		err = gerror.Wrap(err, "ExportByStruct:")
+	if err = excel.ExportByStructs(ctx, titleList, exportList, fileName, sheetName); err != nil {
 		return err
 	}
-
-	// 加入到上下文
-	contexts.SetResponse(ctx, &model.Response{
-		Code:      consts.CodeOK,
-		Message:   "导出成功",
-		Timestamp: time.Now().Unix(),
-		TraceID:   gctx.CtxId(ctx),
-	})
 
 	return
 }
@@ -116,60 +102,42 @@ func (s *sSysLog) RealWrite(ctx context.Context, commonLog entity.SysLog) error 
 	if err != nil {
 		return err
 	}
-
-	if _, err := result.LastInsertId(); err != nil {
+	if _, err = result.LastInsertId(); err != nil {
 		return err
 	}
-
 	return nil
 }
 
 // AutoLog 根据配置自动记录请求日志
 func (s *sSysLog) AutoLog(ctx context.Context) (err error) {
-	// 日志开关
-	logSwitch, _ := g.Cfg().Get(ctx, "hotgo.log.switch", true)
-	if !logSwitch.Bool() {
+	config, err := service.SysConfig().GetLoadLog(ctx)
+	if err != nil {
+		return err
+	}
+
+	if !config.Switch {
 		return nil
 	}
 
 	data := s.AnalysisLog(ctx)
-
-	// 判断模块是否需要记录
-	module, _ := g.Cfg().Get(ctx, "hotgo.log.module", nil)
-	if module == nil {
-		return nil
-	}
-	if exist := validate.InSliceExistStr(module.Strings(), data.Module); !exist {
+	if ok := validate.InSliceExistStr(config.Module, data.Module); !ok {
 		return nil
 	}
 
-	// 判断状态码是否需要记录
-	code, _ := g.Cfg().Get(ctx, "hotgo.log.skipCode", nil)
-	if code != nil {
-		if exist := validate.InSliceExistStr(code.Strings(), gconv.String(data.ErrorCode)); exist {
-			return nil
-		}
+	if ok := validate.InSliceExistStr(config.SkipCode, gconv.String(data.ErrorCode)); ok {
+		return nil
 	}
 
-	// 是否开启队列
-	queueSwitch, _ := g.Cfg().Get(ctx, "hotgo.log.queue", true)
-	if queueSwitch.Bool() {
-		// 获取生产者实例
-		queueInstance, err := queue.InstanceProducer()
+	if config.Queue {
+		q, err := queue.InstanceProducer()
 		if err != nil {
-			queue.FatalLog(ctx, "InstanceProducer异常", err)
+			queue.FatalLog(ctx, "queue.InstanceProducer err:%+v", err)
 			return err
 		}
-
-		// 生产消息
-		mqMsg, err := queueInstance.SendMsg(consts.QueueLogTopic, gconv.String(data))
-
-		// 记录生产日志
+		mqMsg, err := q.SendMsg(consts.QueueLogTopic, gconv.String(data))
 		queue.ProducerLog(ctx, consts.QueueLogTopic, mqMsg.MsgId, err)
-
 		return err
 	}
-
 	return s.RealWrite(ctx, data)
 }
 
@@ -185,7 +153,6 @@ func (s *sSysLog) QueueJob(ctx context.Context, mqMsg queue.MqMsg) (err error) {
 
 // AnalysisLog 解析日志数据
 func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
-
 	var (
 		modelContext       = contexts.Get(ctx)
 		response           = modelContext.Response
@@ -193,15 +160,14 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 		request            = ghttp.RequestFromCtx(ctx)
 		module             = modelContext.Module
 		clientIp           = request.GetClientIp()
-		locationData       = location.GetLocation(ctx, clientIp)
-		postData           = "{}"
-		getData            = "{}"
-		headerData         = "{}"
+		postData           = gjson.New(consts.NilJsonToString)
+		getData            = gjson.New(consts.NilJsonToString)
+		headerData         = gjson.New(consts.NilJsonToString)
 		data               = entity.SysLog{}
 		memberId     int64 = 0
 		errorCode          = 0
 		errorMsg           = ""
-		errorData          = "{}"
+		errorData          = gjson.New(consts.NilJsonToString)
 		traceID            = ""
 		timestamp    int64 = 0
 		appId              = ""
@@ -214,29 +180,52 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 		traceID = response.TraceID
 		timestamp = response.Timestamp
 		if len(gconv.String(response.Error)) > 0 {
-			errorData = gconv.String(response.Error)
+			errorData = gjson.New(response.Error)
 		}
 	}
 
 	// 请求头
 	if reqHeadersBytes, _ := json.Marshal(request.Header); len(gconv.String(reqHeadersBytes)) > 0 {
-		headerData = gconv.String(reqHeadersBytes)
+		headerData = gjson.New(reqHeadersBytes)
 	}
 
 	// post参数
 	if gconv.String(request.PostForm) != "" {
-		postData = gconv.String(request.PostForm)
+		postData = gjson.New(gconv.String(request.PostForm))
+	}
+
+	if postData.IsNil() {
+		postData = gjson.New(request.GetBodyString())
 	}
 
 	// get参数
 	if len(request.URL.Query()) > 0 {
-		getData = gconv.String(request.URL.Query())
+		getData = gjson.New(request.URL.Query())
 	}
 
 	// 当前登录用户
 	if user != nil {
 		memberId = user.Id
 		appId = user.App
+	}
+
+	var ipData = new(location.IpLocationData)
+	//if validate.IsPublicIp(clientIp) {
+	//	ipData, err := location.GetLocation(ctx, clientIp)
+	//	if err != nil {
+	//		g.Log().Errorf(ctx, "location.GetLocation err:%+v", err)
+	//	}
+	//	if ipData == nil {
+	//		ipData = new(location.IpLocationData)
+	//	}
+	//}
+
+	ipData, err := location.GetLocation(ctx, clientIp)
+	if err != nil {
+		g.Log().Errorf(ctx, "location.GetLocation err:%+v", err)
+	}
+	if ipData == nil {
+		ipData = new(location.IpLocationData)
 	}
 
 	data = entity.SysLog{
@@ -250,8 +239,8 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 		PostData:   postData,
 		HeaderData: headerData,
 		Ip:         clientIp,
-		ProvinceId: locationData.ProvinceCode,
-		CityId:     locationData.CityCode,
+		ProvinceId: ipData.ProvinceCode,
+		CityId:     ipData.CityCode,
 		ErrorCode:  errorCode,
 		ErrorMsg:   errorMsg,
 		ErrorData:  errorData,
@@ -271,13 +260,13 @@ func (s *sSysLog) View(ctx context.Context, in sysin.LogViewInp) (res *sysin.Log
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return nil, err
 	}
-	isDemo, _ := g.Cfg().Get(ctx, "hotgo.isDemo", false)
+	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false)
 	if isDemo.Bool() {
-		res.HeaderData = `{
-    "none": [
-        "` + consts.DemoTips + `"
-    ]
-}`
+		//		res.HeaderData = `{
+		//    "none": [
+		//        "` + consts.DemoTips + `"
+		//    ]
+		//}`
 	}
 	return res, nil
 }
@@ -293,7 +282,7 @@ func (s *sSysLog) Delete(ctx context.Context, in sysin.LogDeleteInp) error {
 }
 
 // List 列表
-func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.LogListModel, totalCount int64, err error) {
+func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.LogListModel, totalCount int, err error) {
 	mod := dao.SysLog.Ctx(ctx)
 
 	// 访问路径
@@ -353,11 +342,11 @@ func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.
 		return list, totalCount, err
 	}
 
-	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}
-	isDemo, _ := g.Cfg().Get(ctx, "hotgo.isDemo", false)
+	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false)
 	for i := 0; i < len(list); i++ {
 		// 管理员
 		if list[i].AppId == consts.AppAdmin {
@@ -394,11 +383,11 @@ func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.
 		}
 
 		if isDemo.Bool() {
-			list[i].HeaderData = `{
-    "none": [
-        "` + consts.DemoTips + `"
-    ]
-}`
+			//			list[i].HeaderData = `{
+			//    "none": [
+			//        "` + consts.DemoTips + `"
+			//    ]
+			//}`
 		}
 
 	}

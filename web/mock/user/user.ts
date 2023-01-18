@@ -1,6 +1,6 @@
 import Mock from 'mockjs';
-import {ApiEnum} from '@/enums/apiEnum';
-import {resultSuccess} from '../_util';
+import { ApiEnum } from '@/enums/apiEnum';
+import { resultSuccess } from '../_util';
 
 const Random = Mock.Random;
 
@@ -44,7 +44,7 @@ export default [
     timeout: 1000,
     method: 'post',
     response: () => {
-      return resultSuccess({token});
+      return resultSuccess({ token });
     },
   },
   {

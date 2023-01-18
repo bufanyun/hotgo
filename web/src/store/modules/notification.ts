@@ -21,7 +21,6 @@ export const notificationStore = defineStore({
     },
     addMessages(message) {
       message = JSON.parse(message);
-      console.log('message:' + JSON.stringify(message));
       if (
         message.event !== undefined &&
         message.event === 'notice' &&

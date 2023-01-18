@@ -8,7 +8,6 @@ import { PageEnum } from '@/enums/pageEnum';
 import { ErrorPageRoute } from '@/router/base';
 
 const LOGIN_PATH = PageEnum.BASE_LOGIN;
-
 const whitePathList = [LOGIN_PATH]; // no redirect whitelist
 
 export function createRouterGuards(router: Router) {

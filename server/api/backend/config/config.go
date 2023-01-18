@@ -8,6 +8,7 @@ package config
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
+	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 )
 
@@ -28,3 +29,9 @@ type UpdateReq struct {
 }
 type UpdateRes struct {
 }
+
+// TypeSelectReq 数据类型选项
+type TypeSelectReq struct {
+	g.Meta `path:"/config/typeSelect" method:"get" tags:"配置" summary:"数据类型选项"`
+}
+type TypeSelectRes []form.Select

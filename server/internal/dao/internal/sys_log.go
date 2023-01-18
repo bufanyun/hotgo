@@ -20,23 +20,23 @@ type SysLogDao struct {
 
 // SysLogColumns defines and stores column names for table hg_sys_log.
 type SysLogColumns struct {
-	Id         string //
-	AppId      string // 应用id
-	MerchantId string // 商户id
-	MemberId   string // 用户id
+	Id         string // 日志ID
+	AppId      string // 应用ID
+	MerchantId string // 商户ID
+	MemberId   string // 用户ID
 	Method     string // 提交类型
-	Module     string // 模块
+	Module     string // 访问模块
 	Url        string // 提交url
 	GetData    string // get数据
 	PostData   string // post数据
 	HeaderData string // header数据
-	Ip         string // ip地址
+	Ip         string // IP地址
 	ProvinceId string // 省编码
 	CityId     string // 市编码
 	ErrorCode  string // 报错code
 	ErrorMsg   string // 报错信息
 	ErrorData  string // 报错日志
-	ReqId      string // 对外id
+	ReqId      string // 对外ID
 	Timestamp  string // 响应时间
 	UserAgent  string // UA信息
 	TakeUpTime string // 请求耗时
@@ -45,7 +45,7 @@ type SysLogColumns struct {
 	UpdatedAt  string // 修改时间
 }
 
-//  sysLogColumns holds the columns for table hg_sys_log.
+// sysLogColumns holds the columns for table hg_sys_log.
 var sysLogColumns = SysLogColumns{
 	Id:         "id",
 	AppId:      "app_id",
@@ -112,6 +112,6 @@ func (dao *SysLogDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *SysLogDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *SysLogDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

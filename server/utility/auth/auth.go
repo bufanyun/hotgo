@@ -16,7 +16,7 @@ import (
 func IsExceptAuth(ctx context.Context, path string) bool {
 	var pathList []string
 
-	except, _ := g.Cfg().Get(ctx, "router.admin.exceptAuth")
+	except := g.Cfg().MustGet(ctx, "router.admin.exceptAuth")
 	pathList = except.Strings()
 
 	for i := 0; i < len(pathList); i++ {
@@ -32,7 +32,7 @@ func IsExceptAuth(ctx context.Context, path string) bool {
 func IsExceptLogin(ctx context.Context, path string) bool {
 	var pathList []string
 
-	except, _ := g.Cfg().Get(ctx, "router.admin.exceptLogin")
+	except := g.Cfg().MustGet(ctx, "router.admin.exceptLogin")
 	pathList = except.Strings()
 
 	for i := 0; i < len(pathList); i++ {

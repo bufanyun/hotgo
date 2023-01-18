@@ -18,7 +18,7 @@
       <slot name="tableTitle"></slot>
     </div>
 
-    <div class="flex items-center table-toolbar-right">
+    <div class="flex items-center table-toolbar-right" v-show="showTopRight">
       <!--顶部右侧区域-->
       <slot name="toolbar"></slot>
 
@@ -65,7 +65,7 @@
       </n-tooltip>
 
       <!--表格设置单独抽离成组件-->
-      <ColumnSetting />
+      <ColumnSetting :openChecked="openChecked" />
     </div>
   </div>
   <div class="s-table">

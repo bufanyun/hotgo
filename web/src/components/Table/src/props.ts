@@ -12,6 +12,14 @@ export const basicProps = {
     type: String,
     default: null,
   },
+  showTopRight: {
+    type: Boolean,
+    default: true,
+  },
+  openChecked: {
+    type: Boolean,
+    default: false,
+  },
   size: {
     type: String,
     default: 'medium',

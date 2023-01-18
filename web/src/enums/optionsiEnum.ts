@@ -65,3 +65,31 @@ export const statusActions = [
     key: 2,
   },
 ];
+
+// 标签
+export const tagOptions = [
+  {
+    label: '灰色',
+    value: 'default',
+  },
+  {
+    label: '主色',
+    value: 'primary',
+  },
+  {
+    label: '蓝色',
+    value: 'info',
+  },
+  {
+    label: '绿色',
+    value: 'success',
+  },
+  {
+    label: '黄色',
+    value: 'warning',
+  },
+  {
+    label: '红色',
+    value: 'error',
+  },
+];

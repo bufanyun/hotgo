@@ -24,7 +24,7 @@ func (s *sMiddleware) ApiAuth(r *ghttp.Request) {
 	)
 
 	// 替换掉模块前缀
-	routerPrefix, _ := g.Cfg().Get(ctx, "router.api.prefix", "/api")
+	routerPrefix := g.Cfg().MustGet(ctx, "router.api.prefix", "/api")
 	path := gstr.Replace(r.URL.Path, routerPrefix.String(), "", 1)
 
 	/// 不需要验证登录的路由地址
@@ -39,9 +39,9 @@ func (s *sMiddleware) ApiAuth(r *ghttp.Request) {
 	}
 
 	//// 验证路由访问权限
-	//verify := adminService.Role.Verify(ctx, customCtx.User.Id, path)
+	//verify := service.AdminRole().Verify(ctx, path, r.Method)
 	//if !verify {
-	//	response.JsonExit(r, gcode.CodeSecurityReason.Code(), "你没有访问权限！")
+	//	response.JsonExit(r, consts.CodeSecurityReason, "你没有访问权限！")
 	//	return
 	//}
 

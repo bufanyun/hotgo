@@ -1,0 +1,193 @@
+// Package @{.templateGroup}
+// @Link  https://github.com/bufanyun/hotgo
+// @Copyright  Copyright (c) @{NowYear} HotGo CLI
+// @Author  Ms <133814250@qq.com>
+// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
+// @AutoGenerate Version @{.hgVersion}
+// @AutoGenerate Date @{.nowTime}
+//
+package @{.templateGroup}
+
+import (
+	"context"
+	"fmt"
+	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/util/gconv"
+	"hotgo/internal/consts"
+	"hotgo/internal/dao"
+	"hotgo/internal/library/contexts"
+	"hotgo/internal/library/hgorm"
+	"hotgo/internal/model/input/@{.templateGroup}in"
+	"hotgo/internal/model/input/form"
+	"hotgo/internal/service"
+	"hotgo/utility/convert"
+	"hotgo/utility/excel"
+	"hotgo/utility/validate"
+)
+
+type s@{.servFunName} struct{}
+
+func New@{.servFunName}() *s@{.servFunName} {
+	return &s@{.servFunName}{}
+}
+
+func init() {
+	service.Register@{.servFunName}(New@{.servFunName}())
+}
+
+// Model @{.tableComment}Orm模型
+func (s *s@{.servFunName}) Model(ctx context.Context) *gdb.Model {
+	return dao.@{.daoName}.Ctx(ctx)
+}
+
+// List 获取@{.tableComment}列表
+func (s *s@{.servFunName}) List(ctx context.Context, in @{.templateGroup}in.@{.varName}ListInp) (list []*@{.templateGroup}in.@{.varName}ListModel, totalCount int, err error) {
+	mod := dao.@{.daoName}.Ctx(ctx)
+@{.listWhere}
+@{.listJoin.link}
+	totalCount, err = mod.Clone().Count(1)
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return list, totalCount, err
+	}
+
+	if totalCount == 0 {
+		return list, totalCount, nil
+	}
+
+@{.listJoin.select}
+	if err = mod.Fields(fields).Handler(hgorm.HandlerFilterAuth).Page(in.Page, in.PerPage).@{.listOrder}.Scan(&list); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return list, totalCount, err
+	}
+
+	return list, totalCount, err
+}
+@{ if eq .options.Step.HasExport true }
+// Export 导出@{.tableComment}
+func (s *s@{.servFunName}) Export(ctx context.Context, in @{.templateGroup}in.@{.varName}ListInp) (err error) {
+	list, totalCount, err := s.List(ctx, in)
+	if err != nil {
+		return err
+	}
+
+	// 字段的排序是依据tags的字段顺序，如果你不想使用默认的排序方式，可以直接定义 tags = []string{"字段名称", "字段名称2", ...}
+	tags, err := convert.GetEntityDescTags(@{.templateGroup}in.@{.varName}ExportModel{})
+	if err != nil {
+		return err
+	}
+
+	var (
+		fileName  = "导出@{.tableComment}-" + gctx.CtxId(ctx) + ".xlsx"
+		sheetName = fmt.Sprintf("索引条件共%v行,共%v页,当前导出是第%v页,本页共%v行", totalCount, form.CalPageCount(totalCount, in.PerPage), in.Page, len(list))
+		exports   []@{.templateGroup}in.@{.varName}ExportModel
+	)
+
+	err = gconv.Scan(list, &exports)
+	if err != nil {
+		return err
+	}
+	if err = excel.ExportByStructs(ctx, tags, exports, fileName, sheetName); err != nil {
+		return
+	}
+	return
+}@{end}
+@{ if eq .options.Step.HasEdit true }
+// Edit 修改/新增@{.tableComment}
+func (s *s@{.servFunName}) Edit(ctx context.Context, in @{.templateGroup}in.@{.varName}EditInp) (err error) {
+	// 修改
+	if in.@{.pk.GoName} > 0 {
+@{.edit.update}
+	}
+
+	// 新增
+@{.edit.insert}
+	return
+}
+@{end}
+@{ if eq .options.Step.HasDel true }
+// Delete 删除@{.tableComment}
+func (s *s@{.servFunName}) Delete(ctx context.Context, in @{.templateGroup}in.@{.varName}DeleteInp) (err error) {
+	_, err = dao.@{.daoName}.Ctx(ctx).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Delete()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return err
+	}
+
+	return nil
+}@{end}
+@{ if and (eq .options.Step.HasEdit true) (eq .options.Step.HasMaxSort true) }
+// MaxSort 获取@{.tableComment}最大排序
+func (s *s@{.servFunName}) MaxSort(ctx context.Context, in @{.templateGroup}in.@{.varName}MaxSortInp) (res *@{.templateGroup}in.@{.varName}MaxSortModel, err error) {
+	if err = dao.@{.daoName}.Ctx(ctx).Fields(dao.@{.daoName}.Columns().Sort).OrderDesc(dao.@{.daoName}.Columns().Sort).Scan(&res); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return nil, err
+	}
+
+	res.Sort = res.Sort + g.Cfg().MustGet(ctx, "hotgo.admin.maxSortIncrement").Int()
+	return res, nil
+}
+@{end}
+@{ if eq .options.Step.HasView true }
+// View 获取@{.tableComment}指定信息
+func (s *s@{.servFunName}) View(ctx context.Context, in @{.templateGroup}in.@{.varName}ViewInp) (res *@{.templateGroup}in.@{.varName}ViewModel, err error) {
+	if err = dao.@{.daoName}.Ctx(ctx).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Scan(&res); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return nil, err
+	}
+
+	return res, nil
+}@{end}
+@{ if eq .options.Step.HasStatus true }
+// Status 更新@{.tableComment}状态
+func (s *s@{.servFunName}) Status(ctx context.Context, in @{.templateGroup}in.@{.varName}StatusInp) (err error) {
+	if in.@{.pk.GoName} <= 0 {
+		err = gerror.New("@{.pk.Dc}不能为空")
+		return err
+	}
+
+	if in.Status <= 0 {
+		err = gerror.New("状态不能为空")
+		return err
+	}
+
+	if !validate.InSliceInt(consts.StatusMap, in.Status) {
+		err = gerror.New("状态不正确")
+		return err
+	}
+
+	_, err = dao.@{.daoName}.Ctx(ctx).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Data(dao.@{.daoName}.Columns().Status, in.Status).Update()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return err
+	}
+
+	return nil
+}
+@{end}
+@{ if eq .options.Step.HasSwitch true }
+// Switch 更新@{.tableComment}开关
+func (s *s@{.servFunName}) Switch(ctx context.Context, in @{.templateGroup}in.@{.varName}SwitchInp) (err error) {
+	var fields = []string{
+@{.switchFields}
+		// ...
+	}
+
+	if !validate.InSliceString(fields, in.Key) {
+		err = gerror.New("开关键名不在白名单")
+		return err
+	}
+
+	_, err = dao.@{.daoName}.Ctx(ctx).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Data(in.Key, in.Value).Update()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return err
+	}
+
+	return nil
+}
+@{end}

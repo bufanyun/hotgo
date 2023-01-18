@@ -86,6 +86,7 @@ export const useUserStore = defineStore({
 
     // 获取用户信息
     GetInfo() {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const that = this;
       return new Promise((resolve, reject) => {
         getUserInfo()
@@ -108,6 +109,7 @@ export const useUserStore = defineStore({
     },
     // 获取用户信息
     GetConfig() {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const that = this;
       return new Promise((resolve, reject) => {
         getConfig()

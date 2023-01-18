@@ -12,8 +12,8 @@ import (
 // AdminDept is the golang structure of table hg_admin_dept for DAO operations like Where/Data.
 type AdminDept struct {
 	g.Meta    `orm:"table:hg_admin_dept, do:true"`
-	Id        interface{} // 部门id
-	Pid       interface{} // 父部门id
+	Id        interface{} // 部门ID
+	Pid       interface{} // 父部门ID
 	Name      interface{} // 部门名称
 	Code      interface{} // 部门编码
 	Type      interface{} // 部门类型

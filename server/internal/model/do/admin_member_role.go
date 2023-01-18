@@ -11,6 +11,6 @@ import (
 // AdminMemberRole is the golang structure of table hg_admin_member_role for DAO operations like Where/Data.
 type AdminMemberRole struct {
 	g.Meta   `orm:"table:hg_admin_member_role, do:true"`
-	MemberId interface{} // 用户ID
+	MemberId interface{} // 管理员ID
 	RoleId   interface{} // 角色ID
 }

@@ -20,64 +20,64 @@ type AdminMemberDao struct {
 
 // AdminMemberColumns defines and stores column names for table hg_admin_member.
 type AdminMemberColumns struct {
-	Id                 string //
+	Id                 string // 管理员ID
 	DeptId             string // 部门ID
+	RoleId             string // 角色ID
+	RealName           string // 真实姓名
 	Username           string // 帐号
 	PasswordHash       string // 密码
 	Salt               string // 密码盐
 	AuthKey            string // 授权令牌
 	PasswordResetToken string // 密码重置令牌
-	Type               string // 1:普通管理员;10超级管理员
-	Realname           string // 真实姓名
 	Avatar             string // 头像
-	Sex                string // 性别[1:男;2:女;3:未知]
+	Sex                string // 性别
 	Qq                 string // qq
 	Email              string // 邮箱
-	Birthday           string // 生日
-	ProvinceId         string // 省
-	CityId             string // 城市
-	AreaId             string // 地区
-	Address            string // 默认地址
 	Mobile             string // 手机号码
-	HomePhone          string // 家庭号码
-	DingtalkRobotToken string // 钉钉机器人token
+	Birthday           string // 生日
+	ProvinceId         string // 省编码
+	CityId             string // 城市编码
+	CountyId           string // 区域编码
+	Address            string // 联系地址
 	VisitCount         string // 访问次数
 	LastTime           string // 最后一次登录时间
 	LastIp             string // 最后一次登录ip
-	Role               string // 权限
+	Pid                string // 上级管理员ID
+	Level              string // 关系树等级
+	Tree               string // 关系树
 	Remark             string // 备注
 	Status             string // 状态
 	CreatedAt          string // 创建时间
 	UpdatedAt          string // 修改时间
 }
 
-//  adminMemberColumns holds the columns for table hg_admin_member.
+// adminMemberColumns holds the columns for table hg_admin_member.
 var adminMemberColumns = AdminMemberColumns{
 	Id:                 "id",
 	DeptId:             "dept_id",
+	RoleId:             "role_id",
+	RealName:           "real_name",
 	Username:           "username",
 	PasswordHash:       "password_hash",
 	Salt:               "salt",
 	AuthKey:            "auth_key",
 	PasswordResetToken: "password_reset_token",
-	Type:               "type",
-	Realname:           "realname",
 	Avatar:             "avatar",
 	Sex:                "sex",
 	Qq:                 "qq",
 	Email:              "email",
+	Mobile:             "mobile",
 	Birthday:           "birthday",
 	ProvinceId:         "province_id",
 	CityId:             "city_id",
-	AreaId:             "area_id",
+	CountyId:           "county_id",
 	Address:            "address",
-	Mobile:             "mobile",
-	HomePhone:          "home_phone",
-	DingtalkRobotToken: "dingtalk_robot_token",
 	VisitCount:         "visit_count",
 	LastTime:           "last_time",
 	LastIp:             "last_ip",
-	Role:               "role",
+	Pid:                "pid",
+	Level:              "level",
+	Tree:               "tree",
 	Remark:             "remark",
 	Status:             "status",
 	CreatedAt:          "created_at",
@@ -124,6 +124,6 @@ func (dao *AdminMemberDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *AdminMemberDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *AdminMemberDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

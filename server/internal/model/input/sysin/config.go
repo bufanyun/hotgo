@@ -96,6 +96,6 @@ type ConfigListInp struct {
 
 type ConfigListModel struct {
 	entity.SysConfig
-	DeptName string `json:"dept_name"`
-	RoleName string `json:"role_name"`
+	DeptName string `json:"deptName"`
+	RoleName string `json:"roleName"`
 }

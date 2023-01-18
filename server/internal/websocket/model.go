@@ -18,7 +18,7 @@ type WRequest struct {
 type WResponse struct {
 	Event     string      `json:"event"`              // 事件名称
 	Data      interface{} `json:"data,omitempty"`     // 数据
-	Code      int64       `json:"code"`               // 状态码
+	Code      int         `json:"code"`               // 状态码
 	ErrorMsg  string      `json:"errorMsg,omitempty"` // 错误消息
 	Timestamp int64       `json:"timestamp"`          // 服务器时间
 }

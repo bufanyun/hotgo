@@ -39,8 +39,8 @@ type AdminMenuColumns struct {
 	KeepAlive      string // 缓存该路由
 	Hidden         string // 是否隐藏
 	Affix          string // 是否固定
-	Level          string // 级别
-	Tree           string // 树
+	Level          string // 关系树等级
+	Tree           string // 关系树
 	Sort           string // 排序
 	Remark         string // 备注
 	Status         string // 菜单状态
@@ -48,7 +48,7 @@ type AdminMenuColumns struct {
 	UpdatedAt      string // 更新时间
 }
 
-//  adminMenuColumns holds the columns for table hg_admin_menu.
+// adminMenuColumns holds the columns for table hg_admin_menu.
 var adminMenuColumns = AdminMenuColumns{
 	Id:             "id",
 	Pid:            "pid",
@@ -118,6 +118,6 @@ func (dao *AdminMenuDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *AdminMenuDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *AdminMenuDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

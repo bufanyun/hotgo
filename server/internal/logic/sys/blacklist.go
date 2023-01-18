@@ -14,7 +14,7 @@ import (
 	"hotgo/internal/dao"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/convert"
+	"hotgo/utility/validate"
 )
 
 type sSysBlacklist struct{}
@@ -79,7 +79,7 @@ func (s *sSysBlacklist) Status(ctx context.Context, in sysin.BlacklistStatusInp)
 		return err
 	}
 
-	if !convert.InSliceInt(consts.StatusMap, in.Status) {
+	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
 		return err
 	}
@@ -118,7 +118,7 @@ func (s *sSysBlacklist) View(ctx context.Context, in sysin.BlacklistViewInp) (re
 }
 
 // List 获取列表
-func (s *sSysBlacklist) List(ctx context.Context, in sysin.BlacklistListInp) (list []*sysin.BlacklistListModel, totalCount int64, err error) {
+func (s *sSysBlacklist) List(ctx context.Context, in sysin.BlacklistListInp) (list []*sysin.BlacklistListModel, totalCount int, err error) {
 	mod := dao.SysBlacklist.Ctx(ctx)
 
 	// 访问路径
@@ -141,7 +141,7 @@ func (s *sSysBlacklist) List(ctx context.Context, in sysin.BlacklistListInp) (li
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}

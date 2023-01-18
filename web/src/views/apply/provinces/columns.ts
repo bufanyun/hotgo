@@ -1,5 +1,5 @@
 import { h } from 'vue';
-import { NAvatar, NTag } from 'naive-ui';
+import {  NTag } from 'naive-ui';
 
 export const columns = [
   {

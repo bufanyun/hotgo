@@ -51,7 +51,6 @@ export const routerGenerator = (routerMap, parent?): any[] => {
 
 /**
  * 动态生成菜单
- * @returns {Promise<Router>}
  */
 export const generatorDynamicRouter = (): Promise<RouteRecordRaw[]> => {
   return new Promise((resolve, reject) => {

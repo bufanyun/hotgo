@@ -20,7 +20,7 @@ type SysCronDao struct {
 
 // SysCronColumns defines and stores column names for table hg_sys_cron.
 type SysCronColumns struct {
-	Id        string // 主键
+	Id        string // 任务ID
 	GroupId   string // 分组ID
 	Name      string // 任务名称
 	Params    string // 函数参数
@@ -29,12 +29,12 @@ type SysCronColumns struct {
 	Count     string // 执行次数
 	Sort      string // 排序
 	Remark    string // 备注
-	Status    string // 状态
+	Status    string // 任务状态
 	CreatedAt string // 创建时间
 	UpdatedAt string // 更新时间
 }
 
-//  sysCronColumns holds the columns for table hg_sys_cron.
+// sysCronColumns holds the columns for table hg_sys_cron.
 var sysCronColumns = SysCronColumns{
 	Id:        "id",
 	GroupId:   "group_id",
@@ -90,6 +90,6 @@ func (dao *SysCronDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *SysCronDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *SysCronDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

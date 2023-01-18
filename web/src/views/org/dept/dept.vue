@@ -20,7 +20,7 @@
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建
+            新建部门
           </n-button>
         </n-space>
 
@@ -30,11 +30,15 @@
           :row-key="rowKey"
           :loading="loading"
           default-expand-all
-
         />
       </n-space>
 
-      <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="新建">
+      <n-modal
+        v-model:show="showModal"
+        :show-icon="false"
+        preset="dialog"
+        :title="formParams?.id > 0 ? '编辑部门 #' + formParams?.id : '新建部门'"
+      >
         <n-form
           :model="formParams"
           :rules="rules"
@@ -111,6 +115,7 @@
   import { TableAction } from '@/components/Table';
   import { statusActions, statusOptions } from '@/enums/optionsiEnum';
   import { Delete, Edit, getDeptList, Status } from '@/api/org/dept';
+  import { cloneDeep } from 'lodash-es';
 
   const rules = {
     name: {
@@ -158,6 +163,8 @@
     schemas,
   });
 
+  const options = ref<any>([]);
+  const optionsDefaultValue = ref<any>(null);
   const loading = ref(false);
   const formRef: any = ref(null);
   const message = useMessage();
@@ -165,7 +172,7 @@
   const showModal = ref(false);
   const formBtnLoading = ref(false);
 
-  let resetFormParams = {
+  const defaultState = {
     id: 0,
     pid: 0,
     name: '',
@@ -176,17 +183,14 @@
     email: '',
     sort: 0,
     status: 1,
-    created_at: '',
-    updated_at: '',
+    createdAt: '',
+    updatedAt: '',
   };
-  let formParams = ref(resetFormParams);
-
-  const params = ref({
-    pageSize: 5,
-    name: 'xiaoMa',
-  });
+  let formParams = ref<any>();
 
   type RowData = {
+    createdAt: string;
+    status: number;
     name: string;
     index: string;
     children?: RowData[];
@@ -253,10 +257,10 @@
     },
     {
       title: '创建时间',
-      key: 'created_at',
+      key: 'createdAt',
       width: 200,
       render: (rows, _) => {
-        return rows.created_at; //timestampToTime();
+        return rows.createdAt; //timestampToTime();
       },
     },
     {
@@ -264,7 +268,7 @@
       key: 'actions',
       width: 220,
       // fixed: 'right',
-      render(record) {
+      render(record: any) {
         return h(TableAction as any, {
           style: 'button',
           actions: [
@@ -279,9 +283,6 @@
           ],
           dropDownActions: statusActions,
           select: (key) => {
-            // console.log('select record:' + JSON.stringify(record));
-            // message.info(`您点击了，${key} 按钮`);
-
             updateStatus(record.id, key);
           },
         });
@@ -293,13 +294,11 @@
 
   function addTable() {
     showModal.value = true;
-    formParams.value = resetFormParams;
-    console.log('addTable formParams:' + JSON.stringify(formParams.value));
+    formParams.value = cloneDeep(defaultState);
     optionsDefaultValue.value = null;
   }
 
   function handleEdit(record: Recordable) {
-    console.log('点击了编辑', record);
     showModal.value = true;
     formParams.value = record;
     formParams.value.children = null;
@@ -307,16 +306,14 @@
   }
 
   function handleDelete(record: Recordable) {
-    console.log('点击了删除', record);
     dialog.warning({
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
         Delete(record)
           .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
             message.success('操作成功');
             loadDataTable({});
           })
@@ -325,7 +322,7 @@
           });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
@@ -333,7 +330,6 @@
   function updateStatus(id, status) {
     Status({ id: id, status: status })
       .then((_res) => {
-        console.log('_res:' + JSON.stringify(_res));
         message.success('操作成功');
         setTimeout(() => {
           loadDataTable({});
@@ -349,19 +345,13 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formParams:' + JSON.stringify(formParams.value));
-        Edit(formParams.value)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            setTimeout(() => {
-              showModal.value = false;
-              loadDataTable({});
-            });
-          })
-          .catch((e: Error) => {
-            message.error(e.message ?? '操作失败');
+        Edit(formParams.value).then((_res) => {
+          message.success('操作成功');
+          setTimeout(() => {
+            showModal.value = false;
+            loadDataTable({});
           });
+        });
       } else {
         message.error('请填写完整信息');
       }
@@ -370,14 +360,11 @@
   }
 
   async function handleSubmit(values: Recordable) {
-    console.log('handleSubmit valuesL:' + JSON.stringify(values));
     // reloadTable();
     await loadDataTable(values);
   }
 
-  function handleReset(values: Recordable) {
-    console.log(values);
-  }
+  function handleReset(_values: Recordable) {}
 
   const loadDataTable = async (res) => {
     loading.value = true;
@@ -404,14 +391,8 @@
 
   function handleUpdateValue(
     value: string | number | Array<string | number> | null,
-    option: TreeSelectOption | null | Array<TreeSelectOption | null>
+    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
   ) {
-    console.log(value, option);
-
     formParams.value.pid = value;
   }
-
-  const options = ref([]);
-
-  const optionsDefaultValue = ref(null);
 </script>

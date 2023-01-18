@@ -1,10 +1,10 @@
 {
   "name": "hotgo",
-  "version": "1.8.1",
+  "version": "2.1.0",
   "author": {
-    "name": "Ahjung",
-    "email": "735878602@qq.com",
-    "url": "https://github.com/jekip/naive-ui-admin"
+    "name": "MengShuai",
+    "email": "133814250@qq.com",
+    "url": "https://github.com/bufanyun/hotgo"
   },
   "private": true,
   "scripts": {
@@ -42,7 +42,7 @@
     "lodash-es": "^4.17.21",
     "mitt": "^2.1.0",
     "mockjs": "^1.1.0",
-    "naive-ui": "^2.28.4",
+    "naive-ui": "^2.34.3",
     "node-sass": "^7.0.3",
     "pinia": "^2.0.14",
     "qs": "^6.10.3",
@@ -109,6 +109,10 @@
     }
   },
   "keywords": [
+    "hotgo",
+    "hg",
+    "gf",
+    "goframe",
     "vue",
     "naive-ui",
     "naive-ui-admin",
@@ -120,13 +124,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jekip/naive-ui-admin.git"
+    "url": "git+https://github.com/bufanyun/hotgo.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jekip/naive-ui-admin/issues"
+    "url": "https://github.com/bufanyun/hotgo/issues"
   },
-  "homepage": "https://github.com/jekip/naive-ui-admin",
+  "homepage": "https://github.com/bufanyun/hotgo",
   "engines": {
     "node": "^12 || >=14"
   }

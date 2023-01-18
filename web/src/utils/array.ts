@@ -122,13 +122,6 @@ export function encodeParams(obj) {
 }
 
 /**
- * 去重追加
- * @param array
- * @param son
- */
-export function onlyPush(array: any, son: any) {}
-
-/**
  * 对象拷贝
  * @param obj2
  * @param obj1

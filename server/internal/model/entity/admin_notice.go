@@ -12,7 +12,7 @@ import (
 type AdminNotice struct {
 	Id        int64       `json:"id"        description:"公告ID"`
 	Title     string      `json:"title"     description:"公告标题"`
-	Type      int64       `json:"type"      description:"公告类型（1通知 2公告）"`
+	Type      int64       `json:"type"      description:"公告类型"`
 	Content   string      `json:"content"   description:"公告内容"`
 	Receiver  string      `json:"receiver"  description:"接收者"`
 	Reader    string      `json:"reader"    description:"已读人"`

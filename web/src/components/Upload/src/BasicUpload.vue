@@ -11,12 +11,24 @@
         >
           <div class="upload-card-item-info">
             <div class="img-box">
-              <img :src="item" />
+              <template v-if="fileType === 'image'">
+                <img :src="item" @error="errorImg($event)" />
+              </template>
+              <template v-else>
+                <n-avatar :style="fileAvatarCSS">{{ getFileExt(item) }}</n-avatar>
+              </template>
             </div>
             <div class="img-box-actions">
-              <n-icon size="18" class="mx-2 action-icon" @click="preview(item)">
-                <EyeOutlined />
-              </n-icon>
+              <template v-if="fileType === 'image'">
+                <n-icon size="18" class="mx-2 action-icon" @click="preview(item)">
+                  <EyeOutlined />
+                </n-icon>
+              </template>
+              <template v-else>
+                <n-icon size="18" class="mx-2 action-icon" @click="download(item)">
+                  <CloudDownloadOutlined />
+                </n-icon>
+              </template>
               <n-icon size="18" class="mx-2 action-icon" @click="remove(index)">
                 <DeleteOutlined />
               </n-icon>
@@ -40,7 +52,7 @@
               <n-icon size="18" class="m-auto">
                 <PlusOutlined />
               </n-icon>
-              <span class="upload-title">上传图片</span>
+              <span class="upload-title">{{ uploadTitle }}</span>
             </div>
           </n-upload>
         </div>
@@ -68,21 +80,21 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, toRefs, reactive, computed, watch } from 'vue';
-  import { EyeOutlined, DeleteOutlined, PlusOutlined } from '@vicons/antd';
+  import { defineComponent, toRefs, reactive, computed, watch, onMounted, ref } from 'vue';
+  import { EyeOutlined, DeleteOutlined, PlusOutlined, CloudDownloadOutlined } from '@vicons/antd';
   import { basicProps } from './props';
   import { useMessage, useDialog } from 'naive-ui';
   import { ResultEnum } from '@/enums/httpEnum';
   import componentSetting from '@/settings/componentSetting';
   import { useGlobSetting } from '@/hooks/setting';
-  import { isString } from '@/utils/is';
-
+  import { isJsonString, isNullOrUnDef } from '@/utils/is';
+  import { getFileExt } from '@/utils/urlUtils';
   const globSetting = useGlobSetting();
 
   export default defineComponent({
     name: 'BasicUpload',
 
-    components: { EyeOutlined, DeleteOutlined, PlusOutlined },
+    components: { EyeOutlined, DeleteOutlined, PlusOutlined, CloudDownloadOutlined },
     props: {
       ...basicProps,
     },
@@ -97,6 +109,13 @@
 
       const message = useMessage();
       const dialog = useDialog();
+      const uploadTitle = ref(props.fileType === 'image' ? '上传图片' : '上传附件');
+      const fileAvatarCSS = computed(() => {
+        return {
+          '--n-merged-size': `var(--n-avatar-size-override, ${props.width * 0.8}px)`,
+          '--n-font-size': `18px`,
+        };
+      });
 
       const state = reactive({
         showModal: false,
@@ -109,31 +128,54 @@
       watch(
         () => props.value,
         () => {
-          // console.log('props.value:' + props.value);
-          // 单图模式
-          if (typeof props.value === 'string') {
-            let data: string[] = [];
-            if (props.value !== '') {
-              data.push(props.value);
-            }
-
-            state.imgList = data.map((item) => {
-              return getImgUrl(item);
-            });
-            return;
-          }
-
-          // 多图模式
-          state.imgList = props.value.map((item) => {
-            return getImgUrl(item);
-          });
+          loadValue(props.value);
+          return;
         }
       );
+
+      watch(
+        () => props.values,
+        () => {
+          loadValue(props.values);
+          return;
+        }
+      );
+
+      // 加载默认
+      function loadValue(value: any) {
+        if (value === null) {
+          return;
+        }
+
+        let data: string[] = [];
+        if (isJsonString(value)) {
+          value = JSON.parse(value);
+        }
+
+        // 单图模式
+        if (typeof value === 'string') {
+          if (value !== '') {
+            data.push(value);
+          }
+        } else {
+          // 多图模式
+          data = value;
+        }
+
+        state.imgList = data.map((item) => {
+          return getImgUrl(item);
+        });
+        state.originalImgList = state.imgList;
+      }
 
       //预览
       function preview(url: string) {
         state.showModal = true;
         state.previewUrl = url;
+      }
+      //下载
+      function download(url: string) {
+        window.open(url);
       }
 
       //删除
@@ -146,7 +188,11 @@
           onPositiveClick: () => {
             state.imgList.splice(index, 1);
             state.originalImgList.splice(index, 1);
-            emit('uploadChange', state.originalImgList);
+            if (props.maxNumber === 1) {
+              emit('uploadChange', '');
+            } else {
+              emit('uploadChange', state.originalImgList);
+            }
             emit('delete', state.originalImgList);
           },
           onNegativeClick: () => {},
@@ -159,25 +205,29 @@
         return /(^http|https:\/\/)/g.test(url) ? url : `${imgUrl}${url}`;
       }
 
-      function checkFileType(fileType: string) {
-        return componentSetting.upload.fileType.includes(fileType);
+      function checkFileType(map: string[], fileType: string) {
+        if (isNullOrUnDef(map)) {
+          return true;
+        }
+        return map.includes(fileType);
       }
 
       //上传之前
       function beforeUpload({ file }) {
         const fileInfo = file.file;
-        const { maxSize, accept } = props;
-        const acceptRef = (isString(accept) && accept.split(',')) || [];
-
         // 设置最大值，则判断
-        if (maxSize && fileInfo.size / 1024 / 1024 >= maxSize) {
-          message.error(`上传文件最大值不能超过${maxSize}M`);
+        if (props.maxSize && fileInfo.size / 1024 / 1024 >= props.maxSize) {
+          message.error(`上传文件最大值不能超过${props.maxSize}M`);
           return false;
         }
 
         // 设置类型,则判断
-        const fileType = componentSetting.upload.fileType;
-        if (acceptRef.length > 0 && !checkFileType(fileInfo.type)) {
+        const fileType =
+          props.fileType === 'image'
+            ? componentSetting.upload.imageType
+            : componentSetting.upload.fileType;
+        if (!checkFileType(fileType, fileInfo.type)) {
+          console.log('checkFileType fileInfo.type:' + fileInfo.type);
           message.error(`只能上传文件类型为${fileType.join(',')}`);
           return false;
         }
@@ -197,20 +247,45 @@
         if (code === ResultEnum.SUCCESS) {
           let imgUrl: string = getImgUrl(result[imgField]);
           state.imgList.push(imgUrl);
-          state.originalImgList.push(result[imgField]);
-          emit('uploadChange', state.originalImgList);
+          state.originalImgList = state.imgList;
+          if (props.maxNumber === 1) {
+            emit('uploadChange', imgUrl);
+          } else {
+            emit('uploadChange', state.originalImgList);
+          }
         } else {
           message.error(msg);
         }
       }
 
+      /**图片加载失败显示自定义默认图片(缺省图)*/
+      function errorImg(e) {
+        e.srcElement.src = '/onerror.png';
+        //这一句没用，如果默认图片的路径错了还是会一直闪屏，在方法的前面加个.once只让它执行一次也没用
+        e.srcElement.onerror = null; //防止闪图
+      }
+
+      onMounted(async () => {
+        setTimeout(function () {
+          if (props.maxNumber === 1) {
+            loadValue(props.value);
+          } else {
+            loadValue(props.values);
+          }
+        }, 50);
+      });
       return {
+        errorImg,
         ...toRefs(state),
         finish,
         preview,
+        download,
         remove,
         beforeUpload,
         getCSSProperties,
+        uploadTitle,
+        fileAvatarCSS,
+        getFileExt,
       };
     },
   });

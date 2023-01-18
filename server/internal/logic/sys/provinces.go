@@ -14,7 +14,7 @@ import (
 	"hotgo/internal/dao"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/convert"
+	"hotgo/utility/validate"
 )
 
 type sSysProvinces struct{}
@@ -80,7 +80,7 @@ func (s *sSysProvinces) Status(ctx context.Context, in sysin.ProvincesStatusInp)
 		return err
 	}
 
-	if !convert.InSliceInt(consts.StatusMap, in.Status) {
+	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
 		return err
 	}
@@ -123,7 +123,7 @@ func (s *sSysProvinces) View(ctx context.Context, in sysin.ProvincesViewInp) (re
 }
 
 // List 获取列表
-func (s *sSysProvinces) List(ctx context.Context, in sysin.ProvincesListInp) (list []*sysin.ProvincesListModel, totalCount int64, err error) {
+func (s *sSysProvinces) List(ctx context.Context, in sysin.ProvincesListInp) (list []*sysin.ProvincesListModel, totalCount int, err error) {
 	mod := dao.SysProvinces.Ctx(ctx)
 
 	// 访问路径
@@ -146,7 +146,7 @@ func (s *sSysProvinces) List(ctx context.Context, in sysin.ProvincesListInp) (li
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}

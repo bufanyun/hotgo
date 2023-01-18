@@ -93,37 +93,38 @@ type MemberMaxSortModel struct {
 	Sort int
 }
 
-// MemberEditInp 修改/新增字典数据
+// MemberEditInp 修改/新增管理员
 type MemberEditInp struct {
-	Id                 int64       `json:"id"                   description:""`
-	PostIds            []int64     `json:"postIds"       v:"required#岗位不能为空"           description:"岗位ID"`
-	DeptId             int64       `json:"dept_id"       v:"required#部门不能为空"           description:"部门ID"`
-	Username           string      `json:"username"   v:"required#账号不能为空"           description:"帐号"`
-	Password           string      `json:"password"            description:"密码"`
-	Realname           string      `json:"realname"             description:"真实姓名"`
-	Avatar             string      `json:"avatar"               description:"头像"`
-	Sex                string      `json:"sex"                  description:"性别[0:未知;1:男;2:女]"`
-	Qq                 string      `json:"qq"                   description:"qq"`
-	Email              string      `json:"email"                description:"邮箱"`
-	Birthday           *gtime.Time `json:"birthday"             description:"生日"`
-	ProvinceId         int         `json:"province_id"          description:"省"`
-	CityId             int         `json:"city_id"              description:"城市"`
-	AreaId             int         `json:"area_id"              description:"地区"`
-	Address            string      `json:"address"              description:"默认地址"`
-	Mobile             string      `json:"mobile"               description:"手机号码"`
-	HomePhone          string      `json:"home_phone"           description:"家庭号码"`
-	DingtalkRobotToken string      `json:"dingtalk_robot_token" description:"钉钉机器人token"`
-	Role               int         `json:"role"            v:"required#角色不能为空"         description:"权限"`
-	Remark             string      `json:"remark"               description:"备注"`
-	Status             string      `json:"status"               description:"状态"`
-	CreatedAt          *gtime.Time `json:"created_at"           description:"创建时间"`
-	UpdatedAt          *gtime.Time `json:"updated_at"           description:"修改时间"`
+	Id         int64       `json:"id"                   description:""`
+	RoleId     int         `json:"roleId"            v:"required#角色不能为空"         description:"角色ID"`
+	PostIds    []int64     `json:"postIds"       v:"required#岗位不能为空"           description:"岗位ID"`
+	DeptId     int64       `json:"deptId"       v:"required#部门不能为空"           description:"部门ID"`
+	Username   string      `json:"username"   v:"required#账号不能为空"           description:"帐号"`
+	Password   string      `json:"password"            description:"密码"`
+	Realname   string      `json:"realName"             description:"真实姓名"`
+	Avatar     string      `json:"avatar"               description:"头像"`
+	Sex        string      `json:"sex"                  description:"性别"`
+	Qq         string      `json:"qq"                   description:"qq"`
+	Email      string      `json:"email"                description:"邮箱"`
+	Birthday   *gtime.Time `json:"birthday"             description:"生日"`
+	ProvinceId int         `json:"provinceId"          description:"省"`
+	CityId     int         `json:"cityId"              description:"城市"`
+	AreaId     int         `json:"areaId"              description:"地区"`
+	Address    string      `json:"address"              description:"默认地址"`
+	Mobile     string      `json:"mobile"               description:"手机号码"`
+	Remark     string      `json:"remark"               description:"备注"`
+	Status     string      `json:"status"               description:"状态"`
+	CreatedAt  *gtime.Time `json:"createdAt"           description:"创建时间"`
+	UpdatedAt  *gtime.Time `json:"updatedAt"           description:"修改时间"`
 }
 
 type MemberAddInp struct {
 	MemberEditInp
-	PasswordHash string `json:"password_hash"            description:"密码hash"`
+	PasswordHash string `json:"passwordHash"            description:"密码hash"`
 	Salt         string `json:"salt"            description:"密码盐"`
+	Pid          int64  `json:"pid"                description:"上级ID"`
+	Level        int    `json:"level"              description:"等级"`
+	Tree         string `json:"tree"               description:"关系树"`
 }
 
 type MemberEditModel struct{}
@@ -159,10 +160,10 @@ type MemberListInp struct {
 
 type MemberListModel struct {
 	entity.AdminMember
-	DeptName string  `json:"dept_name"`
-	RoleName string  `json:"role_name"`
+	DeptName string  `json:"deptName"`
+	RoleName string  `json:"roleName"`
 	PostIds  []int64 `json:"postIds"`
-	DeptId   int64   `json:"dept_id"             description:"部门ID"`
+	DeptId   int64   `json:"deptId"             description:"部门ID"`
 }
 
 // MemberLoginInp 登录
@@ -171,12 +172,12 @@ type MemberLoginInp struct {
 	Password string
 }
 type MemberLoginModel struct {
-	UserId      int64                    `json:"userId"    description:"会员ID"`
-	Username    string                   `json:"username"    description:"用户名"`
-	RealName    string                   `json:"realName"    description:"昵称"`
-	Avatar      string                   `json:"avatar"       description:"头像"`
-	Token       string                   `json:"token" v:""  description:"登录token"`
-	Permissions []MemberLoginPermissions `json:"permissions"  description:"角色信息"`
+	UserId      int64                     `json:"userId"    description:"会员ID"`
+	Username    string                    `json:"username"    description:"用户名"`
+	RealName    string                    `json:"realName"    description:"昵称"`
+	Avatar      string                    `json:"avatar"       description:"头像"`
+	Token       string                    `json:"token" v:""  description:"登录token"`
+	Permissions []*MemberLoginPermissions `json:"permissions"  description:"角色信息"`
 }
 
 // MemberLoginPermissions 登录用户角色信息

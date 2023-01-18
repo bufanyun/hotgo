@@ -49,7 +49,6 @@ func (c *cDictData) Edit(ctx context.Context, req *dict.DataEditReq) (res *dict.
 
 // List 查看列表
 func (c *cDictData) List(ctx context.Context, req *dict.DataListReq) (*dict.DataListRes, error) {
-
 	var (
 		in  sysin.DictDataListInp
 		res dict.DataListRes
@@ -68,6 +67,40 @@ func (c *cDictData) List(ctx context.Context, req *dict.DataListReq) (*dict.Data
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
+
+	return &res, nil
+}
+
+// Select 指定选项
+func (c *cDictData) Select(ctx context.Context, req *dict.DataSelectReq) (*dict.DataSelectRes, error) {
+	var (
+		in  sysin.DataSelectInp
+		res dict.DataSelectRes
+	)
+
+	if err := gconv.Scan(req, &in); err != nil {
+		return nil, err
+	}
+
+	list, err := service.SysDictData().Select(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+
+	res = dict.DataSelectRes(list)
+	return &res, nil
+}
+
+// Selects 多个选项
+func (c *cDictData) Selects(ctx context.Context, req *dict.DataSelectsReq) (*dict.DataSelectsRes, error) {
+	res := make(dict.DataSelectsRes)
+	for _, v := range req.Types {
+		option, err := service.SysDictData().Select(ctx, sysin.DataSelectInp{Type: v})
+		if err != nil {
+			return nil, err
+		}
+		res[v] = option
+	}
 
 	return &res, nil
 }

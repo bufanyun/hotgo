@@ -7,7 +7,6 @@ let socket: WebSocket;
 let isActive: boolean;
 
 export function getSocket(): WebSocket {
-  console.log('socket:', socket);
   if (socket === undefined) {
     location.reload();
   }
@@ -15,7 +14,6 @@ export function getSocket(): WebSocket {
 }
 
 export function getActive(): boolean {
-  console.log('isActive:', isActive);
   return isActive;
 }
 
@@ -85,7 +83,6 @@ export default (onMessage: Function) => {
             event: SocketEnum.EventPing,
           })
         );
-        console.log('ping');
         self.serverTimeoutObj = setTimeout(function () {
           console.log('关闭服务');
           socket.close();
@@ -133,7 +130,7 @@ export default (onMessage: Function) => {
 
     socket.onmessage = function (event) {
       isActive = true;
-      console.log('WebSocket:收到一条消息', event.data);
+      // console.log('WebSocket:收到一条消息', event.data);
 
       let isHeart = false;
       const message = JSON.parse(event.data);

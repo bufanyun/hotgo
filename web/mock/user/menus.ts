@@ -1,5 +1,5 @@
-import {resultSuccess} from '../_util';
-import {ApiEnum} from "@/enums/apiEnum";
+import { resultSuccess } from '../_util';
+import { ApiEnum } from '@/enums/apiEnum';
 
 const menusList = [
   {

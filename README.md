@@ -2,11 +2,11 @@
 <div align="center">
 	<img width="140px" src="https://bufanyun.cn-bj.ufileos.com/hotgo/logo.sig.png">
     <p>
-        <h1>HotGo V2.0</h1>
+        <h1>HotGo V2.1</h1>
     </p>
     <p align="center">
         <a href="https://goframe.org/pages/viewpage.action?pageId=1114119" target="_blank">
-	        <img src="https://img.shields.io/badge/goframe-2.1-green" alt="goframe">
+	        <img src="https://img.shields.io/badge/goframe-2.3-green" alt="goframe">
 	    </a>
 	    <a href="https://v3.vuejs.org/" target="_blank">
 	        <img src="https://img.shields.io/badge/vue.js-vue3.x-green" alt="vue">
@@ -29,7 +29,7 @@
 
 
 ## 平台简介
-* 基于全新Go Frame 2.0+Vue3+Naive UI开发的全栈前后端分离的管理系统
+* 基于全新Go Frame 2+Vue3+Naive UI开发的全栈前后端分离的管理系统
 * 前端采用naive-ui-admin 、Vue、Naive UI。
 
 ## 特征
@@ -55,7 +55,7 @@
 10. 调度日志：服务端运行所产生的警告、异常、崩溃日志的详细数据和堆栈信息。
 11. 在线用户：当前系统中活跃用户状态监控。
 12. 定时任务：在线（添加、修改、删除)任务调度包含执行结果日志。
-13. 代码生成：前后端代码的生成。
+13. 代码生成：支持自动化生成前后端代码。CURD关联表、树表、消息队列、定时任务一键生成等。
 14. 服务监控：监视当前系统CPU、内存、磁盘、网络、堆栈等相关信息。
 15. 附件管理：文件上传，多种上传方式适配。
 16. 消息队列：同时兼容 kafka、redis、rocketmq，一键配置切换到自己想用的MQ。
@@ -74,7 +74,7 @@
 ## 环境要求
 - node版本 >= v16.0.0
 - golang版本 >= v1.18
-- gf版本 >=v2.2.5 (会保持同步gf最新版本，gf小版本更新可能存在兼容问题，旧版本需自行处理，如非必要不建议更新！)
+- gf版本 >=v2.3.1 (会保持同步gf最新版本，gf小版本更新可能存在兼容问题，旧版本需自行处理，如非必要不建议更新！)
 - IDE推荐：Goland
 - mysql版本 >=5.7
 - redis版本 >=3.0
@@ -93,13 +93,14 @@ git clone https://github.com/bufanyun/hotgo.git && cd hotgo
 
 其中hotgo配置
 ```yaml
+# hotgo配置
 hotgo:
-  debug: true                                     # debug开关，开启后：接口出现错误时会输出堆栈信息，默认为true
-  ipMethod: "cz88"                                # IP归属地解析方法，可选：cz88|whois，默认为cz88
-  wsAddr: "ws://你的IP:8000/socket"               # 客户端websocket连接地址，如果项目在公网，请填写公网IP:运行端口
-  isDemo: false                                   # 是否為演示系統 false | true
+  debug: true                                      # debug开关，开启后：接口出现错误时会输出堆栈信息，默认为true
+  ipMethod: "whois"                                # IP归属地解析方法，可选：cz88|whois，默认为whois
+  wsAddr: "ws://127.0.0.1:8000/socket"             # 客户端websocket连接地址，如果项目在公网，请填写公网IP:运行端口
+  isDemo: false                                    # 是否為演示系統 false | true
   ssl: # https
-    switch: false                                 # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
+    switch: false                                  # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
     crtPath: "resource/ssl/server.crt"
     keyPath: "resource/ssl/server.key"
   log: # 全局请求日志
@@ -108,10 +109,11 @@ hotgo:
     module: [ "admin", "api", "default" ]   # 需要记录的模块
     skipCode: [ ]                           # 不记录的状态码，如： ["0", "-1"]
   admin:
-    superIds: [ 1,2 ]                       # 后台超管账号ID，通过ID验证超管
+    superIds: [ 1,2,3 ]                     # 后台超管账号ID，通过ID验证超管
     superRoleKey: "super"                   # 超管角色唯一标识符，通过角色验证超管
     defaultPage: 10                         # 列表分页默认加载数量
     defaultPageSize: 1                      # 列表分页默认加载页码
+    maxSortIncrement: 10                    # 最大排序值增量
 ```
 
 后台前端：
@@ -137,10 +139,10 @@ VITE_PROXY=[["/admin","http://你的IP:8000/admin"]]
       go mod tidy  
       
       # 查看命令行方法
-      go run main.go  
+      go run main.go hlep
       
       # 启动所有服务
-      go run main.go all
+      go run main.go  # 热编译启动： gf run main.go
       
       # 如果顺利，至此到浏览器打开：http://你的IP:8000/admin，即可看到后台登录地址
       # 登录账号：admin, 密码：123456
@@ -151,7 +153,7 @@ VITE_PROXY=[["/admin","http://你的IP:8000/admin"]]
 
 web端：
    ```shell script
-    cd web
+    cd views
     # 首先确定你以安装node16.0以上版本并安装了包[npm、yarn]，否则可能会出现一些未知报错
     
     # 安装依赖
@@ -242,6 +244,9 @@ web端：
 
 ## [感谢JetBrains提供的免费GoLand](https://jb.gg/OpenSource)
 [![avatar](https://camo.githubusercontent.com/323657c6e81419b8e151e9da4c71f409e3fcc65d630535170c59fe4807dbc905/68747470733a2f2f676f6672616d652e6f72672f646f776e6c6f61642f7468756d626e61696c732f313131343131392f6a6574627261696e732e706e67)](https://jb.gg/OpenSource)
+
+  
+
 
   
 

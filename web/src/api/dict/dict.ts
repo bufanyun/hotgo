@@ -6,7 +6,7 @@ import { http } from '@/utils/http/axios';
  */
 export function getDictTree(params?) {
   return http.request({
-    url: '/dict_type/tree',
+    url: '/dictType/tree',
     method: 'GET',
     params,
   });
@@ -19,7 +19,7 @@ export function getDictTree(params?) {
  */
 export function EditDict(params?) {
   return http.request({
-    url: '/dict_type/edit',
+    url: '/dictType/edit',
     method: 'POST',
     params,
   });
@@ -32,7 +32,7 @@ export function EditDict(params?) {
  */
 export function DeleteDict(params?) {
   return http.request({
-    url: '/dict_type/delete',
+    url: '/dictType/delete',
     method: 'POST',
     params,
   });
@@ -44,7 +44,7 @@ export function DeleteDict(params?) {
  */
 export function getDictSelect(params?) {
   return http.request({
-    url: '/dict_type/select',
+    url: '/dictType/select',
     method: 'GET',
     params,
   });
@@ -57,7 +57,7 @@ export function getDictSelect(params?) {
  */
 export function EditData(params?) {
   return http.request({
-    url: '/dict_data/edit',
+    url: '/dictData/edit',
     method: 'POST',
     params,
   });
@@ -70,7 +70,7 @@ export function EditData(params?) {
  */
 export function DeleteData(params?) {
   return http.request({
-    url: '/dict_data/delete',
+    url: '/dictData/delete',
     method: 'POST',
     params,
   });
@@ -82,7 +82,28 @@ export function DeleteData(params?) {
  */
 export function getDataList(params?) {
   return http.request({
-    url: '/dict_data/list',
+    url: '/dictData/list',
+    method: 'GET',
+    params,
+  });
+}
+
+/**
+ * 获取字典数据列表
+ */
+export function Dict(type) {
+  return http.request({
+    url: '/dictData/option/' + type,
+    method: 'GET',
+  });
+}
+
+/**
+ * 获取字典数据列表
+ */
+export function Dicts(params) {
+  return http.request({
+    url: '/dictData/options',
     method: 'GET',
     params,
   });

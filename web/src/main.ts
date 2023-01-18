@@ -44,7 +44,7 @@ async function bootstrap() {
       f.call(null, event);
     });
   };
-  app.config.globalProperties.$websocket = Websocket(onMessage);
+  Websocket(onMessage);
 
   app.mount('#app', true);
 }

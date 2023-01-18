@@ -90,7 +90,7 @@
 
 <script lang="ts">
   import { defineComponent, reactive, ref, toRefs } from 'vue';
-  import { useDialog, useMessage } from 'naive-ui';
+  import { useMessage } from 'naive-ui';
 
   const rules = {
     name: {
@@ -156,8 +156,6 @@
     setup() {
       const formRef: any = ref(null);
       const message = useMessage();
-      const dialog = useDialog();
-
       const state = reactive({
         formValue: {
           bigWidth: '',
@@ -170,23 +168,6 @@
           pricePreciseNum: null,
         },
       });
-
-      function systemOpenChange(value) {
-        if (!value) {
-          dialog.warning({
-            title: '提示',
-            content: '您确定要关闭系统访问吗？该操作立马生效，请慎重操作！',
-            positiveText: '确定',
-            negativeText: '取消',
-            onPositiveClick: () => {
-              message.success('操作成功');
-            },
-            onNegativeClick: () => {
-              state.formValue.systemOpen = true;
-            },
-          });
-        }
-      }
 
       function formSubmit() {
         formRef.value.validate((errors) => {
@@ -211,7 +192,6 @@
         rules,
         formSubmit,
         resetForm,
-        systemOpenChange,
       };
     },
   });

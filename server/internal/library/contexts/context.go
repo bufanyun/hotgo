@@ -67,7 +67,7 @@ func GetRoleId(ctx context.Context) int64 {
 		return 0
 	}
 
-	return user.Role
+	return user.RoleId
 }
 
 // GetRoleKey 获取用户角色唯一编码

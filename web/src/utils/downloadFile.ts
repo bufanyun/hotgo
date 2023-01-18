@@ -62,6 +62,7 @@ export function downloadByUrl({
         // saveAs(imageDataUrl, '附件');
         canvas.toBlob((blob) => {
           const link = document.createElement('a');
+          // @ts-ignore
           link.href = window.URL.createObjectURL(blob);
           link.download = getFileName(url);
           link.click();

@@ -13,7 +13,6 @@ import (
 	"github.com/casbin/casbin/v2/model"
 	"github.com/casbin/casbin/v2/persist"
 	"github.com/gogf/gf/v2/database/gdb"
-	"log"
 	"math"
 	"strings"
 )
@@ -119,7 +118,6 @@ func (a *adapter) dropPolicyTable() (err error) {
 
 // LoadPolicy loads all policy rules from the storage.
 func (a *adapter) LoadPolicy(model model.Model) (err error) {
-	log.Println("LoadPolicy...")
 	var rules []policyRule
 
 	if err = a.model().Scan(&rules); err != nil {
@@ -248,7 +246,7 @@ func (a *adapter) UpdatePolicies(sec string, ptype string, oldRules, newRules []
 		return
 	}
 
-	err = a.db.Transaction(context.TODO(), func(ctx context.Context, tx *gdb.TX) error {
+	err = a.db.Transaction(context.TODO(), func(ctx context.Context, tx gdb.TX) error {
 		for i := 0; i < int(math.Min(float64(len(oldRules)), float64(len(newRules)))); i++ {
 			if _, err = tx.Model(a.table).Update(a.buildPolicyRule(ptype, newRules[i]), a.buildPolicyRule(ptype, oldRules[i])); err != nil {
 				return err

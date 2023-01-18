@@ -10,31 +10,31 @@ import (
 
 // AdminMember is the golang structure for table admin_member.
 type AdminMember struct {
-	Id                 int64       `json:"id"                 description:""`
+	Id                 int64       `json:"id"                 description:"管理员ID"`
 	DeptId             int64       `json:"deptId"             description:"部门ID"`
+	RoleId             int64       `json:"roleId"             description:"角色ID"`
+	RealName           string      `json:"realName"           description:"真实姓名"`
 	Username           string      `json:"username"           description:"帐号"`
 	PasswordHash       string      `json:"passwordHash"       description:"密码"`
 	Salt               string      `json:"salt"               description:"密码盐"`
 	AuthKey            string      `json:"authKey"            description:"授权令牌"`
 	PasswordResetToken string      `json:"passwordResetToken" description:"密码重置令牌"`
-	Type               string      `json:"type"               description:"1:普通管理员;10超级管理员"`
-	Realname           string      `json:"realname"           description:"真实姓名"`
 	Avatar             string      `json:"avatar"             description:"头像"`
-	Sex                int         `json:"sex"                description:"性别[1:男;2:女;3:未知]"`
+	Sex                int         `json:"sex"                description:"性别"`
 	Qq                 string      `json:"qq"                 description:"qq"`
 	Email              string      `json:"email"              description:"邮箱"`
-	Birthday           *gtime.Time `json:"birthday"           description:"生日"`
-	ProvinceId         int         `json:"provinceId"         description:"省"`
-	CityId             int         `json:"cityId"             description:"城市"`
-	AreaId             int         `json:"areaId"             description:"地区"`
-	Address            string      `json:"address"            description:"默认地址"`
 	Mobile             string      `json:"mobile"             description:"手机号码"`
-	HomePhone          string      `json:"homePhone"          description:"家庭号码"`
-	DingtalkRobotToken string      `json:"dingtalkRobotToken" description:"钉钉机器人token"`
+	Birthday           *gtime.Time `json:"birthday"           description:"生日"`
+	ProvinceId         int64       `json:"provinceId"         description:"省编码"`
+	CityId             int64       `json:"cityId"             description:"城市编码"`
+	CountyId           int64       `json:"countyId"           description:"区域编码"`
+	Address            string      `json:"address"            description:"联系地址"`
 	VisitCount         uint        `json:"visitCount"         description:"访问次数"`
 	LastTime           int         `json:"lastTime"           description:"最后一次登录时间"`
 	LastIp             string      `json:"lastIp"             description:"最后一次登录ip"`
-	Role               int64       `json:"role"               description:"权限"`
+	Pid                int64       `json:"pid"                description:"上级管理员ID"`
+	Level              int         `json:"level"              description:"关系树等级"`
+	Tree               string      `json:"tree"               description:"关系树"`
 	Remark             string      `json:"remark"             description:"备注"`
 	Status             int         `json:"status"             description:"状态"`
 	CreatedAt          *gtime.Time `json:"createdAt"          description:"创建时间"`

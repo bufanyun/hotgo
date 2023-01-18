@@ -24,6 +24,7 @@ func (a *cSite) Index(ctx context.Context, req *base.SiteIndexReq) (res *base.Si
 	service.View().Render(ctx, model.View{Data: g.Map{
 		"name":    "HotGo",
 		"version": consts.VersionApp,
+		"debug":   g.Cfg().MustGet(ctx, "hotgo.debug", true),
 	}})
 	return
 }

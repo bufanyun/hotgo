@@ -9,13 +9,13 @@ package websocket
 import (
 	"context"
 	"github.com/gogf/gf/v2/container/garray"
+	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/guid"
 	"github.com/gorilla/websocket"
-	"hotgo/internal/consts"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/location"
 	"hotgo/internal/model"
@@ -164,12 +164,6 @@ func (c *Client) close() {
 		return
 	}
 	c.SendClose = true
-	//if _, ok := <-c.Send; !ok {
-	//	g.Log().Warningf(ctxManager, "close of closed channel, client.id:%v", c.ID)
-	//} else {
-	//	// 关闭 chan
-	//	close(c.Send)
-	//}
 	c.closeSignal <- struct{}{}
 }
 
@@ -187,7 +181,7 @@ func SendSuccess(client *Client, event string, data ...interface{}) {
 	client.SendMsg(&WResponse{
 		Event:     event,
 		Data:      d,
-		Code:      consts.CodeOK,
+		Code:      gcode.CodeOK.Code(),
 		Timestamp: gtime.Now().Unix(),
 	})
 	before(client)
@@ -197,7 +191,7 @@ func SendSuccess(client *Client, event string, data ...interface{}) {
 func SendError(client *Client, event string, err error) {
 	client.SendMsg(&WResponse{
 		Event:     event,
-		Code:      consts.CodeNil,
+		Code:      gcode.CodeNil.Code(),
 		ErrorMsg:  err.Error(),
 		Timestamp: gtime.Now().Unix(),
 	})

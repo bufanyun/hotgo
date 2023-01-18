@@ -171,3 +171,40 @@ func (s *sSysDictType) Select(ctx context.Context, in sysin.DictTypeSelectInp) (
 
 	return tree.GenTree(typeList), nil
 }
+
+// TreeSelect 获取类型关系树选项
+func (s *sSysDictType) TreeSelect(ctx context.Context, in sysin.DictTreeSelectInp) (list sysin.DictTreeSelectModel, err error) {
+	var (
+		mod      = dao.SysDictType.Ctx(ctx)
+		models   []*entity.SysDictType
+		typeList []g.Map
+	)
+
+	if err = mod.Order("pid asc,sort asc").Scan(&models); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return list, err
+	}
+
+	for i := 0; i < len(models); i++ {
+		typeList = append(typeList, g.Map{
+			"index":      models[i].Id,
+			"key":        models[i].Id,
+			"label":      models[i].Name,
+			"id":         models[i].Id,
+			"pid":        models[i].Pid,
+			"name":       models[i].Name,
+			"sort":       models[i].Sort,
+			"created_at": models[i].CreatedAt,
+			"status":     models[i].Status,
+		})
+	}
+
+	maps := tree.GenTree(typeList)
+	for _, v := range maps {
+		// 父类一律禁止选中
+		if _, ok := v["children"]; ok {
+			v["disabled"] = true
+		}
+	}
+	return tree.GenTree(typeList), nil
+}

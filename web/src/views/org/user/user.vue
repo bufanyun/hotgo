@@ -14,6 +14,7 @@
       </BasicForm>
 
       <BasicTable
+        :openChecked="true"
         :columns="columns"
         :request="loadDataTable"
         :row-key="(row) => row.id"
@@ -23,13 +24,26 @@
         :scroll-x="1090"
       >
         <template #tableTitle>
-          <n-button type="primary" @click="addTable">
+          <n-button type="primary" @click="addTable" class="min-left-space">
             <template #icon>
               <n-icon>
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建
+            新建用户
+          </n-button>
+          <n-button
+            type="error"
+            @click="batchDelete"
+            :disabled="batchDeleteDisabled"
+            class="min-left-space"
+          >
+            <template #icon>
+              <n-icon>
+                <DeleteOutlined />
+              </n-icon>
+            </template>
+            批量删除
           </n-button>
         </template>
       </BasicTable>
@@ -38,7 +52,7 @@
         v-model:show="showModal"
         :show-icon="false"
         preset="dialog"
-        title="新建"
+        :title="formParams?.id > 0 ? '编辑用户 #' + formParams?.id : '新建用户'"
         :style="{
           width: dialogWidth,
         }"
@@ -53,12 +67,12 @@
         >
           <n-grid x-gap="24" :cols="2">
             <n-gi>
-              <n-form-item label="姓名" path="realname">
-                <n-input placeholder="请输入姓名" v-model:value="formParams.realname" />
+              <n-form-item label="姓名" path="realName">
+                <n-input placeholder="请输入姓名" v-model:value="formParams.realName" />
               </n-form-item>
             </n-gi>
             <n-gi>
-              <n-form-item label="登录用户名" path="username">
+              <n-form-item label="用户名" path="username">
                 <n-input placeholder="请输入登录用户名" v-model:value="formParams.username" />
               </n-form-item>
             </n-gi>
@@ -66,19 +80,19 @@
 
           <n-grid x-gap="24" :cols="2">
             <n-gi>
-              <n-form-item label="绑定角色" path="role">
+              <n-form-item label="绑定角色" path="roleId">
                 <n-select
-                  :default-value="formParams.role"
+                  :default-value="formParams.roleId"
                   :options="roleList"
                   @update:value="handleUpdateRoleValue"
                 />
               </n-form-item>
             </n-gi>
             <n-gi>
-              <n-form-item label="所属部门" path="dept_id">
+              <n-form-item label="所属部门" path="deptId">
                 <n-tree-select
                   :options="deptList"
-                  :default-value="formParams.dept_id"
+                  :default-value="formParams.deptId"
                   :default-expand-all="true"
                   @update:value="handleUpdateDeptValue"
                 />
@@ -169,15 +183,19 @@
   import { SelectOption, TreeSelectOption, useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { Delete, Edit, List, Status } from '@/api/org/user';
+  import { Delete, Edit, List, Status, ResetPwd } from '@/api/org/user';
   import { columns } from './columns';
-  import { PlusOutlined } from '@vicons/antd';
-  import { sexOptions, statusActions, statusOptions } from '@/enums/optionsiEnum';
+  import { PlusOutlined, DeleteOutlined } from '@vicons/antd';
+  import { sexOptions, statusOptions } from '@/enums/optionsiEnum';
   import { getDeptList } from '@/api/org/dept';
   import { getRoleList } from '@/api/system/role';
   import { getPostList } from '@/api/org/post';
+  import { adaModalWidth } from '@/utils/hotgo';
+  import { getRandomString } from '@/utils/charset';
+  import { cloneDeep } from 'lodash-es';
+  import { defRangeShortcuts } from '@/utils/dateUtil';
 
-  const params = ref({
+  const params = ref<any>({
     pageSize: 10,
     name: '',
     code: '',
@@ -185,10 +203,10 @@
   });
 
   const rules = {
-    name: {
-      // required: true,
+    username: {
+      required: true,
       trigger: ['blur', 'input'],
-      message: '请输入名称',
+      message: '请输入用户名',
     },
   };
 
@@ -206,7 +224,7 @@
       rules: [{ message: '请输入用户名', trigger: ['blur'] }],
     },
     {
-      field: 'realname',
+      field: 'realName',
       component: 'NInput',
       label: '姓名',
       componentProps: {
@@ -220,10 +238,21 @@
     {
       field: 'mobile',
       component: 'NInputNumber',
-      label: '手机',
+      label: '手机号',
       componentProps: {
         placeholder: '请输入手机号码',
         showButton: false,
+        onInput: (e: any) => {
+          console.log(e);
+        },
+      },
+    },
+    {
+      field: 'email',
+      component: 'NInput',
+      label: '邮箱',
+      componentProps: {
+        placeholder: '请输入邮箱地址',
         onInput: (e: any) => {
           console.log(e);
         },
@@ -249,7 +278,7 @@
       componentProps: {
         type: 'datetimerange',
         clearable: true,
-        // defaultValue: [new Date() - 86400000 * 30, new Date()],
+        shortcuts: defRangeShortcuts(),
         onUpdateValue: (e: any) => {
           console.log(e);
         },
@@ -262,21 +291,21 @@
   const dialog = useDialog();
   const showModal = ref(false);
   const formBtnLoading = ref(false);
-  const searchFormRef = ref({});
-  const formRef = ref({});
+  const searchFormRef = ref<any>({});
+  const formRef = ref<any>({});
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
-  const deptList = ref([]);
-  const roleList = ref([]);
-  const postList = ref([]);
-
-  const resetFormParams = {
+  const deptList = ref<any>([]);
+  const roleList = ref<any>([]);
+  const postList = ref<any>([]);
+  const dialogWidth = ref('50%');
+  const defaultState = {
     id: 0,
-    role: null,
-    realname: '',
+    roleId: null,
+    realName: '',
     username: '',
     password: '',
-    dept_id: null,
+    deptId: null,
     postIds: null,
     mobile: '',
     email: '',
@@ -285,10 +314,11 @@
     phone: '',
     sort: 0,
     status: 1,
-    created_at: '',
-    updated_at: '',
+    createdAt: '',
+    updatedAt: '',
   };
-  let formParams = ref(resetFormParams);
+
+  let formParams = ref<any>();
 
   const actionColumn = reactive({
     width: 220,
@@ -308,9 +338,27 @@
             onClick: handleDelete.bind(null, record),
           },
         ],
-        dropDownActions: statusActions,
+        dropDownActions: [
+          {
+            label: '重置密码',
+            key: 0,
+          },
+          {
+            label: '设为启用',
+            key: 1,
+          },
+          {
+            label: '设为禁用',
+            key: 2,
+          },
+        ],
         select: (key) => {
-          updateStatus(record.id, key);
+          if (key === 0) {
+            return handleResetPwd(record);
+          }
+          if (key === 1 || key === 2) {
+            return updateStatus(record.id, key);
+          }
         },
       });
     },
@@ -324,18 +372,18 @@
 
   function addTable() {
     showModal.value = true;
-    formParams.value = resetFormParams;
+    formParams.value = cloneDeep(defaultState);
   }
 
   const loadDataTable = async (res) => {
-    mapWidth();
+    adaModalWidth(dialogWidth);
     deptList.value = await getDeptList({});
     if (deptList.value === undefined || deptList.value === null) {
       deptList.value = [];
     }
 
     roleList.value = [];
-    let roleLists = await getRoleList();
+    let roleLists = await getRoleList({ pageSize: 100 });
     if (roleLists.list === undefined || roleLists.list === null) {
       roleLists = [];
     } else {
@@ -363,19 +411,12 @@
         postList.value[i].value = postLists[i].id;
       }
     }
-    console.log('post.value:' + JSON.stringify(postList.value));
 
-    return await List({ ...params.value, ...res, ...searchFormRef.value.formModel });
+    return await List({ ...params.value, ...res, ...searchFormRef.value?.formModel });
   };
 
   function onCheckedRow(rowKeys) {
-    console.log(rowKeys);
-    if (rowKeys.length > 0) {
-      batchDeleteDisabled.value = false;
-    } else {
-      batchDeleteDisabled.value = true;
-    }
-
+    batchDeleteDisabled.value = rowKeys.length <= 0;
     checkedIds.value = rowKeys;
   }
 
@@ -388,20 +429,13 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formParams:' + JSON.stringify(formParams.value));
-        Edit(formParams.value)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            setTimeout(() => {
-              showModal.value = false;
-              reloadTable();
-              formParams.value = ref(resetFormParams);
-            });
-          })
-          .catch((e: Error) => {
-            // message.error(e.message ?? '操作失败');
+        Edit(formParams.value).then((_res) => {
+          message.success('操作成功');
+          setTimeout(() => {
+            showModal.value = false;
+            reloadTable();
           });
+        });
       } else {
         message.error('请填写完整信息');
       }
@@ -410,31 +444,61 @@
   }
 
   function handleEdit(record: Recordable) {
-    console.log('点击了编辑', record);
     showModal.value = true;
-    formParams.value = record;
+    formParams.value = cloneDeep(record);
+  }
+
+  function handleResetPwd(record: Recordable) {
+    record.password = getRandomString(12);
+    dialog.warning({
+      title: '警告',
+      content: '你确定要重置密码？\r\n重置成功后密码为：' + record.password + '\r\n 请先保存',
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: () => {
+        ResetPwd(record).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
+      },
+      onNegativeClick: () => {
+        // message.error('取消');
+      },
+    });
   }
 
   function handleDelete(record: Recordable) {
-    console.log('点击了删除', record);
     dialog.warning({
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
-        Delete(record)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((_e: Error) => {
-            // message.error(_e.message ?? '操作失败');
-          });
+        Delete(record).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
+      },
+    });
+  }
+
+  function batchDelete() {
+    dialog.warning({
+      title: '警告',
+      content: '你确定要删除？',
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: () => {
+        Delete({ id: checkedIds.value }).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
+      },
+      onNegativeClick: () => {
+        // message.error('取消');
       },
     });
   }
@@ -451,57 +515,32 @@
   }
 
   function updateStatus(id, status) {
-    Status({ id: id, status: status })
-      .then((_res) => {
-        console.log('_res:' + JSON.stringify(_res));
-        message.success('操作成功');
-        setTimeout(() => {
-          reloadTable();
-        });
-      })
-      .catch((e: Error) => {
-        message.error(e.message ?? '操作失败');
+    Status({ id: id, status: status }).then((_res) => {
+      message.success('操作成功');
+      setTimeout(() => {
+        reloadTable();
       });
-  }
-
-  const dialogWidth = ref('50%');
-
-  function mapWidth() {
-    let val = document.body.clientWidth;
-    const def = 720; // 默认宽度
-    if (val < def) {
-      dialogWidth.value = '100%';
-    } else {
-      dialogWidth.value = def + 'px';
-    }
-
-    return dialogWidth.value;
+    });
   }
 
   function handleUpdateDeptValue(
     value: string | number | Array<string | number> | null,
-    option: TreeSelectOption | null | Array<TreeSelectOption | null>
+    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
   ) {
-    console.log(value, option);
-
-    formParams.value.dept_id = value;
+    formParams.value.deptId = value;
   }
 
   function handleUpdateRoleValue(
     value: string | number | Array<string | number> | null,
-    option: SelectOption | null | Array<SelectOption | null>
+    _option: SelectOption | null | Array<SelectOption | null>
   ) {
-    console.log(value, option);
-
-    formParams.value.role = value;
+    formParams.value.roleId = value;
   }
 
   function handleUpdatePostValue(
     value: string | number | Array<string | number> | null,
-    option: SelectOption | null | Array<SelectOption | null>
+    _option: SelectOption | null | Array<SelectOption | null>
   ) {
-    console.log(value, option);
-
     formParams.value.postIds = value;
   }
 </script>

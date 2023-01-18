@@ -82,7 +82,7 @@ func (s *sSysDictData) Edit(ctx context.Context, in sysin.DictDataEditInp) (err 
 }
 
 // List 获取列表
-func (s *sSysDictData) List(ctx context.Context, in sysin.DictDataListInp) (list []*sysin.DictDataListModel, totalCount int64, err error) {
+func (s *sSysDictData) List(ctx context.Context, in sysin.DictDataListInp) (list []*sysin.DictDataListModel, totalCount int, err error) {
 	mod := dao.SysDictData.Ctx(ctx)
 	// 类型ID
 	if in.TypeID > 0 {
@@ -117,7 +117,7 @@ func (s *sSysDictData) List(ctx context.Context, in sysin.DictDataListInp) (list
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(in.Page, in.PerPage).Order("sort asc,id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}
@@ -127,4 +127,23 @@ func (s *sSysDictData) List(ctx context.Context, in sysin.DictDataListInp) (list
 	}
 
 	return list, totalCount, err
+}
+
+// Select 获取列表
+func (s *sSysDictData) Select(ctx context.Context, in sysin.DataSelectInp) (list sysin.DataSelectModel, err error) {
+	mod := dao.SysDictData.Ctx(ctx).Where("type", in.Type)
+	if in.Type != "" {
+		mod = mod.Where("type", in.Type)
+	}
+
+	if err = mod.Order("sort asc,id desc").Scan(&list); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return list, err
+	}
+
+	for k, v := range list {
+		list[k].Value = consts.ConvType(v.Value, v.ValueType)
+		list[k].Key = list[k].Value
+	}
+	return list, err
 }

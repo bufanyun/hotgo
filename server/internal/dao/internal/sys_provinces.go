@@ -20,34 +20,34 @@ type SysProvincesDao struct {
 
 // SysProvincesColumns defines and stores column names for table hg_sys_provinces.
 type SysProvincesColumns struct {
-	Id         string // ID
-	Title      string // 栏目名
-	Pid        string // 父栏目
+	Id         string // 省市区ID
+	Title      string // 栏目名称
 	ShortTitle string // 缩写
 	Areacode   string // 区域编码
 	Zipcode    string // 邮政编码
 	Pinyin     string // 拼音
 	Lng        string // 经度
 	Lat        string // 纬度
-	Level      string // 级别
-	Tree       string //
+	Pid        string // 父栏目
+	Level      string // 关系树等级
+	Tree       string // 关系
 	Sort       string // 排序
 	Status     string // 状态
 	CreatedAt  string // 创建时间
 	UpdatedAt  string // 更新时间
 }
 
-//  sysProvincesColumns holds the columns for table hg_sys_provinces.
+// sysProvincesColumns holds the columns for table hg_sys_provinces.
 var sysProvincesColumns = SysProvincesColumns{
 	Id:         "id",
 	Title:      "title",
-	Pid:        "pid",
 	ShortTitle: "short_title",
 	Areacode:   "areacode",
 	Zipcode:    "zipcode",
 	Pinyin:     "pinyin",
 	Lng:        "lng",
 	Lat:        "lat",
+	Pid:        "pid",
 	Level:      "level",
 	Tree:       "tree",
 	Sort:       "sort",
@@ -96,6 +96,6 @@ func (dao *SysProvincesDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *SysProvincesDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *SysProvincesDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

@@ -78,12 +78,12 @@
 
 <script lang="ts" setup>
   import { h, reactive, ref, onMounted } from 'vue';
-  import { SelectOption, TreeSelectOption, useDialog, useMessage } from 'naive-ui';
+  import { TreeSelectOption, useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { columns } from './columns';
   import { PlusOutlined } from '@vicons/antd';
-  import { GroupDelete, GroupEdit, GroupList, GroupStatus, getSelect } from '@/api/sys/cron';
-  import { statusActions, statusOptions } from '@/enums/optionsiEnum';
+  import { GroupDelete, GroupEdit, GroupList,  getSelect } from '@/api/sys/cron';
+  import { statusOptions } from '@/enums/optionsiEnum';
 
   const optionTreeData = ref([]);
   const message = useMessage();
@@ -118,18 +118,12 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formParams.value:' + JSON.stringify(formParams.value));
-        GroupEdit(formParams.value)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-          })
-          .catch((e: Error) => {
-            message.error(e.message ?? '操作失败');
+        GroupEdit(formParams.value).then((_res) => {
+          message.success('操作成功');
+          setTimeout(() => {
+            showModal.value = false;
+            reloadTable();
           });
-        setTimeout(() => {
-          showModal.value = false;
-          reloadTable();
         });
       } else {
         message.error('请填写完整信息');
@@ -140,12 +134,9 @@
 
   const dialog = useDialog();
   const actionRef = ref();
+  const formParams = ref<any>(defaultValueRef);
+  const formRef = ref<any>({});
 
-  const formParams = ref(defaultValueRef);
-
-  const params = ref(defaultValueRef);
-
-  const formRef = ref({});
   const actionColumn = reactive({
     width: 220,
     title: '操作',
@@ -169,7 +160,6 @@
   });
 
   function handleEdit(record: Recordable) {
-    console.log('handleEdit', record);
     showModal.value = true;
     modalTitle.value = '编辑分组 ID：' + record.id;
     formParams.value = {
@@ -183,25 +173,20 @@
   }
 
   function handleDelete(record: Recordable) {
-    console.log('点击了删除', record);
     dialog.warning({
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
         GroupDelete(record)
           .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
             message.success('操作成功');
             reloadTable();
-          })
-          .catch((_e: Error) => {
-            // message.error(e.message ?? '操作失败');
           });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
@@ -232,15 +217,14 @@
   }
 
   onMounted(async () => {
-    setDictSelect();
+    await setDictSelect();
   });
 
   // 处理选项更新
   function handleUpdateValue(
     value: string | number | Array<string | number> | null,
-    option: TreeSelectOption | null | Array<TreeSelectOption | null>
+    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
   ) {
-    console.log(value, option);
     formParams.value.pid = value;
   }
 </script>

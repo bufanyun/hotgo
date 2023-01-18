@@ -10,7 +10,11 @@
             </n-form-item>
 
             <n-form-item label="SMTP端口" path="smtpPort">
-              <n-input v-model:value="formValue.smtpPort" placeholder="" />
+              <n-input-number
+                v-model:value="formValue.smtpPort"
+                placeholder=""
+                :show-button="false"
+              />
               <template #feedback> (不加密默认25,SSL默认465,TLS默认587)</template>
             </n-form-item>
             <n-form-item label="SMTP用户名" path="smtpUser">
@@ -19,7 +23,7 @@
             </n-form-item>
 
             <n-form-item label="SMTP密码" path="smtpPass">
-              <n-input v-model:value="formValue.smtpPass" placeholder="" />
+              <n-input v-model:value="formValue.smtpPass" placeholder="" type="password" />
               <template #feedback>填写您的密码</template>
             </n-form-item>
 
@@ -117,13 +121,9 @@
         console.log('formParams:' + JSON.stringify(formParams.value));
 
         showModal.value = false;
-        sendTestEmail(formParams.value)
-          .then((_res) => {
-            message.success('发送成功');
-          })
-          .catch((error) => {
-            // message.error(error.toString());
-          });
+        sendTestEmail(formParams.value).then((_res) => {
+          message.success('发送成功');
+        });
       } else {
         message.error('请填写完整信息');
       }

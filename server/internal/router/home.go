@@ -10,17 +10,22 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	api "hotgo/api/home/base"
 	"hotgo/internal/controller/home/base"
 )
 
 // Home 前台页面路由
 func Home(ctx context.Context, group *ghttp.RouterGroup) {
-	routerPrefix, _ := g.Cfg().Get(ctx, "router.home.prefix", "/home")
+	// 注册首页路由
+	group.ALL("/", func(r *ghttp.Request) {
+		_, _ = base.Site.Index(r.Context(), &api.SiteIndexReq{})
+		return
+	})
 
-	group.Group(routerPrefix.String(), func(group *ghttp.RouterGroup) {
+	prefix := g.Cfg().MustGet(ctx, "router.home.prefix", "/home")
+	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
 		group.Bind(
 			base.Site, // 基础
 		)
-
 	})
 }

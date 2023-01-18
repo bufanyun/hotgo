@@ -10,17 +10,17 @@ import (
 
 // SysProvinces is the golang structure for table sys_provinces.
 type SysProvinces struct {
-	Id         int64       `json:"id"         description:"ID"`
-	Title      string      `json:"title"      description:"栏目名"`
-	Pid        int64       `json:"pid"        description:"父栏目"`
+	Id         int64       `json:"id"         description:"省市区ID"`
+	Title      string      `json:"title"      description:"栏目名称"`
 	ShortTitle string      `json:"shortTitle" description:"缩写"`
 	Areacode   int         `json:"areacode"   description:"区域编码"`
 	Zipcode    int         `json:"zipcode"    description:"邮政编码"`
 	Pinyin     string      `json:"pinyin"     description:"拼音"`
 	Lng        string      `json:"lng"        description:"经度"`
 	Lat        string      `json:"lat"        description:"纬度"`
-	Level      int         `json:"level"      description:"级别"`
-	Tree       string      `json:"tree"       description:""`
+	Pid        int64       `json:"pid"        description:"父栏目"`
+	Level      int         `json:"level"      description:"关系树等级"`
+	Tree       string      `json:"tree"       description:"关系"`
 	Sort       int         `json:"sort"       description:"排序"`
 	Status     int         `json:"status"     description:"状态"`
 	CreatedAt  *gtime.Time `json:"createdAt"  description:"创建时间"`

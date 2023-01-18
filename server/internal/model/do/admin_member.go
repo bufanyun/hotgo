@@ -12,31 +12,31 @@ import (
 // AdminMember is the golang structure of table hg_admin_member for DAO operations like Where/Data.
 type AdminMember struct {
 	g.Meta             `orm:"table:hg_admin_member, do:true"`
-	Id                 interface{} //
+	Id                 interface{} // 管理员ID
 	DeptId             interface{} // 部门ID
+	RoleId             interface{} // 角色ID
+	RealName           interface{} // 真实姓名
 	Username           interface{} // 帐号
 	PasswordHash       interface{} // 密码
 	Salt               interface{} // 密码盐
 	AuthKey            interface{} // 授权令牌
 	PasswordResetToken interface{} // 密码重置令牌
-	Type               interface{} // 1:普通管理员;10超级管理员
-	Realname           interface{} // 真实姓名
 	Avatar             interface{} // 头像
-	Sex                interface{} // 性别[1:男;2:女;3:未知]
+	Sex                interface{} // 性别
 	Qq                 interface{} // qq
 	Email              interface{} // 邮箱
-	Birthday           *gtime.Time // 生日
-	ProvinceId         interface{} // 省
-	CityId             interface{} // 城市
-	AreaId             interface{} // 地区
-	Address            interface{} // 默认地址
 	Mobile             interface{} // 手机号码
-	HomePhone          interface{} // 家庭号码
-	DingtalkRobotToken interface{} // 钉钉机器人token
+	Birthday           *gtime.Time // 生日
+	ProvinceId         interface{} // 省编码
+	CityId             interface{} // 城市编码
+	CountyId           interface{} // 区域编码
+	Address            interface{} // 联系地址
 	VisitCount         interface{} // 访问次数
 	LastTime           interface{} // 最后一次登录时间
 	LastIp             interface{} // 最后一次登录ip
-	Role               interface{} // 权限
+	Pid                interface{} // 上级管理员ID
+	Level              interface{} // 关系树等级
+	Tree               interface{} // 关系树
 	Remark             interface{} // 备注
 	Status             interface{} // 状态
 	CreatedAt          *gtime.Time // 创建时间

@@ -19,7 +19,7 @@ var (
 		Brief:       "消息队列",
 		Description: ``,
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			g.Log().Infof(ctx, "start queue consumer..")
+			g.Log().Debug(ctx, "start queue consumer..")
 			queues.Run(ctx)
 			return
 		},

@@ -9,20 +9,21 @@ package form
 import (
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/util/gconv"
 )
 
 var (
-	page     int64
-	pageSize int64
+	page     int
+	pageSize int
 )
 
 // DefaultPageSize 列表分页默认加载页码
-func DefaultPageSize(ctx context.Context) int64 {
+func DefaultPageSize(ctx context.Context) int {
 	if pageSize > 0 {
 		return pageSize
 	}
-	defaultPageSize, _ := g.Cfg().Get(ctx, "hotgo.admin.defaultPageSize", 10)
-	pageSize = defaultPageSize.Int64()
+	defaultPageSize := g.Cfg().MustGet(ctx, "hotgo.admin.defaultPageSize", 10)
+	pageSize = defaultPageSize.Int()
 	if pageSize <= 0 {
 		pageSize = 10
 	}
@@ -30,26 +31,26 @@ func DefaultPageSize(ctx context.Context) int64 {
 }
 
 // DefaultPage 列表分页默认加载数量
-func DefaultPage(ctx context.Context) int64 {
+func DefaultPage(ctx context.Context) int {
 	if page > 0 {
 		return page
 	}
-	defaultPage, _ := g.Cfg().Get(ctx, "hotgo.admin.defaultPage", 1)
-	page = defaultPage.Int64()
+	defaultPage := g.Cfg().MustGet(ctx, "hotgo.admin.defaultPage", 1)
+	page = defaultPage.Int()
 	if page <= 0 {
-		page = 10
+		page = 1
 	}
 	return page
 }
 
 // PageReq 分页
 type PageReq struct {
-	Page    int64 `json:"page" example:"10" d:"1" v:"min:1#页码最小值不能低于1"  dc:"当前页码"`
-	PerPage int64 `json:"pageSize" example:"1" d:"10" v:"min:1|max:100#|每页数量最小值不能低于1|最大值不能大于100" dc:"每页数量"`
+	Page    int `json:"page" example:"10" d:"1" v:"min:1#页码最小值不能低于1"  dc:"当前页码"`
+	PerPage int `json:"pageSize" example:"1" d:"10" v:"min:1|max:100#|每页数量最小值不能低于1|最大值不能大于100" dc:"每页数量"`
 }
 type PageRes struct {
 	PageReq
-	PageCount int64 `json:"pageCount" example:"0" dc:"全部数据量"`
+	PageCount int `json:"pageCount" example:"0" dc:"全部数据量"`
 }
 
 // RangeDateReq 时间查询
@@ -63,8 +64,14 @@ type StatusReq struct {
 	Status int `json:"status"  v:"in:-1,0,1,2,3#输入的状态是无效的" dc:"状态"`
 }
 
+// SwitchReq 更新开关状态
+type SwitchReq struct {
+	Key   string `json:"key" v:"required#测试ID不能为空" dc:"开关字段"`
+	Value int    `json:"value" v:"in:1,2#输入的开关值是无效的" dc:"更新值"`
+}
+
 // CalPage 解析分页
-func CalPage(ctx context.Context, page, perPage int64) (newPage, newPerPage int64, offset int64) {
+func CalPage(ctx context.Context, page, perPage int) (newPage, newPerPage int, offset int) {
 	if page <= 0 {
 		newPage = DefaultPage(ctx)
 	} else {
@@ -80,6 +87,31 @@ func CalPage(ctx context.Context, page, perPage int64) (newPage, newPerPage int6
 	return
 }
 
-func CalPageCount(totalCount int64, perPage int64) int64 {
+func CalPageCount(totalCount int, perPage int) int {
 	return (totalCount + perPage - 1) / perPage
+}
+
+// Selects 选项
+type Selects []*Select
+type Select struct {
+	Value interface{} `json:"value"`
+	Label string      `json:"label"`
+	Name  string      `json:"name"`
+}
+
+func (p Selects) Len() int {
+	return len(p)
+}
+func (p Selects) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
+}
+func (p Selects) Less(i, j int) bool {
+	return gconv.Int64(p[j].Value) > gconv.Int64(p[i].Value)
+}
+
+type SelectInt64s []*SelectInt64
+type SelectInt64 struct {
+	Value int64  `json:"value"`
+	Label string `json:"label"`
+	Name  string `json:"name"`
 }

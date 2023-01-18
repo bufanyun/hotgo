@@ -20,7 +20,7 @@ var (
 		Description: ``,
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			flags := parser.GetOptAll()
-			g.Log().Warningf(ctx, "flags:%+v", flags)
+			g.Log().Debug(ctx, "flags:%+v", flags)
 			if len(flags) == 0 {
 				g.Log().Fatal(ctx, "工具参数不能为空")
 				return

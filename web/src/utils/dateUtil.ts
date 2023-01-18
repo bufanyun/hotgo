@@ -1,21 +1,38 @@
-import { format } from 'date-fns';
+import {
+  endOfMonth,
+  endOfToday,
+  endOfWeek,
+  endOfYesterday,
+  format,
+  startOfMonth,
+  startOfToday,
+  startOfTomorrow,
+  startOfWeek,
+  startOfYesterday,
+  subMonths,
+} from 'date-fns';
 
-const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm';
-const DATE_FORMAT = 'YYYY-MM-DD ';
+const DATE_TIME_FORMAT = 'yyyy-MM-dd HH:mm:ss';
+const DATE_FORMAT = 'yyyy-MM-dd';
 
-export function formatToDateTime(date: Date, formatStr = DATE_TIME_FORMAT): string {
-  const date2 = new Date(date);
-  return format(date2, formatStr);
+export function formatToDateTime(date: string, formatStr = DATE_TIME_FORMAT): string {
+  if (date === null || date === undefined || date === '') {
+    return ``;
+  }
+  return format(new Date(Date.parse(date)), formatStr);
 }
 
-export function formatToDate(date: Date, formatStr = DATE_FORMAT): string {
-  return format(date, formatStr);
+export function formatToDate(date: string, formatStr = DATE_FORMAT): string {
+  if (date === null || date === undefined || date === '') {
+    return ``;
+  }
+  return format(new Date(Date.parse(date)), formatStr);
 }
 
 export function timestampToTime(timestamp) {
   const date = new Date(timestamp * 1000);
   const Y = date.getFullYear() + '-';
-  const M = (date.getMonth() + 1 <= 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+  const M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
   const D = (date.getDate() + 1 <= 10 ? '0' + date.getDate() : date.getDate()) + ' ';
   const h = (date.getHours() + 1 <= 10 ? '0' + date.getHours() : date.getHours()) + ':';
   const m = (date.getMinutes() + 1 <= 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
@@ -26,12 +43,19 @@ export function timestampToTime(timestamp) {
 export function timestampToTimeNF(timestamp) {
   const date = new Date(timestamp);
   const Y = date.getFullYear();
-  const M = date.getMonth() + 1 <= 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+  const M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
   const D = date.getDate() + 1 <= 10 ? '0' + date.getDate() : date.getDate();
   const h = date.getHours() + 1 <= 10 ? '0' + date.getHours() : date.getHours();
   const m = date.getMinutes() + 1 <= 10 ? '0' + date.getMinutes() : date.getMinutes();
   const s = date.getSeconds() + 1 <= 10 ? '0' + date.getSeconds() : date.getSeconds();
   return Y.toString() + M.toString() + D.toString() + h.toString() + m.toString() + s.toString();
+}
+
+export function dateToTimestamp(date: string) {
+  if (date === null || date === undefined || date === '') {
+    return 0;
+  }
+  return new Date(date).getTime();
 }
 
 export function timestampToDate(timestamp) {
@@ -44,23 +68,16 @@ export function timestampToDate(timestamp) {
 
 export function getTime() {
   const myDate = new Date();
-
   const hour = myDate.getHours().toString().padStart(2, '0');
-
   const minutes = myDate.getMinutes().toString().padStart(2, '0');
-
   const seconed = myDate.getSeconds().toString().padStart(2, '0');
-
   return hour + ':' + minutes + ':' + seconed;
 }
 
 export function getDate() {
   const myDate = new Date();
-
   const month = (myDate.getMonth() + 1).toString().padStart(2, '0');
-
   const day = myDate.getDate().toString().padStart(2, '0');
-
   return myDate.getFullYear() + '-' + month + '-' + day;
 }
 
@@ -129,15 +146,11 @@ export function formatAfter(end): string {
   if (end.getTime() - start.getTime() > 0) {
     sjc = end.getTime() - start.getTime(); //时间差的毫秒数
   }
-
   const days = Math.floor(sjc / (24 * 3600 * 1000)); //计算出相差天数
-
   const leave1 = sjc % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
   const hours = Math.floor(leave1 / (3600 * 1000)); //计算出小时数
-
   const leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
   const minutes = Math.floor(leave2 / (60 * 1000)); //计算相差分钟数
-
   const leave3 = leave2 % (60 * 1000); //计算分钟数后剩余的毫秒数
   const seconds = Math.round(leave3 / 1000); //计算相差秒数
   if (days > 0) {
@@ -152,6 +165,38 @@ export function formatAfter(end): string {
   if (seconds > 0) {
     return seconds + '秒后';
   }
-
   return '刚刚';
+}
+
+export function defShortcuts() {
+  return {
+    今天: startOfToday().getTime(),
+    昨天: startOfYesterday().getTime(),
+    明天: startOfTomorrow().getTime(),
+  };
+}
+
+export function defRangeShortcuts() {
+  const nowDate = new Date();
+  return {
+    今天: [startOfToday().getTime(), endOfToday().getTime()] as const,
+    昨天: () => {
+      return [startOfYesterday().getTime(), endOfYesterday().getTime()] as const;
+    },
+    本周: () => {
+      return [
+        startOfWeek(nowDate, { weekStartsOn: 1 }).getTime(),
+        endOfWeek(nowDate, { weekStartsOn: 1 }).getTime(),
+      ] as const;
+    },
+    本月: () => {
+      return [startOfMonth(nowDate).getTime(), endOfMonth(nowDate).getTime()] as const;
+    },
+    上个月: () => {
+      return [
+        startOfMonth(subMonths(nowDate, 1)).getTime(),
+        endOfMonth(subMonths(nowDate, 1)).getTime(),
+      ] as const;
+    },
+  };
 }

@@ -3,6 +3,10 @@ import { NUpload } from 'naive-ui';
 
 export const basicProps = {
   ...NUpload.props,
+  fileType: {
+    type: String,
+    default: 'image',
+  },
   accept: {
     type: String,
     default: '.jpg,.png,.jpeg,.svg,.gif',
@@ -24,7 +28,7 @@ export const basicProps = {
     default: () => '',
   },
   values: {
-    type: (Array as PropType<string[]>) || (String as PropType<string>),
+    type: (Array as PropType<string[]>) || (Object as PropType<object>),
     default: () => [],
   },
   width: {

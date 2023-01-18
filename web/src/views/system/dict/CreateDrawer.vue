@@ -87,8 +87,7 @@
         default: '添加顶级菜单',
       },
       optionTreeData: {
-        type: Object,
-        // eslint-disable-next-line vue/require-valid-default-prop
+        type: Object || Array,
         default: [],
       },
     },
@@ -106,7 +105,7 @@
         sort: 10,
       });
 
-      const state = reactive({
+      const state = reactive<any>({
         width: 500,
         isDrawer: false,
         subLoading: false,
@@ -122,7 +121,6 @@
           state.width = document.body.clientWidth;
         }
         state.isDrawer = true;
-        console.log('form:' + JSON.stringify(form));
         state.formParams = Object.assign(state.formParams, form);
       }
 
@@ -133,18 +131,12 @@
       function formSubmit() {
         formRef.value.validate((errors) => {
           if (!errors) {
-            console.log('state.formParams:' + JSON.stringify(state.formParams));
-            EditDict({ ...state.formParams })
-              .then(async (_res) => {
-                console.log('_res:' + JSON.stringify(_res));
-                message.success('操作成功');
-                handleReset();
-                await context.emit('loadData');
-                closeDrawer();
-              })
-              .catch((e: Error) => {
-                message.error(e.message ?? '操作失败');
-              });
+            EditDict({ ...state.formParams }).then(async (_res) => {
+              message.success('操作成功');
+              handleReset();
+              await context.emit('loadData');
+              closeDrawer();
+            });
           } else {
             message.error('请填写完整信息');
           }
@@ -159,9 +151,8 @@
       // 处理选项更新
       function handleUpdateValue(
         value: string | number | Array<string | number> | null,
-        option: TreeSelectOption | null | Array<TreeSelectOption | null>
+        _option: TreeSelectOption | null | Array<TreeSelectOption | null>
       ) {
-        console.log(value, option);
         state.formParams.pid = value;
       }
 

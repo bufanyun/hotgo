@@ -7,6 +7,7 @@ package service
 
 import (
 	"context"
+	"hotgo/internal/model"
 	"hotgo/internal/model/input/sysin"
 
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -14,9 +15,11 @@ import (
 
 type (
 	ICommonUpload interface {
+		UploadFile(ctx context.Context, file *ghttp.UploadFile) (result *sysin.AttachmentListModel, err error)
 		UploadImage(ctx context.Context, file *ghttp.UploadFile) (result *sysin.AttachmentListModel, err error)
-		UploadLocal(ctx context.Context, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
-		LastUrl(ctx context.Context, fullPath, drive string) string
+		UploadLocal(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
+		UploadUCloud(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
+		LastUrl(ctx context.Context, conf *model.UploadConfig, fullPath, drive string) string
 	}
 )
 

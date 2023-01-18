@@ -10,8 +10,8 @@ import (
 
 // SysBlacklist is the golang structure for table sys_blacklist.
 type SysBlacklist struct {
-	Id        int64       `json:"id"        description:"主键"`
-	Ip        string      `json:"ip"        description:"ip地址"`
+	Id        int64       `json:"id"        description:"黑名单ID"`
+	Ip        string      `json:"ip"        description:"IP地址"`
 	Remark    string      `json:"remark"    description:"备注"`
 	Status    int         `json:"status"    description:"状态"`
 	CreatedAt *gtime.Time `json:"createdAt" description:"创建时间"`

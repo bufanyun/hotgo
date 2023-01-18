@@ -1,7 +1,7 @@
 <template>
   <div class="logo">
     <img src="~@/assets/images/logo.png" alt="" :class="{ 'mr-2': !collapsed }" />
-    <h2 v-show="!collapsed" class="title">后台管理系统</h2>
+    <h2 v-show="!collapsed" class="title">HG后台管理系统</h2>
   </div>
 </template>
 

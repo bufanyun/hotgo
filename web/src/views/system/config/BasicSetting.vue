@@ -169,10 +169,6 @@
     });
   }
 
-  function resetForm() {
-    formRef.value.restoreValidation();
-  }
-
   function uploadChange(list: string[]) {
     // 单图模式，只需要第一个索引
     if (list.length > 0) {

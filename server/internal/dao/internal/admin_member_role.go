@@ -20,11 +20,11 @@ type AdminMemberRoleDao struct {
 
 // AdminMemberRoleColumns defines and stores column names for table hg_admin_member_role.
 type AdminMemberRoleColumns struct {
-	MemberId string // 用户ID
+	MemberId string // 管理员ID
 	RoleId   string // 角色ID
 }
 
-//  adminMemberRoleColumns holds the columns for table hg_admin_member_role.
+// adminMemberRoleColumns holds the columns for table hg_admin_member_role.
 var adminMemberRoleColumns = AdminMemberRoleColumns{
 	MemberId: "member_id",
 	RoleId:   "role_id",
@@ -70,6 +70,6 @@ func (dao *AdminMemberRoleDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *AdminMemberRoleDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *AdminMemberRoleDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

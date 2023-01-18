@@ -76,7 +76,7 @@ const menuList = () => {
 
 export default [
   {
-    url: '/admin/menu/list__',
+    url: '/admin/menu/list',
     timeout: 1000,
     method: 'get',
     response: () => {

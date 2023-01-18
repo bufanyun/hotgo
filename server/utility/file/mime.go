@@ -27,6 +27,7 @@ const (
 var (
 	// 图片类型
 	imgType = g.MapStrStr{
+		"jpeg": "image/jpeg",
 		"jpg":  "image/jpeg",
 		"png":  "image/png",
 		"gif":  "image/gif",
@@ -107,7 +108,7 @@ func GetFileType(ext string) (string, error) {
 	if mime, ok := videoType[ext]; ok {
 		return mime, nil
 	}
-	return "", gerror.New("Invalid file type")
+	return "", gerror.Newf("Invalid file type:%v", ext)
 }
 
 // GetFileKind 获取文件所属分类

@@ -12,14 +12,14 @@
             <div class="table-toolbar-inner-popover-title">
               <n-space>
                 <n-checkbox v-model:checked="checkAll" @update:checked="onCheckAll"
-                  >列展示
-                </n-checkbox>
+                  >列展示</n-checkbox
+                >
                 <n-checkbox v-model:checked="selection" @update:checked="onSelection"
-                  >勾选列
-                </n-checkbox>
+                  >勾选列</n-checkbox
+                >
                 <n-button text type="info" size="small" class="mt-1" @click="resetColumns"
-                  >重置
-                </n-button>
+                  >重置</n-button
+                >
               </n-space>
             </div>
           </template>
@@ -92,24 +92,22 @@
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, reactive, ref, toRaw, toRefs, unref, watchEffect } from 'vue';
+  import { ref, defineComponent, reactive, unref, toRaw, computed, toRefs, watchEffect } from 'vue';
   import { useTableContext } from '../../hooks/useTableContext';
   import { cloneDeep } from 'lodash-es';
   import {
-    DragOutlined,
     SettingOutlined,
-    VerticalLeftOutlined,
+    DragOutlined,
     VerticalRightOutlined,
+    VerticalLeftOutlined,
   } from '@vicons/antd';
-  import Draggable from 'vuedraggable/src/vuedraggable';
+  import Draggable from 'vuedraggable';
   import { useDesignSetting } from '@/hooks/setting/useDesignSetting';
-
   interface Options {
     title: string;
     key: string;
     fixed?: boolean | 'left' | 'right';
   }
-
   export default defineComponent({
     name: 'ColumnSetting',
     components: {
@@ -119,30 +117,32 @@
       VerticalRightOutlined,
       VerticalLeftOutlined,
     },
-    setup() {
+    props: {
+      openChecked: {
+        type: Boolean as PropType<Boolean>,
+        default: false,
+      },
+    },
+    setup(props) {
       const { getDarkTheme } = useDesignSetting();
       const table: any = useTableContext();
       const columnsList = ref<Options[]>([]);
       const cacheColumnsList = ref<Options[]>([]);
-
       const state = reactive({
-        selection: true,
+        selection: false,
         checkAll: true,
         checkList: [],
         defaultCheckList: [],
       });
-
       const getSelection = computed(() => {
         return state.selection;
       });
-
       watchEffect(() => {
         const columns = table.getColumns();
         if (columns.length) {
           init();
         }
       });
-
       //初始化
       function init() {
         const columns: any[] = getColumns();
@@ -153,23 +153,27 @@
         if (!columnsList.value.length) {
           columnsList.value = cloneDeep(newColumns);
           cacheColumnsList.value = cloneDeep(newColumns);
+          // 只有首次加载时需要执行，重复执行会导致生成多个选项
+          if (props.openChecked) {
+            state.selection = true;
+            if (newColumns[0].type != 'selection' && newColumns[0].key != 'selection') {
+              onSelection(true);
+            }
+          }
         }
-        onSelection(true);
       }
-
       //切换
       function onChange(checkList) {
+        console.log('checkList:' + JSON.stringify(checkList));
         if (state.selection) {
           checkList.unshift('selection');
         }
         setColumns(checkList);
       }
-
       //设置
       function setColumns(columns) {
         table.setColumns(columns);
       }
-
       //获取
       function getColumns() {
         let newRet: any[] = [];
@@ -178,7 +182,6 @@
         });
         return newRet;
       }
-
       //重置
       function resetColumns() {
         state.checkList = [...state.defaultCheckList];
@@ -193,7 +196,6 @@
         setColumns(newColumns);
         columnsList.value = newColumns;
       }
-
       //全选
       function onCheckAll(e) {
         let checkList = table.getCacheColumns(true);
@@ -205,33 +207,28 @@
           state.checkList = [];
         }
       }
-
       //拖拽排序
       function draggableEnd() {
         const newColumns = toRaw(unref(columnsList));
         columnsList.value = newColumns;
         setColumns(newColumns);
       }
-
       //勾选列
       function onSelection(e) {
+        console.log('onSelection:' + JSON.stringify(e));
         let checkList = table.getCacheColumns();
         if (e) {
-          if (checkList[0].type === undefined || checkList[0].type !== 'selection') {
-            checkList.unshift({ type: 'selection', key: 'selection' });
-            setColumns(checkList);
-          }
+          checkList.unshift({ type: 'selection', key: 'selection' });
+          setColumns(checkList);
         } else {
           checkList.splice(0, 1);
           setColumns(checkList);
         }
       }
-
       function onMove(e) {
         if (e.draggedContext.element.draggable === false) return false;
         return true;
       }
-
       //固定
       function fixedColumn(item, fixed) {
         if (!state.checkList.includes(item.key)) return;
@@ -245,7 +242,6 @@
         columnsList.value[index].fixed = isFixed;
         setColumns(columns);
       }
-
       return {
         ...toRefs(state),
         columnsList,
@@ -268,65 +264,54 @@
     &-inner-popover-title {
       padding: 3px 0;
     }
-
     &-right {
       &-icon {
         margin-left: 12px;
         font-size: 16px;
         color: var(--text-color);
         cursor: pointer;
-
         :hover {
           color: #1890ff;
         }
       }
     }
   }
-
   .table-toolbar-inner {
     &-checkbox {
       display: flex;
       align-items: center;
       padding: 10px 14px;
-
       &:hover {
         background: #e6f7ff;
       }
-
       .drag-icon {
         display: inline-flex;
         margin-right: 8px;
         cursor: move;
-
         &-hidden {
           visibility: hidden;
           cursor: default;
         }
       }
-
       .fixed-item {
         display: flex;
         align-items: center;
         justify-content: flex-end;
         margin-left: auto;
       }
-
       .ant-checkbox-wrapper {
         flex: 1;
-
         &:hover {
           color: #1890ff !important;
         }
       }
     }
-
     &-checkbox-dark {
       &:hover {
         background: hsla(0, 0%, 100%, 0.08);
       }
     }
   }
-
   .toolbar-popover {
     .n-popover__content {
       padding: 0;

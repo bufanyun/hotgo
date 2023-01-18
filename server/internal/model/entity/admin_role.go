@@ -5,20 +5,23 @@
 package entity
 
 import (
+	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
 // AdminRole is the golang structure for table admin_role.
 type AdminRole struct {
-	Id                int64       `json:"id"                description:"角色ID"`
-	Name              string      `json:"name"              description:"角色名称"`
-	Key               string      `json:"key"               description:"角色权限字符串"`
-	DataScope         int         `json:"dataScope"         description:"数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）"`
-	MenuCheckStrictly int         `json:"menuCheckStrictly" description:"菜单树选择项是否关联显示"`
-	DeptCheckStrictly int         `json:"deptCheckStrictly" description:"部门树选择项是否关联显示"`
-	Remark            string      `json:"remark"            description:"备注"`
-	Sort              int         `json:"sort"              description:"排序"`
-	Status            int         `json:"status"            description:"角色状态"`
-	CreatedAt         *gtime.Time `json:"createdAt"         description:"创建时间"`
-	UpdatedAt         *gtime.Time `json:"updatedAt"         description:"更新时间"`
+	Id         int64       `json:"id"         description:"角色ID"`
+	Name       string      `json:"name"       description:"角色名称"`
+	Key        string      `json:"key"        description:"角色权限字符串"`
+	DataScope  int         `json:"dataScope"  description:"数据范围"`
+	CustomDept *gjson.Json `json:"customDept" description:"自定义部门权限"`
+	Pid        int64       `json:"pid"        description:"上级角色ID"`
+	Level      int         `json:"level"      description:"关系树等级"`
+	Tree       string      `json:"tree"       description:"关系树"`
+	Remark     string      `json:"remark"     description:"备注"`
+	Sort       int         `json:"sort"       description:"排序"`
+	Status     int         `json:"status"     description:"角色状态"`
+	CreatedAt  *gtime.Time `json:"createdAt"  description:"创建时间"`
+	UpdatedAt  *gtime.Time `json:"updatedAt"  description:"更新时间"`
 }

@@ -33,14 +33,29 @@ func (c *cSite) Ping(ctx context.Context, req *common.SitePingReq) (res *common.
 
 // Config 获取配置
 func (c *cSite) Config(ctx context.Context, req *common.SiteConfigReq) (res *common.SiteConfigRes, err error) {
-
-	wsAddr, _ := g.Cfg().Get(ctx, "hotgo.wsAddr", "ws://127.0.0.1:8000/ws")
-	g.Log().Warningf(ctx, "wsAddr:%+v", wsAddr.String())
 	res = &common.SiteConfigRes{
 		Version: consts.VersionApp,
-		WsAddr:  wsAddr.String(),
+		WsAddr:  c.getWsAddr(ctx),
 	}
 	return
+}
+
+func (c *cSite) getWsAddr(ctx context.Context) string {
+	ws := g.Cfg().MustGet(ctx, "hotgo.wsAddr", "ws://127.0.0.1:8000/socket")
+	return ws.String()
+
+	//// nginx负载均衡部署
+	//// 如果是IP访问，则认为是调试模式，走配置中的ws地址，否则走实际请求中的域名+协议
+	//if !validate.IsDNSName(ghttp.RequestFromCtx(ctx).Host) {
+	//	ws := g.Cfg().MustGet(ctx, "hotgo.wsAddr", "ws://127.0.0.1:8000/socket")
+	//	return ws.String()
+	//}
+	//
+	//if !validate.IsHTTPS(ctx) {
+	//	return fmt.Sprintf("ws://%s/socket", url.GetDomain(ctx))
+	//}
+	//
+	//return fmt.Sprintf("wss://%s/socket", url.GetDomain(ctx))
 }
 
 // Captcha 登录验证码

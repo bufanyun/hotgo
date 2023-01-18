@@ -25,7 +25,8 @@ import (
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/service"
-	"hotgo/utility/convert"
+	"hotgo/utility/tree"
+	"hotgo/utility/validate"
 )
 
 type sAdminMember struct{}
@@ -38,11 +39,11 @@ func init() {
 	service.RegisterAdminMember(NewAdminMember())
 }
 
-// UpdateProfile 修改登录密码
+// UpdateProfile 更新会员资料
 func (s *sAdminMember) UpdateProfile(ctx context.Context, in adminin.MemberUpdateProfileInp) (err error) {
 	memberId := contexts.Get(ctx).User.Id
 	if memberId <= 0 {
-		err := gerror.New("获取用户信息失败！")
+		err = gerror.New("获取用户信息失败！")
 		return err
 	}
 
@@ -55,9 +56,9 @@ func (s *sAdminMember) UpdateProfile(ctx context.Context, in adminin.MemberUpdat
 	_, err = dao.AdminMember.Ctx(ctx).
 		Where("id", memberId).
 		Data(g.Map{
-			"mobile":   in.Mobile,
-			"email":    in.Email,
-			"realname": in.Realname,
+			"mobile":    in.Mobile,
+			"email":     in.Email,
+			"real_name": in.Realname,
 		}).
 		Update()
 
@@ -99,9 +100,16 @@ func (s *sAdminMember) UpdatePwd(ctx context.Context, in adminin.MemberUpdatePwd
 
 // ResetPwd 重置密码
 func (s *sAdminMember) ResetPwd(ctx context.Context, in adminin.MemberResetPwdInp) (err error) {
-	var memberInfo entity.AdminMember
+	var (
+		memberInfo entity.AdminMember
+		memberId   = contexts.GetUserId(ctx)
+	)
 	if err = dao.AdminMember.Ctx(ctx).Where("id", in.Id).Scan(&memberInfo); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
+		return err
+	}
+	if memberInfo.Pid != memberId && !s.VerifySuperId(ctx, memberId) {
+		err = gerror.New("操作非法")
 		return err
 	}
 
@@ -161,7 +169,7 @@ func (s *sAdminMember) NameUnique(ctx context.Context, in adminin.MemberNameUniq
 
 // VerifySuperId 验证是否为超管
 func (s *sAdminMember) VerifySuperId(ctx context.Context, verifyId int64) bool {
-	superIds, _ := g.Cfg().Get(ctx, "hotgo.admin.superIds")
+	superIds := g.Cfg().MustGet(ctx, "hotgo.admin.superIds")
 	for _, id := range superIds.Int64s() {
 		if id == verifyId {
 			return true
@@ -176,7 +184,12 @@ func (s *sAdminMember) Delete(ctx context.Context, in adminin.MemberDeleteInp) e
 		return gerror.New("超管账号禁止删除！")
 	}
 
-	_, err := dao.AdminMember.Ctx(ctx).Where("id", in.Id).Delete()
+	memberId := contexts.GetUserId(ctx)
+	if memberId <= 0 {
+		return gerror.New("获取用户信息失败！")
+	}
+
+	_, err := dao.AdminMember.Ctx(ctx).Where("id", in.Id).Where("pid", memberId).Delete()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
@@ -187,7 +200,10 @@ func (s *sAdminMember) Delete(ctx context.Context, in adminin.MemberDeleteInp) e
 
 // Edit 修改/新增
 func (s *sAdminMember) Edit(ctx context.Context, in adminin.MemberEditInp) (err error) {
-
+	opMemberId := contexts.GetUserId(ctx)
+	if opMemberId <= 0 {
+		return gerror.New("获取用户信息失败！")
+	}
 	if in.Username == "" {
 		return gerror.New("帐号不能为空")
 	}
@@ -197,7 +213,7 @@ func (s *sAdminMember) Edit(ctx context.Context, in adminin.MemberEditInp) (err 
 		return gerror.Wrap(err, consts.ErrorORM)
 	}
 	if !uniqueName {
-		return gerror.New("帐号已存在")
+		return gerror.New("用户名已存在")
 	}
 
 	if in.Mobile != "" {
@@ -221,12 +237,18 @@ func (s *sAdminMember) Edit(ctx context.Context, in adminin.MemberEditInp) (err 
 	}
 
 	// 修改
-	in.UpdatedAt = gtime.Now()
 	if in.Id > 0 {
 		if s.VerifySuperId(ctx, in.Id) {
 			return gerror.New("超管账号禁止编辑！")
 		}
-		_, err = dao.AdminMember.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+
+		// 权限验证
+		var mm = dao.AdminMember.Ctx(ctx).Where("id", in.Id)
+		if !s.VerifySuperId(ctx, opMemberId) {
+			mm = mm.Where("pid", opMemberId)
+		}
+
+		_, err = mm.Data(in).Update()
 		if err != nil {
 			return gerror.Wrap(err, consts.ErrorORM)
 		}
@@ -238,26 +260,25 @@ func (s *sAdminMember) Edit(ctx context.Context, in adminin.MemberEditInp) (err 
 		return nil
 	}
 
-	// 新增
-	in.CreatedAt = gtime.Now()
-
 	// 新增用户时的额外属性
 	var data adminin.MemberAddInp
 	data.MemberEditInp = in
 	data.Salt = grand.S(6)
 	data.PasswordHash = gmd5.MustEncryptString(data.Password + data.Salt)
 
-	insert, err := dao.AdminMember.Ctx(ctx).Data(data).Insert()
+	// 关系树
+	data.Pid = opMemberId
+	data.Level, data.Tree, err = s.genTree(ctx, opMemberId)
+	if err != nil {
+		return err
+	}
+
+	id, err := dao.AdminMember.Ctx(ctx).Data(data).InsertAndGetId()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
 
-	// 更新岗位
-	id, err := insert.LastInsertId()
-	if err != nil {
-		return err
-	}
 	err = dao.AdminMemberPost.UpdatePostIds(ctx, id, in.PostIds)
 	if err != nil {
 		return err
@@ -292,11 +313,11 @@ func (s *sAdminMember) View(ctx context.Context, in adminin.MemberViewInp) (res 
 }
 
 // List 获取列表
-func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list []*adminin.MemberListModel, totalCount int64, err error) {
+func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list []*adminin.MemberListModel, totalCount int, err error) {
 	g.Log().Printf(ctx, "in:%#v", in)
 	mod := dao.AdminMember.Ctx(ctx)
 	if in.Realname != "" {
-		mod = mod.WhereLike("realname", "%"+in.Realname+"%")
+		mod = mod.WhereLike("real_name", "%"+in.Realname+"%")
 	}
 	if in.Username != "" {
 		mod = mod.WhereLike("username", "%"+in.Username+"%")
@@ -325,7 +346,7 @@ func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		return nil, 0, gerror.Wrap(err, consts.ErrorORM)
 	}
 
@@ -344,7 +365,7 @@ func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list
 		// 角色
 		roleName, err := dao.AdminRole.Ctx(ctx).
 			Fields("name").
-			Where("id", list[i].Role).
+			Where("id", list[i].RoleId).
 			Value()
 		if err != nil {
 			return nil, 0, gerror.Wrap(err, consts.ErrorORM)
@@ -352,43 +373,62 @@ func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list
 		list[i].RoleName = roleName.String()
 
 		// 岗位
-		post, err := dao.AdminMemberPost.Ctx(ctx).
+		posts, err := dao.AdminMemberPost.Ctx(ctx).
 			Fields("post_id").
 			Where("member_id", list[i].Id).
-			Value()
+			Array()
 		if err != nil {
 			return nil, 0, gerror.Wrap(err, consts.ErrorORM)
 		}
-		list[i].PostIds = post.Int64s()
+
+		for _, v := range posts {
+			list[i].PostIds = append(list[i].PostIds, v.Int64())
+		}
 	}
 
 	return list, totalCount, nil
 }
 
+// genTree 生成关系树
+func (s *sAdminMember) genTree(ctx context.Context, pid int64) (level int, newTree string, err error) {
+	var (
+		pInfo *entity.AdminMember
+	)
+	err = dao.AdminMember.Ctx(ctx).Where("id", pid).Scan(&pInfo)
+	if err != nil {
+		return
+	}
+
+	if pInfo == nil {
+		err = gerror.New("上级信息不存在")
+		return
+	}
+
+	level = pInfo.Level + 1
+	newTree = tree.GenLabel(pInfo.Tree, pInfo.Id)
+
+	return
+}
+
 // LoginMemberInfo 获取登录用户信息
 func (s *sAdminMember) LoginMemberInfo(ctx context.Context, req *member.InfoReq) (res *adminin.MemberLoginModel, err error) {
-
-	var (
-		permissions adminin.MemberLoginPermissions
-		identity    *model.Identity
-	)
-
-	identity = contexts.Get(ctx).User
-
+	identity := contexts.Get(ctx).User
 	if identity == nil {
 		err = gerror.New("用户身份异常，请重新登录！")
 		return
 	}
 
-	permissions.Label = "主控台"
-	permissions.Value = "value"
+	permissions, err := service.AdminMenu().LoginPermissions(ctx, identity.Id)
+	if err != nil {
+		return
+	}
 
 	res = &adminin.MemberLoginModel{
 		UserId:      identity.Id,
 		Username:    identity.Username,
 		RealName:    identity.RealName,
 		Avatar:      identity.Avatar,
-		Permissions: []adminin.MemberLoginPermissions{permissions},
+		Permissions: permissions,
 		Token:       jwt.GetAuthorization(ghttp.RequestFromCtx(ctx)),
 	}
 
@@ -429,7 +469,7 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 
 	err = dao.AdminRole.Ctx(ctx).
 		Fields("id,key,status").
-		Where("id", memberInfo.Role).
+		Where("id", memberInfo.RoleId).
 		Scan(&roleInfo)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
@@ -445,30 +485,26 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 		return
 	}
 
-	// 生成token
-	jwtExpires, err := g.Cfg().Get(ctx, "jwt.expires", 1)
-	if err != nil {
-		err := gerror.New(err.Error())
-		return nil, err
-	}
 	// 有效期
-	expires := jwtExpires.Int64()
+	expires := g.Cfg().MustGet(ctx, "jwt.expires", 1).Int64()
 
 	// 过期时间戳
 	exp := gconv.Int64(gtime.Timestamp()) + expires
 
 	identity = &model.Identity{
 		Id:         memberInfo.Id,
+		Pid:        memberInfo.Pid,
+		DeptId:     memberInfo.DeptId,
+		RoleId:     roleInfo.Id,
+		RoleKey:    roleInfo.Key,
 		Username:   memberInfo.Username,
-		RealName:   memberInfo.Realname,
+		RealName:   memberInfo.RealName,
 		Avatar:     memberInfo.Avatar,
 		Email:      memberInfo.Email,
 		Mobile:     memberInfo.Mobile,
 		VisitCount: memberInfo.VisitCount,
 		LastTime:   memberInfo.LastTime,
 		LastIp:     memberInfo.LastIp,
-		Role:       roleInfo.Id,
-		RoleKey:    roleInfo.Key,
 		Exp:        exp,
 		Expires:    expires,
 		App:        consts.AppAdmin,
@@ -509,7 +545,7 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 }
 
 // RoleMemberList 获取角色下的会员列表
-func (s *sAdminMember) RoleMemberList(ctx context.Context, in adminin.RoleMemberListInp) (list []*adminin.MemberListModel, totalCount int64, err error) {
+func (s *sAdminMember) RoleMemberList(ctx context.Context, in adminin.RoleMemberListInp) (list []*adminin.MemberListModel, totalCount int, err error) {
 	mod := dao.AdminMember.Ctx(ctx)
 	if in.Role > 0 {
 		mod = mod.Where("role", in.Role)
@@ -521,7 +557,7 @@ func (s *sAdminMember) RoleMemberList(ctx context.Context, in adminin.RoleMember
 		return list, totalCount, err
 	}
 
-	err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list)
+	err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
@@ -546,7 +582,7 @@ func (s *sAdminMember) Status(ctx context.Context, in adminin.MemberStatusInp) (
 		return err
 	}
 
-	if !convert.InSliceInt(consts.StatusMap, in.Status) {
+	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
 		return err
 	}

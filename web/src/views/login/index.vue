@@ -17,7 +17,11 @@
           :rules="rules"
         >
           <n-form-item path="username">
-            <n-input v-model:value="formInline.username" placeholder="请输入用户名">
+            <n-input
+              @keyup.enter="handleSubmit"
+              v-model:value="formInline.username"
+              placeholder="请输入用户名"
+            >
               <template #prefix>
                 <n-icon size="18" color="#808695">
                   <PersonOutline />
@@ -27,6 +31,7 @@
           </n-form-item>
           <n-form-item path="password">
             <n-input
+              @keyup.enter="handleSubmit"
               v-model:value="formInline.password"
               type="password"
               showPasswordOn="click"
@@ -140,8 +145,8 @@
             const toPath = decodeURIComponent((route.query?.redirect || '/') as string);
             message.success('登录成功，即将进入系统');
             if (route.name === LOGIN_NAME) {
-              router.replace('/');
-            } else router.replace(toPath);
+              await router.replace('/');
+            } else await router.replace(toPath);
           } else {
             message.info(msg || '登录失败');
           }

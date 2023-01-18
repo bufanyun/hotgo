@@ -25,25 +25,27 @@ import (
 // GenerateLoginToken 为指定用户生成token
 func GenerateLoginToken(ctx context.Context, user *model.Identity, isRefresh bool) (interface{}, error) {
 	var (
-		jwtVersion, _ = g.Cfg().Get(ctx, "jwt.version", "1.0")
-		jwtSign, _    = g.Cfg().Get(ctx, "jwt.sign", "hotGo")
-		token         = j.NewWithClaims(j.SigningMethodHS256, j.MapClaims{
-			"id":          user.Id,
-			"username":    user.Username,
-			"realname":    user.RealName,
-			"avatar":      user.Avatar,
-			"email":       user.Email,
-			"mobile":      user.Mobile,
-			"last_time":   user.LastTime,
-			"last_ip":     user.LastIp,
-			"exp":         user.Exp,
-			"expires":     user.Expires,
-			"app":         user.App,
-			"role":        user.Role,
-			"role_key":    user.RoleKey,
-			"visit_count": user.VisitCount,
-			"is_refresh":  isRefresh,
-			"jwt_version": jwtVersion.String(),
+		jwtVersion = g.Cfg().MustGet(ctx, "jwt.version", "1.0")
+		jwtSign    = g.Cfg().MustGet(ctx, "jwt.sign", "hotGo")
+		token      = j.NewWithClaims(j.SigningMethodHS256, j.MapClaims{
+			"id":         user.Id,
+			"pid":        user.Pid,
+			"deptId":     user.DeptId,
+			"roleId":     user.RoleId,
+			"roleKey":    user.RoleKey,
+			"username":   user.Username,
+			"realName":   user.RealName,
+			"avatar":     user.Avatar,
+			"email":      user.Email,
+			"mobile":     user.Mobile,
+			"lastTime":   user.LastTime,
+			"lastIp":     user.LastIp,
+			"exp":        user.Exp,
+			"expires":    user.Expires,
+			"app":        user.App,
+			"visitCount": user.VisitCount,
+			"isRefresh":  isRefresh,
+			"jwtVersion": jwtVersion.String(),
 		})
 	)
 
@@ -81,7 +83,7 @@ func ParseToken(tokenString string, secret []byte) (j.MapClaims, error) {
 	}
 	token, err := j.Parse(tokenString, func(token *j.Token) (interface{}, error) {
 		if _, ok := token.Method.(*j.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			return nil, gerror.Newf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return secret, nil
 	})

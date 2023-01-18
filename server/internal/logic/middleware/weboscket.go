@@ -24,7 +24,7 @@ func (s *sMiddleware) WebSocketToken(r *ghttp.Request) {
 	)
 
 	// 替换掉模块前缀
-	routerPrefix, _ := g.Cfg().Get(ctx, "router.ws.prefix", "/socket")
+	routerPrefix := g.Cfg().MustGet(ctx, "router.ws.prefix", "/socket")
 	path := gstr.Replace(r.URL.Path, routerPrefix.String(), "", 1)
 
 	/// 不需要验证登录的路由地址

@@ -30,7 +30,7 @@ type AdminRoleCasbinColumns struct {
 	V5    string //
 }
 
-//  adminRoleCasbinColumns holds the columns for table hg_admin_role_casbin.
+// adminRoleCasbinColumns holds the columns for table hg_admin_role_casbin.
 var adminRoleCasbinColumns = AdminRoleCasbinColumns{
 	Id:    "id",
 	PType: "p_type",
@@ -82,6 +82,6 @@ func (dao *AdminRoleCasbinDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *AdminRoleCasbinDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *AdminRoleCasbinDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

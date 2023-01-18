@@ -14,6 +14,7 @@
       </BasicForm>
 
       <BasicTable
+        :openChecked="true"
         :columns="columns"
         :request="loadDataTable"
         :row-key="(row) => row.id"
@@ -96,16 +97,60 @@
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref } from 'vue';
-  import { useDialog, useMessage } from 'naive-ui';
+  import { h, onMounted, reactive, ref } from 'vue';
+  import { NTag, useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
   import { Delete, Edit, List, Status } from '@/api/sys/blacklist';
-  import { columns } from './columns';
   import { DeleteOutlined, PlusOutlined } from '@vicons/antd';
   import { statusActions, statusOptions } from '@/enums/optionsiEnum';
+  import { Dict } from '@/api/dict/dict';
+  import { getOptionLabel, getOptionTag } from '@/utils/hotgo';
 
-  const params = ref({
+  const options = ref({
+    status: [],
+  });
+
+  const columns = [
+    {
+      title: 'ID',
+      key: 'id',
+    },
+    {
+      title: 'IP地址',
+      key: 'ip',
+    },
+    {
+      title: '备注',
+      key: 'remark',
+    },
+    {
+      title: '状态',
+      key: 'status',
+      render(row) {
+        return h(
+          NTag,
+          {
+            style: {
+              marginRight: '6px',
+            },
+            type: getOptionTag(options.value.status, row.status),
+            bordered: false,
+          },
+          {
+            default: () => getOptionLabel(options.value.status, row.status),
+          }
+        );
+      },
+    },
+
+    {
+      title: '创建时间',
+      key: 'createdAt',
+    },
+  ];
+
+  const params = ref<any>({
     pageSize: 10,
     title: '',
     content: '',
@@ -120,7 +165,7 @@
     },
   };
 
-  const schemas: FormSchema[] = [
+  const schemas = ref<FormSchema[]>([
     {
       field: 'ip',
       component: 'NInput',
@@ -140,21 +185,21 @@
       defaultValue: null,
       componentProps: {
         placeholder: '请选择类型',
-        options: statusOptions,
+        options: [],
         onUpdateValue: (e: any) => {
           console.log(e);
         },
       },
     },
-  ];
+  ]);
 
   const message = useMessage();
   const actionRef = ref();
   const dialog = useDialog();
   const showModal = ref(false);
   const formBtnLoading = ref(false);
-  const searchFormRef = ref({});
-  const formRef = ref({});
+  const searchFormRef = ref<any>({});
+  const formRef = ref<any>({});
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
 
@@ -165,7 +210,7 @@
     sort: 0,
     status: 1,
   };
-  let formParams = ref(resetFormParams);
+  let formParams = ref<any>(resetFormParams);
 
   const actionColumn = reactive({
     width: 220,
@@ -205,17 +250,12 @@
   }
 
   const loadDataTable = async (res) => {
-    return await List({ ...params.value, ...res, ...searchFormRef.value.formModel });
+    return await List({ ...params.value, ...res, ...searchFormRef.value?.formModel });
   };
 
   function onCheckedRow(rowKeys) {
     console.log(rowKeys);
-    if (rowKeys.length > 0) {
-      batchDeleteDisabled.value = false;
-    } else {
-      batchDeleteDisabled.value = true;
-    }
-
+    batchDeleteDisabled.value = rowKeys.length <= 0;
     checkedIds.value = rowKeys;
   }
 
@@ -228,10 +268,8 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formParams:' + JSON.stringify(formParams.value));
         Edit(formParams.value)
           .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
             message.success('操作成功');
             setTimeout(() => {
               showModal.value = false;
@@ -250,31 +288,24 @@
   }
 
   function handleEdit(record: Recordable) {
-    console.log('点击了编辑', record);
     showModal.value = true;
     formParams.value = record;
   }
 
   function handleDelete(record: Recordable) {
-    console.log('点击了删除', record);
     dialog.warning({
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
-        Delete(record)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((e: Error) => {
-            // message.error(e.message ?? '操作失败');
-          });
+        Delete(record).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
@@ -284,11 +315,10 @@
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
         Delete({ id: checkedIds.value })
           .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
             message.success('操作成功');
             reloadTable();
           })
@@ -297,13 +327,12 @@
           });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
 
   function handleSubmit(values: Recordable) {
-    console.log(values);
     params.value = values;
     reloadTable();
   }
@@ -314,18 +343,26 @@
   }
 
   function updateStatus(id, status) {
-    Status({ id: id, status: status })
-      .then((_res) => {
-        console.log('_res:' + JSON.stringify(_res));
-        message.success('操作成功');
-        setTimeout(() => {
-          reloadTable({});
-        });
-      })
-      .catch((e: Error) => {
-        message.error(e.message ?? '操作失败');
+    Status({ id: id, status: status }).then((_res) => {
+      message.success('操作成功');
+      setTimeout(() => {
+        reloadTable();
       });
+    });
   }
+
+  async function loadOptions() {
+    options.value.status = await Dict('sys_normal_disable');
+    for (const item of schemas.value) {
+      if (item.field === 'status') {
+        item.componentProps.options = options.value.status;
+      }
+    }
+  }
+
+  onMounted(async () => {
+    await loadOptions();
+  });
 </script>
 
 <style lang="less" scoped></style>

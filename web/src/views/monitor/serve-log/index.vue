@@ -7,6 +7,7 @@
     </BasicForm>
 
     <BasicTable
+      :openChecked="true"
       :columns="columns"
       :request="loadDataTable"
       :row-key="(row) => row.id"
@@ -169,7 +170,6 @@
   ];
 
   const router = useRouter();
-  const formRef: any = ref(null);
   const message = useMessage();
   const actionRef = ref();
   const formParams = ref({});
@@ -218,25 +218,19 @@
   }
 
   function handleDelete(record: Recordable) {
-    console.log('点击了删除', record);
     dialog.warning({
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
-        Delete(record)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((e: Error) => {
-            // message.error(e.message ?? '操作失败');
-          });
+        Delete(record).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
@@ -246,20 +240,15 @@
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
-        Delete({ id: checkedIds.value })
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((e: Error) => {
-            message.error(e.message ?? '操作失败');
-          });
+        Delete({ id: checkedIds.value }).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
@@ -273,18 +262,15 @@
   }
 
   function handleEdit(record: Recordable) {
-    console.log('点击了编辑', record);
     router.push({ name: 'serve_log_view', params: { id: record.id } });
   }
 
   function handleSubmit(values: Recordable) {
-    console.log(values);
     formParams.value = values;
     reloadTable();
   }
 
-  function handleReset(values: Recordable) {
-    console.log(values);
+  function handleReset(_values: Recordable) {
     formParams.value = {};
     reloadTable();
   }

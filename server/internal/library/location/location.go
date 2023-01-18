@@ -8,8 +8,8 @@ package location
 
 import (
 	"context"
+	"fmt"
 	"github.com/axgle/mahonia"
-	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/text/gstr"
@@ -21,6 +21,11 @@ import (
 	"net/http"
 	"strings"
 	"time"
+)
+
+const (
+	whoisApi = "https://whois.pconline.com.cn/ipJson.jsp?json=true&ip="
+	dyndns   = "http://members.3322.org/dyndns/getip"
 )
 
 type IpLocationData struct {
@@ -35,49 +40,42 @@ type IpLocationData struct {
 	AreaCode     int64  `json:"area_code"`
 }
 
+type WhoisRegionData struct {
+	Ip         string `json:"ip"`
+	Pro        string `json:"pro" `
+	ProCode    string `json:"proCode" `
+	City       string `json:"city" `
+	CityCode   string `json:"cityCode"`
+	Region     string `json:"region"`
+	RegionCode string `json:"regionCode"`
+	Addr       string `json:"addr"`
+	Err        string `json:"err"`
+}
+
 // WhoisLocation 通过Whois接口查询IP归属地
-func WhoisLocation(ctx context.Context, ip string) IpLocationData {
-
-	type whoisRegionData struct {
-		Ip         string `json:"ip"`
-		Pro        string `json:"pro" `
-		ProCode    string `json:"proCode" `
-		City       string `json:"city" `
-		CityCode   string `json:"cityCode"`
-		Region     string `json:"region"`
-		RegionCode string `json:"regionCode"`
-		Addr       string `json:"addr"`
-		Err        string `json:"err"`
-	}
-
+func WhoisLocation(ctx context.Context, ip string) (*IpLocationData, error) {
 	if !validate.IsIp(ip) {
-		return IpLocationData{}
+		return nil, fmt.Errorf("invalid input ip:%v", ip)
 	}
 
-	response, err := g.Client().Timeout(10*time.Second).Get(ctx, "http://whois.pconline.com.cn/ipJson.jsp?ip="+ip+"&json=true")
+	response, err := g.Client().Timeout(10*time.Second).Get(ctx, whoisApi+ip)
 	if err != nil {
-		err = gerror.New(err.Error())
-		return IpLocationData{
-			Ip: ip,
-		}
+		return nil, err
 	}
 
 	defer response.Close()
 
-	var enc mahonia.Decoder
-	enc = mahonia.NewDecoder("gbk")
-	data := enc.ConvertString(response.ReadAllString())
-	whoisData := whoisRegionData{}
-	if err := gconv.Struct(data, &whoisData); err != nil {
-		err = gerror.New(err.Error())
+	var (
+		whoisData *WhoisRegionData
+		enc       = mahonia.NewDecoder("gbk")
+		data      = enc.ConvertString(response.ReadAllString())
+	)
 
-		g.Log().Print(ctx, "err:", err)
-		return IpLocationData{
-			Ip: ip,
-		}
+	if err = gconv.Struct(data, &whoisData); err != nil {
+		return nil, err
 	}
 
-	return IpLocationData{
+	return &IpLocationData{
 		Ip: whoisData.Ip,
 		//Country      string `json:"country"`
 		Region:       whoisData.Addr,
@@ -87,32 +85,26 @@ func WhoisLocation(ctx context.Context, ip string) IpLocationData {
 		CityCode:     gconv.Int64(whoisData.CityCode),
 		Area:         whoisData.Region,
 		AreaCode:     gconv.Int64(whoisData.RegionCode),
-	}
+	}, nil
 }
 
 // Cz88Find 通过Cz88的IP库查询IP归属地
-func Cz88Find(ctx context.Context, ip string) IpLocationData {
+func Cz88Find(ctx context.Context, ip string) (*IpLocationData, error) {
 	if !validate.IsIp(ip) {
-		g.Log().Print(ctx, "ip格式错误:", ip)
-		return IpLocationData{}
+		return nil, fmt.Errorf("invalid input ip:%v", ip)
 	}
 
-	loc, err := iploc.OpenWithoutIndexes("./storage/ip/qqwry-utf8.dat")
+	loc, err := iploc.OpenWithoutIndexes("./resource/ip/qqwry-utf8.dat")
 	if err != nil {
-		err = gerror.New(err.Error())
-		return IpLocationData{
-			Ip: ip,
-		}
+		return nil, fmt.Errorf("%v for help, please go to: https://github.com/kayon/iploc", err.Error())
 	}
 
 	detail := loc.Find(ip)
 	if detail == nil {
-		return IpLocationData{
-			Ip: ip,
-		}
+		return nil, fmt.Errorf("no ip data is queried. procedure:%v", ip)
 	}
 
-	locationData := IpLocationData{
+	locationData := &IpLocationData{
 		Ip:       ip,
 		Country:  detail.Country,
 		Region:   detail.Region,
@@ -121,18 +113,12 @@ func Cz88Find(ctx context.Context, ip string) IpLocationData {
 		Area:     detail.County,
 	}
 
-	if gstr.LenRune(locationData.Province) == 0 {
-		return locationData
-	}
-
-	return locationData
+	return locationData, nil
 }
 
 // IsJurisByIpTitle 判断地区名称是否为直辖市
 func IsJurisByIpTitle(title string) bool {
-
 	lists := []string{"北京市", "天津市", "重庆市", "上海市"}
-
 	for i := 0; i < len(lists); i++ {
 		if gstr.Contains(lists[i], title) {
 			return true
@@ -142,9 +128,8 @@ func IsJurisByIpTitle(title string) bool {
 }
 
 // GetLocation 获取IP归属地信息
-func GetLocation(ctx context.Context, ip string) IpLocationData {
-	method, _ := g.Cfg().Get(ctx, "hotgo.ipMethod", "cz88")
-
+func GetLocation(ctx context.Context, ip string) (*IpLocationData, error) {
+	method := g.Cfg().MustGet(ctx, "hotgo.ipMethod", "cz88")
 	if method.String() == "whois" {
 		return WhoisLocation(ctx, ip)
 	}
@@ -152,16 +137,28 @@ func GetLocation(ctx context.Context, ip string) IpLocationData {
 }
 
 // GetPublicIP 获取公网IP
-func GetPublicIP() (ip string, err error) {
-	response, err := http.Get("http://members.3322.org/dyndns/getip")
+func GetPublicIP(ctx context.Context) (ip string, err error) {
+	var data *WhoisRegionData
+	err = g.Client().Timeout(10*time.Second).GetVar(ctx, whoisApi).Scan(&data)
+	if err != nil {
+		g.Log().Warningf(ctx, "GetPublicIP alternatives are being tried err:%+v", err)
+		return GetPublicIP2()
+	}
+	return data.Ip, nil
+}
+
+func GetPublicIP2() (ip string, err error) {
+	response, err := http.Get(dyndns)
 	if err != nil {
 		return
 	}
 	defer response.Body.Close()
 
-	body, _ := ioutil.ReadAll(response.Body)
-	ip = string(body)
-	ip = strings.ReplaceAll(ip, "\n", "")
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return
+	}
+	ip = strings.ReplaceAll(string(body), "\n", "")
 	return
 }
 

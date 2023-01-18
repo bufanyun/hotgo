@@ -10,6 +10,8 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/backend/config"
+	"hotgo/internal/consts"
+	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 )
@@ -54,4 +56,16 @@ func (c *cConfig) UpdateConfig(ctx context.Context, req *config.UpdateReq) (*con
 	}
 
 	return &res, nil
+}
+
+// TypeSelect 数据类型选项
+func (c *cConfig) TypeSelect(ctx context.Context, req *config.TypeSelectReq) (res config.TypeSelectRes, err error) {
+	for _, v := range consts.ConfigTypes {
+		res = append(res, form.Select{
+			Value: v,
+			Name:  v,
+			Label: v,
+		})
+	}
+	return
 }

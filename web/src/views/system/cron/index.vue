@@ -14,6 +14,7 @@
       </BasicForm>
 
       <BasicTable
+        :openChecked="true"
         :columns="columns"
         :request="loadDataTable"
         :row-key="(row) => row.id"
@@ -149,7 +150,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { h, onMounted, reactive, ref, onBeforeMount } from 'vue';
+  import { h, reactive, ref, onBeforeMount } from 'vue';
   import { TreeSelectOption, useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
@@ -159,7 +160,7 @@
   import { statusActions } from '@/enums/optionsiEnum';
   import GroupModal from './modal/modal.vue';
 
-  const optionTreeData = ref([]);
+  const optionTreeData = ref<any>([]);
   const defaultValueRef = () => ({
     id: 0,
     groupId: 0,
@@ -172,7 +173,7 @@
     remark: '',
     status: 1,
   });
-  const params = ref({
+  const params = ref<any>({
     pageSize: 10,
     title: '',
     content: '',
@@ -221,7 +222,7 @@
     return s;
   });
 
-  const groupOptions = ref([]);
+  const groupOptions = ref<any>([]);
 
   const schemas: FormSchema[] = [
     {
@@ -282,11 +283,11 @@
   const dialog = useDialog();
   const showModal = ref(false);
   const formBtnLoading = ref(false);
-  const searchFormRef = ref({});
-  const formRef = ref({});
+  const searchFormRef = ref<any>({});
+  const formRef = ref<any>({});
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
-  let formParams = ref(defaultValueRef());
+  let formParams = ref<any>(defaultValueRef());
 
   const actionColumn = reactive({
     width: 320,
@@ -330,17 +331,11 @@
   }
 
   const loadDataTable = async (res) => {
-    return await List({ ...params.value, ...res, ...searchFormRef.value.formModel });
+    return await List({ ...params.value, ...res, ...searchFormRef.value?.formModel });
   };
 
   function onCheckedRow(rowKeys) {
-    console.log(rowKeys);
-    if (rowKeys.length > 0) {
-      batchDeleteDisabled.value = false;
-    } else {
-      batchDeleteDisabled.value = true;
-    }
-
+    batchDeleteDisabled.value = rowKeys.length <= 0;
     checkedIds.value = rowKeys;
   }
 
@@ -353,20 +348,14 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formParams:' + JSON.stringify(formParams.value));
-        Edit(formParams.value)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            setTimeout(() => {
-              showModal.value = false;
-              reloadTable();
-              formParams.value = ref(defaultValueRef());
-            });
-          })
-          .catch((_e: Error) => {
-            // message.error(e.message ?? '操作失败');
+        Edit(formParams.value).then((_res) => {
+          message.success('操作成功');
+          setTimeout(() => {
+            showModal.value = false;
+            reloadTable();
+            formParams.value = ref(defaultValueRef());
           });
+        });
       } else {
         message.error('请填写完整信息');
       }
@@ -375,35 +364,29 @@
   }
 
   function handleEdit(record: Recordable) {
-    console.log('点击了编辑', record);
     showModal.value = true;
     formParams.value = record;
   }
 
   function handleExecute(record: Recordable) {
     console.log('点击了handleExecute', record);
+    message.error('暂未配置');
   }
 
   function handleDelete(record: Recordable) {
-    console.log('点击了删除', record);
     dialog.warning({
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
-        Delete(record)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((e: Error) => {
-            // message.error(e.message ?? '操作失败');
-          });
+        Delete(record).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
@@ -413,26 +396,20 @@
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '不确定',
+      negativeText: '取消',
       onPositiveClick: () => {
-        Delete({ id: checkedIds.value })
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((e: Error) => {
-            message.error(e.message ?? '操作失败');
-          });
+        Delete({ id: checkedIds.value }).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
-        // message.error('不确定');
+        // message.error('取消');
       },
     });
   }
 
   function handleSubmit(values: Recordable) {
-    console.log(values);
     params.value = values;
     reloadTable();
   }
@@ -448,7 +425,7 @@
         console.log('_res:' + JSON.stringify(_res));
         message.success('操作成功');
         setTimeout(() => {
-          reloadTable({});
+          reloadTable();
         });
       })
       .catch((e: Error) => {
@@ -485,9 +462,8 @@
   // 处理选项更新
   function handleUpdateValue(
     value: string | number | Array<string | number> | null,
-    option: TreeSelectOption | null | Array<TreeSelectOption | null>
+    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
   ) {
-    console.log(value, option);
     formParams.value.groupId = value;
   }
 </script>

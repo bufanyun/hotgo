@@ -29,8 +29,8 @@ var Enforcer *casbin.Enforcer
 // InitEnforcer 初始化
 func InitEnforcer(ctx context.Context) {
 	var (
-		link, _ = g.Cfg().Get(ctx, "database.default.link")
-		a, err  = NewAdapter(link.String())
+		link   = g.Cfg().MustGet(ctx, "database.default.link")
+		a, err = NewAdapter(link.String())
 	)
 
 	if err != nil {
@@ -53,10 +53,10 @@ func loadPermissions(ctx context.Context) {
 		Permissions string `json:"permissions"`
 	}
 	var (
-		rules           [][]string
-		polices         []*Policy
-		err             error
-		superRoleKey, _ = g.Cfg().Get(ctx, "hotgo.admin.superRoleKey")
+		rules        [][]string
+		polices      []*Policy
+		err          error
+		superRoleKey = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
 	)
 
 	err = g.Model("hg_admin_role r").
