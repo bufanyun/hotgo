@@ -32,5 +32,4 @@ func signalListen(ctx context.Context, handler ...gproc.SigHandler) {
 		gproc.AddSigHandlerShutdown(handler...)
 		gproc.Listen()
 	})
-
 }

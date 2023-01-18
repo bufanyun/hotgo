@@ -18,9 +18,11 @@ import (
 )
 
 func Admin(ctx context.Context, group *ghttp.RouterGroup) {
+	// 兼容后台登录入口
 	group.ALL("/login", func(r *ghttp.Request) {
 		r.Response.RedirectTo("/admin")
 	})
+
 	prefix := g.Cfg().MustGet(ctx, "router.admin.prefix", "/admin")
 	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
 		group.Middleware(service.Middleware().AdminAuth)

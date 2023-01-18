@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost:3306
--- 生成日期： 2023-01-18 16:03:59
+-- 生成日期： 2023-01-18 16:36:03
 -- 服务器版本： 5.7.38-log
 -- PHP 版本： 5.6.40
 
@@ -546,20 +546,9 @@ CREATE TABLE `hg_sys_attachment` (
 --
 
 INSERT INTO `hg_sys_attachment` (`id`, `app_id`, `member_id`, `cate_id`, `drive`, `name`, `kind`, `meta_type`, `naive_type`, `path`, `file_url`, `size`, `ext`, `md5`, `status`, `created_at`, `updated_at`) VALUES
-(2, 'admin', 1, 0, 'local', 'images.png', 'images', 'image/png', '', 'attachment/2022-10-06/cneymhinrf34ildibh.png', 'attachment/2022-10-06/cneymhinrf34ildibh.png', 1987, 'png', 'ec2960719ee8c3253b15de6a2d5a581b', 1, '2022-10-06 23:53:29', '2022-10-06 23:53:29'),
-(4, 'admin', 1, 0, 'local', '孟帅微信.png', 'images', 'image/png', '', 'attachment/2022-10-07/cneywfwgihvq6yhg9k.png', 'attachment/2022-10-07/cneywfwgihvq6yhg9k.png', 15137, 'png', 'a0d367ee2a3d710ad1927714c28d52dd', 1, '2022-10-07 00:06:29', '2022-10-07 00:06:29'),
-(5, 'admin', 1, 0, 'local', '54.png', 'images', 'image/png', '', 'attachment/2022-10-07/cnf9tml2ikirr1i6ss.png', 'attachment/2022-10-07/cnf9tml2ikirr1i6ss.png', 38601, 'png', '492c0e0f0eb8e7e6c7b6901d32854d19', 1, '2022-10-07 08:40:01', '2022-10-07 08:40:01'),
-(7, 'admin', 1, 0, 'local', 'facebook_profile_image.png', 'images', 'image/png', '', 'attachment/2022-10-07/cnfab2frav7ykx8pe0.png', 'attachment/2022-10-07/cnfab2frav7ykx8pe0.png', 8044, 'png', 'b01abc4c4385a36523759af76500c927', 1, '2022-10-07 09:02:47', '2022-10-07 09:02:47'),
-(10, 'admin', 1, 0, 'local', 'instagram_profile_image.png', 'images', 'image/png', '', 'attachment/2022-10-07/cnfaiesjx7lsyqsbwa.png', 'attachment/2022-10-07/cnfaiesjx7lsyqsbwa.png', 6609, 'png', 'a8569454c063af6d27678e6c3d115bac', 1, '2022-10-07 09:12:23', '2022-10-07 09:12:23'),
-(12, 'admin', 1, 0, 'local', 'youtube_profile_image.png', 'images', 'image/png', '', 'attachment/2022-10-07/cnfba8qmfuqzyfg80l.png', 'attachment/2022-10-07/cnfba8qmfuqzyfg80l.png', 5531, 'png', '4bed068d7c89e48c41274b4c198e0b9b', 1, '2022-10-07 09:48:44', '2022-10-07 09:48:44'),
-(17, 'admin', 1, 0, 'local', 'u=2660610025,3054170490&fm=253&fmt=auto&app=138&f=JPEG.jpg', 'images', 'image/jpeg', '', 'attachment/2022-12-29/cpe9nfm81rhwmd3ayt.jpg', 'attachment/2022-12-29/cpe9nfm81rhwmd3ayt.jpg', 11246, 'jpg', '15c92047ada08f72167e6e9d1539ffd9', 1, '2022-12-29 19:31:12', '2023-01-18 10:53:26'),
-(18, 'admin', 1, 0, 'local', 'u=366042725,4290979312&fm=224&app=112&f=JPEG.jpg', 'images', 'image/jpeg', '', 'attachment/2022-12-29/cpea9g76jq4cyxvg8c.jpg', 'attachment/2022-12-29/cpea9g76jq4cyxvg8c.jpg', 44488, 'jpg', '5a70496e61671cb9bea61c04144ed26a', 1, '2022-12-29 19:59:58', '2023-01-04 16:23:19'),
-(19, 'admin', 1, 0, 'local', 'pic4.zhimg.jpg', 'images', 'image/jpeg', '', 'attachment/2022-12-29/cpeajfdijd6gix0m37.jpg', 'attachment/2022-12-29/cpeajfdijd6gix0m37.jpg', 59608, 'jpg', '4f7b441436d8f18d848c83df3d5fd77c', 1, '2022-12-29 20:12:59', '2023-01-18 14:59:54'),
-(21, 'admin', 1, 0, 'ucloud', 'p8.itc.webp', 'images', 'image/webp', '', 'hotgo/attachment/2022-12-30/cpezmt5lsgxkw8ttkf.webp', 'hotgo/attachment/2022-12-30/cpezmt5lsgxkw8ttkf.webp', 78100, 'webp', 'f38a6aefccaa6c6aff6a8d73bce108e2', 1, '2022-12-30 15:52:52', '2022-12-30 16:36:05'),
-(22, 'admin', 1, 0, 'ucloud', '测试1.doc', 'document', 'application/msword', 'text/plain', 'hotgo/attachment/2022-12-30/cpf1fy77osc0oap1ns.doc', 'hotgo/attachment/2022-12-30/cpf1fy77osc0oap1ns.doc', 9216, 'doc', '7b82c3bdd93f2bd53dbb6bdb8220428a', 1, '2022-12-30 17:17:57', '2023-01-18 14:57:39'),
-(23, 'admin', 1, 0, 'ucloud', '测试2.xlsx', 'document', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/plain', 'hotgo/attachment/2022-12-30/cpf1x44idoycrtajf2.xlsx', 'hotgo/attachment/2022-12-30/cpf1x44idoycrtajf2.xlsx', 9800, 'xlsx', 'df3457614fd455a6486a0c1dcf6e0603', 1, '2022-12-30 17:40:22', '2023-01-18 14:59:59'),
-(24, 'admin', 1, 0, 'ucloud', '91ef76c6a7efce1bb8209a0a26e18bd9b58f651a.jpeg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-01-18/cpuz5ubefdmspdgt1f.jpeg', 'hotgo/attachment/2023-01-18/cpuz5ubefdmspdgt1f.jpeg', 24114, 'jpeg', '1a863f439969021a89783b55a68c8756', 1, '2023-01-18 10:53:22', '2023-01-18 10:53:22'),
-(25, 'admin', 1, 0, 'ucloud', 'f9dcd100baa1cd11d3d39ced8c66dcf4c2ce2d16.jpeg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-01-18/cpv4crzjksw0ejqd0a.jpeg', 'hotgo/attachment/2023-01-18/cpv4crzjksw0ejqd0a.jpeg', 64239, 'jpeg', 'd5f74ac9e8e96cbf12401f8e254d2652', 1, '2023-01-18 14:57:31', '2023-01-18 14:57:31');
+(26, 'admin', 1, 0, 'local', '68747470733a2f2f627566616e79756e2e636e2d626a2e7566696c656f732e636f6d2f686f74676f2f686f74676f3171756e2e706e67.png', 'images', 'image/png', '', 'attachment/2023-01-18/cpv6dx10bq0cejq5an.png', 'attachment/2023-01-18/cpv6dx10bq0cejq5an.png', 210216, 'png', '4b26a0f8dc468f0aa0a7d4013cb62420', 1, '2023-01-18 16:33:03', '2023-01-18 16:33:03'),
+(27, 'admin', 1, 0, 'local', '测试1.doc', 'document', 'application/msword', 'text/plain', 'attachment/2023-01-18/cpv6fjqvrad0sep6ri.doc', 'attachment/2023-01-18/cpv6fjqvrad0sep6ri.doc', 9216, 'doc', '7b82c3bdd93f2bd53dbb6bdb8220428a', 1, '2023-01-18 16:35:10', '2023-01-18 16:35:10'),
+(28, 'admin', 1, 0, 'local', 'logo.png', 'images', 'image/png', '', 'attachment/2023-01-18/cpv6fmqmwfq8zobctz.png', 'attachment/2023-01-18/cpv6fmqmwfq8zobctz.png', 38601, 'png', '492c0e0f0eb8e7e6c7b6901d32854d19', 1, '2023-01-18 16:35:17', '2023-01-18 16:35:17');
 
 -- --------------------------------------------------------
 
@@ -629,25 +618,25 @@ INSERT INTO `hg_sys_config` (`id`, `group`, `name`, `type`, `key`, `value`, `def
 (15, 'smtp', 'SMTP密码', 'string', 'smtpPass', '', '', 120, '填写您的密码', 1, 1, '2021-01-30 13:27:43', '2022-09-05 23:05:40'),
 (16, 'smtp', '发件人名称', 'string', 'smtpSendName', 'HotGo', 'HotGo', 130, '', 1, 1, '2021-01-30 13:27:43', '2022-09-05 23:05:40'),
 (17, 'smtp', '管理员邮箱', 'string', 'smtpAdminMailbox', '133814250@qq.com', '133814250@qq.com', 140, '', 1, 1, '2021-01-30 13:27:43', '2022-09-05 23:05:40'),
-(28, 'upload', '上传驱动', 'string', 'uploadDrive', 'ucloud', '', 300, 'local：本地;ucloud：ucloud', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
+(28, 'upload', '上传驱动', 'string', 'uploadDrive', 'local', '', 300, 'local：本地;ucloud：ucloud', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
 (29, 'upload', '上传图片大小限制', 'int', 'uploadImageSize', '2', '2', 310, '单位：MB', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
 (30, 'upload', '上传图片类型限制', 'string', 'uploadImageType', 'jpg,jpeg,gif,npm,png,svg', 'jpg,jpeg,gif,npm,png,svg', 320, '图片上传后缀类型限制', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
 (31, 'upload', '上传文件大小限制', 'int', 'uploadFileSize', '10', '10', 330, '单位：MB', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
 (32, 'upload', '上传文件类型限制', 'string', 'uploadFileType', 'doc,docx,zip,xls,xlsx,rar,jpg,jpeg,gif,npm,png,svg', 'doc,docx,zip,xls,xlsx,rar,jpg,jpeg,gif,npm,png,svg', 340, '文件上传后缀类型限制', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
 (33, 'upload', '本地存储路径', 'string', 'uploadLocalPath', 'attachment/', 'attachment/', 350, '对外访问的相对路径', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
 (34, 'upload', 'UCloud存储路径', 'string', 'uploadUCloudPath', 'hotgo/attachment/', 'hotgo/attachment/', 360, 'UC对象存储中的相对路径', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
-(35, 'upload', 'UCloud公钥', 'string', 'uploadUCloudPublicKey', 'TOKEN_05441a2b-d5a9-499a-b480-a05687257ef2', '', 370, '获取地址：https://console.ucloud.cn/ufile/token', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
-(36, 'upload', 'UCloud私钥', 'string', 'uploadUCloudPrivateKey', '30f05196-a733-4e19-b4ac-ed7a95601e0a', '', 380, '', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
+(35, 'upload', 'UCloud公钥', 'string', 'uploadUCloudPublicKey', '', '', 370, '获取地址：https://console.ucloud.cn/ufile/token', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
+(36, 'upload', 'UCloud私钥', 'string', 'uploadUCloudPrivateKey', '', '', 380, '', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
 (37, 'upload', 'UCloud地域API', 'string', 'uploadUCloudBucketHost', 'api.ucloud.cn', 'api.ucloud.cn', 390, '', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
 (38, 'upload', 'UCloud存储桶名称', 'string', 'uploadUCloudBucketName', 'bufanyun', '', 400, '存储空间名称', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
 (39, 'upload', 'UCloud存储桶地域host', 'string', 'uploadUCloudFileHost', 'cn-bj.ufileos.com', 'cn-bj.ufileos.com', 410, '', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
 (40, 'upload', 'UCloud访问域名', 'string', 'uploadUCloudEndpoint', 'http://bufanyun.cn-bj.ufileos.com', '', 420, '格式，http://abc.com 或  https://abc.com，不可为空', 1, 1, '2021-01-30 13:27:43', '2022-12-30 15:31:33'),
-(41, 'geo', '高德Web服务key', 'string', 'geoAmapWebKey', 'c12b64ccfa48736a1b6b07702c8dcfb2', '', 500, '申请地址：https://console.amap.com/dev/key/app', 1, 1, '2021-01-30 13:27:43', '2022-12-07 15:48:43'),
+(41, 'geo', '高德Web服务key', 'string', 'geoAmapWebKey', '', '', 500, '申请地址：https://console.amap.com/dev/key/app', 1, 1, '2021-01-30 13:27:43', '2022-12-07 15:48:43'),
 (42, 'sms', '短信驱动,aliyun：阿里云;tencent：腾讯云', 'string', 'smsDrive', 'aliyun', '', 600, '', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04'),
-(43, 'sms', '阿里云AccessKeyID', 'string', 'smsAliyunAccessKeyID', 'LTAI5tRuFovsJ9maqHoh4zYs', '', 610, '应用key和密钥你可以通过 https://ram.console.aliyun.com/manage/ak 获取', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04'),
-(44, 'sms', '阿里云AccessKeySecret', 'string', 'smsAliyunAccessKeySecret', 'eXhqEJXdV43Lk8F7Tf0UJk4Wmn9bb6', '', 620, '', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04'),
-(45, 'sms', '阿里云短信签名', 'string', 'smsAliyunSign', '布帆云', '', 630, '申请地址：https://dysms.console.aliyun.com/domestic/text/sign', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04'),
-(46, 'sms', '阿里云短信模板', 'string', 'smsAliyunTemplate', '[{\"key\":\"login\",\"value\":\"SMS_198921686\"},{\"key\":\"register\",\"value\":\"SMS_198921686\"},{\"key\":\"resetpwd\",\"value\":\"SMS_198921686\"},{\"key\":\"code\",\"value\":\"SMS_198921686\"}]', '', 640, '', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04'),
+(43, 'sms', '阿里云AccessKeyID', 'string', 'smsAliyunAccessKeyID', '', '', 610, '应用key和密钥你可以通过 https://ram.console.aliyun.com/manage/ak 获取', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04'),
+(44, 'sms', '阿里云AccessKeySecret', 'string', 'smsAliyunAccessKeySecret', '', '', 620, '', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04'),
+(45, 'sms', '阿里云短信签名', 'string', 'smsAliyunSign', '', '', 630, '申请地址：https://dysms.console.aliyun.com/domestic/text/sign', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04'),
+(46, 'sms', '阿里云短信模板', 'string', 'smsAliyunTemplate', '[]', '', 640, '', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04'),
 (47, 'sms', '最小发送间隔', 'int', 'smsMinInterval', '60', '', 600, '同号码', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04'),
 (48, 'sms', 'IP最大发送次数', 'int', 'smsMaxIpLimit', '10', '', 610, '同IP每天最大允许发送次数', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04'),
 (49, 'sms', '验证码有效期', 'int', 'smsCodeExpire', '600', '', 610, '单位：秒', 1, 1, '2021-01-30 13:27:43', '2022-12-16 15:38:04');
@@ -706,8 +695,7 @@ CREATE TABLE `hg_sys_cron_group` (
 
 INSERT INTO `hg_sys_cron_group` (`id`, `pid`, `name`, `is_default`, `sort`, `remark`, `status`, `created_at`, `updated_at`) VALUES
 (1, 0, '系统默认', 1, 0, '这是系统默认的任务分组，无法删除！', 1, '2021-02-25 17:38:07', '2021-02-25 19:32:57'),
-(2, 0, '测试', 0, 0, '这是测试任务分组', 1, '2021-02-25 17:38:07', '2021-02-25 19:32:57'),
-(6, 2, '测试2', 0, 10, '111111111111', 1, NULL, '2022-10-07 19:24:23');
+(2, 0, '测试', 0, 0, '这是测试任务分组', 1, '2021-02-25 17:38:07', '2021-02-25 19:32:57');
 
 -- --------------------------------------------------------
 
@@ -4931,7 +4919,7 @@ ALTER TABLE `hg_admin_role_casbin`
 -- 使用表AUTO_INCREMENT `hg_sys_attachment`
 --
 ALTER TABLE `hg_sys_attachment`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '文件ID', AUTO_INCREMENT=26;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '文件ID', AUTO_INCREMENT=29;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_blacklist`
@@ -4985,7 +4973,7 @@ ALTER TABLE `hg_sys_gen_curd_demo`
 -- 使用表AUTO_INCREMENT `hg_sys_log`
 --
 ALTER TABLE `hg_sys_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID';
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=24;
 
 --
 -- 使用表AUTO_INCREMENT `hg_test`

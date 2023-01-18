@@ -74,6 +74,5 @@ func ConvType(val interface{}, t string) interface{} {
 	default:
 		val = gconv.String(val)
 	}
-
 	return val
 }

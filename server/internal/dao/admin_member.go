@@ -31,14 +31,6 @@ var (
 // Fill with you ideas below.
 
 // IsUniqueName 判断用户名是否唯一
-// @Description:
-// @receiver dao
-// @param ctx
-// @param id
-// @param name
-// @return bool
-// @return error
-//
 func (dao *adminMemberDao) IsUniqueName(ctx context.Context, id int64, name string) (bool, error) {
 	var data *entity.AdminDept
 	m := dao.Ctx(ctx).Where("username", name)
@@ -60,14 +52,6 @@ func (dao *adminMemberDao) IsUniqueName(ctx context.Context, id int64, name stri
 }
 
 // IsUniqueEmail 判断邮箱是否唯一
-// @Description:
-// @receiver dao
-// @param ctx
-// @param id
-// @param email
-// @return bool
-// @return error
-//
 func (dao *adminMemberDao) IsUniqueEmail(ctx context.Context, id int64, email string) (bool, error) {
 	var data *entity.AdminMember
 	m := dao.Ctx(ctx).Where("email", email)
@@ -89,14 +73,6 @@ func (dao *adminMemberDao) IsUniqueEmail(ctx context.Context, id int64, email st
 }
 
 // IsUniqueMobile 判断手机号是否唯一
-// @Description:
-// @receiver dao
-// @param ctx
-// @param id
-// @param mobile
-// @return bool
-// @return error
-//
 func (dao *adminMemberDao) IsUniqueMobile(ctx context.Context, id int64, mobile string) (bool, error) {
 	var data *entity.AdminMember
 	m := dao.Ctx(ctx).Where("mobile", mobile)
@@ -116,4 +92,3 @@ func (dao *adminMemberDao) IsUniqueMobile(ctx context.Context, id int64, mobile 
 
 	return false, nil
 }
-

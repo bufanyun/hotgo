@@ -57,6 +57,7 @@ func HandlerFilterAuth(m *gdb.Model) *gdb.Model {
 		panic(fmt.Sprintf("HandlerFilterAuth Failed to role information err2:%+v", err))
 	}
 
+	// TODO 当前不是完整功能，预计在下个版本中完善
 	switch roleModel.DataScope {
 	case consts.RoleDataAll: // 全部权限
 		// ...

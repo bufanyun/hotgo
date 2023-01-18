@@ -71,7 +71,6 @@ func (dao *adminMenuDao) IsUniqueName(ctx context.Context, id int64, name string
 	return false, nil
 }
 
-// GenLabelTreeList
 func (dao *adminMenuDao) GenLabelTreeList(ctx context.Context, pid int64) ([]*model.LabelTreeMenu, error) {
 
 	var (
@@ -100,16 +99,7 @@ func (dao *adminMenuDao) GenLabelTreeList(ctx context.Context, pid int64) ([]*mo
 	return newLst, nil
 }
 
-//
-//  @Title  生成树列表
-//  @Description
-//  @Author  Ms <133814250@qq.com>
-//  @Param   ctx
-//  @Param   pid
-//  @Param   lists
-//  @Return  []*model.TreeMenu
-//  @Return  error
-//
+// GenTreeList 生成树列表
 func (dao *adminMenuDao) GenTreeList(ctx context.Context, pid int64, ids []int64) ([]*model.TreeMenu, error) {
 
 	var (
@@ -131,25 +121,7 @@ func (dao *adminMenuDao) GenTreeList(ctx context.Context, pid int64, ids []int64
 	return newLst, nil
 }
 
-//
-//  @Title  获取最上级pid
-//  @Description
-//  @Author  Ms <133814250@qq.com>
-//  @Param   ctx
-//  @Param   data
-//  @Return  int64
-//  @Return  error
-//
-
-//
-//  TopPid
-//  @Description:
-//  @receiver dao
-//  @param ctx
-//  @param data
-//  @return int64
-//  @return error
-//
+// TopPid 获取最上级pid
 func (dao *adminMenuDao) TopPid(ctx context.Context, data *entity.AdminMenu) (int64, error) {
 	var pidData *entity.AdminMenu
 	if data.Pid == 0 {
