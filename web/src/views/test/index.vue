@@ -31,12 +31,7 @@
         size="small"
       >
         <template #tableTitle>
-          <n-button
-            type="primary"
-            @click="addTable"
-            class="min-left-space"
-            v-if="hasPermission(['/guide/auth.html'])"
-          >
+          <n-button type="primary" @click="addTable" class="min-left-space">
             <template #icon>
               <n-icon>
                 <PlusOutlined />
@@ -82,7 +77,6 @@
   import { useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, useForm } from '@/components/Form/index';
-  import { usePermission } from '@/hooks/web/usePermission';
   import { Delete, List, Status, Export } from '@/api/test';
   import { State, columns, schemas, options, newState } from './model';
   import { DeleteOutlined, PlusOutlined, ExportOutlined } from '@vicons/antd';
@@ -90,7 +84,6 @@
   import { getOptionLabel } from '@/utils/hotgo';
   import Edit from './edit.vue';
 
-  const { hasPermission } = usePermission();
   const router = useRouter();
   const actionRef = ref();
   const dialog = useDialog();

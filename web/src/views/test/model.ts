@@ -9,8 +9,6 @@ import { getFileExt } from '@/utils/urlUtils';
 import { defRangeShortcuts, defShortcuts, formatToDate } from '@/utils/dateUtil';
 import { validate } from '@/utils/validateUtil';
 import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
-import { usePermission } from '@/hooks/web/usePermission';
-const { hasPermission } = usePermission();
 const $message = window['$message'];
 export interface State {
   id: number;
@@ -417,7 +415,6 @@ export const columns = [
         value: row.switch === 1,
         checked: '开启',
         unchecked: '关闭',
-        disabled: hasPermission(['asd']),
         onUpdateValue: function (e) {
           console.log('onUpdateValue e:' + JSON.stringify(e));
           row.switch = e ? 1 : 2;

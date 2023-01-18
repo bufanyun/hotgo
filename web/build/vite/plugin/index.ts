@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite';
 import Components from 'unplugin-vue-components/vite';
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
-
+import topLevelAwait from 'vite-plugin-top-level-await';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 
@@ -22,6 +22,14 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean, prodMock) 
     Components({
       dts: true,
       resolvers: [NaiveUiResolver()],
+    }),
+
+    // 支持顶级wait
+    topLevelAwait({
+      // The export name of top-level await promise for each chunk module
+      promiseExportName: '__tla',
+      // The function to generate import names of top-level await promise in each chunk module
+      promiseImportName: (i) => `__tla_${i}`,
     }),
   ];
 
