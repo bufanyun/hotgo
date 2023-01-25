@@ -86,6 +86,10 @@ func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 		return
 	}
 
+	if conf == nil {
+		return
+	}
+
 	if !conf.Switch {
 		return
 	}

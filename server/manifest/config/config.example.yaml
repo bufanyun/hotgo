@@ -1,18 +1,30 @@
 # hotgo配置
 hotgo:
-  debug: true                                      # debug开关，开启后：接口出现错误时会输出堆栈信息，默认为true
-  ipMethod: "whois"                                # IP归属地解析方法，可选：cz88|whois，默认为whois
-  wsAddr: "ws://127.0.0.1:8000/socket"             # 客户端websocket连接地址，如果项目在公网，请填写公网IP:运行端口
-  isDemo: false                                    # 是否為演示系統 false | true
-  ssl: # https
-    switch: false                                  # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
-    crtPath: "resource/ssl/server.crt"
-    keyPath: "resource/ssl/server.key"
-  log: # 全局请求日志
+  # debug开关，开启后接口出现错误时会向前端输出堆栈信息，默认为true
+  debug: true
+  # IP归属地解析方法，可选：cz88|whois，默认为whois
+  ipMethod: "whois"
+  # 客户端websocket连接地址，如果项目在公网，请填写公网IP:运行端口
+  wsAddr: "ws://127.0.0.1:8000/socket"
+  # 是否为演示系统 false | true
+  isDemo: false
+  # https
+  ssl:
+    switch: false                           # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
+    crtPath: "resource/ssl/server.crt"      # 证书路径
+    keyPath: "resource/ssl/server.key"      # 密钥路径
+  # 全局请求日志
+  log:
     switch: true                            # 日志开关，默认为true
     queue: true                             # 是否启用队列，启用时需要配置队列信息，默认为true
     module: [ "admin", "api", "default" ]   # 需要记录的模块
     skipCode: [ ]                           # 不记录的状态码，如： ["0", "-1"]
+  # 系统日志，用于在后台统计异常日志
+  serveLog:
+    switch: true                                    # 日志开关，默认为true
+    queue: true                                     # 是否启用队列，启用时需要配置队列信息，默认为true
+    levelFormat: ["WARN", "ERRO", "FATA", "PANI"]   # 需要记录的等级
+  # admin
   admin:
     superIds: [ 1,2,3 ]                     # 后台超管账号ID，通过ID验证超管
     superRoleKey: "super"                   # 超管角色唯一标识符，通过角色验证超管
@@ -36,22 +48,25 @@ server:
   accessLogPattern: "access/{Y-m-d}.log"      # 访问日志文件格式。默认为"access-{Ymd}.log"
   serverAgent: "HG HTTP Server"
 
-  # Global logging.
-  logger:
-    level: "all"
-    stdout: true
-    headerPrint: false
-    ctxKeys: [ ]
-    path: "logs/logger"                     # 日志文件路径。默认为空，表示关闭，仅输出到终端
-    file: "{Y-m-d}.log"                     # 日志文件格式。默认为"{Y-m-d}.log"
-    stdoutColorDisabled: true               # 关闭终端的颜色打印。默认开启
-    writerColorEnable: true                 # 日志文件是否带上颜色。默认false，表示不带颜色
-
   # PProf配置
   pprofEnabled: true                        # 是否开启PProf性能调试特性。默认为false
   pprofPattern: "/pprof"                    # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
 
 
+# Global logging.
+logger:
+  level: "all"
+  flags: 44
+  path: "logs/logger"                     # 日志文件路径。默认为空，表示关闭，仅输出到终端
+  file: "{Y-m-d}.log"                     # 日志文件格式。默认为"{Y-m-d}.log"
+  stdoutColorDisabled: false              # 关闭终端的颜色打印。默认开启
+  writerColorEnable: false                # 日志文件是否带上颜色。默认false，表示不带颜色
+  rotateExpire: "7d"                      # 日志保留天数
+  rotateBackupLimit: 2                    # 最大备份数量
+  rotateBackupCompress: 9                 # 日志文件压缩级别，0-9,9最高
+
+
+# 模板配置
 viewer:
   paths: "resource/template"
   defaultFile:  "index.html"
