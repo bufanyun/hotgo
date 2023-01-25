@@ -41,14 +41,28 @@
       title="报错信息"
     >
       <n-descriptions label-placement="left" class="py-2">
-        <n-descriptions-item label="报错状态码"> {{ data.errorCode }} </n-descriptions-item>
-        <n-descriptions-item label="报错消息">
-          <n-tag type="success"> {{ data.errorMsg }} </n-tag>
-        </n-descriptions-item>
-        <n-descriptions-item label="报错日志">
-          <n-tag type="success"> {{ data.errorData }} </n-tag>
+        <n-descriptions-item label="错误状态码"> {{ data.errorCode }} </n-descriptions-item>
+        <n-descriptions-item label="错误提示">
+          <n-tag type="error"> {{ data.errorMsg }} </n-tag>
         </n-descriptions-item>
       </n-descriptions>
+    </n-card>
+
+    <n-card
+      :bordered="false"
+      class="proCard mt-4"
+      size="small"
+      :segmented="{ content: true }"
+      title="堆栈打印"
+    >
+      <JsonViewer
+        :value="data.errorData"
+        :expand-depth="5"
+        copyable
+        boxed
+        sort
+        style="width: 100%; min-width: 3.125rem"
+      />
     </n-card>
 
     <n-card
@@ -59,7 +73,7 @@
       title="Header请求头"
     >
       <JsonViewer
-        :value="JSON.parse(data.headerData ?? '{}')"
+        :value="data.headerData"
         :expand-depth="5"
         copyable
         boxed
@@ -76,7 +90,7 @@
       title="GET参数"
     >
       <JsonViewer
-        :value="JSON.parse(data.getData ?? '{}')"
+        :value="data.getData"
         :expand-depth="5"
         copyable
         boxed
@@ -93,7 +107,7 @@
       title="POST参数"
     >
       <JsonViewer
-        :value="JSON.parse(data.postData ?? '{}')"
+        :value="data.postData"
         :expand-depth="5"
         copyable
         boxed

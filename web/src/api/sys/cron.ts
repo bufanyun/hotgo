@@ -42,7 +42,7 @@ export function View(params) {
 
 export function GroupList(params) {
   return http.request({
-    url: '/cron_group/list',
+    url: '/cronGroup/list',
     method: 'get',
     params,
   });
@@ -50,7 +50,7 @@ export function GroupList(params) {
 
 export function GroupDelete(params) {
   return http.request({
-    url: '/cron_group/delete',
+    url: '/cronGroup/delete',
     method: 'POST',
     params,
   });
@@ -58,7 +58,7 @@ export function GroupDelete(params) {
 
 export function GroupEdit(params) {
   return http.request({
-    url: '/cron_group/edit',
+    url: '/cronGroup/edit',
     method: 'POST',
     params,
   });
@@ -66,7 +66,7 @@ export function GroupEdit(params) {
 
 export function GroupStatus(params) {
   return http.request({
-    url: '/cron_group/status',
+    url: '/cronGroup/status',
     method: 'POST',
     params,
   });
@@ -74,7 +74,7 @@ export function GroupStatus(params) {
 
 export function GroupView(params) {
   return http.request({
-    url: '/cron_group/view',
+    url: '/cronGroup/view',
     method: 'GET',
     params,
   });
@@ -82,8 +82,16 @@ export function GroupView(params) {
 
 export function getSelect(params) {
   return http.request({
-    url: '/cron_group/select',
+    url: '/cronGroup/select',
     method: 'GET',
+    params,
+  });
+}
+
+export function OnlineExec(params) {
+  return http.request({
+    url: '/cron/onlineExec',
+    method: 'POST',
     params,
   });
 }

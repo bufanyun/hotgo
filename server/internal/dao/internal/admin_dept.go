@@ -28,6 +28,8 @@ type AdminDeptColumns struct {
 	Leader    string // 负责人
 	Phone     string // 联系电话
 	Email     string // 邮箱
+	Level     string // 关系树等级
+	Tree      string // 关系树
 	Sort      string // 排序
 	Status    string // 部门状态
 	CreatedAt string // 创建时间
@@ -44,6 +46,8 @@ var adminDeptColumns = AdminDeptColumns{
 	Leader:    "leader",
 	Phone:     "phone",
 	Email:     "email",
+	Level:     "level",
+	Tree:      "tree",
 	Sort:      "sort",
 	Status:    "status",
 	CreatedAt: "created_at",

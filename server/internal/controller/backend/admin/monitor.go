@@ -10,6 +10,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/api/backend/monitor"
 	"hotgo/internal/consts"
 	"hotgo/internal/model/input/form"
@@ -46,9 +47,7 @@ func (c *cMonitor) Offline(ctx context.Context, req *monitor.OfflineReq) (res *m
 
 // View 获取指定信息
 func (c *cMonitor) View(ctx context.Context, req *monitor.OnlineViewReq) (*monitor.OnlineViewRes, error) {
-	var res monitor.OnlineViewRes
-	// ...
-	return &res, nil
+	return &monitor.OnlineViewRes{}, nil
 }
 
 // OnlineList 获取在线列表
@@ -63,26 +62,31 @@ func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (
 		return &res, nil
 	}
 
-	for c, _ := range c.wsManager.GetClients() {
-		if c.SendClose || c.User == nil {
+	for conn, _ := range c.wsManager.GetClients() {
+		if conn.SendClose || conn.User == nil {
 			continue
 		}
 
-		if req.UserId > 0 && req.UserId != c.User.Id {
+		if req.UserId > 0 && req.UserId != conn.User.Id {
 			continue
 		}
+
+		if req.Addr != "" && !gstr.Contains(conn.Addr, req.Addr) {
+			continue
+		}
+
 		clients = append(clients, &monitor.OnlineModel{
-			ID:            c.ID,
-			Addr:          c.Addr,
-			Os:            useragent.GetOs(c.UserAgent),
-			Browser:       useragent.GetBrowser(c.UserAgent),
-			FirstTime:     c.FirstTime,
-			HeartbeatTime: c.HeartbeatTime,
-			App:           c.User.App,
-			UserId:        c.User.Id,
-			Username:      c.User.Username,
-			Avatar:        c.User.Avatar,
-			ExpTime:       c.User.Exp,
+			ID:            conn.ID,
+			Addr:          conn.Addr,
+			Os:            useragent.GetOs(conn.UserAgent),
+			Browser:       useragent.GetBrowser(conn.UserAgent),
+			FirstTime:     conn.FirstTime,
+			HeartbeatTime: conn.HeartbeatTime,
+			App:           conn.User.App,
+			UserId:        conn.User.Id,
+			Username:      conn.User.Username,
+			Avatar:        conn.User.Avatar,
+			ExpTime:       conn.User.Exp,
 		})
 	}
 
@@ -96,11 +100,11 @@ func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (
 
 	for k, v := range clients {
 		if k >= offset && i <= perPage {
-			i++
 			if isDemo.Bool() {
 				v.Addr = consts.DemoTips
 			}
 			res.List = append(res.List, v)
+			i++
 		}
 	}
 

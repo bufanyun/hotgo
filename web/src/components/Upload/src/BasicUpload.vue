@@ -89,6 +89,7 @@
   import { useGlobSetting } from '@/hooks/setting';
   import { isJsonString, isNullOrUnDef } from '@/utils/is';
   import { getFileExt } from '@/utils/urlUtils';
+  import { errorImg } from '@/utils/hotgo';
   const globSetting = useGlobSetting();
 
   export default defineComponent({
@@ -256,13 +257,6 @@
         } else {
           message.error(msg);
         }
-      }
-
-      /**图片加载失败显示自定义默认图片(缺省图)*/
-      function errorImg(e) {
-        e.srcElement.src = '/onerror.png';
-        //这一句没用，如果默认图片的路径错了还是会一直闪屏，在方法的前面加个.once只让它执行一次也没用
-        e.srcElement.onerror = null; //防止闪图
       }
 
       onMounted(async () => {

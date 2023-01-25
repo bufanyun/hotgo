@@ -11,6 +11,8 @@
         ref="actionRef"
         :actionColumn="actionColumn"
         @update:checked-row-keys="onCheckedRow"
+        :pagination="false"
+        :resizeHeightOffset="-20000"
       >
         <template #tableTitle>
           <n-button type="primary" @click="addTable">
@@ -22,15 +24,11 @@
             添加角色
           </n-button>
         </template>
-
-        <template #action>
-          <TableAction />
-        </template>
       </BasicTable>
     </n-card>
 
     <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" :title="editRoleTitle">
-      <div class="py-3 menu-list">
+      <div class="py-3 menu-list" :style="{ maxHeight: '90vh', height: '70vh' }">
         <n-tree
           block-line
           cascade
@@ -58,7 +56,12 @@
       </template>
     </n-modal>
 
-    <n-modal v-model:show="showModal2" :show-icon="false" preset="dialog" title="添加角色">
+    <n-modal
+      v-model:show="showModal2"
+      :show-icon="false"
+      preset="dialog"
+      :title="formParams.id > 0 ? '编辑角色 #' + formParams.id : '添加角色'"
+    >
       <n-form
         :model="formParams"
         :rules="rules"
@@ -68,7 +71,13 @@
         class="py-4"
       >
         <n-form-item label="上级角色" path="pid">
-          <n-input placeholder="请输入上级角色ID" v-model:value="formParams.pid" />
+          <n-tree-select
+            :options="optionTreeData"
+            :default-value="formParams.pid"
+            key-field="id"
+            label-field="name"
+            :on-update:value="onUpdateValuePid"
+          />
         </n-form-item>
         <n-form-item label="角色名称" path="name">
           <n-input placeholder="请输入名称" v-model:value="formParams.name" />
@@ -76,9 +85,9 @@
         <n-form-item label="权限编码" path="key">
           <n-input placeholder="请输入" v-model:value="formParams.key" />
         </n-form-item>
-        <n-form-item label="排序" path="sort">
-          <n-input-number v-model:value="formParams.sort" clearable />
-        </n-form-item>
+        <!--        <n-form-item label="排序" path="sort">-->
+        <!--          <n-input-number v-model:value="formParams.sort" clearable />-->
+        <!--        </n-form-item>-->
 
         <n-form-item label="状态" path="status">
           <n-radio-group v-model:value="formParams.status" name="status">
@@ -117,11 +126,7 @@
         class="py-4"
       >
         <n-form-item label="数据范围" path="dataScope">
-          <n-select
-            v-model:value="dataForm.dataScope"
-            :options="dataScopeOption"
-            @update:value="handleUpdateDataScopeValue"
-          />
+          <n-select v-model:value="dataForm.dataScope" :options="dataScopeOption" />
         </n-form-item>
         <n-form-item label="自定义权限" path="customDept" v-if="dataForm.dataScope === 4">
           <n-tree-select
@@ -148,8 +153,8 @@
 
 <script lang="ts" setup>
   import { h, onMounted, reactive, ref } from 'vue';
-  import { TreeSelectOption, useDialog, useMessage, SelectOption } from 'naive-ui';
-  import { BasicTable, TableAction } from '@/components/Table';
+  import { TreeSelectOption, useDialog, useMessage } from 'naive-ui';
+  import { BasicColumn, BasicTable, TableAction } from '@/components/Table';
   import {
     Delete,
     Edit,
@@ -181,6 +186,7 @@
   const expandedKeys = ref([]);
   const checkedKeys = ref<any>([]);
   const updatePermissionsParams = ref<any>({});
+  const optionTreeData = ref<any>([]);
 
   const rules = {
     name: {
@@ -211,7 +217,7 @@
 
   let formParams = ref<any>(cloneDeep(defaultState));
 
-  const actionColumn = reactive({
+  const actionColumn = reactive<BasicColumn>({
     width: 320,
     title: '操作',
     key: 'action',
@@ -254,7 +260,7 @@
   });
 
   const loadDataTable = async (res: any) => {
-    return await getRoleList({ ...res });
+    return await getRoleList({ ...res, ...{ pageSize: 100, page: 1 } });
   };
 
   function onCheckedRow(rowKeys: any[]) {
@@ -263,6 +269,7 @@
 
   function reloadTable() {
     actionRef.value.reload();
+    loadDataList();
   }
 
   function confirmForm(e: any) {
@@ -332,7 +339,7 @@
   async function handleMenuAuth(record: Recordable) {
     editRoleTitle.value = `分配 ${record.name} 的菜单权限`;
     const data = await GetPermissions({ ...{ id: record.id } });
-    checkedKeys.value = data.menuIds; //record.menu_keys;
+    checkedKeys.value = data.menuIds;
     updatePermissionsParams.value.id = record.id;
     showModal.value = true;
   }
@@ -348,8 +355,6 @@
     showDataModal.value = true;
   }
 
-  function handleUpdateDataScopeValue(value: string, option: SelectOption) {}
-
   function handleUpdateDeptValue(
     value: string | number | Array<string | number> | null,
     _option: TreeSelectOption | null | Array<TreeSelectOption | null>
@@ -362,7 +367,6 @@
     dataFormBtnLoading.value = true;
     dataFormRef.value.validate((errors) => {
       if (!errors) {
-        console.log('dataForm.value:' + JSON.stringify(dataForm.value));
         DataScopeEdit(dataForm.value).then((_res) => {
           message.success('操作成功');
           setTimeout(() => {
@@ -404,10 +408,25 @@
   }
 
   onMounted(async () => {
+    await loadDataList();
     await loadMenuList();
     await loadDeptList();
     await loadDataScopeSelect();
   });
+
+  async function loadDataList() {
+    const data = await getRoleList({ pageSize: 100, page: 1 });
+    optionTreeData.value = [
+      {
+        id: 0,
+        key: 0,
+        label: '顶级角色',
+        pid: 0,
+        name: '顶级角色',
+      },
+    ];
+    optionTreeData.value = optionTreeData.value.concat(data.list);
+  }
 
   async function loadMenuList() {
     const treeMenuList = await getMenuList();
@@ -425,6 +444,10 @@
   async function loadDataScopeSelect() {
     const option = await DataScopeSelect();
     dataScopeOption.value = option.list;
+  }
+
+  function onUpdateValuePid(value: string | number) {
+    formParams.value.pid = value;
   }
 </script>
 

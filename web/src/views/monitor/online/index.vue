@@ -12,7 +12,6 @@
       :row-key="(row) => row.id"
       ref="actionRef"
       :actionColumn="actionColumn"
-      @update:checked-row-keys="onCheckedRow"
       :scroll-x="1090"
     />
   </n-card>
@@ -40,21 +39,29 @@
       },
       rules: [{ trigger: ['blur'] }],
     },
+    {
+      field: 'addr',
+      component: 'NInput',
+      label: '登录地址',
+      componentProps: {
+        placeholder: '请输入登录地址',
+        onInput: (e: any) => {
+          console.log(e);
+        },
+      },
+      rules: [{ trigger: ['blur'] }],
+    },
   ];
 
   const message = useMessage();
   const actionRef = ref();
   const formParams = ref({});
 
-  const params = ref({
-    pageSize: 10,
-  });
-
   const actionColumn = reactive({
     width: 220,
     title: '操作',
     key: 'action',
-    fixed: 'right',
+    // fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',
@@ -93,7 +100,7 @@
   }
 
   const loadDataTable = async (res) => {
-    return await OnlineList({ ...formParams.value, ...params.value, ...res });
+    return await OnlineList({ ...formParams.value, ...res });
   };
 
   function reloadTable() {

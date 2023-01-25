@@ -20,7 +20,7 @@
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建部门
+            添加部门
           </n-button>
         </n-space>
 
@@ -29,6 +29,7 @@
           :data="data"
           :row-key="rowKey"
           :loading="loading"
+          :resizeHeightOffset="-20000"
           default-expand-all
         />
       </n-space>
@@ -37,7 +38,7 @@
         v-model:show="showModal"
         :show-icon="false"
         preset="dialog"
-        :title="formParams?.id > 0 ? '编辑部门 #' + formParams?.id : '新建部门'"
+        :title="formParams?.id > 0 ? '编辑部门 #' + formParams?.id : '添加部门'"
       >
         <n-form
           :model="formParams"
@@ -73,9 +74,9 @@
             <n-input placeholder="请输入邮箱" v-model:value="formParams.email" />
           </n-form-item>
 
-          <n-form-item label="排序" path="sort">
-            <n-input-number v-model:value="formParams.sort" clearable />
-          </n-form-item>
+          <!--          <n-form-item label="排序" path="sort">-->
+          <!--            <n-input-number v-model:value="formParams.sort" clearable />-->
+          <!--          </n-form-item>-->
 
           <n-form-item label="状态" path="status">
             <n-radio-group v-model:value="formParams.status" name="status">
@@ -198,18 +199,26 @@
   const data = ref([]);
   const columns: DataTableColumns<RowData> = [
     {
-      type: 'selection',
-    },
-    {
-      title: '部门名称',
+      title: '部门',
       key: 'name',
+      render(row) {
+        return h(
+          NTag,
+          {
+            type: 'info',
+          },
+          {
+            default: () => row.name,
+          }
+        );
+      },
       width: 200,
     },
-    {
-      title: '部门ID',
-      key: 'index',
-      width: 100,
-    },
+    // {
+    //   title: '部门ID',
+    //   key: 'index',
+    //   width: 100,
+    // },
     {
       title: '部门编码',
       key: 'code',
@@ -250,15 +259,15 @@
         );
       },
     },
-    {
-      title: '排序',
-      key: 'sort',
-      width: 80,
-    },
+    // {
+    //   title: '排序',
+    //   key: 'sort',
+    //   width: 80,
+    // },
     {
       title: '创建时间',
       key: 'createdAt',
-      width: 200,
+      width: 150,
       render: (rows, _) => {
         return rows.createdAt; //timestampToTime();
       },
@@ -300,7 +309,7 @@
 
   function handleEdit(record: Recordable) {
     showModal.value = true;
-    formParams.value = record;
+    formParams.value = cloneDeep(record);
     formParams.value.children = null;
     optionsDefaultValue.value = formParams.value.pid;
   }

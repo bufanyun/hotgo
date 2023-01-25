@@ -2,8 +2,8 @@
   <div>
     <n-card :bordered="false" class="proCard">
       <div class="n-layout-page-header">
-        <n-card :bordered="false" title="@{.tableComment}列表">
-          <!--  这里有系统自动生成的CURD表格 -->
+        <n-card :bordered="false" title="@{.tableComment}">
+          <!--  这是系统自动生成的CURD表格，你可以将此行注释改为表格的描述 -->
         </n-card>
       </div>
       <BasicForm
@@ -42,7 +42,7 @@
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建
+            添加
           </n-button>@{end}
 @{ if eq .options.Step.HasBatchDel true }          <n-button
             type="error"
@@ -62,7 +62,7 @@
             type="primary"
             @click="handleExport"
             class="min-left-space"
-            v-if="hasPermission(['/demoVar/export'])"
+            v-if="hasPermission(['/@{.varName | LcFirst}/delete'])"
           >
             <template #icon>
               <n-icon>
@@ -89,9 +89,9 @@
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, useForm } from '@/components/Form/index';
   import { usePermission } from '@/hooks/web/usePermission';
-  import { Delete, List, Status, Export } from '@/api/@{.varName | LcFirst}';
+@{.apiImport}
   import { State, columns, schemas, options, newState } from './model';
-  import { DeleteOutlined, PlusOutlined, ExportOutlined } from '@vicons/antd';
+@{.iconsImport}
 @{ if eq .options.Step.HasView true }  import { useRouter } from 'vue-router';@{end}
   import { getOptionLabel } from '@/utils/hotgo';
 @{ if eq .options.Step.HasEdit true }  import Edit from './edit.vue';@{end}
@@ -172,10 +172,10 @@
     showModal.value = true;
     formParams.value = newState(null);
   }@{end}
-
+@{ if or (eq .options.Step.HasAdd true) (eq .options.Step.HasEdit true) }
   function updateShowModal(value) {
     showModal.value = value;
-  }
+  }@{end}
 
 @{ if eq .options.Step.HasCheck true }  function onCheckedRow(rowKeys) {
     batchDeleteDisabled.value = rowKeys.length <= 0;

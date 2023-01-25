@@ -18,6 +18,8 @@ type AdminDept struct {
 	Leader    string      `json:"leader"    description:"负责人"`
 	Phone     string      `json:"phone"     description:"联系电话"`
 	Email     string      `json:"email"     description:"邮箱"`
+	Level     int         `json:"level"     description:"关系树等级"`
+	Tree      string      `json:"tree"      description:"关系树"`
 	Sort      int         `json:"sort"      description:"排序"`
 	Status    int         `json:"status"    description:"部门状态"`
 	CreatedAt *gtime.Time `json:"createdAt" description:"创建时间"`

@@ -23,7 +23,7 @@
               <PlusOutlined />
             </n-icon>
           </template>
-          新建
+          添加数据
         </n-button>
       </template>
     </BasicTable>
@@ -32,7 +32,7 @@
       v-model:show="showModal"
       :show-icon="false"
       preset="dialog"
-      :title="formParams?.id > 0 ? '编辑' : '新建'"
+      :title="formParams?.id > 0 ? '编辑数据' : '添加数据'"
     >
       <n-form
         :model="formParams"
@@ -53,14 +53,18 @@
         <n-form-item label="标签" path="label">
           <n-input placeholder="请输入标签名称" v-model:value="formParams.label" />
         </n-form-item>
+        <n-form-item label="标签样式" path="listClass">
+          <n-select
+            :render-tag="renderTag"
+            v-model:value="formParams.listClass"
+            :options="labelOptions"
+          />
+        </n-form-item>
         <n-form-item label="字典键值" path="value">
           <n-input placeholder="请输入键值" v-model:value="formParams.value" />
         </n-form-item>
         <n-form-item label="键值类型" path="valueType">
           <n-select v-model:value="formParams.valueType" :options="options" />
-        </n-form-item>
-        <n-form-item label="标签样式" path="listClass">
-          <n-select v-model:value="formParams.listClass" :options="tagOptions" />
         </n-form-item>
         <n-form-item label="排序" path="sort">
           <n-input-number placeholder="请输入" v-model:value="formParams.sort" />
@@ -93,13 +97,13 @@
 
 <script lang="ts" setup>
   import { h, reactive, ref, watch, onMounted } from 'vue';
-  import { TreeSelectOption, useMessage, useDialog } from 'naive-ui';
+  import { TreeSelectOption, useMessage, useDialog, NTag, SelectRenderTag } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
   import { getDataList, getDictSelect, EditData, DeleteData } from '@/api/dict/dict';
   import { columns } from './columns';
   import { PlusOutlined } from '@vicons/antd';
-  import { statusOptions, tagOptions } from '@/enums/optionsiEnum';
+  import { statusOptions } from '@/enums/optionsiEnum';
   import { TypeSelect } from '@/api/sys/config';
   import { Option } from '@/utils/hotgo';
   const options = ref<Option>();
@@ -137,6 +141,49 @@
       rules: [{ message: '请输入字典标签名称', trigger: ['blur'] }],
     },
   ];
+
+  const renderTag: SelectRenderTag = ({ option }) => {
+    return h(
+      NTag,
+      {
+        type: option.type as 'success' | 'warning' | 'error' | 'info' | 'primary' | 'default',
+      },
+      { default: () => option.label }
+    );
+  };
+
+  const labelOptions = ref([
+    {
+      label: '绿色',
+      value: 'success',
+      type: 'success',
+    },
+    {
+      label: '橙色',
+      value: 'warning',
+      type: 'warning',
+    },
+    {
+      label: '红色',
+      value: 'error',
+      type: 'error',
+    },
+    {
+      label: '蓝色',
+      value: 'info',
+      type: 'info',
+    },
+    {
+      label: '灰色',
+      value: 'default',
+      type: 'default',
+    },
+    {
+      label: '主题色',
+      value: 'primary',
+      type: 'primary',
+    },
+  ]);
 
   const formRef: any = ref(null);
   const message = useMessage();

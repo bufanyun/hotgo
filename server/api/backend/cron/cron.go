@@ -66,3 +66,10 @@ type StatusReq struct {
 	g.Meta `path:"/cron/status" method:"post" tags:"定时任务" summary:"更新定时任务状态"`
 }
 type StatusRes struct{}
+
+// OnlineExecReq 在线执行
+type OnlineExecReq struct {
+	g.Meta `path:"/cron/onlineExec" method:"post" tags:"定时任务" summary:"在线执行"`
+	sysin.OnlineExecInp
+}
+type OnlineExecRes struct{}

@@ -7,7 +7,6 @@ package dao
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao/internal"
 	"hotgo/internal/model/entity"
@@ -67,7 +66,6 @@ func (dao *sysDictTypeDao) GetTypes(ctx context.Context, id int64) (types []stri
 		types = append(types, v.String())
 	}
 
-	g.Log().Warningf(ctx, "types:%+v", types)
 	return types, nil
 }
 
@@ -81,7 +79,6 @@ func (dao *sysDictTypeDao) GetType(ctx context.Context, id int64) (types string,
 		return types, err
 	}
 
-	g.Log().Warningf(ctx, "GetType types:%+v", list.String())
 	return list.String(), nil
 }
 

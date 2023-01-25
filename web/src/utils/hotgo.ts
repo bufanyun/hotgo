@@ -1,10 +1,11 @@
 import { Ref, UnwrapRef } from '@vue/reactivity';
+import onerrorImg from '@/assets/images/onerror.png';
 
 export interface Option {
   label: string;
-  value: string;
-  key: string;
-  type: string;
+  value: string | number;
+  key: string | number;
+  // type: string;
   listClass: 'default' | 'error' | 'primary' | 'info' | 'success' | 'warning';
 }
 
@@ -50,4 +51,10 @@ export function adaModalWidth(dialogWidth: Ref<UnwrapRef<string>>) {
     dialogWidth.value = def + 'px';
   }
   return dialogWidth.value;
+}
+
+// 图片加载失败显示自定义默认图片(缺省图)
+export function errorImg(e: any): void {
+  e.target.src = onerrorImg;
+  e.target.onerror = null;
 }

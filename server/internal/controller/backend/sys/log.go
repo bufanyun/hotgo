@@ -40,7 +40,7 @@ func (c *sLog) Export(ctx context.Context, req *log.ExportReq) (res *log.ExportR
 	return
 }
 
-// List 获取全局日志列表
+// List 获取访问日志列表
 func (c *sLog) List(ctx context.Context, req *log.ListReq) (*log.ListRes, error) {
 	var (
 		in  sysin.LogListInp

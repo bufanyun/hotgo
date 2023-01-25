@@ -14,7 +14,7 @@ import (
 	"hotgo/internal/service"
 )
 
-// GlobalLog 全局日志
+// GlobalLog 访问日志
 func (s *sHook) GlobalLog(r *ghttp.Request) {
 	var (
 		ctx = r.Context()

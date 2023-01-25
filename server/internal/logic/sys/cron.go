@@ -10,6 +10,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/crons"
@@ -18,6 +19,7 @@ import (
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/validate"
+	"strings"
 )
 
 type sSysCron struct{}
@@ -180,4 +182,21 @@ func (s *sSysCron) List(ctx context.Context, in sysin.CronListInp) (list []*sysi
 	}
 
 	return list, totalCount, err
+}
+
+// OnlineExec 在线执行
+func (s *sSysCron) OnlineExec(ctx context.Context, in sysin.OnlineExecInp) (err error) {
+	var data *entity.SysCron
+	err = dao.SysCron.Ctx(ctx).Where(dao.SysCron.Columns().Id, in.Id).Scan(&data)
+	if err != nil {
+		return
+	}
+
+	if data == nil {
+		return gerror.New("定时任务不存在")
+	}
+
+	newCtx := context.WithValue(gctx.New(), consts.ContextKeyCronArgs, strings.Split(data.Params, consts.CronSplitStr))
+
+	return crons.Once(newCtx, data)
 }

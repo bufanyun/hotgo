@@ -39,3 +39,43 @@ export function View(params) {
     params,
   });
 }
+
+// 获取最大排序
+export function MaxSort() {
+  return http.request({
+    url: '/provinces/maxSort',
+    method: 'GET',
+  });
+}
+
+/**
+ * 获取省市区关系树选项列表
+ */
+export function getProvincesTree() {
+  return http.request({
+    url: '/provinces/tree',
+    method: 'GET',
+  });
+}
+
+/**
+ * 获取省市区下级列表
+ */
+export function getProvincesChildrenList(params) {
+  return http.request({
+    url: '/provinces/childrenList',
+    method: 'GET',
+    params,
+  });
+}
+
+/**
+ * 唯一省市区ID
+ */
+export function CheckProvincesUniqueId(params) {
+  return http.request({
+    url: '/provinces/uniqueId',
+    method: 'GET',
+    params,
+  });
+}

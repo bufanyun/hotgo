@@ -12,6 +12,10 @@ import (
 	"time"
 )
 
+func init() {
+	cronList = append(cronList, Test)
+}
+
 // Test 测试任务
 var Test = &cTest{name: "test"}
 

@@ -8,7 +8,7 @@ package consts
 
 // 消息队列
 const (
-	QueueName     = `queue:`
-	QueueLogPath  = "queue" // 需要在config中配置queue的log
-	QueueLogTopic = `request_log`
+	QueueLogTopic      = `request_log` // 访问日志
+	QueueLoginLogTopic = `login_log`   // 登录日志
+	QueueServeLogTopic = `serve_log`   // 服务日志
 )

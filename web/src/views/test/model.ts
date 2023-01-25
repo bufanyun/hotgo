@@ -8,7 +8,7 @@ import { isNullObject } from '@/utils/is';
 import { getFileExt } from '@/utils/urlUtils';
 import { defRangeShortcuts, defShortcuts, formatToDate } from '@/utils/dateUtil';
 import { validate } from '@/utils/validateUtil';
-import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
+import { errorImg, getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
 const $message = window['$message'];
 export interface State {
   id: number;
@@ -298,6 +298,7 @@ export const columns = [
         width: 32,
         height: 32,
         src: row.image,
+        onError: errorImg,
         style: {
           width: '32px',
           height: '32px',
@@ -319,6 +320,7 @@ export const columns = [
           width: 32,
           height: 32,
           src: image,
+          onError: errorImg,
           style: {
             width: '32px',
             height: '32px',

@@ -20,7 +20,7 @@
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建分组
+            添加分组
           </n-button>
         </template>
       </BasicTable>
@@ -82,7 +82,7 @@
   import { BasicTable, TableAction } from '@/components/Table';
   import { columns } from './columns';
   import { PlusOutlined } from '@vicons/antd';
-  import { GroupDelete, GroupEdit, GroupList,  getSelect } from '@/api/sys/cron';
+  import { GroupDelete, GroupEdit, GroupList, getSelect } from '@/api/sys/cron';
   import { statusOptions } from '@/enums/optionsiEnum';
 
   const optionTreeData = ref([]);
@@ -96,7 +96,7 @@
     remark: '',
     status: statusValue.value,
   });
-  const modalTitle = ref('新建分组');
+  const modalTitle = ref('添加分组');
   const showModal = ref(false);
   const formBtnLoading = ref(false);
   const rules = {
@@ -109,7 +109,7 @@
 
   function addTable() {
     showModal.value = true;
-    modalTitle.value = '新建分组';
+    modalTitle.value = '添加分组';
     formParams.value = defaultValueRef();
   }
 
@@ -179,11 +179,10 @@
       positiveText: '确定',
       negativeText: '取消',
       onPositiveClick: () => {
-        GroupDelete(record)
-          .then((_res) => {
-            message.success('操作成功');
-            reloadTable();
-          });
+        GroupDelete(record).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
         // message.error('取消');

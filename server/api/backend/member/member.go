@@ -106,7 +106,7 @@ type ListRes struct {
 // ViewReq 获取指定信息
 type ViewReq struct {
 	g.Meta `path:"/member/view" method:"get" tags:"会员" summary:"获取指定信息"`
-	Id     int64 `json:"id" dc:"会员ID"` // v:"required#会员ID不能为空"
+	Id     int64 `json:"id" dc:"会员ID"`
 }
 type ViewRes struct {
 	*adminin.MemberViewModel

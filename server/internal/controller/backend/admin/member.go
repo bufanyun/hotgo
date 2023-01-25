@@ -204,14 +204,14 @@ func (c *cMember) View(ctx context.Context, req *member.ViewReq) (*member.ViewRe
 		return nil, err
 	}
 
-	roleList, _, err := service.AdminRole().List(ctx, adminin.RoleListInp{})
-	if err != nil {
-		return nil, err
-	}
+	//roleList, _, err := service.AdminRole().List(ctx, adminin.RoleListInp{})
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	var res member.ViewRes
 	res.Posts = postsList
-	res.Roles = roleList
+	//res.Roles = roleList
 
 	if req.Id <= 0 {
 		return &res, err

@@ -1,6 +1,6 @@
 <template>
-  <n-card :bordered="false" class="proCard">
-    <n-card :bordered="false" title="代码生成"> 你可以在这里查看到平台所有的短信发送记录。 </n-card>
+  <n-card :bordered="false" class="proCard" title="代码生成">
+    <!--    <n-card :bordered="false" title="代码生成"> 你可以在这里查看到平台所有的短信发送记录。 </n-card>-->
     <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset" ref="searchFormRef">
       <template #statusSlot="{ model, field }">
         <n-input v-model:value="model[field]" />
@@ -23,7 +23,7 @@
               <PlusOutlined />
             </n-icon>
           </template>
-          生成
+          立即生成
         </n-button>
         &nbsp;
         <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
@@ -41,7 +41,7 @@
       v-model:show="showModal"
       :show-icon="false"
       preset="dialog"
-      title="生成"
+      title="立即生成"
       :style="{
         width: dialogWidth,
       }"
@@ -142,7 +142,7 @@
     {
       title: '生成ID',
       key: 'id',
-      width: 100,
+      width: 80,
     },
     {
       title: '生成类型',
@@ -162,7 +162,7 @@
           }
         );
       },
-      width: 200,
+      width: 180,
     },
     {
       title: '实体命名',
@@ -175,7 +175,7 @@
     {
       title: '数据库',
       key: 'dbName',
-      width: 200,
+      width: 150,
     },
     {
       title: '数据表',
@@ -212,11 +212,11 @@
       key: 'createdAt',
       width: 180,
     },
-    {
-      title: '更新时间',
-      key: 'updatedAt',
-      width: 180,
-    },
+    // {
+    //   title: '更新时间',
+    //   key: 'updatedAt',
+    //   width: 180,
+    // },
   ];
 
   const dialog = useDialog();

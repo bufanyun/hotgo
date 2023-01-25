@@ -60,7 +60,7 @@ func (s *sSysLog) Export(ctx context.Context, in sysin.LogListInp) (err error) {
 
 	var (
 		titleList  = []string{"ID", "应用", "提交类型", "模块", "提交url", "ip地址", "报错code", "报错信息", "对外id", "请求耗时", "创建时间", "用户", "访问地"}
-		fileName   = "全局日志导出-" + gctx.CtxId(ctx) + ".xlsx"
+		fileName   = "访问日志导出-" + gctx.CtxId(ctx) + ".xlsx"
 		sheetName  = "HotGo"
 		exportList []exportImage
 		row        exportImage
@@ -97,15 +97,9 @@ func (s *sSysLog) Export(ctx context.Context, in sysin.LogListInp) (err error) {
 }
 
 // RealWrite 真实写入
-func (s *sSysLog) RealWrite(ctx context.Context, commonLog entity.SysLog) error {
-	result, err := dao.SysLog.Ctx(ctx).Data(commonLog).Insert()
-	if err != nil {
-		return err
-	}
-	if _, err = result.LastInsertId(); err != nil {
-		return err
-	}
-	return nil
+func (s *sSysLog) RealWrite(ctx context.Context, commonLog entity.SysLog) (err error) {
+	_, err = dao.SysLog.Ctx(ctx).Data(commonLog).Insert()
+	return
 }
 
 // AutoLog 根据配置自动记录请求日志
@@ -129,48 +123,31 @@ func (s *sSysLog) AutoLog(ctx context.Context) (err error) {
 	}
 
 	if config.Queue {
-		q, err := queue.InstanceProducer()
-		if err != nil {
-			queue.FatalLog(ctx, "queue.InstanceProducer err:%+v", err)
-			return err
-		}
-		mqMsg, err := q.SendMsg(consts.QueueLogTopic, gconv.String(data))
-		queue.ProducerLog(ctx, consts.QueueLogTopic, mqMsg.MsgId, err)
-		return err
+		return queue.Push(consts.QueueLogTopic, data)
 	}
-	return s.RealWrite(ctx, data)
-}
-
-// QueueJob 队列消费
-func (s *sSysLog) QueueJob(ctx context.Context, mqMsg queue.MqMsg) (err error) {
-	var data entity.SysLog
-	if err = json.Unmarshal(mqMsg.Body, &data); err != nil {
-		return err
-	}
-
 	return s.RealWrite(ctx, data)
 }
 
 // AnalysisLog 解析日志数据
 func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 	var (
-		modelContext       = contexts.Get(ctx)
-		response           = modelContext.Response
-		user               = modelContext.User
-		request            = ghttp.RequestFromCtx(ctx)
-		module             = modelContext.Module
-		clientIp           = request.GetClientIp()
-		postData           = gjson.New(consts.NilJsonToString)
-		getData            = gjson.New(consts.NilJsonToString)
-		headerData         = gjson.New(consts.NilJsonToString)
-		data               = entity.SysLog{}
-		memberId     int64 = 0
-		errorCode          = 0
-		errorMsg           = ""
-		errorData          = gjson.New(consts.NilJsonToString)
-		traceID            = ""
-		timestamp    int64 = 0
-		appId              = ""
+		modelContext = contexts.Get(ctx)
+		response     = modelContext.Response
+		user         = modelContext.User
+		request      = ghttp.RequestFromCtx(ctx)
+		module       = modelContext.Module
+		clientIp     = location.GetClientIp(request)
+		postData     = gjson.New(request.GetBodyString())
+		getData      = gjson.New(request.URL.Query())
+		headerData   = gjson.New(consts.NilJsonToString)
+		errorData    = gjson.New(consts.NilJsonToString)
+		data         entity.SysLog
+		memberId     int64
+		errorCode    int
+		errorMsg     string
+		traceID      string
+		timestamp    int64
+		appId        string
 	)
 
 	// 响应数据
@@ -190,17 +167,14 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 	}
 
 	// post参数
-	if gconv.String(request.PostForm) != "" {
-		postData = gjson.New(gconv.String(request.PostForm))
+	postForm := gjson.New(gconv.String(request.PostForm)).Map()
+	if len(postForm) > 0 {
+		for k, v := range postForm {
+			postData.MustAppend(k, v)
+		}
 	}
-
-	if postData.IsNil() {
-		postData = gjson.New(request.GetBodyString())
-	}
-
-	// get参数
-	if len(request.URL.Query()) > 0 {
-		getData = gjson.New(request.URL.Query())
+	if postData.IsNil() || len(postData.Map()) == 0 {
+		postData = gjson.New(consts.NilJsonToString)
 	}
 
 	// 当前登录用户
@@ -210,22 +184,14 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 	}
 
 	var ipData = new(location.IpLocationData)
-	//if validate.IsPublicIp(clientIp) {
-	//	ipData, err := location.GetLocation(ctx, clientIp)
-	//	if err != nil {
-	//		g.Log().Errorf(ctx, "location.GetLocation err:%+v", err)
-	//	}
-	//	if ipData == nil {
-	//		ipData = new(location.IpLocationData)
-	//	}
-	//}
-
-	ipData, err := location.GetLocation(ctx, clientIp)
-	if err != nil {
-		g.Log().Errorf(ctx, "location.GetLocation err:%+v", err)
-	}
-	if ipData == nil {
-		ipData = new(location.IpLocationData)
+	if validate.IsPublicIp(clientIp) {
+		ipData, err := location.GetLocation(ctx, clientIp)
+		if err != nil {
+			g.Log().Errorf(ctx, "location.GetLocation err:%+v", err)
+		}
+		if ipData == nil {
+			ipData = new(location.IpLocationData)
+		}
 	}
 
 	data = entity.SysLog{

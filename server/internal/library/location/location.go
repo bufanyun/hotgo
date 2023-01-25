@@ -144,6 +144,11 @@ func GetPublicIP(ctx context.Context) (ip string, err error) {
 		g.Log().Warningf(ctx, "GetPublicIP alternatives are being tried err:%+v", err)
 		return GetPublicIP2()
 	}
+
+	if data == nil {
+		g.Log().Warningf(ctx, "publicIP address Parsing failure, check the network and firewall blocking.")
+		return "0.0.0.0", nil
+	}
 	return data.Ip, nil
 }
 
@@ -189,6 +194,11 @@ func GetClientIp(r *ghttp.Request) string {
 	ip := r.Header.Get("X-Forwarded-For")
 	if ip == "" {
 		ip = r.GetClientIp()
+	}
+
+	// 如果存在多个，默认取第一个
+	if gstr.Contains(ip, ",") {
+		ip = gstr.TrimStr(ip, ",", -1)
 	}
 	return ip
 }

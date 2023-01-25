@@ -20,20 +20,16 @@ import (
 	"sync"
 )
 
-var (
-	// 添加新的任务时，只需实现cronStrategy接口，并加入到cronList即可
-	cronList = []cronStrategy{
-		Test,    // 测试无参任务
-		Test2,   // 测试有参任务
-		Monitor, // 监控
-	}
-	inst = new(tasks)
-)
-
 type cronStrategy interface {
 	GetName() string
 	Execute(ctx context.Context)
 }
+
+var (
+	// 添加新的任务时，只需实现cronStrategy接口，并加入到cronList即可
+	cronList []cronStrategy
+	inst     = new(tasks)
+)
 
 type tasks struct {
 	list []*TaskItem
@@ -49,7 +45,7 @@ type TaskItem struct {
 	Count   int           // 执行次数，仅Policy=4时有效
 }
 
-func init() {
+func LoadCronList() {
 	for _, cron := range cronList {
 		inst.Add(&TaskItem{
 			Name: cron.GetName(),
@@ -66,6 +62,10 @@ func StopALL() {
 
 // StartALL 启动任务
 func StartALL(sysCron []*entity.SysCron) error {
+	if len(inst.list) == 0 {
+		LoadCronList()
+	}
+
 	var (
 		err error
 		ct  = gctx.New()
@@ -86,7 +86,7 @@ func StartALL(sysCron []*entity.SysCron) error {
 		if gcron.Search(cron.Name) == nil {
 			var (
 				t   *gcron.Entry
-				ctx = context.WithValue(gctx.New(), consts.CronArgsKey, strings.Split(cron.Params, consts.CronSplitStr))
+				ctx = context.WithValue(gctx.New(), consts.ContextKeyCronArgs, strings.Split(cron.Params, consts.CronSplitStr))
 			)
 			switch cron.Policy {
 			case consts.CronPolicySame:
@@ -130,7 +130,7 @@ func StartALL(sysCron []*entity.SysCron) error {
 		}
 	}
 
-	g.Log().Debug(ct, "load scheduled task complete..")
+	g.Log().Debug(ct, "load cron success..")
 	return nil
 }
 
@@ -140,8 +140,15 @@ func Stop(sysCron *entity.SysCron) error {
 }
 
 // Once 立即执行一次某个任务
-func Once(sysCron *entity.SysCron) error {
-	return nil
+func Once(ctx context.Context, sysCron *entity.SysCron) error {
+	for _, v := range cronList {
+		if v.GetName() == sysCron.Name {
+			go v.Execute(ctx)
+			return nil
+		}
+	}
+
+	return gerror.Newf("定时任务不存在：%+v", sysCron.Name)
 }
 
 // Delete 删除任务

@@ -7,7 +7,6 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gomodule/redigo/redis"
-	"hotgo/internal/consts"
 	"hotgo/utility/encrypt"
 	"math/rand"
 	"time"
@@ -113,7 +112,7 @@ func (r *RedisMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) 
 
 // 生成队列名称
 func (r *RedisMq) genQueueName(groupName string, topic string) string {
-	return fmt.Sprintf(consts.QueueName+"%s_%s", groupName, topic)
+	return fmt.Sprintf("queue:%s_%s", groupName, topic)
 }
 
 func (r *RedisMq) loopReadQueue(queueName string) (mqMsgList []MqMsg) {

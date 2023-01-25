@@ -30,7 +30,7 @@
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建岗位
+            添加岗位
           </n-button>
           &nbsp;
           <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
@@ -48,7 +48,7 @@
         v-model:show="showModal"
         :show-icon="false"
         preset="dialog"
-        :title="formParams?.id > 0 ? '编辑岗位 #' + formParams?.id : '新建岗位'"
+        :title="formParams?.id > 0 ? '编辑岗位 #' + formParams?.id : '添加岗位'"
       >
         <n-form
           :model="formParams"
@@ -65,9 +65,9 @@
             <n-input placeholder="请输入岗位编码" v-model:value="formParams.code" />
           </n-form-item>
 
-          <n-form-item label="排序" path="sort">
-            <n-input-number v-model:value="formParams.sort" clearable />
-          </n-form-item>
+          <!--          <n-form-item label="排序" path="sort">-->
+          <!--            <n-input-number v-model:value="formParams.sort" clearable />-->
+          <!--          </n-form-item>-->
 
           <n-form-item label="状态" path="status">
             <n-radio-group v-model:value="formParams.status" name="status">
@@ -244,18 +244,14 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        Edit(formParams.value)
-          .then((_res) => {
-            message.success('操作成功');
-            setTimeout(() => {
-              showModal.value = false;
-              reloadTable();
-              formParams.value = ref(resetFormParams);
-            });
-          })
-          .catch((e: Error) => {
-            message.error(e.message ?? '操作失败');
+        Edit(formParams.value).then((_res) => {
+          message.success('操作成功');
+          setTimeout(() => {
+            showModal.value = false;
+            reloadTable();
+            formParams.value = ref(resetFormParams);
           });
+        });
       } else {
         message.error('请填写完整信息');
       }
@@ -293,15 +289,11 @@
       positiveText: '确定',
       negativeText: '取消',
       onPositiveClick: () => {
-        Delete({ id: checkedIds.value })
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((e: Error) => {
-            message.error(e.message ?? '操作失败');
-          });
+        Delete({ id: checkedIds.value }).then((_res) => {
+          console.log('_res:' + JSON.stringify(_res));
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
         // message.error('取消');

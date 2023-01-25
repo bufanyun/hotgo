@@ -52,7 +52,7 @@ type ListReq struct {
 }
 
 type ListRes struct {
-	List []*adminin.RoleListModel `json:"list"   description:"数据列表"`
+	List []g.Map `json:"list"   description:"数据列表"`
 	form.PageRes
 }
 

@@ -1,3 +1,5 @@
+import { Option } from '@/utils/hotgo';
+
 export const switchOptions = [
   {
     value: 1,
@@ -85,11 +87,27 @@ export const tagOptions = [
     value: 'success',
   },
   {
-    label: '黄色',
+    label: '橙色',
     value: 'warning',
   },
   {
     label: '红色',
     value: 'error',
+  },
+];
+
+// 登录状态
+export const loginStatusOptions: Option[] = [
+  {
+    value: 1,
+    label: '成功',
+    key: 1,
+    listClass: 'success',
+  },
+  {
+    value: 2,
+    label: '失败',
+    key: 2,
+    listClass: 'warning',
   },
 ];

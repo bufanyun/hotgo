@@ -37,7 +37,8 @@ func New() *sMiddleware {
 	return &sMiddleware{
 		LoginUrl: "/common",
 		DemoWhiteList: g.Map{
-			"/admin/site/login": struct{}{}, // 后台登录
+			"/admin/site/login":       struct{}{}, // 后台登录
+			"/admin/genCodes/preview": struct{}{}, // 预览代码
 		},
 	}
 }

@@ -59,3 +59,9 @@ type CronStatusInp struct {
 	entity.SysCron
 }
 type CronStatusModel struct{}
+
+// OnlineExecInp 在线执行
+type OnlineExecInp struct {
+	entity.SysCron
+}
+type OnlineExecModel struct{}

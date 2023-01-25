@@ -20,6 +20,8 @@ type AdminDept struct {
 	Leader    interface{} // 负责人
 	Phone     interface{} // 联系电话
 	Email     interface{} // 邮箱
+	Level     interface{} // 关系树等级
+	Tree      interface{} // 关系树
 	Sort      interface{} // 排序
 	Status    interface{} // 部门状态
 	CreatedAt *gtime.Time // 创建时间

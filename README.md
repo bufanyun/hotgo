@@ -27,10 +27,10 @@
 </div>
 
 
-
 ## 平台简介
 * 基于全新Go Frame 2+Vue3+Naive UI开发的全栈前后端分离的管理系统
 * 前端采用naive-ui-admin 、Vue、Naive UI。
+
 
 ## 特征
 * 高生产率：几分钟即可搭建一个后台管理系统
@@ -153,7 +153,7 @@ VITE_PROXY=[["/admin","http://你的IP:8000/admin"]]
 
 web端：
    ```shell script
-    cd views
+    cd web
     # 首先确定你以安装node16.0以上版本并安装了包[npm、yarn]，否则可能会出现一些未知报错
     
     # 安装依赖

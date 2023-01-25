@@ -12,7 +12,7 @@ import (
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/backend/role"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
@@ -25,6 +25,7 @@ import (
 	"hotgo/internal/service"
 	"hotgo/utility/auth"
 	"hotgo/utility/convert"
+	"hotgo/utility/tree"
 	"sort"
 )
 
@@ -67,21 +68,25 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 }
 
 // List 获取列表
-func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (list []*adminin.RoleListModel, totalCount int, err error) {
-	mod := dao.AdminRole.Ctx(ctx)
+func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (list []g.Map, totalCount int, err error) {
+	var (
+		mod    = dao.AdminRole.Ctx(ctx)
+		models []*adminin.RoleListModel
+	)
+
 	totalCount, err = mod.Count()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}
 
-	err = mod.Page(in.Page, in.PerPage).Order("id asc").Scan(&list)
+	err = mod.Page(in.Page, in.PerPage).Order("id asc").Scan(&models)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}
 
-	return list, totalCount, err
+	return tree.GenTree(gconv.SliceMap(models)), totalCount, err
 }
 
 // GetName 获取指定角色的名称
@@ -197,7 +202,6 @@ func (s *sAdminRole) Edit(ctx context.Context, in *role.EditReq) (err error) {
 	}
 
 	// 修改
-	in.UpdatedAt = gtime.Now()
 	if in.Id > 0 {
 		_, err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Data(in).Update()
 		if err != nil {
@@ -209,7 +213,6 @@ func (s *sAdminRole) Edit(ctx context.Context, in *role.EditReq) (err error) {
 	}
 
 	// 新增
-	in.CreatedAt = gtime.Now()
 	_, err = dao.AdminRole.Ctx(ctx).Data(in).Insert()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
@@ -222,6 +225,28 @@ func (s *sAdminRole) Delete(ctx context.Context, in *role.DeleteReq) (err error)
 	if in.Id <= 0 {
 		return gerror.New("ID不正确！")
 	}
+
+	var (
+		models *entity.AdminRole
+	)
+	err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Scan(&models)
+	if err != nil {
+		return err
+	}
+
+	if models == nil {
+		return gerror.New("数据不存在或已删除！")
+	}
+
+	pidExist, err := dao.AdminRole.Ctx(ctx).Where("pid", models.Id).One()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return err
+	}
+	if !pidExist.IsEmpty() {
+		return gerror.New("请先删除该角色下得所有子级！")
+	}
+
 	_, err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Delete()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)

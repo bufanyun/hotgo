@@ -82,6 +82,13 @@ type LogConfig struct {
 	SkipCode []string `json:"skipCode"`
 }
 
+// ServeLogConfig 服务日志配置
+type ServeLogConfig struct {
+	Switch      bool     `json:"switch"`
+	Queue       bool     `json:"queue"`
+	LevelFormat []string `json:"levelFormat"`
+}
+
 // GenerateAppCrudTemplate curd模板
 type GenerateAppCrudTemplate struct {
 	Group          string `json:"group"`

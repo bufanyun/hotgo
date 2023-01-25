@@ -18,6 +18,10 @@ import (
 	"sync"
 )
 
+func init() {
+	cronList = append(cronList, Monitor)
+}
+
 // Monitor 监控
 var Monitor = &cMonitor{name: "monitor"}
 

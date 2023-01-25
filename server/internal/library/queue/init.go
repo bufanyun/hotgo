@@ -93,7 +93,7 @@ func InstanceProducer() (mqClient MqProducer, err error) {
 	return NewProducer(config.GroupName)
 }
 
-// NewProducer 新建一个生产者实例
+// NewProducer 初始化生产者实例
 func NewProducer(groupName string) (mqClient MqProducer, err error) {
 	if item, ok := mqProducerInstanceMap[groupName]; ok {
 		return item, nil
@@ -143,7 +143,7 @@ func NewProducer(groupName string) (mqClient MqProducer, err error) {
 	return mqClient, nil
 }
 
-// NewConsumer 新建一个消费者实例
+// NewConsumer 初始化消费者实例
 func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 	randTag := string(charset.RandomCreateBytes(6))
 

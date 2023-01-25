@@ -30,7 +30,7 @@
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建
+            添加任务
           </n-button>
           &nbsp;
           <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
@@ -57,7 +57,7 @@
         v-model:show="showModal"
         :show-icon="false"
         preset="dialog"
-        title="新建"
+        :title="formParams?.id > 0 ? '编辑任务 #' + formParams.id : '添加任务'"
         style="width: 720px"
       >
         <n-form
@@ -100,9 +100,8 @@
             </n-radio-group>
           </n-form-item>
 
-          <n-form-item label="执行次数" path="count">
+          <n-form-item label="执行次数" path="count" v-if="formParams.policy === 4">
             <n-input placeholder="请输入执行次数" v-model:value="formParams.count" />
-            <template #feedback> 仅在单次、多次策略时生效</template>
           </n-form-item>
 
           <n-form-item label="定时表达式" path="pattern">
@@ -154,7 +153,7 @@
   import { TreeSelectOption, useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { Delete, Edit, getSelect, List, Status } from '@/api/sys/cron';
+  import { Delete, Edit, getSelect, List, Status, OnlineExec } from '@/api/sys/cron';
   import { columns } from './columns';
   import { DeleteOutlined, GroupOutlined, PlusOutlined } from '@vicons/antd';
   import { statusActions } from '@/enums/optionsiEnum';
@@ -369,8 +368,21 @@
   }
 
   function handleExecute(record: Recordable) {
-    console.log('点击了handleExecute', record);
-    message.error('暂未配置');
+    dialog.warning({
+      title: '警告',
+      content: '提交成功后将立即执行一次，你确定要执行吗？',
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: () => {
+        OnlineExec(record).then((_res) => {
+          message.success('提交成功，执行结果请登录控制台查看日志！');
+          reloadTable();
+        });
+      },
+      onNegativeClick: () => {
+        // message.error('取消');
+      },
+    });
   }
 
   function handleDelete(record: Recordable) {

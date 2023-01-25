@@ -35,13 +35,10 @@
               <n-input v-model:value="formValue.smtpAdminMailbox" placeholder="" />
             </n-form-item>
 
-            <n-form-item>
-              <n-button size="small" type="default" @click="sendTest">发送测试邮件</n-button>
-            </n-form-item>
-
             <div>
               <n-space>
                 <n-button type="primary" @click="formSubmit">保存更新</n-button>
+                <n-button type="default" @click="sendTest">发送测试邮件</n-button>
               </n-space>
             </div>
           </n-form>
@@ -118,11 +115,9 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formParams:' + JSON.stringify(formParams.value));
-
-        showModal.value = false;
         sendTestEmail(formParams.value).then((_res) => {
           message.success('发送成功');
+          showModal.value = false;
         });
       } else {
         message.error('请填写完整信息');
@@ -139,8 +134,6 @@
   function formSubmit() {
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formValue.value:' + JSON.stringify(formValue.value));
-
         updateConfig({ group: group.value, list: formValue.value })
           .then((res) => {
             console.log('res:' + JSON.stringify(res));

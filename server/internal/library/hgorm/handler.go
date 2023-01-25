@@ -15,6 +15,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/model/entity"
+	"hotgo/utility/tree"
 )
 
 // HandlerFilterAuth 过滤数据权限
@@ -23,7 +24,7 @@ func HandlerFilterAuth(m *gdb.Model) *gdb.Model {
 	var (
 		needAuth    bool
 		filterField string
-		roleModel   *entity.AdminRole
+		role        *entity.AdminRole
 		ctx         = m.GetCtx()
 		fields      = escapeFieldsToSlice(m.GetFieldsStr())
 		co          = contexts.Get(ctx)
@@ -48,34 +49,35 @@ func HandlerFilterAuth(m *gdb.Model) *gdb.Model {
 		return m
 	}
 
-	err := g.Model("admin_role").Where("id", co.User.RoleId).Scan(&roleModel)
+	err := g.Model("admin_role").Where("id", co.User.RoleId).Scan(&role)
 	if err != nil {
-		panic(fmt.Sprintf("HandlerFilterAuth Failed to role information err:%+v", err))
+		panic(fmt.Sprintf("failed to role information err:%+v", err))
 	}
 
-	if roleModel == nil {
-		panic(fmt.Sprintf("HandlerFilterAuth Failed to role information err2:%+v", err))
+	if role == nil {
+		panic("failed to role information roleModel == nil")
 	}
 
-	// TODO 当前不是完整功能，预计在下个版本中完善
-	switch roleModel.DataScope {
+	sq := g.Model("admin_member").Fields("id")
+
+	switch role.DataScope {
 	case consts.RoleDataAll: // 全部权限
 		// ...
 	case consts.RoleDataNowDept: // 当前部门
-		m = m.Where(filterField, co.User.DeptId)
+		m = m.WhereIn(filterField, sq.Where("dept_id", co.User.DeptId))
 	case consts.RoleDataDeptAndSub: // 当前部门及以下部门
-		//m = m.Where(filterField, 1)
+		m = m.WhereIn(filterField, sq.WhereIn("dept_id", GetDeptAndSub(co.User.DeptId)))
 	case consts.RoleDataDeptCustom: // 自定义部门
-		m = m.WhereIn(filterField, roleModel.CustomDept.Var().Ints())
+		m = m.WhereIn(filterField, sq.WhereIn("dept_id", role.CustomDept.Var().Ints()))
 	case consts.RoleDataSelf: // 仅自己
 		m = m.Where(filterField, co.User.Id)
 	case consts.RoleDataSelfAndSub: // 自己和直属下级
-		//m = m.Where(filterField, 1)
+		m = m.WhereIn(filterField, GetSelfAndSub(co.User.Id))
 	case consts.RoleDataSelfAndAllSub: // 自己和全部下级
-		//m = m.Where(filterField, 1)
+		m = m.WhereIn(filterField, GetSelfAndAllSub(co.User.Id))
 
 	default:
-		panic("HandlerFilterAuth dataScope is not registered")
+		panic("dataScope is not registered")
 	}
 
 	return m
@@ -89,4 +91,58 @@ func HandlerForceCache(m *gdb.Model) *gdb.Model {
 // escapeFieldsToSlice 将转义过的字段转换为字段集切片
 func escapeFieldsToSlice(s string) []string {
 	return gstr.Explode(",", gstr.Replace(gstr.Replace(s, "`,`", ","), "`", ""))
+}
+
+// GetDeptAndSub 获取指定部门的所有下级，含本部门
+func GetDeptAndSub(deptId int64) (ids []int64) {
+	array, err := g.Model("admin_dept").
+		WhereLike("tree", "%"+tree.GetIdLabel(deptId)+"%").
+		Fields("id").
+		Array()
+	if err != nil {
+		return
+	}
+
+	for _, v := range array {
+		ids = append(ids, v.Int64())
+	}
+
+	ids = append(ids, deptId)
+	return
+}
+
+// GetSelfAndSub 获取直属下级，包含自己
+func GetSelfAndSub(memberId int64) (ids []int64) {
+	array, err := g.Model("admin_member").
+		Where("pid", memberId).
+		Fields("id").
+		Array()
+	if err != nil {
+		return
+	}
+
+	for _, v := range array {
+		ids = append(ids, v.Int64())
+	}
+
+	ids = append(ids, memberId)
+	return
+}
+
+// GetSelfAndAllSub 获取全部下级，包含自己
+func GetSelfAndAllSub(memberId int64) (ids []int64) {
+	array, err := g.Model("admin_member").
+		WhereLike("tree", "%"+tree.GetIdLabel(memberId)+"%").
+		Fields("id").
+		Array()
+	if err != nil {
+		return
+	}
+
+	for _, v := range array {
+		ids = append(ids, v.Int64())
+	}
+
+	ids = append(ids, memberId)
+	return
 }

@@ -16,6 +16,7 @@ type (
 		Ctx(r *ghttp.Request)
 		CORS(r *ghttp.Request)
 		DemoLimit(r *ghttp.Request)
+		Blacklist(r *ghttp.Request)
 		ResponseHandler(r *ghttp.Request)
 		WebSocketToken(r *ghttp.Request)
 	}

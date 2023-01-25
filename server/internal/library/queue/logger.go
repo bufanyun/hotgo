@@ -10,33 +10,28 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
-	"hotgo/internal/consts"
+	"hotgo/utility/charset"
+)
+
+const (
+	ConsumerLogErrFormat = "消费 [%s] 失败, mqMsgId:%+v, mqMsgData:%+v, err:%+v, stack:%+v"
+	ProducerLogErrFormat = "生产 [%s] 失败, data:%+v, err:%+v, stack:%+v"
 )
 
 // ConsumerLog 消费日志
 func ConsumerLog(ctx context.Context, topic string, mqMsg MqMsg, err error) {
 	if err != nil {
-		g.Log(consts.QueueLogPath).Error(ctx, "消费 ["+topic+"] 失败", mqMsg, err)
+		g.Log().Printf(ctx, ConsumerLogErrFormat, topic, mqMsg.MsgId, mqMsg.BodyString(), err, charset.ParseErrStack(err))
 	} else {
-		g.Log(consts.QueueLogPath).Debug(ctx, "消费 ["+topic+"] 成功", mqMsg.MsgId)
+		g.Log().Print(ctx, "消费 ["+topic+"] 成功", mqMsg.MsgId)
 	}
 }
 
 // ProducerLog 生产日志
 func ProducerLog(ctx context.Context, topic string, data interface{}, err error) {
 	if err != nil {
-		g.Log(consts.QueueLogPath).Error(ctx, "生产 ["+topic+"] 失败", gconv.String(data))
+		g.Log().Printf(ctx, ProducerLogErrFormat, topic, gconv.String(data), err, charset.ParseErrStack(err))
 	} else {
-		g.Log(consts.QueueLogPath).Debug(ctx, "生产 ["+topic+"] 成功", gconv.String(data))
+		g.Log().Print(ctx, "生产 ["+topic+"] 成功", gconv.String(data))
 	}
-}
-
-// FatalLog 致命日志
-func FatalLog(ctx context.Context, text string, err error) {
-	g.Log(consts.QueueLogPath).Fatal(ctx, text+":", err)
-}
-
-// Log 通用日志
-func Log(ctx context.Context, text string) {
-	g.Log(consts.QueueLogPath).Debug(ctx, text)
 }

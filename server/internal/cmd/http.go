@@ -44,6 +44,7 @@ var (
 				group.Middleware(
 					service.Middleware().Ctx, //必须第一个加载
 					service.Middleware().CORS,
+					service.Middleware().Blacklist,
 					service.Middleware().DemoLimit,
 					service.Middleware().ResponseHandler,
 				)

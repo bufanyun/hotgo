@@ -30,7 +30,7 @@
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建
+            添加策略
           </n-button>
           &nbsp;
           <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
@@ -48,7 +48,7 @@
         v-model:show="showModal"
         :show-icon="false"
         preset="dialog"
-        title="新建"
+        :title="formParams?.id > 0 ? '编辑策略 #' + formParams.id : '添加策略'"
         style="width: 720px"
       >
         <n-form
@@ -59,8 +59,8 @@
           :label-width="80"
           class="py-4"
         >
-          <n-form-item label="IP地址" path="ip">
-            <n-input type="textarea" placeholder="请输入IP地址" v-model:value="formParams.ip" />
+          <n-form-item label="IP策略" path="ip">
+            <n-input type="textarea" placeholder="请输入IP策略" v-model:value="formParams.ip" />
             <template #feedback>
               <p>支持添加IP：如果添加多个IP请用","隔开</p>
               <p>支持添加IP段,如：192.168.0.0/24</p>
@@ -72,7 +72,7 @@
           <n-form-item label="状态" path="status">
             <n-radio-group v-model:value="formParams.status" name="status">
               <n-radio-button
-                v-for="status in statusOptions"
+                v-for="status in blacklistOptions"
                 :key="status.value"
                 :value="status.value"
                 :label="status.label"
@@ -107,8 +107,23 @@
   import { Dict } from '@/api/dict/dict';
   import { getOptionLabel, getOptionTag } from '@/utils/hotgo';
 
+  const blacklistOptions = [
+    {
+      value: 1,
+      label: '封禁中',
+      listClass: 'warning',
+    },
+    {
+      value: 2,
+      label: '已解封',
+      listClass: 'success',
+    },
+  ].map((s) => {
+    return s;
+  });
+
   const options = ref({
-    status: [],
+    status: blacklistOptions,
   });
 
   const columns = [
@@ -185,7 +200,7 @@
       defaultValue: null,
       componentProps: {
         placeholder: '请选择类型',
-        options: [],
+        options: blacklistOptions,
         onUpdateValue: (e: any) => {
           console.log(e);
         },
@@ -350,19 +365,6 @@
       });
     });
   }
-
-  async function loadOptions() {
-    options.value.status = await Dict('sys_normal_disable');
-    for (const item of schemas.value) {
-      if (item.field === 'status') {
-        item.componentProps.options = options.value.status;
-      }
-    }
-  }
-
-  onMounted(async () => {
-    await loadOptions();
-  });
 </script>
 
 <style lang="less" scoped></style>

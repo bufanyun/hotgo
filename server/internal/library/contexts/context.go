@@ -35,7 +35,7 @@ func SetUser(ctx context.Context, user *model.Identity) {
 	Get(ctx).User = user
 }
 
-// SetResponse 设置组件响应 用于全局日志使用
+// SetResponse 设置组件响应 用于访问日志使用
 func SetResponse(ctx context.Context, response *model.Response) {
 	Get(ctx).Response = response
 }

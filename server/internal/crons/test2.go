@@ -13,6 +13,10 @@ import (
 	"time"
 )
 
+func init() {
+	cronList = append(cronList, Test2)
+}
+
 // Test2 测试2任务
 var Test2 = &cTest2{name: "test2"}
 
@@ -26,7 +30,7 @@ func (c *cTest2) GetName() string {
 
 // Execute 执行任务
 func (c *cTest2) Execute(ctx context.Context) {
-	args, ok := ctx.Value(consts.CronArgsKey).([]string)
+	args, ok := ctx.Value(consts.ContextKeyCronArgs).([]string)
 	if !ok {
 		g.Log().Warning(ctx, "参数解析失败!")
 		return

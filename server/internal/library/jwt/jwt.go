@@ -23,7 +23,7 @@ import (
 )
 
 // GenerateLoginToken 为指定用户生成token
-func GenerateLoginToken(ctx context.Context, user *model.Identity, isRefresh bool) (interface{}, error) {
+func GenerateLoginToken(ctx context.Context, user *model.Identity, isRefresh bool) (string, error) {
 	var (
 		jwtVersion = g.Cfg().MustGet(ctx, "jwt.version", "1.0")
 		jwtSign    = g.Cfg().MustGet(ctx, "jwt.sign", "hotGo")
@@ -51,7 +51,7 @@ func GenerateLoginToken(ctx context.Context, user *model.Identity, isRefresh boo
 
 	tokenString, err := token.SignedString(jwtSign.Bytes())
 	if err != nil {
-		return nil, gerror.New(err.Error())
+		return "", err
 	}
 
 	var (
@@ -65,12 +65,12 @@ func GenerateLoginToken(ctx context.Context, user *model.Identity, isRefresh boo
 
 	err = c.Set(ctx, key, tokenString, expires)
 	if err != nil {
-		return nil, gerror.New(err.Error())
+		return "", err
 	}
 
 	err = c.Set(ctx, consts.RedisJwtUserBind+user.App+":"+gconv.String(user.Id), key, expires)
 	if err != nil {
-		return nil, gerror.New(err.Error())
+		return "", err
 	}
 	return tokenString, err
 }

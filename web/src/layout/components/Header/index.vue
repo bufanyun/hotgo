@@ -182,6 +182,7 @@
   import { NotificationsOutline as NotificationsIcon } from '@vicons/ionicons5';
   import PopoverMessage from './PopoverMessage.vue';
   import { notificationStoreWidthOut } from '@/store/modules/notification';
+  import notificationImg from '@/assets/images/notification.png';
 
   export default defineComponent({
     name: 'PageHeader',
@@ -393,7 +394,7 @@
                 h(NAvatar, {
                   size: 'small',
                   round: true,
-                  src: '/notification.png',
+                  src: notificationImg,
                 }),
               onClose: () => {
                 nRef.value = null;

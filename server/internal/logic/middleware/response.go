@@ -42,14 +42,14 @@ func (s *sMiddleware) ResponseHandler(r *ghttp.Request) {
 
 	if err = r.GetError(); err != nil {
 		// 记录到自定义错误日志文件
-		g.Log("exception").Print(ctx, "exception:", err)
+		g.Log().Warningf(ctx, "exception:%v", err)
 
 		code = gerror.Code(err).Code()
 		message = err.Error()
 
 		// 是否输出错误到页面
 		if g.Cfg().MustGet(ctx, "hotgo.debug", true).Bool() {
-			data = charset.GetStack(err)
+			data = charset.ParseErrStack(err)
 		}
 	} else {
 		data = r.GetHandlerResponse()

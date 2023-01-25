@@ -34,7 +34,7 @@ export function Delete(params) {
 
 export function ResetPwd(params) {
   return http.request({
-    url: '/member/reset_pwd',
+    url: '/member/resetPwd',
     method: 'POST',
     params,
   });

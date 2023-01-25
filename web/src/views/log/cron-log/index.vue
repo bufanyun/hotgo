@@ -1,5 +1,5 @@
 <template>
-  <n-card :bordered="false" class="proCard">
+  <n-card :bordered="false" class="proCard" title="任务日志">
     <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset">
       <template #statusSlot="{ model, field }">
         <n-input v-model:value="model[field]" />
@@ -25,10 +25,6 @@
           </template>
           批量删除
         </n-button>
-      </template>
-
-      <template #toolbar>
-        <n-button type="primary" @click="reloadTable">cron刷新数据</n-button>
       </template>
     </BasicTable>
   </n-card>

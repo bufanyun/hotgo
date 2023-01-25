@@ -14,6 +14,7 @@ import (
 type SysLog struct {
 	g.Meta     `orm:"table:hg_sys_log, do:true"`
 	Id         interface{} // 日志ID
+	ReqId      interface{} // 对外ID
 	AppId      interface{} // 应用ID
 	MerchantId interface{} // 商户ID
 	MemberId   interface{} // 用户ID
@@ -29,10 +30,9 @@ type SysLog struct {
 	ErrorCode  interface{} // 报错code
 	ErrorMsg   interface{} // 报错信息
 	ErrorData  *gjson.Json // 报错日志
-	ReqId      interface{} // 对外ID
-	Timestamp  interface{} // 响应时间
 	UserAgent  interface{} // UA信息
 	TakeUpTime interface{} // 请求耗时
+	Timestamp  interface{} // 响应时间
 	Status     interface{} // 状态
 	CreatedAt  *gtime.Time // 创建时间
 	UpdatedAt  *gtime.Time // 修改时间

@@ -30,7 +30,7 @@
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建用户
+            添加用户
           </n-button>
           <n-button
             type="error"
@@ -52,7 +52,7 @@
         v-model:show="showModal"
         :show-icon="false"
         preset="dialog"
-        :title="formParams?.id > 0 ? '编辑用户 #' + formParams?.id : '新建用户'"
+        :title="formParams?.id > 0 ? '编辑用户 #' + formParams?.id : '添加用户'"
         :style="{
           width: dialogWidth,
         }"

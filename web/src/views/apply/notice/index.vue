@@ -31,7 +31,7 @@
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建
+            添加
           </n-button>
           &nbsp;
           <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
@@ -45,7 +45,7 @@
         </template>
       </BasicTable>
 
-      <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="新建">
+      <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="添加">
         <n-form
           :model="formParams"
           :rules="rules"

@@ -8,6 +8,7 @@ package sys
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/backend/cron"
 	"hotgo/internal/model/input/form"
@@ -110,4 +111,18 @@ func (c *cCron) Status(ctx context.Context, req *cron.StatusReq) (res *cron.Stat
 	}
 
 	return res, nil
+}
+
+// OnlineExec 在线执行
+func (c *cCron) OnlineExec(ctx context.Context, req *cron.OnlineExecReq) (res *cron.OnlineExecRes, err error) {
+	if req.Id <= 0 {
+		return nil, gerror.New("定时任务ID不能为空")
+	}
+
+	var in sysin.OnlineExecInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return nil, err
+	}
+
+	return res, service.SysCron().OnlineExec(ctx, in)
 }

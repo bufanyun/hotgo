@@ -67,9 +67,14 @@ func RandomCreateBytes(n int, alphabets ...byte) []byte {
 	return bytes
 }
 
-// GetStack 格式化错误的堆栈信息
-func GetStack(err error) []string {
-	stack := gstr.Split(gerror.Stack(err), "\n")
+// ParseErrStack 解析错误的堆栈信息
+func ParseErrStack(err error) []string {
+	return ParseStack(gerror.Stack(err))
+}
+
+// ParseStack 解析堆栈信息
+func ParseStack(st string) []string {
+	stack := gstr.Split(st, "\n")
 	for i := 0; i < len(stack); i++ {
 		stack[i] = gstr.Replace(stack[i], "\t", "--> ")
 	}

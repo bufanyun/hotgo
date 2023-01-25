@@ -1,5 +1,10 @@
 <template>
   <n-card :bordered="false" class="proCard">
+    <div class="n-layout-page-header">
+      <n-card :bordered="false" title="访问日志">
+        全局的访问日志，记录了管理后台中人员的操作记录和服务响应情况
+      </n-card>
+    </div>
     <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset">
       <template #statusSlot="{ model, field }">
         <n-input v-model:value="model[field]" />
@@ -15,6 +20,7 @@
       :actionColumn="actionColumn"
       @update:checked-row-keys="onCheckedRow"
       :scroll-x="1090"
+      :resizeHeightOffset="-20000"
     >
       <template #tableTitle>
         <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
@@ -25,10 +31,6 @@
           </template>
           批量删除
         </n-button>
-      </template>
-
-      <template #toolbar>
-        <n-button type="primary" @click="reloadTable">刷新数据</n-button>
       </template>
     </BasicTable>
   </n-card>

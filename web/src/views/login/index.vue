@@ -29,12 +29,12 @@
               </template>
             </n-input>
           </n-form-item>
-          <n-form-item path="password">
+          <n-form-item path="pass">
             <n-input
               @keyup.enter="handleSubmit"
-              v-model:value="formInline.password"
-              type="password"
-              showPasswordOn="click"
+              v-model:value="formInline.pass"
+              type="pass"
+              showpassOn="click"
               placeholder="请输入密码"
             >
               <template #prefix>
@@ -43,6 +43,28 @@
                 </n-icon>
               </template>
             </n-input>
+          </n-form-item>
+          <n-form-item path="code">
+            <n-input-group>
+              <n-input
+                :style="{ width: '100%' }"
+                placeholder="验证码"
+                @keyup.enter="handleSubmit"
+                v-model:value="formInline.code"
+              >
+                <template #prefix>
+                  <n-icon size="18" color="#808695" :component="SafetyCertificateOutlined" />
+                </template>
+                <template #suffix> </template>
+              </n-input>
+              <img
+                style="width: 100px"
+                :src="codeBase64"
+                @click="refreshCode"
+                loading="lazy"
+                alt="点击获取"
+              />
+            </n-input-group>
           </n-form-item>
           <n-form-item class="default-color">
             <div class="flex justify-between">
@@ -90,16 +112,22 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref } from 'vue';
+  import { ref, unref, onMounted } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import { useUserStore } from '@/store/modules/user';
   import { useMessage } from 'naive-ui';
   import { ResultEnum } from '@/enums/httpEnum';
   import { PersonOutline, LockClosedOutline, LogoGithub, LogoFacebook } from '@vicons/ionicons5';
   import { PageEnum } from '@/enums/pageEnum';
+  import { SafetyCertificateOutlined } from '@vicons/antd';
+  import { GetCaptcha } from '@/api/base';
+  import { aesEcb } from '@/utils/encrypt';
 
   interface FormState {
     username: string;
+    pass: string;
+    cid: string;
+    code: string;
     password: string;
   }
 
@@ -107,17 +135,21 @@
   const message = useMessage();
   const loading = ref(false);
   const autoLogin = ref(true);
+  const codeBase64 = ref('');
   const LOGIN_NAME = PageEnum.BASE_LOGIN_NAME;
 
-  const formInline = reactive({
+  const formInline = ref<FormState>({
     username: '',
+    pass: '',
+    cid: '',
+    code: '',
     password: '',
-    isCaptcha: true,
   });
 
   const rules = {
     username: { required: true, message: '请输入用户名', trigger: 'blur' },
-    password: { required: true, message: '请输入密码', trigger: 'blur' },
+    pass: { required: true, message: '请输入密码', trigger: 'blur' },
+    code: { required: true, message: '请输入验证码', trigger: 'blur' },
   };
 
   const userStore = useUserStore();
@@ -129,17 +161,15 @@
     e.preventDefault();
     formRef.value.validate(async (errors) => {
       if (!errors) {
-        const { username, password } = formInline;
         message.loading('登录中...');
         loading.value = true;
-
-        const params: FormState = {
-          username,
-          password,
-        };
-
         try {
-          const { code, message: msg } = await userStore.login(params);
+          const { code, message: msg } = await userStore.login({
+            username: formInline.value.username,
+            password: aesEcb.encrypt(formInline.value.pass),
+            cid: formInline.value.cid,
+            code: formInline.value.code,
+          });
           message.destroyAll();
           if (code == ResultEnum.SUCCESS) {
             const toPath = decodeURIComponent((route.query?.redirect || '/') as string);
@@ -149,6 +179,7 @@
             } else await router.replace(toPath);
           } else {
             message.info(msg || '登录失败');
+            await refreshCode();
           }
         } finally {
           loading.value = false;
@@ -158,6 +189,19 @@
       }
     });
   };
+
+  async function refreshCode() {
+    const data = await GetCaptcha();
+    codeBase64.value = data.base64;
+    formInline.value.cid = data.cid;
+    formInline.value.code = '';
+  }
+
+  onMounted(() => {
+    setTimeout(function () {
+      refreshCode();
+    });
+  });
 </script>
 
 <style lang="less" scoped>

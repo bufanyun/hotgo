@@ -6,7 +6,7 @@ export const columns = [
   {
     title: '会话编号',
     key: 'id',
-    width: 240,
+    width: 280,
     render(row) {
       return h(
         NTag,

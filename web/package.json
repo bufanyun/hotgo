@@ -67,6 +67,7 @@
     "autoprefixer": "^10.4.7",
     "commitizen": "^4.2.4",
     "core-js": "^3.22.5",
+    "crypto-js": "^4.1.1",
     "dotenv": "^10.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
@@ -97,7 +98,9 @@
     "vite-plugin-compression": "^0.3.6",
     "vite-plugin-html": "^2.1.2",
     "vite-plugin-mock": "^2.9.6",
+    "vite-plugin-require-transform": "^1.0.5",
     "vite-plugin-style-import": "^1.4.1",
+    "vite-plugin-top-level-await": "^1.2.2",
     "vue-eslint-parser": "^7.11.0"
   },
   "lint-staged": {

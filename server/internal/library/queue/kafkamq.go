@@ -87,30 +87,28 @@ func (r *KafkaMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) 
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
-
-	go func() {
-
+	go func(ctx context.Context) {
 		for {
 			if err := r.consumerIns.Consume(ctx, []string{topic}, &consumer); err != nil {
-				FatalLog(ctx, "kafka Error from consumer", err)
+				g.Log().Fatalf(ctx, "kafka Error from consumer, err%+v", err)
 			}
 
 			if ctx.Err() != nil {
-				Log(ctx, fmt.Sprintf("kafka consoumer stop : %v", ctx.Err()))
+				g.Log().Debugf(ctx, fmt.Sprintf("kafka consoumer stop : %v", ctx.Err()))
 				return
 			}
 			consumer.ready = make(chan bool)
 		}
-	}()
+	}(ctx)
 
 	<-consumer.ready // Await till the consumer has been set up
-	Log(ctx, "kafka consumer up and running!...")
+	g.Log().Debug(ctx, "kafka consumer up and running!...")
 
 	signal.AppDefer(func() {
-		Log(ctx, "kafka consumer close...")
+		g.Log().Debug(ctx, "kafka consumer close...")
 		cancel()
 		if err = r.consumerIns.Close(); err != nil {
-			FatalLog(ctx, "kafka Error closing client", err)
+			g.Log().Fatalf(ctx, "kafka Error closing client, err:%+v", err)
 		}
 	})
 
@@ -193,7 +191,7 @@ func RegisterKafkaProducer(connOpt KafkaConfig, mqIns *KafkaMq) {
 	}
 
 	signal.AppDefer(func() {
-		Log(ctx, "kafka producer AsyncClose...")
+		g.Log().Debug(ctx, "kafka producer AsyncClose...")
 		mqIns.producerIns.AsyncClose()
 	})
 }

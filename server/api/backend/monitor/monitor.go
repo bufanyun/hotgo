@@ -24,7 +24,8 @@ type OnlineListReq struct {
 	form.PageReq
 	form.RangeDateReq
 	form.StatusReq
-	UserId int64 `json:"userId"   description:"用户ID"`
+	UserId int64  `json:"userId"   description:"用户ID"`
+	Addr   string `json:"addr" description:"登录地址"`
 }
 
 type OnlineListRes struct {

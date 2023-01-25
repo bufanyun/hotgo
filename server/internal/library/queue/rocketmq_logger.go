@@ -7,7 +7,7 @@
 package queue
 
 import (
-	"fmt"
+	"github.com/gogf/gf/v2/frame/g"
 )
 
 type RocketMqLogger struct {
@@ -24,16 +24,16 @@ func (l *RocketMqLogger) Debug(msg string, fields map[string]interface{}) {
 	}
 
 	if l.LevelLog == "debug" || l.LevelLog == "all" {
-		Log(ctx, fmt.Sprint(l.Flag, " [debug] ", msg))
+		g.Log().Debug(ctx, msg)
 	}
 }
 
 func (l *RocketMqLogger) Level(level string) {
-	Log(ctx, fmt.Sprint(l.Flag, " [level] ", level))
+	g.Log().Info(ctx, level)
 }
 
 func (l *RocketMqLogger) OutputPath(path string) (err error) {
-	Log(ctx, fmt.Sprint(l.Flag, " [path] ", path))
+	g.Log().Info(ctx, path)
 	return nil
 }
 
@@ -46,7 +46,7 @@ func (l *RocketMqLogger) Info(msg string, fields map[string]interface{}) {
 	}
 
 	if l.LevelLog == "info" || l.LevelLog == "all" {
-		Log(ctx, fmt.Sprint(l.Flag, " [info] ", msg))
+		g.Log().Info(ctx, msg)
 	}
 }
 
@@ -59,7 +59,7 @@ func (l *RocketMqLogger) Warning(msg string, fields map[string]interface{}) {
 	}
 
 	if l.LevelLog == "warn" || l.LevelLog == "all" {
-		Log(ctx, fmt.Sprint(l.Flag, " [warn] ", msg))
+		g.Log().Warning(ctx, msg)
 	}
 }
 
@@ -71,7 +71,7 @@ func (l *RocketMqLogger) Error(msg string, fields map[string]interface{}) {
 		return
 	}
 	if l.LevelLog == "error" || l.LevelLog == "all" {
-		Log(ctx, fmt.Sprint(l.Flag, " [error] ", msg))
+		g.Log().Error(ctx, msg)
 	}
 }
 
@@ -84,6 +84,6 @@ func (l *RocketMqLogger) Fatal(msg string, fields map[string]interface{}) {
 	}
 
 	if l.LevelLog == "fatal" || l.LevelLog == "all" {
-		Log(ctx, fmt.Sprint(l.Flag, " [fatal] ", msg))
+		g.Log().Fatal(ctx, msg)
 	}
 }

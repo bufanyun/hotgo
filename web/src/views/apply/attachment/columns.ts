@@ -5,6 +5,7 @@ import { Dicts } from '@/api/dict/dict';
 import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
 import { FormSchema } from '@/components/Form';
 import { isNullOrUnDef } from '@/utils/is';
+import { errorImg } from '@/utils/hotgo';
 export const options = ref<Options>({
   sys_normal_disable: [],
   config_upload_drive: [],
@@ -116,6 +117,7 @@ export const columns = [
         width: 40,
         height: 40,
         src: row.fileUrl,
+        onError: errorImg,
         style: {
           width: '40px',
           height: '40px',

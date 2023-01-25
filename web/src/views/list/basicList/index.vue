@@ -22,7 +22,7 @@
               <PlusOutlined />
             </n-icon>
           </template>
-          新建
+          添加
         </n-button>
       </template>
 
@@ -31,7 +31,7 @@
       </template>
     </BasicTable>
 
-    <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="新建">
+    <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="添加">
       <n-form
         :model="formParams"
         :rules="rules"
@@ -312,7 +312,7 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        message.success('新建成功');
+        message.success('添加成功');
         setTimeout(() => {
           showModal.value = false;
           reloadTable();

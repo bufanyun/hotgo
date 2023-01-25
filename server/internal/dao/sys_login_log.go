@@ -8,19 +8,19 @@ import (
 	"hotgo/internal/dao/internal"
 )
 
-// internalDemoDao is internal type for wrapping internal DAO implements.
-type internalDemoDao = *internal.DemoDao
+// internalSysLoginLogDao is internal type for wrapping internal DAO implements.
+type internalSysLoginLogDao = *internal.SysLoginLogDao
 
-// demoDao is the data access object for table hg_demo.
+// sysLoginLogDao is the data access object for table hg_sys_login_log.
 // You can define custom methods on it to extend its functionality as you wish.
-type demoDao struct {
-	internalDemoDao
+type sysLoginLogDao struct {
+	internalSysLoginLogDao
 }
 
 var (
-	// Demo is globally public accessible object for table hg_demo operations.
-	Demo = demoDao{
-		internal.NewDemoDao(),
+	// SysLoginLog is globally public accessible object for table hg_sys_login_log operations.
+	SysLoginLog = sysLoginLogDao{
+		internal.NewSysLoginLogDao(),
 	}
 )
 

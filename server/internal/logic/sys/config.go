@@ -112,6 +112,14 @@ func (s *sSysConfig) GetLoadLog(ctx context.Context) (conf *model.LogConfig, err
 	return conf, nil
 }
 
+// GetLoadServeLog 获取本地服务日志配置
+func (s *sSysConfig) GetLoadServeLog(ctx context.Context) (conf *model.ServeLogConfig, err error) {
+	if err = g.Cfg().MustGet(ctx, "hotgo.serveLog").Struct(&conf); err != nil {
+		return nil, err
+	}
+	return conf, nil
+}
+
 // GetConfigByGroup 获取指定分组的配置
 func (s *sSysConfig) GetConfigByGroup(ctx context.Context, in sysin.GetConfigInp) (*sysin.GetConfigModel, error) {
 	if in.Group == "" {

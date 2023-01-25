@@ -4,6 +4,10 @@ go 1.15
 
 require (
 	github.com/Shopify/sarama v1.34.1
+	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.2
+	github.com/alibabacloud-go/dysmsapi-20170525/v3 v3.0.5
+	github.com/alibabacloud-go/tea v1.1.20
+	github.com/alibabacloud-go/tea-utils/v2 v2.0.1
 	github.com/apache/rocketmq-client-go/v2 v2.1.0
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
 	github.com/bufanyun/pool v0.2.1
@@ -13,7 +17,7 @@ require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.2.0-beta2
 	github.com/gogf/gf/contrib/nosql/redis/v2 v2.3.0
-	github.com/gogf/gf/v2 v2.3.0
+	github.com/gogf/gf/v2 v2.3.1
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/gomodule/redigo v1.8.8
 	github.com/google/btree v1.1.2 // indirect

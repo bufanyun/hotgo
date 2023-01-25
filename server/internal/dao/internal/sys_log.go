@@ -21,6 +21,7 @@ type SysLogDao struct {
 // SysLogColumns defines and stores column names for table hg_sys_log.
 type SysLogColumns struct {
 	Id         string // 日志ID
+	ReqId      string // 对外ID
 	AppId      string // 应用ID
 	MerchantId string // 商户ID
 	MemberId   string // 用户ID
@@ -36,10 +37,9 @@ type SysLogColumns struct {
 	ErrorCode  string // 报错code
 	ErrorMsg   string // 报错信息
 	ErrorData  string // 报错日志
-	ReqId      string // 对外ID
-	Timestamp  string // 响应时间
 	UserAgent  string // UA信息
 	TakeUpTime string // 请求耗时
+	Timestamp  string // 响应时间
 	Status     string // 状态
 	CreatedAt  string // 创建时间
 	UpdatedAt  string // 修改时间
@@ -48,6 +48,7 @@ type SysLogColumns struct {
 // sysLogColumns holds the columns for table hg_sys_log.
 var sysLogColumns = SysLogColumns{
 	Id:         "id",
+	ReqId:      "req_id",
 	AppId:      "app_id",
 	MerchantId: "merchant_id",
 	MemberId:   "member_id",
@@ -63,10 +64,9 @@ var sysLogColumns = SysLogColumns{
 	ErrorCode:  "error_code",
 	ErrorMsg:   "error_msg",
 	ErrorData:  "error_data",
-	ReqId:      "req_id",
-	Timestamp:  "timestamp",
 	UserAgent:  "user_agent",
 	TakeUpTime: "take_up_time",
+	Timestamp:  "timestamp",
 	Status:     "status",
 	CreatedAt:  "created_at",
 	UpdatedAt:  "updated_at",

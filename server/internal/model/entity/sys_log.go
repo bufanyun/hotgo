@@ -12,6 +12,7 @@ import (
 // SysLog is the golang structure for table sys_log.
 type SysLog struct {
 	Id         int64       `json:"id"         description:"日志ID"`
+	ReqId      string      `json:"reqId"      description:"对外ID"`
 	AppId      string      `json:"appId"      description:"应用ID"`
 	MerchantId uint64      `json:"merchantId" description:"商户ID"`
 	MemberId   int64       `json:"memberId"   description:"用户ID"`
@@ -27,10 +28,9 @@ type SysLog struct {
 	ErrorCode  int         `json:"errorCode"  description:"报错code"`
 	ErrorMsg   string      `json:"errorMsg"   description:"报错信息"`
 	ErrorData  *gjson.Json `json:"errorData"  description:"报错日志"`
-	ReqId      string      `json:"reqId"      description:"对外ID"`
-	Timestamp  int64       `json:"timestamp"  description:"响应时间"`
 	UserAgent  string      `json:"userAgent"  description:"UA信息"`
 	TakeUpTime int64       `json:"takeUpTime" description:"请求耗时"`
+	Timestamp  int64       `json:"timestamp"  description:"响应时间"`
 	Status     int         `json:"status"     description:"状态"`
 	CreatedAt  *gtime.Time `json:"createdAt"  description:"创建时间"`
 	UpdatedAt  *gtime.Time `json:"updatedAt"  description:"修改时间"`

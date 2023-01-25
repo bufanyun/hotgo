@@ -8,5 +8,6 @@ package consts
 
 // ContextKey 上下文
 const (
-	ContextKey = "HotGoContext"
+	ContextKey         = "HotGoContext" // http上下文变量名称
+	ContextKeyCronArgs = "args"         // 定时任务参数上下文变量名称
 )

@@ -8,7 +8,7 @@ import { isArray, isNullObject } from '@/utils/is';
 import { getFileExt } from '@/utils/urlUtils';
 import { defRangeShortcuts, defShortcuts, formatToDate } from '@/utils/dateUtil';
 import { validate } from '@/utils/validateUtil';
-import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
+import { getOptionLabel, getOptionTag, Options, errorImg } from '@/utils/hotgo';
 @{ if eq .options.Step.HasSwitch true }
 import { usePermission } from '@/hooks/web/usePermission';
 const { hasPermission } = usePermission();

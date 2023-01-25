@@ -5,17 +5,23 @@ export const columns = [
   {
     title: 'ID',
     key: 'id',
-    width: 100,
+    width: 80,
   },
   {
-    title: '岗位名称',
+    title: '岗位',
     key: 'name',
     width: 100,
-  },
-  {
-    title: '岗位名称',
-    key: 'name',
-    width: 100,
+    render(row) {
+      return h(
+        NTag,
+        {
+          type: 'info',
+        },
+        {
+          default: () => row.name,
+        }
+      );
+    },
   },
   {
     title: '岗位编码',
@@ -42,15 +48,15 @@ export const columns = [
       );
     },
   },
-  {
-    title: '排序',
-    key: 'sort',
-    width: 100,
-  },
+  // {
+  //   title: '排序',
+  //   key: 'sort',
+  //   width: 100,
+  // },
   {
     title: '创建时间',
     key: 'createdAt',
-    width: 100,
+    width: 150,
     render: (rows, _) => {
       return rows.createdAt;
     },

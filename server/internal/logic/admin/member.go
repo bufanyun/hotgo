@@ -9,6 +9,7 @@ package admin
 import (
 	"context"
 	"github.com/gogf/gf/v2/crypto/gmd5"
+	"github.com/gogf/gf/v2/encoding/gbase64"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -20,11 +21,13 @@ import (
 	"hotgo/internal/dao"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/jwt"
+	"hotgo/internal/library/location"
 	"hotgo/internal/model"
 	"hotgo/internal/model/do"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/service"
+	"hotgo/utility/encrypt"
 	"hotgo/utility/tree"
 	"hotgo/utility/validate"
 )
@@ -441,7 +444,12 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 		roleInfo   *entity.AdminRole
 		memberInfo *entity.AdminMember
 		identity   *model.Identity
+		timestamp  = gtime.Timestamp()
+		expires    = g.Cfg().MustGet(ctx, "jwt.expires", 1).Int64()
+		exp        = gconv.Int64(timestamp) + expires
+		lastIp     = location.GetClientIp(ghttp.RequestFromCtx(ctx))
 	)
+
 	err = dao.AdminMember.Ctx(ctx).Where("username", in.Username).Scan(&memberInfo)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
@@ -457,15 +465,20 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 		return
 	}
 
-	if memberInfo.PasswordHash != gmd5.MustEncryptString(in.Password+memberInfo.Salt) {
+	// 解密密码
+	password, err := gbase64.Decode([]byte(in.Password))
+	if err != nil {
+		return nil, err
+	}
+	password, err = encrypt.AesECBDecrypt(password, consts.RequestEncryptKey)
+	if err != nil {
+		return nil, err
+	}
+
+	if memberInfo.PasswordHash != gmd5.MustEncryptString(string(password)+memberInfo.Salt) {
 		err = gerror.New("用户密码不正确")
 		return
 	}
-
-	//// 默认设备
-	//if in.Device != consts.AppAdmin && in.Device != consts.AppApi {
-	//	in.Device = consts.AppAdmin
-	//}
 
 	err = dao.AdminRole.Ctx(ctx).
 		Fields("id,key,status").
@@ -485,12 +498,6 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 		return
 	}
 
-	// 有效期
-	expires := g.Cfg().MustGet(ctx, "jwt.expires", 1).Int64()
-
-	// 过期时间戳
-	exp := gconv.Int64(gtime.Timestamp()) + expires
-
 	identity = &model.Identity{
 		Id:         memberInfo.Id,
 		Pid:        memberInfo.Pid,
@@ -504,7 +511,7 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 		Mobile:     memberInfo.Mobile,
 		VisitCount: memberInfo.VisitCount,
 		LastTime:   memberInfo.LastTime,
-		LastIp:     memberInfo.LastIp,
+		LastIp:     lastIp,
 		Exp:        exp,
 		Expires:    expires,
 		App:        consts.AppAdmin,
@@ -517,13 +524,11 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 	}
 
 	// 更新登录信息
-	authKey := gmd5.MustEncryptString(gconv.String(token))
-
 	_, err = dao.AdminMember.Ctx(ctx).Data(do.AdminMember{
-		AuthKey:    gmd5.MustEncryptString(authKey),
+		AuthKey:    gmd5.MustEncryptString(token),
 		VisitCount: memberInfo.VisitCount + 1,
-		LastTime:   gtime.Timestamp(),
-		LastIp:     ghttp.RequestFromCtx(ctx).GetClientIp(),
+		LastTime:   timestamp,
+		LastIp:     lastIp,
 	}).Where(do.AdminMember{
 		Id: memberInfo.Id,
 	}).Update()
@@ -538,7 +543,7 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 		Username: identity.Username,
 		RealName: identity.RealName,
 		Avatar:   identity.Avatar,
-		Token:    gconv.String(token),
+		Token:    token,
 	}
 
 	return res, nil

@@ -30,8 +30,8 @@ func Admin(ctx context.Context, group *ghttp.RouterGroup) {
 			common.Site,    // 基础
 			common.Console, // 控制台
 			common.Ems,     // 邮件
+			common.Sms,     // 短信
 			common.Upload,  // 上传
-			sys.Log,        // 日志
 			sys.Config,     // 配置
 			sys.DictType,   // 字典类型
 			sys.DictData,   // 字典数据
@@ -41,6 +41,10 @@ func Admin(ctx context.Context, group *ghttp.RouterGroup) {
 			sys.CronGroup,  // 定时任务分组
 			sys.Blacklist,  // 黑名单
 			sys.GenCodes,   // 生成代码
+			sys.Log,        // 访问日志
+			sys.LoginLog,   // 登录日志
+			sys.ServeLog,   // 服务日志
+			sys.SmsLog,     // 短信记录
 			admin.Member,   // 用户
 			admin.Monitor,  // 监控
 			admin.Role,     // 路由

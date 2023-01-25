@@ -39,25 +39,24 @@ type ViewRes struct {
 
 // EditReq 修改/新增
 type EditReq struct {
-	entity.SysProvinces
 	g.Meta `path:"/provinces/edit" method:"post" tags:"省市区" summary:"修改/新增省市区"`
+	sysin.ProvincesEditInp
 }
 type EditRes struct{}
 
 // DeleteReq 删除
 type DeleteReq struct {
-	Id     interface{} `json:"id" v:"required#省市区ID不能为空" dc:"省市区ID"`
 	g.Meta `path:"/provinces/delete" method:"post" tags:"省市区" summary:"删除省市区"`
+	sysin.ProvincesDeleteInp
 }
 type DeleteRes struct{}
 
 // MaxSortReq 最大排序
 type MaxSortReq struct {
-	Id     int64 `json:"id" dc:"省市区ID"`
-	g.Meta `path:"/provinces/max_sort" method:"get" tags:"省市区" summary:"省市区最大排序"`
+	g.Meta `path:"/provinces/maxSort" method:"get" tags:"省市区" summary:"省市区最大排序"`
 }
 type MaxSortRes struct {
-	Sort int `json:"sort" dc:"排序"`
+	*sysin.ProvincesMaxSortModel
 }
 
 // StatusReq 更新状态
@@ -66,3 +65,31 @@ type StatusReq struct {
 	g.Meta `path:"/provinces/status" method:"post" tags:"省市区" summary:"更新省市区状态"`
 }
 type StatusRes struct{}
+
+// TreeReq 关系树选项列表
+type TreeReq struct {
+	g.Meta `path:"/provinces/tree" tags:"省市区" method:"get" summary:"省市区关系树选项列表"`
+}
+type TreeRes struct {
+	List []map[string]interface{} `json:"list"   dc:"数据列表"`
+}
+
+// ChildrenListReq 获取省市区下级列表
+type ChildrenListReq struct {
+	g.Meta `path:"/provinces/childrenList" method:"get" tags:"省市区" summary:"获取省市区下级列表"`
+	sysin.ProvincesChildrenListInp
+}
+
+type ChildrenListRes struct {
+	List []*sysin.ProvincesChildrenListModel `json:"list"   dc:"数据列表"`
+	form.PageRes
+}
+
+// UniqueIdReq 地区ID是否唯一
+type UniqueIdReq struct {
+	g.Meta `path:"/provinces/uniqueId" method:"get" tags:"省市区" summary:"地区ID是否唯一"`
+	sysin.ProvincesUniqueIdInp
+}
+type UniqueIdRes struct {
+	*sysin.ProvincesUniqueIdModel
+}

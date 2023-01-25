@@ -20,7 +20,7 @@ type GroupListReq struct {
 	form.StatusReq
 	Title   string `json:"title"`
 	Content string `json:"content"`
-	g.Meta  `path:"/cron_group/list" method:"get" tags:"定时任务分组" summary:"获取定时任务分组列表"`
+	g.Meta  `path:"/cronGroup/list" method:"get" tags:"定时任务分组" summary:"获取定时任务分组列表"`
 }
 
 type GroupListRes struct {
@@ -31,7 +31,7 @@ type GroupListRes struct {
 // GroupViewReq 获取信息
 type GroupViewReq struct {
 	Id     int64 `json:"id" v:"required#定时任务分组ID不能为空" dc:"定时任务分组ID"`
-	g.Meta `path:"/cron_group/view" method:"get" tags:"定时任务分组" summary:"获取指定信息"`
+	g.Meta `path:"/cronGroup/view" method:"get" tags:"定时任务分组" summary:"获取指定信息"`
 }
 type GroupViewRes struct {
 	*sysin.CronGroupViewModel
@@ -40,21 +40,21 @@ type GroupViewRes struct {
 // GroupEditReq 修改/新增
 type GroupEditReq struct {
 	entity.SysCronGroup
-	g.Meta `path:"/cron_group/edit" method:"post" tags:"定时任务分组" summary:"修改/新增定时任务分组"`
+	g.Meta `path:"/cronGroup/edit" method:"post" tags:"定时任务分组" summary:"修改/新增定时任务分组"`
 }
 type GroupEditRes struct{}
 
 // GroupDeleteReq 删除
 type GroupDeleteReq struct {
 	Id     interface{} `json:"id" v:"required#定时任务分组ID不能为空" dc:"定时任务分组ID"`
-	g.Meta `path:"/cron_group/delete" method:"post" tags:"定时任务分组" summary:"删除定时任务分组"`
+	g.Meta `path:"/cronGroup/delete" method:"post" tags:"定时任务分组" summary:"删除定时任务分组"`
 }
 type GroupDeleteRes struct{}
 
 // GroupMaxSortReq 最大排序
 type GroupMaxSortReq struct {
 	Id     int64 `json:"id" dc:"定时任务分组ID"`
-	g.Meta `path:"/cron_group/max_sort" method:"get" tags:"定时任务分组" summary:"定时任务分组最大排序"`
+	g.Meta `path:"/cronGroup/max_sort" method:"get" tags:"定时任务分组" summary:"定时任务分组最大排序"`
 }
 type GroupMaxSortRes struct {
 	Sort int `json:"sort" dc:"排序"`
@@ -63,13 +63,13 @@ type GroupMaxSortRes struct {
 // GroupStatusReq 更新状态
 type GroupStatusReq struct {
 	entity.SysCronGroup
-	g.Meta `path:"/cron_group/status" method:"post" tags:"定时任务分组" summary:"更新定时任务分组状态"`
+	g.Meta `path:"/cronGroup/status" method:"post" tags:"定时任务分组" summary:"更新定时任务分组状态"`
 }
 type GroupStatusRes struct{}
 
 // GroupSelectReq 定时任务分组选项
 type GroupSelectReq struct {
-	g.Meta `path:"/cron_group/select" method:"get" tags:"定时任务分组" summary:"定时任务分组选项"`
+	g.Meta `path:"/cronGroup/select" method:"get" tags:"定时任务分组" summary:"定时任务分组选项"`
 }
 
 type GroupSelectRes sysin.DictTypeSelectModel

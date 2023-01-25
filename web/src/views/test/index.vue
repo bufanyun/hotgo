@@ -37,7 +37,7 @@
                 <PlusOutlined />
               </n-icon>
             </template>
-            新建
+            添加
           </n-button>
           <n-button
             type="error"

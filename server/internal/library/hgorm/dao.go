@@ -208,7 +208,7 @@ func IsUnique(ctx context.Context, dao interface{}, where g.Map, message string,
 // GenSubTree 生成下级关系树
 func GenSubTree(ctx context.Context, dao interface{}, oldPid int64) (newPid int64, newLevel int, subTree string, err error) {
 	// 顶级树
-	if oldPid == 0 {
+	if oldPid <= 0 {
 		return 0, 1, "", nil
 	}
 
@@ -221,7 +221,7 @@ func GenSubTree(ctx context.Context, dao interface{}, oldPid int64) (newPid int6
 		return 0, 0, "", err
 	}
 
-	models, err := d.Ctx(ctx).WhereNot(field, oldPid).One()
+	models, err := d.Ctx(ctx).Where(field, oldPid).One()
 	if err != nil {
 		return 0, 0, "", err
 	}

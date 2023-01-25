@@ -29,3 +29,11 @@ export function sendTestEmail(params) {
     params,
   });
 }
+
+export function sendTestSms(params) {
+  return http.request({
+    url: '/sms/sendTest',
+    method: 'post',
+    params,
+  });
+}

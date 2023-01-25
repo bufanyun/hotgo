@@ -18,7 +18,7 @@ export function Delete(params) {
   });
 }
 
-// 新建/编辑
+// 添加/编辑
 export function Edit(params) {
   return http.request({
     url: '/test/edit',

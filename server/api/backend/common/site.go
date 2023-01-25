@@ -32,12 +32,12 @@ type LoginReq struct {
 	g.Meta   `path:"/site/login" method:"post" tags:"后台基础" summary:"账号登录"`
 	Username string `json:"username" v:"required#用户名不能为空" dc:"用户名"`
 	Password string `json:"password" v:"required#密码不能为空" dc:"密码"`
-	//Cid      string `json:"cid" v:"required#验证码ID不能为空" dc:"验证码ID"`
-	//Code     string `json:"code" v:"required#验证码不能为空" dc:"验证码"`
-	//Device   string `json:"device"  dc:"登录设备"`
+	Cid      string `json:"cid"  dc:"验证码ID"`
+	Code     string `json:"code" dc:"验证码"`
+	IsLock   bool   `json:"isLock"  dc:"是否为锁屏状态"`
 }
 type LoginRes struct {
-	adminin.MemberLoginModel
+	*adminin.MemberLoginModel
 }
 
 // SiteConfigReq 获取配置

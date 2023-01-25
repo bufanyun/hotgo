@@ -63,7 +63,6 @@ func (s *sSysDictType) Tree(ctx context.Context) (list []g.Map, err error) {
 
 // Delete 删除
 func (s *sSysDictType) Delete(ctx context.Context, in sysin.DictTypeDeleteInp) error {
-
 	var (
 		models *entity.SysDictType
 	)
@@ -72,7 +71,7 @@ func (s *sSysDictType) Delete(ctx context.Context, in sysin.DictTypeDeleteInp) e
 		return err
 	}
 
-	if models.Id < 1 {
+	if models == nil {
 		return gerror.New("数据不存在或已删除！")
 	}
 

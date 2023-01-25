@@ -19,6 +19,7 @@ import (
 	"hotgo/internal/library/captcha"
 	"hotgo/internal/library/jwt"
 	"hotgo/internal/model/input/adminin"
+	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 )
 
@@ -60,26 +61,30 @@ func (c *cSite) getWsAddr(ctx context.Context) string {
 
 // Captcha 登录验证码
 func (c *cSite) Captcha(ctx context.Context, req *common.LoginCaptchaReq) (res *common.LoginCaptchaRes, err error) {
-
-	// 获取生成的验证码图片
-	Cid, Base64 := captcha.GetVerifyImgString(ctx)
-	res = &common.LoginCaptchaRes{Cid: Cid, Base64: Base64}
-
+	cid, base64 := captcha.Generate(ctx)
+	res = &common.LoginCaptchaRes{Cid: cid, Base64: base64}
 	return
 }
 
 // Login 提交登录
 func (c *cSite) Login(ctx context.Context, req *common.LoginReq) (res *common.LoginRes, err error) {
-
-	//// 校验 验证码
-	//if !captcha.VerifyString(req.Cid, req.Code) {
-	//	err = gerror.New("验证码错误")
-	//	return
-	//}
-	//
 	var in adminin.MemberLoginInp
 	if err = gconv.Scan(req, &in); err != nil {
 		return nil, err
+	}
+
+	defer func() {
+		var response = new(adminin.MemberLoginModel)
+		if res != nil && res.MemberLoginModel != nil {
+			response = res.MemberLoginModel
+		}
+		service.SysLoginLog().Push(ctx, sysin.LoginLogPushInp{Input: in, Response: response, Err: err})
+	}()
+
+	// 校验 验证码
+	if !req.IsLock && !captcha.Verify(req.Cid, req.Code) {
+		err = gerror.New("验证码错误")
+		return
 	}
 
 	model, err := service.AdminMember().Login(ctx, in)

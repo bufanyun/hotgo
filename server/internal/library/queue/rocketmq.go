@@ -26,8 +26,8 @@ type RocketMq struct {
 
 // rewriteLog 重写日志
 func rewriteLog() {
-	level := g.Cfg().MustGet(ctx, "queue.rocketmq.logLevel", "debug")
-	rlog.SetLogger(&RocketMqLogger{Flag: "[rocket_mq]", LevelLog: level.String()})
+	level := g.Cfg().MustGet(ctx, "queue.rocketmq.logLevel", "debug").String()
+	rlog.SetLogger(&RocketMqLogger{Flag: "[rocket_mq]", LevelLog: level})
 }
 
 // RegisterRocketProducerMust 注册并启动生产者接口实现

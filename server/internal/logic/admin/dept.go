@@ -9,11 +9,11 @@ package admin
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/hgorm"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/service"
@@ -47,8 +47,30 @@ func (s *sAdminDept) NameUnique(ctx context.Context, in adminin.DeptNameUniqueIn
 }
 
 // Delete 删除
-func (s *sAdminDept) Delete(ctx context.Context, in adminin.DeptDeleteInp) error {
-	_, err := dao.AdminDept.Ctx(ctx).Where("id", in.Id).Delete()
+func (s *sAdminDept) Delete(ctx context.Context, in adminin.DeptDeleteInp) (err error) {
+
+	var (
+		models *entity.AdminDept
+	)
+	err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Scan(&models)
+	if err != nil {
+		return err
+	}
+
+	if models == nil {
+		return gerror.New("数据不存在或已删除！")
+	}
+
+	pidExist, err := dao.AdminDept.Ctx(ctx).Where("pid", models.Id).One()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return err
+	}
+	if !pidExist.IsEmpty() {
+		return gerror.New("请先删除该部门下得所有子级！")
+	}
+
+	_, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Delete()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
@@ -75,8 +97,12 @@ func (s *sAdminDept) Edit(ctx context.Context, in adminin.DeptEditInp) (err erro
 		return err
 	}
 
+	in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, dao.AdminDept, in.Pid)
+	if err != nil {
+		return err
+	}
+
 	// 修改
-	in.UpdatedAt = gtime.Now()
 	if in.Id > 0 {
 		_, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Data(in).Update()
 		if err != nil {
@@ -88,7 +114,6 @@ func (s *sAdminDept) Edit(ctx context.Context, in adminin.DeptEditInp) (err erro
 	}
 
 	// 新增
-	in.CreatedAt = gtime.Now()
 	_, err = dao.AdminDept.Ctx(ctx).Data(in).Insert()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
@@ -156,11 +181,10 @@ func (s *sAdminDept) View(ctx context.Context, in adminin.DeptViewInp) (res *adm
 // List 获取列表
 func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (list adminin.DeptListModel, err error) {
 	var (
-		mod      = dao.AdminDept.Ctx(ctx)
-		models   []*entity.AdminDept
-		ids      []int64
-		pids     []int64
-		deptList []g.Map
+		mod    = dao.AdminDept.Ctx(ctx)
+		models []*entity.AdminDept
+		ids    []int64
+		pids   []int64
 	)
 
 	// 部门名称
@@ -207,25 +231,14 @@ func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (list adm
 		return list, err
 	}
 
-	for i := 0; i < len(models); i++ {
-		deptList = append(deptList, g.Map{
-			"index":      models[i].Id,
-			"key":        models[i].Id,
-			"label":      models[i].Name,
-			"id":         models[i].Id,
-			"pid":        models[i].Pid,
-			"name":       models[i].Name,
-			"code":       models[i].Code,
-			"leader":     models[i].Leader,
-			"phone":      models[i].Phone,
-			"email":      models[i].Email,
-			"sort":       models[i].Sort,
-			"created_at": models[i].CreatedAt,
-			"status":     models[i].Status,
-		})
+	list = gconv.SliceMap(models)
+	for k, v := range list {
+		list[k]["index"] = v["id"]
+		list[k]["key"] = v["id"]
+		list[k]["label"] = v["name"]
 	}
 
-	return tree.GenTree(deptList), nil
+	return tree.GenTree(list), nil
 }
 
 type DeptTree struct {

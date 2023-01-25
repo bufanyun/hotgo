@@ -58,7 +58,7 @@
             </n-space>
           </template>
           <div class="w-full menu">
-            <n-input type="input" v-model:value="pattern" placeholder="输入菜单名称搜索">
+            <n-input type="input" v-model:value="pattern" placeholder="输入字典名称搜索">
               <template #suffix>
                 <n-icon size="18" class="cursor-pointer">
                   <SearchOutlined />

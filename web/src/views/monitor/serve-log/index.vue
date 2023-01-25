@@ -1,199 +1,149 @@
 <template>
-  <n-card :bordered="false" class="proCard">
-    <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset">
-      <template #statusSlot="{ model, field }">
-        <n-input v-model:value="model[field]" />
-      </template>
-    </BasicForm>
+  <div>
+    <n-card :bordered="false" class="proCard">
+      <div class="n-layout-page-header">
+        <n-card :bordered="false" title="服务日志">
+          在这里开发者可以快速定位服务端在运行时产生的重要日志，方便排查系统异常和日常运维
+        </n-card>
+      </div>
+      <BasicForm
+        @register="register"
+        @submit="reloadTable"
+        @reset="reloadTable"
+        @keyup.enter="reloadTable"
+        ref="searchFormRef"
+      >
+        <template #statusSlot="{ model, field }">
+          <n-input v-model:value="model[field]" />
+        </template>
+      </BasicForm>
 
-    <BasicTable
-      :openChecked="true"
-      :columns="columns"
-      :request="loadDataTable"
-      :row-key="(row) => row.id"
-      ref="actionRef"
-      :actionColumn="actionColumn"
-      @update:checked-row-keys="onCheckedRow"
-      :scroll-x="1090"
-    >
-      <template #tableTitle>
-        <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
-          <template #icon>
-            <n-icon>
-              <DeleteOutlined />
-            </n-icon>
-          </template>
-          批量删除
-        </n-button>
-      </template>
+      <BasicTable
+        :openChecked="true"
+        :columns="columns"
+        :request="loadDataTable"
+        :row-key="(row) => row.id"
+        ref="actionRef"
+        :actionColumn="actionColumn"
+        @update:checked-row-keys="onCheckedRow"
+        :scroll-x="1090"
+        :resizeHeightOffset="-10000"
+        size="small"
+      >
+        <template #tableTitle>
+          <n-button
+            type="error"
+            @click="handleBatchDelete"
+            :disabled="batchDeleteDisabled"
+            class="min-left-space"
+            v-if="hasPermission(['/serveLog/delete'])"
+          >
+            <template #icon>
+              <n-icon>
+                <DeleteOutlined />
+              </n-icon>
+            </template>
+            批量删除
+          </n-button>
+          <n-button
+            type="primary"
+            @click="handleExport"
+            class="min-left-space"
+            v-if="hasPermission(['/serveLog/delete'])"
+          >
+            <template #icon>
+              <n-icon>
+                <ExportOutlined />
+              </n-icon>
+            </template>
+            导出
+          </n-button>
+        </template>
+      </BasicTable>
 
-      <template #toolbar>
-        <n-button type="primary" @click="reloadTable">系统刷新数据</n-button>
-      </template>
-    </BasicTable>
-  </n-card>
+      <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" style="width: 920px">
+        <n-card
+          :bordered="false"
+          title="日志内容"
+          class="proCard mt-4"
+          size="small"
+          :segmented="{ content: true }"
+        >
+          <n-alert type="error" :show-icon="false">
+            {{ preview?.content }}
+          </n-alert>
+        </n-card>
+
+        <n-card
+          :bordered="false"
+          class="proCard mt-4"
+          size="small"
+          :segmented="{ content: true }"
+          title="堆栈打印"
+        >
+          <JsonViewer
+            :value="JSON.parse(preview?.stack)"
+            :expand-depth="10"
+            sort
+            style="width: 100%; min-width: 3.125rem"
+          />
+        </n-card>
+        <template #action>
+          <n-space>
+            <n-button @click="() => (showModal = false)">关闭</n-button>
+          </n-space>
+        </template>
+      </n-modal>
+    </n-card>
+  </div>
 </template>
 
 <script lang="ts" setup>
   import { h, reactive, ref } from 'vue';
   import { useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
-  import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { getLogList, Delete } from '@/api/log/log';
-  import { columns } from './columns';
+  import { BasicForm, useForm } from '@/components/Form/index';
+  import { usePermission } from '@/hooks/web/usePermission';
+  import { List, Export, Delete } from '@/api/serveLog';
+  import { State, columns, schemas } from './model';
+  import { ExportOutlined, DeleteOutlined } from '@vicons/antd';
   import { useRouter } from 'vue-router';
-  import { DeleteOutlined } from '@vicons/antd';
+  import { JsonViewer } from 'vue3-json-viewer';
+  import 'vue3-json-viewer/dist/index.css';
 
+  const { hasPermission } = usePermission();
+  const router = useRouter();
+  const actionRef = ref();
   const dialog = useDialog();
+  const message = useMessage();
+  const searchFormRef = ref<any>({});
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
-
-  const schemas: FormSchema[] = [
-    {
-      field: 'member_id',
-      component: 'NInput',
-      label: '操作人员',
-      componentProps: {
-        placeholder: '请输入操作人员ID',
-        onInput: (e: any) => {
-          console.log(e);
-        },
-      },
-      rules: [{ trigger: ['blur'] }],
-    },
-    {
-      field: 'url',
-      component: 'NInput',
-      label: '访问路径',
-      componentProps: {
-        placeholder: '请输入手机访问路径',
-        onInput: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'ip',
-      component: 'NInput',
-      label: '访问IP',
-      componentProps: {
-        placeholder: '请输入IP地址',
-        onInput: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'method',
-      component: 'NSelect',
-      label: '请求方式',
-      componentProps: {
-        placeholder: '请选择请求方式',
-        options: [
-          {
-            label: 'GET',
-            value: 'GET',
-          },
-          {
-            label: 'POST',
-            value: 'POST',
-          },
-        ],
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'created_at',
-      component: 'NDatePicker',
-      label: '访问时间',
-      componentProps: {
-        type: 'datetimerange',
-        clearable: true,
-        // defaultValue: [new Date() - 86400000 * 30, new Date()],
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'take_up_time',
-      component: 'NSelect',
-      label: '请求耗时',
-      componentProps: {
-        placeholder: '请选择请求耗时',
-        options: [
-          {
-            label: '50ms内',
-            value: '50',
-          },
-          {
-            label: '100ms内',
-            value: '100',
-          },
-          {
-            label: '200ms内',
-            value: '200',
-          },
-          {
-            label: '500ms内',
-            value: '500',
-          },
-        ],
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'error_code',
-      component: 'NSelect',
-      label: '状态码',
-      componentProps: {
-        placeholder: '请选择状态码',
-        options: [
-          {
-            label: '0 成功',
-            value: '0',
-          },
-          {
-            label: '-1 失败',
-            value: '-1',
-          },
-        ],
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-  ];
-
-  const router = useRouter();
-  const message = useMessage();
-  const actionRef = ref();
-  const formParams = ref({});
-
-  const params = ref({
-    pageSize: 10,
-  });
+  const showModal = ref(false);
+  const formParams = ref<State>();
 
   const actionColumn = reactive({
-    width: 220,
+    width: 300,
     title: '操作',
     key: 'action',
-    fixed: 'right',
+    // fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',
         actions: [
           {
-            label: '查看详情',
-            onClick: handleEdit.bind(null, record),
+            label: '详细报错',
+            onClick: handleStack.bind(null, record),
+          },
+          {
+            label: '访问日志',
+            onClick: handleView.bind(null, record),
+            ifShow: record.sysLogId > 0,
           },
           {
             label: '删除',
             onClick: handleDelete.bind(null, record),
+            auth: ['/serveLog/delete'],
           },
         ],
       });
@@ -206,15 +156,28 @@
     schemas,
   });
 
-  function onCheckedRow(rowKeys) {
-    console.log(rowKeys);
-    if (rowKeys.length > 0) {
-      batchDeleteDisabled.value = false;
-    } else {
-      batchDeleteDisabled.value = true;
-    }
+  const loadDataTable = async (res) => {
+    return await List({ ...searchFormRef.value?.formModel, ...res });
+  };
 
+  function onCheckedRow(rowKeys) {
+    batchDeleteDisabled.value = rowKeys.length <= 0;
     checkedIds.value = rowKeys;
+  }
+
+  function reloadTable() {
+    actionRef.value.reload();
+  }
+
+  const preview = ref<Recordable>();
+  function handleStack(record: Recordable) {
+    console.log('handleStack record:' + JSON.stringify(record));
+    showModal.value = true;
+    preview.value = record;
+  }
+
+  function handleView(record: Recordable) {
+    router.push({ name: 'log_view', params: { id: record.sysLogId } });
   }
 
   function handleDelete(record: Recordable) {
@@ -225,7 +188,7 @@
       negativeText: '取消',
       onPositiveClick: () => {
         Delete(record).then((_res) => {
-          message.success('操作成功');
+          message.success('删除成功');
           reloadTable();
         });
       },
@@ -235,15 +198,15 @@
     });
   }
 
-  function batchDelete() {
+  function handleBatchDelete() {
     dialog.warning({
       title: '警告',
-      content: '你确定要删除？',
+      content: '你确定要批量删除？',
       positiveText: '确定',
       negativeText: '取消',
       onPositiveClick: () => {
         Delete({ id: checkedIds.value }).then((_res) => {
-          message.success('操作成功');
+          message.success('删除成功');
           reloadTable();
         });
       },
@@ -253,26 +216,9 @@
     });
   }
 
-  const loadDataTable = async (res) => {
-    return await getLogList({ ...formParams.value, ...params.value, ...res });
-  };
-
-  function reloadTable() {
-    actionRef.value.reload();
-  }
-
-  function handleEdit(record: Recordable) {
-    router.push({ name: 'serve_log_view', params: { id: record.id } });
-  }
-
-  function handleSubmit(values: Recordable) {
-    formParams.value = values;
-    reloadTable();
-  }
-
-  function handleReset(_values: Recordable) {
-    formParams.value = {};
-    reloadTable();
+  function handleExport() {
+    message.loading('正在导出列表...', { duration: 1200 });
+    Export(searchFormRef.value?.formModel);
   }
 </script>
 

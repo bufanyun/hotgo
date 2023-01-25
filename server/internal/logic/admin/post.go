@@ -78,7 +78,6 @@ func (s *sAdminPost) Edit(ctx context.Context, in adminin.PostEditInp) (err erro
 	}
 
 	// 修改
-	in.UpdatedAt = gtime.Now()
 	if in.Id > 0 {
 		_, err = dao.AdminPost.Ctx(ctx).Where("id", in.Id).Data(in).Update()
 		if err != nil {
@@ -90,7 +89,6 @@ func (s *sAdminPost) Edit(ctx context.Context, in adminin.PostEditInp) (err erro
 	}
 
 	// 新增
-	in.CreatedAt = gtime.Now()
 	_, err = dao.AdminPost.Ctx(ctx).Data(in).Insert()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
@@ -181,7 +179,7 @@ func (s *sAdminPost) List(ctx context.Context, in adminin.PostListInp) (list []*
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(in.Page, in.PerPage).Order("id asc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}

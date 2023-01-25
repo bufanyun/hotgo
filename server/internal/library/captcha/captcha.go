@@ -11,34 +11,53 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/mojocn/base64Captcha"
+	"image/color"
 )
 
-// GetVerifyImgString 生成验证码
-func GetVerifyImgString(ctx context.Context) (idKeyC string, base64stringC string) {
-	driver := &base64Captcha.DriverString{
-		Height: 80,
-		Width:  240,
-		//NoiseCount:      50,
-		//ShowLineOptions: 20,
-		Length: 4,
-		Source: "abcdefghjkmnpqrstuvwxyz23456789",
-		Fonts:  []string{"chromohv.ttf"},
+// Generate 生成验证码
+func Generate(ctx context.Context) (id string, base64 string) {
+	// 字符
+	//driver := &base64Captcha.DriverString{
+	//	Height: 42,
+	//	Width:  100,
+	//	//NoiseCount:      50,
+	//	//ShowLineOptions: 20,
+	//	Length: 4,
+	//	BgColor: &color.RGBA{
+	//		R: 255,
+	//		G: 250,
+	//		B: 250,
+	//		A: 250,
+	//	},
+	//	Source: "0123456789", // abcdefghjkmnpqrstuvwxyz23456789
+	//	Fonts:  []string{"chromohv.ttf"},
+	//}
+
+	// 计算
+	driver := &base64Captcha.DriverMath{
+		Height:          42,
+		Width:           100,
+		NoiseCount:      0,
+		ShowLineOptions: 0,
+		BgColor: &color.RGBA{
+			R: 255,
+			G: 250,
+			B: 250,
+			A: 250,
+		},
+		Fonts: []string{"chromohv.ttf"},
 	}
-	driver = driver.ConvertFonts()
-	store := base64Captcha.DefaultMemStore
-	c := base64Captcha.NewCaptcha(driver, store)
-	idKeyC, base64stringC, err := c.Generate()
+
+	c := base64Captcha.NewCaptcha(driver.ConvertFonts(), base64Captcha.DefaultMemStore)
+	id, base64, err := c.Generate()
 	if err != nil {
-		g.Log().Error(ctx, err)
+		g.Log().Errorf(ctx, "captcha.Generate err:%+v", err)
 	}
 	return
 }
 
-// VerifyString 验证输入的验证码是否正确
-func VerifyString(id, answer string) bool {
-	driver := new(base64Captcha.DriverString)
-	store := base64Captcha.DefaultMemStore
-	c := base64Captcha.NewCaptcha(driver, store)
-	answer = gstr.ToLower(answer)
-	return c.Verify(id, answer, true)
+// Verify 验证输入的验证码是否正确
+func Verify(id, answer string) bool {
+	c := base64Captcha.NewCaptcha(new(base64Captcha.DriverString), base64Captcha.DefaultMemStore)
+	return c.Verify(id, gstr.ToLower(answer), true)
 }

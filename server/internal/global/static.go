@@ -18,4 +18,6 @@ var (
 	SysType = runtime.GOOS
 	// MonitorData 监控数据
 	MonitorData model.MonitorData
+	// Blacklists 黑名单列表
+	Blacklists map[string]struct{}
 )

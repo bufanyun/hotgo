@@ -355,7 +355,6 @@
   import CreateDrawer from './CreateDrawer.vue';
   import IconSelector from '@/components/IconSelector/index.vue';
   import { State, newState } from '@/views/permission/menu/model';
-  import { validate } from '@/utils/validateUtil';
 
   const menuTypes = [
     {

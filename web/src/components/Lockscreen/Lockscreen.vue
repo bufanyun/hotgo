@@ -93,6 +93,7 @@
   import { useBattery } from '@/hooks/useBattery';
   import { useLockscreenStore } from '@/store/modules/lockscreen';
   import { useUserStore } from '@/store/modules/user';
+  import { aesEcb } from '@/utils/encrypt';
 
   export default defineComponent({
     name: 'Lockscreen',
@@ -140,7 +141,8 @@
         }
         const params = {
           isLock: true,
-          ...state.loginParams,
+          username: state.loginParams.username,
+          password: aesEcb.encrypt(state.loginParams.password),
         };
         state.loginLoading = true;
         const { code, message } = await userStore.login(params);

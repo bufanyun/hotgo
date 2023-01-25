@@ -20,6 +20,7 @@ export const columns = [
         }
       );
     },
+    width: 100,
   },
   {
     title: '操作人',
@@ -30,18 +31,22 @@ export const columns = [
       }
       return row.member_name + '(' + row.memberId + ')';
     },
+    width: 150,
   },
   {
     title: '请求方式',
     key: 'method',
+    width: 80,
   },
   {
     title: '请求路径',
     key: 'url',
+    width: 200,
   },
   {
     title: '访问IP',
     key: 'ip',
+    width: 150,
   },
   // {
   //   title: 'IP地区',
@@ -65,16 +70,19 @@ export const columns = [
         }
       );
     },
+    width: 150,
   },
   {
-    title: 'Goroutine耗时',
+    title: '处理耗时',
     key: 'takeUpTime',
     render(row) {
       return row.takeUpTime + ' ms';
     },
+    width: 120,
   },
   {
     title: '访问时间',
     key: 'createdAt',
+    width: 150,
   },
 ];

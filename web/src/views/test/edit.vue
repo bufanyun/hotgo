@@ -4,7 +4,7 @@
       v-model:show="isShowModal"
       :show-icon="false"
       preset="dialog"
-      :title="params?.id > 0 ? '编辑 #' + params?.id : '新建'"
+      :title="params?.id > 0 ? '编辑 #' + params?.id : '添加'"
       :style="{
         width: dialogWidth,
       }"

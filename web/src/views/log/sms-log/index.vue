@@ -1,6 +1,7 @@
 <template>
   <n-card :bordered="false" class="proCard">
-    <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset">
+    <n-card :bordered="false" title="短信记录"> 你可以在这里查看到平台所有的短信发送记录 </n-card>
+    <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset" ref="searchFormRef">
       <template #statusSlot="{ model, field }">
         <n-input v-model:value="model[field]" />
       </template>
@@ -26,35 +27,130 @@
           批量删除
         </n-button>
       </template>
-
-      <template #toolbar>
-        <n-button type="primary" @click="reloadTable">sms-log刷新数据</n-button>
-      </template>
     </BasicTable>
   </n-card>
 </template>
 
 <script lang="ts" setup>
   import { h, reactive, ref } from 'vue';
-  import { useDialog, useMessage } from 'naive-ui';
+  import { NTag, useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { getLogList, Delete } from '@/api/log/log';
-  import { columns } from './columns';
+  import { getLogList, Delete } from '@/api/log/smslog';
   import { useRouter } from 'vue-router';
   import { DeleteOutlined } from '@vicons/antd';
+  import { Dicts } from '@/api/dict/dict';
+  import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
+
+  const options = ref<Options>({
+    config_sms_template: [],
+  });
+
+  const columns = [
+    {
+      title: 'ID',
+      key: 'id',
+      width: 100,
+    },
+    {
+      title: '事件模板',
+      key: 'event',
+      render(row) {
+        return h(
+          NTag,
+          {
+            style: {
+              marginRight: '6px',
+            },
+            type: getOptionTag(options.value.config_sms_template, row.event),
+            bordered: false,
+          },
+          {
+            default: () => getOptionLabel(options.value.config_sms_template, row.event),
+          }
+        );
+      },
+      width: 150,
+    },
+    {
+      title: '手机号',
+      key: 'mobile',
+      render(row) {
+        return row.mobile;
+      },
+      width: 180,
+    },
+    {
+      title: '验证码或短信内容',
+      key: 'code',
+      width: 200,
+    },
+    {
+      title: '验证次数',
+      key: 'times',
+      width: 100,
+    },
+    {
+      title: '发送者IP',
+      key: 'ip',
+      width: 200,
+    },
+    {
+      title: '状态码',
+      key: 'status',
+      render(row) {
+        return h(
+          NTag,
+          {
+            style: {
+              marginRight: '6px',
+            },
+            type: row.status == 2 ? 'success' : 'warning',
+            bordered: false,
+          },
+          {
+            default: () => (row.status == 2 ? '已使用' : '未使用'),
+          }
+        );
+      },
+      width: 100,
+    },
+    {
+      title: '发送时间',
+      key: 'createdAt',
+      width: 180,
+    },
+    {
+      title: '更新时间',
+      key: 'updatedAt',
+      width: 180,
+    },
+  ];
 
   const dialog = useDialog();
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
+  const searchFormRef = ref<any>({});
 
-  const schemas: FormSchema[] = [
+  const schemas = ref<FormSchema[]>([
     {
-      field: 'member_id',
-      component: 'NInput',
-      label: '操作人员',
+      field: 'event',
+      component: 'NSelect',
+      label: '事件模板',
       componentProps: {
-        placeholder: '请输入操作人员ID',
+        placeholder: '请选择事件模板',
+        options: [],
+        onUpdateValue: (e: any) => {
+          console.log(e);
+        },
+      },
+    },
+    {
+      field: 'mobile',
+      component: 'NInput',
+      label: '手机号',
+      componentProps: {
+        placeholder: '请输入手机号',
         onInput: (e: any) => {
           console.log(e);
         },
@@ -62,104 +158,30 @@
       rules: [{ trigger: ['blur'] }],
     },
     {
-      field: 'url',
-      component: 'NInput',
-      label: '访问路径',
-      componentProps: {
-        placeholder: '请输入手机访问路径',
-        onInput: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
       field: 'ip',
       component: 'NInput',
-      label: '访问IP',
+      label: '发送者IP',
       componentProps: {
-        placeholder: '请输入IP地址',
+        placeholder: '请输入IP',
         onInput: (e: any) => {
           console.log(e);
         },
       },
     },
     {
-      field: 'method',
-      component: 'NSelect',
-      label: '请求方式',
-      componentProps: {
-        placeholder: '请选择请求方式',
-        options: [
-          {
-            label: 'GET',
-            value: 'GET',
-          },
-          {
-            label: 'POST',
-            value: 'POST',
-          },
-        ],
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'created_at',
-      component: 'NDatePicker',
-      label: '访问时间',
-      componentProps: {
-        type: 'datetimerange',
-        clearable: true,
-        // defaultValue: [new Date() - 86400000 * 30, new Date()],
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'take_up_time',
-      component: 'NSelect',
-      label: '请求耗时',
-      componentProps: {
-        placeholder: '请选择请求耗时',
-        options: [
-          {
-            label: '50ms内',
-            value: '50',
-          },
-          {
-            label: '100ms内',
-            value: '100',
-          },
-          {
-            label: '200ms内',
-            value: '200',
-          },
-          {
-            label: '500ms内',
-            value: '500',
-          },
-        ],
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'error_code',
+      field: 'status',
       component: 'NSelect',
       label: '状态码',
       componentProps: {
         placeholder: '请选择状态码',
         options: [
           {
-            label: '0 成功',
-            value: '0',
+            label: '未使用',
+            value: '1',
           },
           {
-            label: '-1 失败',
-            value: '-1',
+            label: '已使用',
+            value: '2',
           },
         ],
         onUpdateValue: (e: any) => {
@@ -167,30 +189,21 @@
         },
       },
     },
-  ];
+  ]);
 
   const router = useRouter();
   const message = useMessage();
   const actionRef = ref();
-  const formParams = ref({});
-
-  const params = ref({
-    pageSize: 10,
-  });
 
   const actionColumn = reactive({
     width: 220,
     title: '操作',
     key: 'action',
-    fixed: 'right',
+    // fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',
         actions: [
-          {
-            label: '查看详情',
-            onClick: handleEdit.bind(null, record),
-          },
           {
             label: '删除',
             onClick: handleDelete.bind(null, record),
@@ -207,6 +220,7 @@
   });
 
   function onCheckedRow(rowKeys) {
+    console.log(rowKeys);
     if (rowKeys.length > 0) {
       batchDeleteDisabled.value = false;
     } else {
@@ -217,19 +231,25 @@
   }
 
   function handleDelete(record: Recordable) {
+    console.log('点击了删除', record);
     dialog.warning({
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '取消',
+      negativeText: '不确定',
       onPositiveClick: () => {
-        Delete(record).then((_res) => {
-          message.success('操作成功');
-          reloadTable();
-        });
+        Delete(record)
+          .then((_res) => {
+            console.log('_res:' + JSON.stringify(_res));
+            message.success('操作成功');
+            reloadTable();
+          })
+          .catch((e: Error) => {
+            // message.error(e.message ?? '操作失败');
+          });
       },
       onNegativeClick: () => {
-        // message.error('取消');
+        // message.error('不确定');
       },
     });
   }
@@ -239,10 +259,11 @@
       title: '警告',
       content: '你确定要删除？',
       positiveText: '确定',
-      negativeText: '取消',
+      negativeText: '不确定',
       onPositiveClick: () => {
         Delete({ id: checkedIds.value })
           .then((_res) => {
+            console.log('_res:' + JSON.stringify(_res));
             message.success('操作成功');
             reloadTable();
           })
@@ -251,13 +272,14 @@
           });
       },
       onNegativeClick: () => {
-        // message.error('取消');
+        // message.error('不确定');
       },
     });
   }
 
   const loadDataTable = async (res) => {
-    return await getLogList({ ...formParams.value, ...params.value, ...res });
+    await loadOptions();
+    return await getLogList({ ...searchFormRef.value?.formModel, ...res });
   };
 
   function reloadTable() {
@@ -265,18 +287,31 @@
   }
 
   function handleEdit(record: Recordable) {
+    console.log('点击了编辑', record);
     router.push({ name: 'sms_view', params: { id: record.id } });
   }
 
   function handleSubmit(values: Recordable) {
-    formParams.value = values;
+    console.log(values);
     reloadTable();
   }
 
   function handleReset(values: Recordable) {
     console.log(values);
-    formParams.value = {};
     reloadTable();
+  }
+
+  async function loadOptions() {
+    options.value = await Dicts({
+      types: ['config_sms_template'],
+    });
+    for (const item of schemas.value) {
+      switch (item.field) {
+        case 'event':
+          item.componentProps.options = options.value.config_sms_template;
+          break;
+      }
+    }
   }
 </script>
 
