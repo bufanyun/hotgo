@@ -39,3 +39,66 @@ export function View(params) {
     params,
   });
 }
+
+// 获取最大排序
+export function MaxSort() {
+  return http.request({
+    url: '/notice/maxSort',
+    method: 'GET',
+  });
+}
+
+export function EditNotify(params) {
+  return http.request({
+    url: '/notice/editNotify',
+    method: 'POST',
+    params,
+  });
+}
+
+export function EditNotice(params) {
+  return http.request({
+    url: '/notice/editNotice',
+    method: 'POST',
+    params,
+  });
+}
+
+export function EditLetter(params) {
+  return http.request({
+    url: '/notice/editLetter',
+    method: 'POST',
+    params,
+  });
+}
+
+export function ReadAll(params) {
+  return http.request({
+    url: '/notice/readAll',
+    method: 'POST',
+    params,
+  });
+}
+
+export function PullMessages() {
+  return http.request({
+    url: '/notice/pullMessages',
+    method: 'get',
+  });
+}
+
+export function UpRead(params) {
+  return http.request({
+    url: '/notice/upRead',
+    method: 'POST',
+    params,
+  });
+}
+
+export function MessageList(params) {
+  return http.request({
+    url: '/notice/messageList',
+    method: 'get',
+    params,
+  });
+}

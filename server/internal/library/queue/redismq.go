@@ -146,25 +146,23 @@ func (r *RedisMq) loopReadQueue(queueName string) (mqMsgList []MqMsg) {
 	return mqMsgList
 }
 
-func RegisterRedisMqProducerMust(connOpt RedisOption, poolOpt PoolOption, groupName string, retry int) (client MqProducer) {
-	var err error
+func RegisterRedisMqProducer(connOpt RedisOption, poolOpt PoolOption, groupName string, retry int) (client MqProducer, err error) {
 	client, err = RegisterRedisMq(connOpt, poolOpt, groupName, retry)
 	if err != nil {
-		g.Log().Fatal(ctx, "RegisterRedisMqProducerMust err:%+v", err)
+		err = gerror.Newf("RegisterRedisMqProducer err:%+v", err)
 		return
 	}
-	return client
+	return
 }
 
-// RegisterRedisMqConsumerMust 注册消费者
-func RegisterRedisMqConsumerMust(connOpt RedisOption, poolOpt PoolOption, groupName string) (client MqConsumer) {
-	var err error
+// RegisterRedisMqConsumer 注册消费者
+func RegisterRedisMqConsumer(connOpt RedisOption, poolOpt PoolOption, groupName string) (client MqConsumer, err error) {
 	client, err = RegisterRedisMq(connOpt, poolOpt, groupName, 0)
 	if err != nil {
-		g.Log().Fatal(ctx, "RegisterRedisMqConsumerMust err:%+v", err)
+		err = gerror.Newf("RegisterRedisMqConsumer err:%+v", err)
 		return
 	}
-	return client
+	return
 }
 
 // RegisterRedisMq 注册redis实例
@@ -200,12 +198,12 @@ func registerRedis(host, pass string, dbNum int, opt PoolOption) (poolName strin
 			return nil, err
 		}
 		if pass != "" {
-			if _, err := conn.Do("AUTH", pass); err != nil {
+			if _, err = conn.Do("AUTH", pass); err != nil {
 				return nil, err
 			}
 		}
 		if dbNum > 0 {
-			if _, err := conn.Do("SELECT", dbNum); err != nil {
+			if _, err = conn.Do("SELECT", dbNum); err != nil {
 				return nil, err
 			}
 		}
@@ -270,19 +268,20 @@ func getRedis(poolName string, retry int) (db redis.Conn, put func(), err error)
 	if err != nil {
 		return nil, put, err
 	}
+
 	put = func() {
-		redisPool.Put(conn)
+		if err = redisPool.Put(conn); err != nil {
+			return
+		}
 	}
 
 	db = conn.(redis.Conn)
 	return db, put, nil
 }
 
-func getRandMsgId() (msgId string) {
+func getRandMsgId() string {
 	rand.Seed(time.Now().UnixNano())
 	radium := rand.Intn(999) + 1
 	timeCode := time.Now().UnixNano()
-
-	msgId = fmt.Sprintf("%d%.4d", timeCode, radium)
-	return msgId
+	return fmt.Sprintf("%d%.4d", timeCode, radium)
 }

@@ -118,7 +118,16 @@ func (l *gCurd) initInput(ctx context.Context, in *CurdPreviewInput) (err error)
 
 	initStep(ctx, in)
 	in.options.dictMap = make(g.Map)
-	in.options.TemplateGroup = "sys"
+
+	if len(in.Config.Application.Crud.Templates)-1 < in.In.GenTemplate {
+		return gerror.New("没有找到生成模板的配置，请检查！")
+	}
+
+	err = checkCurdPath(in.Config.Application.Crud.Templates[in.In.GenTemplate])
+	if err != nil {
+		return
+	}
+	in.options.TemplateGroup = in.Config.Application.Crud.Templates[in.In.GenTemplate].MasterPackage
 	return
 }
 
@@ -137,14 +146,14 @@ func initStep(ctx context.Context, in *CurdPreviewInput) {
 	in.options.Step.HasMenu = gstr.InArray(in.options.AutoOps, "genMenuPermissions")
 }
 
-func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) error {
+func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) (err error) {
 	view := gview.New()
-	err := view.SetConfigWithMap(g.Map{
-		"Paths":      "./resource/template/generate/default/curd",
+	err = view.SetConfigWithMap(g.Map{
+		"Paths":      in.Config.Application.Crud.Templates[in.In.GenTemplate].TemplatePath,
 		"Delimiters": in.Config.Delimiters,
 	})
 	if err != nil {
-		return err
+		return
 	}
 
 	view.BindFuncMap(g.Map{
@@ -156,7 +165,7 @@ func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) error {
 
 	dictOptions, err := l.generateWebModelDictOptions(ctx, in)
 	if err != nil {
-		return err
+		return
 	}
 
 	view.Assigns(gview.Params{
@@ -174,13 +183,13 @@ func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) error {
 		"dictOptions":   dictOptions,                                                 // web字典选项
 	})
 	in.view = view
-	return nil
+	return
 }
 
 func (l *gCurd) DoBuild(ctx context.Context, in *CurdBuildInput) (err error) {
 	preview, err := l.DoPreview(ctx, in.PreviewIn)
 	if err != nil {
-		return err
+		return
 	}
 
 	// 前置操作
@@ -307,7 +316,7 @@ func (l *gCurd) generateApiContent(ctx context.Context, in *CurdPreviewInput) (e
 		return err
 	}
 
-	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[0].ApiPath, strings.ToLower(in.In.VarName), strings.ToLower(in.In.VarName)+".go")
+	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].ApiPath, strings.ToLower(in.In.VarName), strings.ToLower(in.In.VarName)+".go")
 	genFile.Meth = consts.GenCodesBuildMethCreate
 	if gfile.Exists(genFile.Path) {
 		genFile.Meth = consts.GenCodesBuildMethSkip
@@ -338,7 +347,7 @@ func (l *gCurd) generateInputContent(ctx context.Context, in *CurdPreviewInput) 
 	if err != nil {
 		return err
 	}
-	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[0].InputPath, convert.CamelCaseToUnderline(in.In.VarName)+".go")
+	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].InputPath, convert.CamelCaseToUnderline(in.In.VarName)+".go")
 	genFile.Meth = consts.GenCodesBuildMethCreate
 	if gfile.Exists(genFile.Path) {
 		genFile.Meth = consts.GenCodesBuildMethSkip
@@ -364,7 +373,7 @@ func (l *gCurd) generateControllerContent(ctx context.Context, in *CurdPreviewIn
 	if err != nil {
 		return err
 	}
-	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[0].ControllerPath, convert.CamelCaseToUnderline(in.In.VarName)+".go")
+	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].ControllerPath, convert.CamelCaseToUnderline(in.In.VarName)+".go")
 	genFile.Meth = consts.GenCodesBuildMethCreate
 	if gfile.Exists(genFile.Path) {
 		genFile.Meth = consts.GenCodesBuildMethSkip
@@ -394,7 +403,7 @@ func (l *gCurd) generateLogicContent(ctx context.Context, in *CurdPreviewInput) 
 	if err != nil {
 		return err
 	}
-	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[0].LogicPath, convert.CamelCaseToUnderline(in.In.VarName)+".go")
+	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].LogicPath, convert.CamelCaseToUnderline(in.In.VarName)+".go")
 	genFile.Meth = consts.GenCodesBuildMethCreate
 	if gfile.Exists(genFile.Path) {
 		genFile.Meth = consts.GenCodesBuildMethSkip
@@ -420,7 +429,7 @@ func (l *gCurd) generateRouterContent(ctx context.Context, in *CurdPreviewInput)
 		return err
 	}
 
-	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[0].RouterPath, convert.CamelCaseToUnderline(in.In.VarName)+".go")
+	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].RouterPath, convert.CamelCaseToUnderline(in.In.VarName)+".go")
 	genFile.Meth = consts.GenCodesBuildMethCreate
 	if gfile.Exists(genFile.Path) {
 		genFile.Meth = consts.GenCodesBuildMethSkip
@@ -446,7 +455,7 @@ func (l *gCurd) generateWebApiContent(ctx context.Context, in *CurdPreviewInput)
 		return err
 	}
 
-	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[0].WebApiPath, gstr.LcFirst(in.In.VarName), "index.ts")
+	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].WebApiPath, gstr.LcFirst(in.In.VarName), "index.ts")
 	genFile.Meth = consts.GenCodesBuildMethCreate
 	if gfile.Exists(genFile.Path) {
 		genFile.Meth = consts.GenCodesBuildMethSkip
@@ -477,7 +486,7 @@ func (l *gCurd) generateWebModelContent(ctx context.Context, in *CurdPreviewInpu
 		return err
 	}
 
-	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[0].WebViewsPath, gstr.LcFirst(in.In.VarName), "model.ts")
+	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].WebViewsPath, gstr.LcFirst(in.In.VarName), "model.ts")
 	genFile.Meth = consts.GenCodesBuildMethCreate
 	if gfile.Exists(genFile.Path) {
 		genFile.Meth = consts.GenCodesBuildMethSkip
@@ -507,7 +516,7 @@ func (l *gCurd) generateWebIndexContent(ctx context.Context, in *CurdPreviewInpu
 		return err
 	}
 
-	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[0].WebViewsPath, gstr.LcFirst(in.In.VarName), "index.vue")
+	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].WebViewsPath, gstr.LcFirst(in.In.VarName), "index.vue")
 	genFile.Meth = consts.GenCodesBuildMethCreate
 	if gfile.Exists(genFile.Path) {
 		genFile.Meth = consts.GenCodesBuildMethSkip
@@ -538,7 +547,7 @@ func (l *gCurd) generateWebEditContent(ctx context.Context, in *CurdPreviewInput
 		return err
 	}
 
-	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[0].WebViewsPath, gstr.LcFirst(in.In.VarName), "edit.vue")
+	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].WebViewsPath, gstr.LcFirst(in.In.VarName), "edit.vue")
 	genFile.Meth = consts.GenCodesBuildMethCreate
 	if gfile.Exists(genFile.Path) {
 		genFile.Meth = consts.GenCodesBuildMethSkip
@@ -573,7 +582,7 @@ func (l *gCurd) generateWebViewContent(ctx context.Context, in *CurdPreviewInput
 		return err
 	}
 
-	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[0].WebViewsPath, gstr.LcFirst(in.In.VarName), "view.vue")
+	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].WebViewsPath, gstr.LcFirst(in.In.VarName), "view.vue")
 	genFile.Meth = consts.GenCodesBuildMethCreate
 	if gfile.Exists(genFile.Path) {
 		genFile.Meth = consts.GenCodesBuildMethSkip
@@ -609,7 +618,7 @@ func (l *gCurd) generateSqlContent(ctx context.Context, in *CurdPreviewInput) (e
 		tplData["mainComponent"] = "ParentLayout" //gstr.LcFirst(in.In.VarName)
 	}
 
-	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[0].SqlPath, convert.CamelCaseToUnderline(in.In.VarName)+"_menu.sql")
+	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].SqlPath, convert.CamelCaseToUnderline(in.In.VarName)+"_menu.sql")
 	genFile.Meth = consts.GenCodesBuildMethCreate
 	if gfile.Exists(genFile.Path) {
 		genFile.Meth = consts.GenCodesBuildMethSkip

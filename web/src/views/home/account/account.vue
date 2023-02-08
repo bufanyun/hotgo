@@ -1,8 +1,8 @@
 <template>
   <div>
-    <n-grid :x-gap="24">
+    <n-grid cols="24 300:1 600:24" :x-gap="24">
       <n-grid-item span="6">
-        <n-card :bordered="false" size="small" class="proCard">
+        <n-card :bordered="false" class="proCard">
           <n-thing
             class="thing-cell"
             v-for="item in typeTabList"
@@ -19,6 +19,7 @@
         <n-card :bordered="false" size="small" :title="typeTitle" class="proCard">
           <BasicSetting v-if="type === 1" />
           <SafetySetting v-if="type === 2" />
+          <CashSetting v-if="type === 3" />
         </n-card>
       </n-grid-item>
     </n-grid>
@@ -28,6 +29,7 @@
   import { ref } from 'vue';
   import BasicSetting from './BasicSetting.vue';
   import SafetySetting from './SafetySetting.vue';
+  import CashSetting from './CashSetting.vue';
 
   const typeTabList = [
     {
@@ -37,8 +39,13 @@
     },
     {
       name: '安全设置',
-      desc: '密码，邮箱等设置',
+      desc: '密码、手机号、邮箱等设置',
       key: 2,
+    },
+    {
+      name: '提现设置',
+      desc: '提现收款账号支付宝设置',
+      key: 3,
     },
   ];
 

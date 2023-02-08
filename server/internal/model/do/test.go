@@ -39,6 +39,7 @@ type Test struct {
 	Mobile      interface{} // 手机号码
 	Hobby       *gjson.Json // 爱好
 	Channel     interface{} // 渠道
+	CityId      interface{} // 所在城市
 	Pid         interface{} // 上级ID
 	Level       interface{} // 树等级
 	Tree        interface{} // 关系树

@@ -15,6 +15,7 @@ import (
 	"hotgo/internal/library/hggen/internal/cmd"
 	"hotgo/internal/library/hggen/internal/cmd/gendao"
 	"hotgo/internal/library/hggen/views"
+	"hotgo/internal/model"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
@@ -49,11 +50,33 @@ func TableColumns(ctx context.Context, in sysin.GenCodesColumnListInp) (fields [
 func TableSelects(ctx context.Context, in sysin.GenCodesSelectsInp) (res *sysin.GenCodesSelectsModel, err error) {
 	res = new(sysin.GenCodesSelectsModel)
 	for k, v := range consts.GenCodesTypeNameMap {
-		res.GenType = append(res.GenType, &form.Select{
-			Value: k,
-			Name:  v,
-			Label: v,
-		})
+		row := &sysin.GenTypeSelect{
+			Value:     k,
+			Name:      v,
+			Label:     v,
+			Templates: make(form.Selects, 0),
+		}
+
+		confName, ok := consts.GenCodesTypeConfMap[k]
+		if ok {
+			var temps []*model.GenerateAppCrudTemplate
+			err = g.Cfg().MustGet(ctx, "hggen.application."+confName+".templates").Scan(&temps)
+			if err != nil {
+				return
+			}
+			if len(temps) > 0 {
+				for index, temp := range temps {
+					row.Templates = append(row.Templates, &form.Select{
+						Value: index,
+						Label: temp.Group,
+						Name:  temp.Group,
+					})
+				}
+				sort.Sort(row.Templates)
+			}
+		}
+
+		res.GenType = append(res.GenType, row)
 	}
 	sort.Sort(res.GenType)
 	res.Db = DbSelect(ctx)

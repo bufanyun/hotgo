@@ -73,5 +73,12 @@ module.exports = defineConfig({
         math: 'always',
       },
     ],
+    '@typescript-eslint/no-this-alias': [
+      'error',
+      {
+        allowDestructuring: false, // Disallow `const { props, state } = this`; true by default
+        allowedNames: ['that'], // Allow `const self = this`; `[]` by default
+      },
+    ],
   },
 });

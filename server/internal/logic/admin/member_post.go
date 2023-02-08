@@ -39,7 +39,7 @@ func (s *sAdminMemberPost) UpdatePostIds(ctx context.Context, member_id int64, p
 				PostId:   post_ids[i],
 			})
 		if err != nil {
-			err = gerror.Wrap(err, "插入会员岗位失败")
+			err = gerror.Wrap(err, "插入用户岗位失败")
 			return err
 		}
 	}
@@ -47,7 +47,7 @@ func (s *sAdminMemberPost) UpdatePostIds(ctx context.Context, member_id int64, p
 	return nil
 }
 
-// GetMemberByIds 获取指定会员的岗位ids
+// GetMemberByIds 获取指定用户的岗位ids
 func (s *sAdminMemberPost) GetMemberByIds(ctx context.Context, member_id int64) (post_ids []int64, err error) {
 	var list []*entity.AdminMemberPost
 	err = dao.AdminMemberPost.Ctx(ctx).

@@ -42,7 +42,7 @@ func (s *sMiddleware) AdminAuth(r *ghttp.Request) {
 
 	// 验证路由访问权限
 	if !service.AdminRole().Verify(ctx, path, r.Method) {
-		g.Log().Warningf(ctx, "AdminAuth fail path:%+v, GetRoleKey:%+v, r.Method:%+v", path, contexts.GetRoleKey(ctx), r.Method)
+		g.Log().Debugf(ctx, "AdminAuth fail path:%+v, GetRoleKey:%+v, r.Method:%+v", path, contexts.GetRoleKey(ctx), r.Method)
 		response.JsonExit(r, gcode.CodeSecurityReason.Code(), "你没有访问权限！")
 		return
 	}

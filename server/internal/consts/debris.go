@@ -10,5 +10,6 @@ package consts
 
 const (
 	DemoTips        = "演示系统已隐藏"
-	NilJsonToString = "{}" // 空json初始化值
+	NilJsonToString = "{}"  // 空json初始化值
+	RegionSpilt     = " / " // 地区分隔符
 )

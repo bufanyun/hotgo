@@ -54,7 +54,7 @@ type DeleteRes struct{}
 // MaxSortReq 最大排序
 type MaxSortReq struct {
 	Id     int64 `json:"id" dc:"定时任务ID"`
-	g.Meta `path:"/cron/max_sort" method:"get" tags:"定时任务" summary:"定时任务最大排序"`
+	g.Meta `path:"/cron/maxSort" method:"get" tags:"定时任务" summary:"定时任务最大排序"`
 }
 type MaxSortRes struct {
 	Sort int `json:"sort" dc:"排序"`

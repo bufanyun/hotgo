@@ -7,6 +7,7 @@
 package sysin
 
 import (
+	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
@@ -67,16 +68,35 @@ type GenCodesStatusModel struct{}
 type GenCodesSelectsInp struct {
 }
 type GenCodesSelectsModel struct {
-	GenType   form.Selects `json:"genType" dc:"生成类型"`
-	Db        form.Selects `json:"db" dc:"数据库选项"`
-	Status    form.Selects `json:"status" dc:"生成状态"`
-	LinkMode  form.Selects `json:"linkMode" dc:"关联表方式"`
-	BuildMeth form.Selects `json:"buildMeth" dc:"生成方式"`
+	GenType   GenTypeSelects `json:"genType" dc:"生成类型"`
+	Db        form.Selects   `json:"db" dc:"数据库选项"`
+	Status    form.Selects   `json:"status" dc:"生成状态"`
+	LinkMode  form.Selects   `json:"linkMode" dc:"关联表方式"`
+	BuildMeth form.Selects   `json:"buildMeth" dc:"生成方式"`
 	// 字段表格选项
 	FormMode  form.Selects        `json:"formMode" dc:"表单组件"`
 	FormRole  form.Selects        `json:"formRole" dc:"表单验证"`
 	DictMode  DictTreeSelectModel `json:"dictMode" dc:"字典类型"`
 	WhereMode form.Selects        `json:"whereMode" dc:"查询条件"`
+}
+
+type GenTypeSelects []*GenTypeSelect
+
+type GenTypeSelect struct {
+	Value     int          `json:"value"`
+	Label     string       `json:"label"`
+	Name      string       `json:"name"`
+	Templates form.Selects `json:"templates"`
+}
+
+func (p GenTypeSelects) Len() int {
+	return len(p)
+}
+func (p GenTypeSelects) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
+}
+func (p GenTypeSelects) Less(i, j int) bool {
+	return gconv.Int64(p[j].Value) > gconv.Int64(p[i].Value)
 }
 
 // GenCodesTableSelectInp 数据库表选项

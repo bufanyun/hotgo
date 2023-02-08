@@ -42,24 +42,23 @@ func (c *cMonitor) Offline(ctx context.Context, req *monitor.OfflineReq) (res *m
 		websocket.Close(client)
 	})
 
-	return res, nil
+	return
 }
 
 // View 获取指定信息
-func (c *cMonitor) View(ctx context.Context, req *monitor.OnlineViewReq) (*monitor.OnlineViewRes, error) {
-	return &monitor.OnlineViewRes{}, nil
+func (c *cMonitor) View(ctx context.Context, req *monitor.OnlineViewReq) (res *monitor.OnlineViewRes, err error) {
+	return
 }
 
 // OnlineList 获取在线列表
-func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (*monitor.OnlineListRes, error) {
+func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (res *monitor.OnlineListRes, err error) {
 	var (
-		res     monitor.OnlineListRes
 		clients []*monitor.OnlineModel
 		i       int
 	)
 
 	if c.wsManager.GetClientsLen() == 0 {
-		return &res, nil
+		return
 	}
 
 	for conn, _ := range c.wsManager.GetClients() {
@@ -90,6 +89,7 @@ func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (
 		})
 	}
 
+	res = new(monitor.OnlineListRes)
 	res.PageCount = form.CalPageCount(len(clients), req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
@@ -108,5 +108,5 @@ func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (
 		}
 	}
 
-	return &res, nil
+	return
 }

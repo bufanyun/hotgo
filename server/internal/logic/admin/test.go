@@ -18,6 +18,7 @@ import (
 	"hotgo/internal/dao"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/hgorm"
+	"hotgo/internal/library/hgorm/handler"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
@@ -37,13 +38,13 @@ func init() {
 }
 
 // Model Orm模型
-func (s *sAdminTest) Model(ctx context.Context) *gdb.Model {
-	return dao.Test.Ctx(ctx)
+func (s *sAdminTest) Model(ctx context.Context, option ...*handler.Option) *gdb.Model {
+	return handler.Model(dao.Test.Ctx(ctx), option...)
 }
 
 // List 获取列表
 func (s *sAdminTest) List(ctx context.Context, in adminin.TestListInp) (list []*adminin.TestListModel, totalCount int, err error) {
-	mod := dao.Test.Ctx(ctx)
+	mod := s.Model(ctx)
 
 	if in.Title != "" {
 		mod = mod.WhereLike(dao.Test.Columns().Title, "%"+in.Title+"%")
@@ -98,11 +99,11 @@ func (s *sAdminTest) List(ctx context.Context, in adminin.TestListInp) (list []*
 	totalCount, err = mod.Clone().Count(1)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
 	if totalCount == 0 {
-		return list, totalCount, nil
+		return
 	}
 
 	////关联表select
@@ -113,28 +114,27 @@ func (s *sAdminTest) List(ctx context.Context, in adminin.TestListInp) (list []*
 
 	fields, err := hgorm.GenSelect(ctx, adminin.TestListModel{}, dao.Test)
 	if err != nil {
-		return nil, 0, err
+		return
 	}
 
-	if err = mod.Fields(fields).Handler(hgorm.HandlerFilterAuth, hgorm.HandlerForceCache).Page(in.Page, in.PerPage).OrderAsc(dao.Test.Columns().Sort).OrderDesc(dao.Test.Columns().Id).Scan(&list); err != nil {
+	if err = mod.Fields(fields).Handler(handler.FilterAuth, handler.ForceCache).Page(in.Page, in.PerPage).OrderAsc(dao.Test.Columns().Sort).OrderDesc(dao.Test.Columns().Id).Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
-
-	return list, totalCount, err
+	return
 }
 
 // Export 导出
 func (s *sAdminTest) Export(ctx context.Context, in adminin.TestListInp) (err error) {
 	list, totalCount, err := s.List(ctx, in)
 	if err != nil {
-		return err
+		return
 	}
 
 	// 字段的排序是依据tags的字段顺序，如果你不想使用默认的排序方式，可以直接定义 tags = []string{"字段名称", "字段名称2", ...}
 	tags, err := convert.GetEntityDescTags(adminin.TestExportModel{})
 	if err != nil {
-		return err
+		return
 	}
 
 	var (
@@ -143,10 +143,10 @@ func (s *sAdminTest) Export(ctx context.Context, in adminin.TestListInp) (err er
 		exports   []adminin.TestExportModel
 	)
 
-	err = gconv.Scan(list, &exports)
-	if err != nil {
-		return err
+	if err = gconv.Scan(list, &exports); err != nil {
+		return
 	}
+
 	if err = excel.ExportByStructs(ctx, tags, exports, fileName, sheetName); err != nil {
 		return
 	}
@@ -156,70 +156,51 @@ func (s *sAdminTest) Export(ctx context.Context, in adminin.TestListInp) (err er
 // Edit 修改/新增
 func (s *sAdminTest) Edit(ctx context.Context, in adminin.TestEditInp) (err error) {
 	if err = hgorm.IsUnique(ctx, dao.Test, g.Map{dao.Test.Columns().Qq: in.Qq}, "QQ号码已存在，请换一个", in.Id); err != nil {
-		if err != nil {
-			return err
-		}
+		return
 	}
 
 	// 修改
 	if in.Id > 0 {
 		in.UpdatedBy = contexts.GetUserId(ctx)
-		_, err = dao.Test.Ctx(ctx).Where(dao.Test.Columns().Id, in.Id).Data(in).Update()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
-
-		return nil
+		_, err = s.Model(ctx).Where(dao.Test.Columns().Id, in.Id).Data(in).Update()
+		return
 	}
 
 	// 新增
 	in.CreatedBy = contexts.GetUserId(ctx)
-	_, err = dao.Test.Ctx(ctx).Data(in).Insert()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	_, err = s.Model(ctx, &handler.Option{FilterAuth: false}).Data(in).Insert()
+	return
 }
 
 // Delete 删除
 func (s *sAdminTest) Delete(ctx context.Context, in adminin.TestDeleteInp) (err error) {
-	_, err = dao.Test.Ctx(ctx).Where(dao.Test.Columns().Id, in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	_, err = s.Model(ctx).Where(dao.Test.Columns().Id, in.Id).Delete()
+	return
 }
 
 // Status 更新状态
 func (s *sAdminTest) Status(ctx context.Context, in adminin.TestStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
-		return err
+		return
 	}
 
 	if in.Status <= 0 {
 		err = gerror.New("状态不能为空")
-		return err
+		return
 	}
 
 	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
-		return err
+		return
 	}
 
 	// 修改
-	_, err = dao.Test.Ctx(ctx).Where(dao.Test.Columns().Id, in.Id).Data(dao.Test.Columns().Status, in.Status).Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	_, err = s.Model(ctx).Where(dao.Test.Columns().Id, in.Id).Data(g.Map{
+		dao.Test.Columns().Status:    in.Status,
+		dao.Test.Columns().UpdatedBy: contexts.GetUserId(ctx),
+	}).Update()
+	return
 }
 
 // Switch 更新开关状态
@@ -231,36 +212,34 @@ func (s *sAdminTest) Switch(ctx context.Context, in adminin.TestSwitchInp) (err 
 
 	if !validate.InSliceString(fields, in.Key) {
 		err = gerror.New("开关键名不在白名单")
-		return err
+		return
 	}
 
 	// 修改
-	_, err = dao.Test.Ctx(ctx).Where(dao.Test.Columns().Id, in.Id).Data(in.Key, in.Value).Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	_, err = s.Model(ctx).Where(dao.Test.Columns().Id, in.Id).Data(g.Map{
+		in.Key:                       in.Value,
+		dao.Test.Columns().UpdatedBy: contexts.GetUserId(ctx),
+	}).Update()
+	return
 }
 
 // MaxSort 最大排序
 func (s *sAdminTest) MaxSort(ctx context.Context, in adminin.TestMaxSortInp) (res *adminin.TestMaxSortModel, err error) {
 	if err = dao.Test.Ctx(ctx).Fields(dao.Test.Columns().Sort).OrderDesc(dao.Test.Columns().Sort).Scan(&res); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
+		return
 	}
 
-	res.Sort = res.Sort + g.Cfg().MustGet(ctx, "hotgo.admin.maxSortIncrement").Int()
-	return res, nil
+	if res == nil {
+		res = new(adminin.TestMaxSortModel)
+	}
+
+	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	return
 }
 
 // View 获取指定字典类型信息
 func (s *sAdminTest) View(ctx context.Context, in adminin.TestViewInp) (res *adminin.TestViewModel, err error) {
-	if err = dao.Test.Ctx(ctx).Where(dao.Test.Columns().Id, in.Id).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	return res, nil
+	err = s.Model(ctx).Where(dao.Test.Columns().Id, in.Id).Scan(&res)
+	return
 }

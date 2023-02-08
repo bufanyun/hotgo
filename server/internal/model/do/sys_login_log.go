@@ -19,6 +19,7 @@ type SysLoginLog struct {
 	Username  interface{} // 用户名
 	Response  *gjson.Json // 响应数据
 	LoginAt   *gtime.Time // 登录时间
+	LoginIp   interface{} // 登录IP
 	ErrMsg    interface{} // 错误提示
 	Status    interface{} // 状态
 	CreatedAt *gtime.Time // 创建时间

@@ -15,6 +15,7 @@ type SysGenCodes struct {
 	g.Meta        `orm:"table:hg_sys_gen_codes, do:true"`
 	Id            interface{} // 生成ID
 	GenType       interface{} // 生成类型
+	GenTemplate   interface{} // 生成模板
 	VarName       interface{} // 实体命名
 	Options       *gjson.Json // 配置选项
 	DbName        interface{} // 数据库名称

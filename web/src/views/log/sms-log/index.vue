@@ -1,34 +1,43 @@
 <template>
-  <n-card :bordered="false" class="proCard">
-    <n-card :bordered="false" title="短信记录"> 你可以在这里查看到平台所有的短信发送记录 </n-card>
-    <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset" ref="searchFormRef">
-      <template #statusSlot="{ model, field }">
-        <n-input v-model:value="model[field]" />
-      </template>
-    </BasicForm>
+  <div>
+    <div class="n-layout-page-header">
+      <n-card :bordered="false" title="短信记录"> 你可以在这里查看到平台所有的短信发送记录 </n-card>
+    </div>
+    <n-card :bordered="false" class="proCard">
+      <BasicForm
+        @register="register"
+        @submit="handleSubmit"
+        @reset="handleReset"
+        ref="searchFormRef"
+      >
+        <template #statusSlot="{ model, field }">
+          <n-input v-model:value="model[field]" />
+        </template>
+      </BasicForm>
 
-    <BasicTable
-      :openChecked="true"
-      :columns="columns"
-      :request="loadDataTable"
-      :row-key="(row) => row.id"
-      ref="actionRef"
-      :actionColumn="actionColumn"
-      @update:checked-row-keys="onCheckedRow"
-      :scroll-x="1090"
-    >
-      <template #tableTitle>
-        <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
-          <template #icon>
-            <n-icon>
-              <DeleteOutlined />
-            </n-icon>
-          </template>
-          批量删除
-        </n-button>
-      </template>
-    </BasicTable>
-  </n-card>
+      <BasicTable
+        :openChecked="true"
+        :columns="columns"
+        :request="loadDataTable"
+        :row-key="(row) => row.id"
+        ref="actionRef"
+        :actionColumn="actionColumn"
+        @update:checked-row-keys="onCheckedRow"
+        :scroll-x="1090"
+      >
+        <template #tableTitle>
+          <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
+            <template #icon>
+              <n-icon>
+                <DeleteOutlined />
+              </n-icon>
+            </template>
+            批量删除
+          </n-button>
+        </template>
+      </BasicTable>
+    </n-card>
+  </div>
 </template>
 
 <script lang="ts" setup>

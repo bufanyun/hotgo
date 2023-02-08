@@ -26,6 +26,7 @@ type SysLoginLogColumns struct {
 	Username  string // 用户名
 	Response  string // 响应数据
 	LoginAt   string // 登录时间
+	LoginIp   string // 登录IP
 	ErrMsg    string // 错误提示
 	Status    string // 状态
 	CreatedAt string // 创建时间
@@ -40,6 +41,7 @@ var sysLoginLogColumns = SysLoginLogColumns{
 	Username:  "username",
 	Response:  "response",
 	LoginAt:   "login_at",
+	LoginIp:   "login_ip",
 	ErrMsg:    "err_msg",
 	Status:    "status",
 	CreatedAt: "created_at",

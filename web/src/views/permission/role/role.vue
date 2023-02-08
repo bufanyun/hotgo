@@ -230,28 +230,30 @@
             label: '菜单权限',
             onClick: handleMenuAuth.bind(null, record),
             ifShow: () => {
-              return record.key !== 'super';
+              return record.id !== 1;
             },
+            type: 'default',
           },
           {
             label: '数据权限',
             onClick: handleDataAuth.bind(null, record),
             ifShow: () => {
-              return record.key !== 'super';
+              return record.id !== 1;
             },
+            type: 'default',
           },
           {
             label: '编辑',
             onClick: handleEdit.bind(null, record),
             ifShow: () => {
-              return record.key !== 'super';
+              return record.id !== 1;
             },
           },
           {
             label: '删除',
             onClick: handleDelete.bind(null, record),
             ifShow: () => {
-              return record.key !== 'super';
+              return record.id !== 1;
             },
           },
         ],

@@ -61,7 +61,6 @@ func GetServiceConfig() genservice.CGenServiceInput {
 }
 
 func GetDaoConfig(group string) gendao.CGenDaoInput {
-	inp := defaultGenDaoInput
 	find := func(group string) g.Map {
 		for _, v := range daoConfig {
 			if v.(g.Map)["group"].(string) == group {
@@ -72,9 +71,9 @@ func GetDaoConfig(group string) gendao.CGenDaoInput {
 	}
 
 	v := find(group)
+	inp := defaultGenDaoInput
 	if v != nil {
-		err := gconv.Scan(v, &inp)
-		if err != nil {
+		if err := gconv.Scan(v, &inp); err != nil {
 			panic(err)
 		}
 	}

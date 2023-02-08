@@ -7,3 +7,12 @@ export function GetCaptcha() {
     method: 'get',
   });
 }
+
+// 上传图片
+export function UploadImage(params) {
+  return http.request({
+    url: '/upload/image',
+    method: 'post',
+    params,
+  });
+}

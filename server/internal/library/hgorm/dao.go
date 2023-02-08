@@ -19,15 +19,6 @@ import (
 	"hotgo/utility/tree"
 )
 
-// GenJoinOnRelation 生成关联表关联条件
-func GenJoinOnRelation(masterTable, masterField, joinTable, alias, onField string) []string {
-	return []string{
-		joinTable,
-		alias,
-		fmt.Sprintf("`%s`.`%s` = `%s`.`%s`", alias, onField, masterTable, masterField),
-	}
-}
-
 type daoInstance interface {
 	Table() string
 	Ctx(ctx context.Context) *gdb.Model
@@ -38,6 +29,15 @@ type Join struct {
 	Dao    interface{}                // 关联表dao实例
 	Alias  string                     // 别名
 	fields map[string]*gdb.TableField // 表字段列表
+}
+
+// GenJoinOnRelation 生成关联表关联条件
+func GenJoinOnRelation(masterTable, masterField, joinTable, alias, onField string) []string {
+	return []string{
+		joinTable,
+		alias,
+		fmt.Sprintf("`%s`.`%s` = `%s`.`%s`", alias, onField, masterTable, masterField),
+	}
 }
 
 // GenJoinSelect 生成关联表select

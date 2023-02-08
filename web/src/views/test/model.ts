@@ -37,6 +37,7 @@ export interface State {
   email: string;
   mobile: string;
   channel: number;
+  cityId: number;
   hobby: string[] | null;
   pid: number;
   level: number;
@@ -75,6 +76,7 @@ export const defaultState = {
   email: '',
   mobile: '',
   channel: 0,
+  cityId: 0,
   hobby: null,
   pid: 0,
   level: 1,

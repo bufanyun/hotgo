@@ -2,8 +2,8 @@
   <div>
     <n-card :bordered="false" class="proCard">
       <div class="n-layout-page-header">
-        <n-card :bordered="false" title="生成演示列表">
-          <!--  这里有系统自动生成的CURD表格 -->
+        <n-card :bordered="false" title="生成演示">
+          <!--  这是系统自动生成的CURD表格，你可以将此行注释改为表格的描述 -->
         </n-card>
       </div>
       <BasicForm
@@ -62,7 +62,7 @@
             type="primary"
             @click="handleExport"
             class="min-left-space"
-            v-if="hasPermission(['/demoVar/export'])"
+            v-if="hasPermission(['/curdDemo/delete'])"
           >
             <template #icon>
               <n-icon>
@@ -89,9 +89,9 @@
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, useForm } from '@/components/Form/index';
   import { usePermission } from '@/hooks/web/usePermission';
-  import { Delete, List, Status, Export } from '@/api/curdDemo';
+  import { List, Export, Delete, Status } from '@/api/curdDemo';
   import { State, columns, schemas, options, newState } from './model';
-  import { DeleteOutlined, PlusOutlined, ExportOutlined } from '@vicons/antd';
+  import { PlusOutlined, ExportOutlined, DeleteOutlined } from '@vicons/antd';
   import { useRouter } from 'vue-router';
   import { getOptionLabel } from '@/utils/hotgo';
   import Edit from './edit.vue';

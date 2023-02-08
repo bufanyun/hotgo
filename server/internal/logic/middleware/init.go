@@ -151,22 +151,19 @@ func inspectAuth(r *ghttp.Request, appName string) error {
 	// 保存到上下文
 	if user != nil {
 		customCtx.User = &model.Identity{
-			Id:         user.Id,
-			Pid:        user.Pid,
-			DeptId:     user.DeptId,
-			RoleId:     user.RoleId,
-			RoleKey:    user.RoleKey,
-			Username:   user.Username,
-			RealName:   user.RealName,
-			Avatar:     user.Avatar,
-			Email:      user.Email,
-			Mobile:     user.Mobile,
-			VisitCount: user.VisitCount,
-			LastTime:   user.LastTime,
-			LastIp:     user.LastIp,
-			Exp:        user.Exp,
-			Expires:    user.Expires,
-			App:        user.App,
+			Id:       user.Id,
+			Pid:      user.Pid,
+			DeptId:   user.DeptId,
+			RoleId:   user.RoleId,
+			RoleKey:  user.RoleKey,
+			Username: user.Username,
+			RealName: user.RealName,
+			Avatar:   user.Avatar,
+			Email:    user.Email,
+			Mobile:   user.Mobile,
+			Exp:      user.Exp,
+			Expires:  user.Expires,
+			App:      user.App,
 		}
 	}
 	contexts.SetUser(ctx, customCtx.User)

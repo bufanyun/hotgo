@@ -26,7 +26,7 @@ export default {
     //最大上传图片大小
     maxSize: 10,
     //图片上传类型
-    imageType: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'image/svg+xml'],
+    imageType: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'image/svg+xml', 'image/webp'],
     //文件上传类型
     fileType: [
       // 图片
@@ -35,6 +35,7 @@ export default {
       'image/jpeg',
       'image/gif',
       'image/svg+xml',
+      'image/webp',
       // 文档
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

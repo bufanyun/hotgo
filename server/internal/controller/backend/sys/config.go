@@ -23,39 +23,26 @@ var (
 type cConfig struct{}
 
 // GetConfig 获取指定分组的配置
-func (c *cConfig) GetConfig(ctx context.Context, req *config.GetReq) (*config.GetRes, error) {
-	var (
-		in  sysin.GetConfigInp
-		res config.GetRes
-		err error
-	)
+func (c *cConfig) GetConfig(ctx context.Context, req *config.GetReq) (res *config.GetRes, err error) {
+	var in sysin.GetConfigInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	res.GetConfigModel, err = service.SysConfig().GetConfigByGroup(ctx, in)
-	if err != nil {
-		return nil, err
+		return
 	}
 
-	return &res, nil
+	res = new(config.GetRes)
+	res.GetConfigModel, err = service.SysConfig().GetConfigByGroup(ctx, in)
+	return
 }
 
 // UpdateConfig 更新指定分组的配置
-func (c *cConfig) UpdateConfig(ctx context.Context, req *config.UpdateReq) (*config.UpdateRes, error) {
-	var (
-		in  sysin.UpdateConfigInp
-		res config.UpdateRes
-		err error
-	)
+func (c *cConfig) UpdateConfig(ctx context.Context, req *config.UpdateReq) (res *config.UpdateRes, err error) {
+	var in sysin.UpdateConfigInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
-	if err = service.SysConfig().UpdateConfigByGroup(ctx, in); err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	err = service.SysConfig().UpdateConfigByGroup(ctx, in)
+	return
 }
 
 // TypeSelect 数据类型选项

@@ -2,8 +2,8 @@
   <div>
     <div class="n-layout-page-header">
       <n-card :bordered="false" title="菜单管理">
-        在这里可以管理编辑系统下的所有菜单导航和分配相应的菜单权限</n-card
-      >
+        在这里可以管理编辑系统下的所有菜单导航和分配相应的菜单权限
+      </n-card>
     </div>
     <n-grid class="mt-4" cols="1 s:1 m:1 l:3 xl:3 2xl:3" responsive="screen" :x-gap="12">
       <n-gi span="1">
@@ -19,6 +19,21 @@
                   </div>
                 </template>
                 添加菜单
+              </n-button>
+              <n-button
+                type="info"
+                icon-placement="left"
+                @click="openChildCreateDrawer"
+                :disabled="!isEditMenu"
+              >
+                <template #icon>
+                  <div class="flex items-center">
+                    <n-icon size="14">
+                      <PlusOutlined />
+                    </n-icon>
+                  </div>
+                </template>
+                添加子菜单
               </n-button>
               <n-button type="primary" icon-placement="left" @click="packHandle">
                 全部{{ expandedKeys.length ? '收起' : '展开' }}
@@ -72,11 +87,16 @@
                 <FormOutlined />
               </n-icon>
               <span>编辑菜单{{ treeItemTitle ? `：${treeItemTitle}` : '' }}</span>
-              <span style="font-size: 14px">{{
-                treeItemTitle ? '' : '从菜单列表选择一项后，进行编辑'
-              }}</span>
+              <span style="font-size: 14px">{{ treeItemTitle }}</span>
             </n-space>
           </template>
+
+          <n-result
+            v-show="!isEditMenu"
+            status="info"
+            title="提示"
+            description="从菜单列表中选择一项进行编辑"
+          />
           <n-form
             :model="formParams"
             :rules="rules"
@@ -137,8 +157,8 @@
                       </template>
                       请填写图标编码，可以参考图标库，也可以不填使用默认图标
                     </n-tooltip>
-                    菜单图标</template
-                  >
+                    菜单图标
+                  </template>
                 </n-form-item>
               </n-gi>
             </n-grid>
@@ -154,8 +174,8 @@
                       </template>
                       请路由地址，如：user
                     </n-tooltip>
-                    路由地址</template
-                  >
+                    路由地址
+                  </template>
                 </n-form-item>
               </n-gi>
               <n-gi>
@@ -169,8 +189,8 @@
                       对应路由配置文件中 `name` 只能是唯一性，配置 `http(s)://` 开头地址
                       则会新窗口打开
                     </n-tooltip>
-                    路由别名</template
-                  >
+                    路由别名
+                  </template>
                 </n-form-item>
               </n-gi>
             </n-grid>
@@ -181,16 +201,16 @@
                   <n-input placeholder="组件路径" v-model:value="formParams.component" />
                   <template #feedback>
                     主目录填 `LAYOUT`;多级父目录填
-                    `ParentLayout`;页面填具体的组件路径，如：`/system/menu/menu`</template
-                  >
+                    `ParentLayout`;页面填具体的组件路径，如：`/system/menu/menu`
+                  </template>
                 </n-form-item>
               </n-gi>
               <n-gi v-if="formParams.type === 1">
                 <n-form-item label="默认跳转" path="redirect">
                   <n-input placeholder="默认路由跳转地址" v-model:value="formParams.redirect" />
                   <template #feedback
-                    >默认跳转路由地址，如：`/system/menu/menu` 多级路由情况下适用</template
-                  >
+                    >默认跳转路由地址，如：`/system/menu/menu` 多级路由情况下适用
+                  </template>
                 </n-form-item>
               </n-gi>
             </n-grid>
@@ -211,8 +231,8 @@
                       </template>
                       请填写API路由地址，可同时作用于服务端和web端。多个权限用,分割
                     </n-tooltip>
-                    分配权限</template
-                  >
+                    分配权限
+                  </template>
                 </n-form-item>
               </n-gi>
               <!--              <n-gi>-->
@@ -354,7 +374,7 @@
   import { getTreeItem } from '@/utils';
   import CreateDrawer from './CreateDrawer.vue';
   import IconSelector from '@/components/IconSelector/index.vue';
-  import { State, newState } from '@/views/permission/menu/model';
+  import { newState, State } from '@/views/permission/menu/model';
 
   const menuTypes = [
     {
@@ -455,14 +475,20 @@
   function openCreateDrawer() {
     drawerTitle.value = '添加菜单';
     const { openDrawer } = createDrawerRef.value;
-    openDrawer();
+    openDrawer(0);
+  }
+
+  function openChildCreateDrawer() {
+    drawerTitle.value = '添加菜单';
+    const { openDrawer } = createDrawerRef.value;
+    openDrawer(formParams.id);
   }
 
   function selectedTree(keys) {
     if (keys.length) {
       const treeItem = getTreeItem(unref(treeData), keys[0]);
       treeItemKey.value = keys;
-      treeItemTitle.value = treeItem.label;
+      treeItemTitle.value = treeItem.label + ' #' + treeItem.id;
       Object.assign(formParams, treeItem);
       isEditMenu.value = true;
     } else {

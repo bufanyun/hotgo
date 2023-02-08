@@ -14,8 +14,8 @@ import (
 	"hotgo/internal/service"
 )
 
-// GlobalLog 访问日志
-func (s *sHook) GlobalLog(r *ghttp.Request) {
+// AccessLog 访问日志
+func (s *sHook) AccessLog(r *ghttp.Request) {
 	var (
 		ctx = r.Context()
 	)
@@ -31,7 +31,7 @@ func (s *sHook) GlobalLog(r *ghttp.Request) {
 
 	go func() {
 		if err := service.SysLog().AutoLog(ctx); err != nil {
-			g.Log().Info(ctx, "GlobalLog AutoLog err:", err)
+			g.Log().Info(ctx, "hook AccessLog err:", err)
 		}
 	}()
 }

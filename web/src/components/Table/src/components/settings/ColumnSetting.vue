@@ -215,7 +215,6 @@
       }
       //勾选列
       function onSelection(e) {
-        console.log('onSelection:' + JSON.stringify(e));
         let checkList = table.getCacheColumns();
         if (e) {
           checkList.unshift({ type: 'selection', key: 'selection' });

@@ -49,15 +49,15 @@ type LoginLogListModel struct {
 	Status           int         `json:"status"           dc:"状态"`
 	CreatedAt        *gtime.Time `json:"createdAt"        dc:"创建时间"`
 	UpdatedAt        *gtime.Time `json:"updatedAt"        dc:"修改时间"`
-	SysLogId         int64       `json:"sysLogId"     dc:"日志ID"`
+	SysLogId         int64       `json:"sysLogId"         dc:"日志ID"`
 	SysLogIp         string      `json:"sysLogIp"         dc:"IP地址"`
 	SysLogProvinceId int64       `json:"sysLogProvinceId" dc:"省编码"`
 	SysLogCityId     int64       `json:"sysLogCityId"     dc:"市编码"`
 	SysLogErrorCode  int         `json:"sysLogErrorCode"  dc:"报错code"`
 	SysLogUserAgent  string      `json:"sysLogUserAgent"  dc:"UA信息"`
-	Region           string      `json:"region" dc:"地区"`
-	Os               string      `json:"os"  dc:"系统信息"`
-	Browser          string      `json:"browser"  dc:"浏览器信息"`
+	CityLabel        string      `json:"cityLabel"        dc:"城市标签"`
+	Os               string      `json:"os"               dc:"系统信息"`
+	Browser          string      `json:"browser"          dc:"浏览器信息"`
 }
 
 func (in *LoginLogListInp) Filter(ctx context.Context) (err error) {

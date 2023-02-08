@@ -38,12 +38,9 @@ func GenerateLoginToken(ctx context.Context, user *model.Identity, isRefresh boo
 			"avatar":     user.Avatar,
 			"email":      user.Email,
 			"mobile":     user.Mobile,
-			"lastTime":   user.LastTime,
-			"lastIp":     user.LastIp,
 			"exp":        user.Exp,
 			"expires":    user.Expires,
 			"app":        user.App,
-			"visitCount": user.VisitCount,
 			"isRefresh":  isRefresh,
 			"jwtVersion": jwtVersion.String(),
 		})

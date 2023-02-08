@@ -23,6 +23,7 @@ import (
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/service"
+	"hotgo/utility/convert"
 	"hotgo/utility/tree"
 )
 
@@ -369,13 +370,8 @@ func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (lists rol
 	return
 }
 
-// LoginPermissions 获取登录成功后的细分权限
-func (s *sAdminMenu) LoginPermissions(ctx context.Context, memberId int64) (lists []*adminin.MemberLoginPermissions, err error) {
-	// 空跑
-	lists = append(lists, &adminin.MemberLoginPermissions{
-		Value: "value",
-	})
-
+// LoginPermissions 获取登录成功后的细粒度权限
+func (s *sAdminMenu) LoginPermissions(ctx context.Context, memberId int64) (lists adminin.MemberLoginPermissions, err error) {
 	type Permissions struct {
 		Permissions string `json:"permissions"`
 	}
@@ -401,17 +397,18 @@ func (s *sAdminMenu) LoginPermissions(ctx context.Context, memberId int64) (list
 		return lists, err
 	}
 
+	// 无权限
 	if len(allPermissions) == 0 {
+		lists = append(lists, "value")
 		return
 	}
 
 	for _, v := range allPermissions {
 		for _, p := range gstr.Explode(`,`, v.Permissions) {
-			lists = append(lists, &adminin.MemberLoginPermissions{
-				Value: p,
-			})
+			lists = append(lists, p)
 		}
 	}
 
+	lists = convert.UniqueSliceString(lists)
 	return
 }

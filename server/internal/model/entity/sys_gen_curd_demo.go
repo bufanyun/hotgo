@@ -17,6 +17,7 @@ type SysGenCurdDemo struct {
 	Content     string      `json:"content"     description:"内容"`
 	Image       string      `json:"image"       description:"单图"`
 	Attachfile  string      `json:"attachfile"  description:"附件"`
+	CityId      int64       `json:"cityId"      description:"所在城市"`
 	Switch      int         `json:"switch"      description:"显示开关"`
 	Sort        int         `json:"sort"        description:"排序"`
 	Status      int         `json:"status"      description:"状态"`

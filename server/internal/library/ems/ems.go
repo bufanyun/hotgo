@@ -19,24 +19,6 @@ func Send(config *model.EmailConfig, to string, subject string, body string) err
 	return sendToMail(config, to, subject, body, "html")
 }
 
-// SendTestMail 发送测试邮件
-func SendTestMail(config *model.EmailConfig, to string) error {
-	subject := "这是一封来自HotGo的测试邮件"
-	body := `
-		<!DOCTYPE html>
-		<html lang="en">
-		<head>
-			<meta charset="iso-8859-15">
-			<title>这是一封来自HotGo的测试邮件</title>
-		</head>
-		<body>
-			当你收到这封邮件的时候，说明已经联调成功了，恭喜你！
-		</body>
-		</html>`
-
-	return Send(config, to, subject, body)
-}
-
 func sendToMail(config *model.EmailConfig, to, subject, body, mailType string) error {
 
 	if config == nil {

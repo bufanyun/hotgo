@@ -3,8 +3,8 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-// @AutoGenerate Version 2.1.0
-// @AutoGenerate Date 2023-01-18 15:19:42
+// @AutoGenerate Version 2.1.2
+// @AutoGenerate Date 2023-02-08 17:47:32
 //
 package sys
 
@@ -164,6 +164,5 @@ func (c *cCurdDemo) Switch(ctx context.Context, req *curddemo.SwitchReq) (res *c
 	if err = service.SysCurdDemo().Switch(ctx, in); err != nil {
 		return nil, err
 	}
-
 	return res, nil
 }

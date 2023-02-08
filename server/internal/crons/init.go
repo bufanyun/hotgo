@@ -134,9 +134,28 @@ func StartALL(sysCron []*entity.SysCron) error {
 	return nil
 }
 
+// RefreshStatus 刷新状态
+func RefreshStatus(sysCron *entity.SysCron) (err error) {
+	if sysCron == nil {
+		return
+	}
+	g.DumpWithType(sysCron)
+
+	if sysCron.Status == consts.StatusEnabled {
+		return Start(sysCron)
+	}
+
+	return Stop(sysCron)
+}
+
 // Stop 停止单个任务
-func Stop(sysCron *entity.SysCron) error {
-	return nil
+func Stop(sysCron *entity.SysCron) (err error) {
+	cr := gcron.Search(sysCron.Name)
+	if cr == nil {
+		return
+	}
+	cr.Stop()
+	return
 }
 
 // Once 立即执行一次某个任务
@@ -152,15 +171,31 @@ func Once(ctx context.Context, sysCron *entity.SysCron) error {
 }
 
 // Delete 删除任务
-func Delete(sysCron *entity.SysCron) error {
-	// ...
+func Delete(sysCron *entity.SysCron) (err error) {
+	if sysCron == nil {
+		return
+	}
+	for _, v := range gcron.Entries() {
+		if v.Name == sysCron.Name {
+			gcron.Remove(v.Name)
+		}
 
-	return Stop(sysCron)
+	}
+	return
 }
 
 // Start 启动单个任务
-func Start(sysCron *entity.SysCron) error {
-	return nil
+func Start(sysCron *entity.SysCron) (err error) {
+	if sysCron == nil {
+		return
+	}
+	cr := gcron.Search(sysCron.Name)
+	if cr != nil {
+		cr.Start()
+		return
+	}
+
+	return StartALL([]*entity.SysCron{sysCron})
 }
 
 // Add 添加任务

@@ -15,7 +15,7 @@ import (
 
 // ListReq 查询列表
 type ListReq struct {
-	g.Meta  `path:"/genCodes/list" method:"get" tags:"生成代码" summary:"获取生成代码列表"`
+	g.Meta `path:"/genCodes/list" method:"get" tags:"生成代码" summary:"获取生成代码列表"`
 	sysin.GenCodesListInp
 }
 
@@ -52,7 +52,7 @@ type DeleteRes struct{}
 // MaxSortReq 最大排序
 type MaxSortReq struct {
 	Id     int64 `json:"id" dc:"生成代码ID"`
-	g.Meta `path:"/genCodes/max_sort" method:"get" tags:"生成代码" summary:"生成代码最大排序"`
+	g.Meta `path:"/genCodes/maxSort" method:"get" tags:"生成代码" summary:"生成代码最大排序"`
 }
 type MaxSortRes struct {
 	Sort int `json:"sort" dc:"排序"`

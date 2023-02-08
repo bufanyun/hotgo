@@ -22,73 +22,61 @@ var (
 
 type cRole struct{}
 
-// RoleMemberList 获取角色下的会员列表
-func (c *cRole) RoleMemberList(ctx context.Context, req *role.MemberListReq) (*role.MemberListRes, error) {
-
+// RoleMemberList 获取角色下的用户列表
+func (c *cRole) RoleMemberList(ctx context.Context, req *role.MemberListReq) (res *role.MemberListRes, err error) {
 	var in adminin.RoleMemberListInp
-	if err := gconv.Scan(req, &in); err != nil {
-		return nil, err
+	if err = gconv.Scan(req, &in); err != nil {
+		return
 	}
+
 	list, totalCount, err := service.AdminMember().RoleMemberList(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	var res role.MemberListRes
+	res = new(role.MemberListRes)
 	res.List = list
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.PerPage = req.Page
 	res.PerPage = req.PerPage
-
-	return &res, nil
+	return
 }
 
 // List 获取列表
-func (c *cRole) List(ctx context.Context, req *role.ListReq) (*role.ListRes, error) {
+func (c *cRole) List(ctx context.Context, req *role.ListReq) (res *role.ListRes, err error) {
 	var in adminin.RoleListInp
-	if err := gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	list, totalCount, err := service.AdminRole().List(ctx, in)
-	if err != nil {
-		return nil, err
+	if err = gconv.Scan(req, &in); err != nil {
+		return
 	}
 
-	var res role.ListRes
+	list, totalCount, err := service.AdminRole().List(ctx, in)
+	if err != nil {
+		return
+	}
+
+	res = new(role.ListRes)
 	res.List = list
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-
-	return &res, nil
+	return
 }
 
 // Edit 修改角色
 func (c *cRole) Edit(ctx context.Context, req *role.EditReq) (res *role.EditRes, err error) {
 	err = service.AdminRole().Edit(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
+	return
 }
 
 // Delete 删除
 func (c *cRole) Delete(ctx context.Context, req *role.DeleteReq) (res *role.DeleteRes, err error) {
-
-	if err = service.AdminRole().Delete(ctx, req); err != nil {
-		return nil, err
-	}
-	return res, nil
+	err = service.AdminRole().Delete(ctx, req)
+	return
 }
 
 // Dynamic 动态路由
 func (c *cRole) Dynamic(ctx context.Context, req *role.DynamicReq) (res role.DynamicRes, err error) {
-
-	res, err = service.AdminMenu().GetMenuList(ctx, contexts.GetUserId(ctx))
-	if err != nil {
-		return res, err
-	}
-	return res, nil
+	return service.AdminMenu().GetMenuList(ctx, contexts.GetUserId(ctx))
 }
 
 // GetPermissions 获取指定角色权限
@@ -97,23 +85,21 @@ func (c *cRole) GetPermissions(ctx context.Context, req *role.GetPermissionsReq)
 	if err != nil {
 		return nil, err
 	}
+
 	res = &role.GetPermissionsRes{
 		MenuIds: []int64{},
 	}
+
 	if MenuIds != nil {
 		res.MenuIds = MenuIds
 	}
-
 	return res, nil
 }
 
 // UpdatePermissions 修改角色菜单权限
 func (c *cRole) UpdatePermissions(ctx context.Context, req *role.UpdatePermissionsReq) (res *role.UpdatePermissionsRes, err error) {
 	err = service.AdminRole().UpdatePermissions(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
+	return
 }
 
 // DataScopeSelect 获取数据权限选项
@@ -121,21 +107,17 @@ func (c *cRole) DataScopeSelect(ctx context.Context, req *role.DataScopeSelectRe
 	data := service.AdminRole().DataScopeSelect(ctx)
 	res = new(role.DataScopeSelectRes)
 	res.List = data
-	return res, nil
+	return
 }
 
 // DataScopeEdit 获取数据权限选项
 func (c *cRole) DataScopeEdit(ctx context.Context, req *role.DataScopeEditReq) (res *role.DataScopeEditRes, err error) {
 	var in adminin.DataScopeEditInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	in.CustomDept = req.CustomDept
 	err = service.AdminRole().DataScopeEdit(ctx, &in)
-	if err != nil {
-		return nil, err
-	}
-
-	return res, nil
+	return
 }

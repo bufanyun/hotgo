@@ -22,7 +22,7 @@
         <n-form-item label="上级目录" path="pid">
           <n-tree-select
             :options="optionTreeData"
-            default-value="0"
+            :default-value="formParams.pid"
             @update:value="handleUpdateValue"
           />
         </n-form-item>
@@ -284,7 +284,7 @@
       },
     },
     emits: ['loadData'],
-    setup(_props, context) {
+    setup(props, context) {
       const message = useMessage();
       const formRef: any = ref(null);
       const state = reactive<any>({
@@ -317,12 +317,16 @@
         },
       };
 
-      function openDrawer() {
+      function openDrawer(pid: number) {
         if (document.body.clientWidth < 700) {
           state.width = document.body.clientWidth;
         }
         state.isDrawer = true;
         state.formParams = newState(null);
+        state.formParams.pid = pid;
+        if (pid > 0) {
+          state.formParams.type = 2;
+        }
       }
 
       function closeDrawer() {

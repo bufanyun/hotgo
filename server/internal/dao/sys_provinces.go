@@ -5,10 +5,6 @@
 package dao
 
 import (
-	"context"
-	"github.com/gogf/gf/v2/container/gvar"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"hotgo/internal/consts"
 	"hotgo/internal/dao/internal"
 )
 
@@ -29,38 +25,3 @@ var (
 )
 
 // Fill with you ideas below.
-
-// GetRegion 获取省市编码对应的地区名称
-func (dao *sysProvincesDao) GetRegion(ctx context.Context, province int64, city int64, spilt ...string) (string, error) {
-	var (
-		provinceName *gvar.Var
-		cityName     *gvar.Var
-		err          error
-	)
-
-	// 分隔符
-	spiltSymbol := "-"
-	if len(spilt) > 0 {
-		spiltSymbol = spilt[0]
-	}
-
-	if province > 0 && province < 999999 {
-		provinceName, err = dao.Ctx(ctx).Where("id", province).Fields("title").Value()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return "", err
-		}
-
-		if city > 0 {
-			cityName, err = dao.Ctx(ctx).Where("id", city).Fields("title").Value()
-			if err != nil {
-				err = gerror.Wrap(err, consts.ErrorORM)
-				return "", err
-			}
-		}
-	} else {
-		return "内网IP", nil
-	}
-
-	return provinceName.String() + spiltSymbol + cityName.String(), nil
-}

@@ -93,16 +93,22 @@
           placement="bottom"
           v-if="item.icon === 'BellOutlined'"
           trigger="click"
-          :width="300"
+          :width="getIsMobile ? 276 : 420"
         >
           <template #trigger>
-            <n-badge :value="notificationStore.messages.length" :max="99" processing>
-              <n-icon size="18">
-                <BellOutlined />
-              </n-icon>
-            </n-badge>
+            <n-tooltip placement="bottom">
+              <template #trigger>
+                <n-badge :value="notificationStore.getUnreadCount()" :max="99" processing>
+                  <n-icon size="18">
+                    <BellOutlined />
+                  </n-icon>
+                </n-badge>
+              </template>
+              <span>{{ item.tips }}</span>
+            </n-tooltip>
           </template>
-          <PopoverMessage />
+
+          <SystemMessage />
         </n-popover>
 
         <div v-else>
@@ -131,12 +137,8 @@
       <div class="layout-header-trigger layout-header-trigger-min">
         <n-dropdown trigger="hover" @select="avatarSelect" :options="avatarOptions">
           <div class="avatar">
-            <n-avatar round>
-              {{ username }}
-              <template #icon>
-                <UserOutlined />
-              </template>
-            </n-avatar>
+            <n-avatar v-if="userStore.avatar" round :size="30" :src="userStore.avatar" />
+            <n-avatar v-else round :size="30">{{ userStore.realName }}</n-avatar>
           </div>
         </n-dropdown>
       </div>
@@ -162,7 +164,17 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, toRefs, ref, computed, unref, watch, h } from 'vue';
+  import {
+    defineComponent,
+    reactive,
+    toRefs,
+    ref,
+    computed,
+    unref,
+    watch,
+    h,
+    onMounted,
+  } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
   import components from './components';
   import {
@@ -170,8 +182,11 @@
     useDialog,
     useMessage,
     NAvatar,
+    NTag,
+    NIcon,
     useNotification,
     NotificationReactive,
+    NButton,
   } from 'naive-ui';
   import { TABS_ROUTES } from '@/store/mutation-types';
   import { useUserStore } from '@/store/modules/user';
@@ -180,13 +195,19 @@
   import { AsideMenu } from '@/layout/components/Menu';
   import { useProjectSetting } from '@/hooks/setting/useProjectSetting';
   import { NotificationsOutline as NotificationsIcon } from '@vicons/ionicons5';
-  import PopoverMessage from './PopoverMessage.vue';
+  import SystemMessage from './SystemMessage.vue';
   import { notificationStoreWidthOut } from '@/store/modules/notification';
-  import notificationImg from '@/assets/images/notification.png';
+  import { getIcon } from '@/enums/systemMessageEnum';
 
   export default defineComponent({
     name: 'PageHeader',
-    components: { ...components, NDialogProvider, ProjectSetting, AsideMenu, PopoverMessage },
+    components: {
+      ...components,
+      NDialogProvider,
+      ProjectSetting,
+      AsideMenu,
+      SystemMessage,
+    },
     props: {
       collapsed: {
         type: Boolean,
@@ -201,15 +222,21 @@
       const useLockscreen = useLockscreenStore();
       const message = useMessage();
       const dialog = useDialog();
-      const { getNavMode, getNavTheme, getHeaderSetting, getMenuSetting, getCrumbsSetting } =
-        useProjectSetting();
+      const {
+        getNavMode,
+        getNavTheme,
+        getHeaderSetting,
+        getMenuSetting,
+        getCrumbsSetting,
+        getIsMobile,
+      } = useProjectSetting();
 
-      const { username } = userStore?.info || {};
-
+      // const { username, avatar } = userStore?.info || {};
       const drawerSetting = ref();
 
       const state = reactive({
-        username: username || '',
+        // username: username || '',
+        // avatar: avatar || '',
         fullscreenIcon: 'FullscreenOutlined',
         navMode: getNavMode,
         navTheme: getNavTheme,
@@ -334,7 +361,7 @@
         },
         {
           icon: 'BellOutlined',
-          tips: '系统消息',
+          tips: '我的消息',
         },
         {
           icon: 'LockOutlined',
@@ -359,7 +386,7 @@
       const avatarSelect = (key) => {
         switch (key) {
           case 1:
-            router.push({ name: 'setting_account' });
+            router.push({ name: 'home_account' });
             break;
           case 2:
             doLogout();
@@ -373,38 +400,84 @@
       }
 
       const notification = useNotification();
-
       const getMessages = computed(() => {
-        return notificationStore.messages;
+        return notificationStore.newMessage;
       });
       const nRef = ref<NotificationReactive | null>(null);
       // 监听新消息，推送通知
       watch(
         getMessages,
         (newVal, _oldVal) => {
-          if (newVal[0] !== undefined) {
-            let message = newVal[0];
-            nRef.value = notification.create({
-              title: message.title,
-              description: message.description,
-              content: message.content,
-              meta: message.meta,
-              duration: 5000,
-              avatar: () =>
-                h(NAvatar, {
-                  size: 'small',
-                  round: true,
-                  src: notificationImg,
-                }),
-              onClose: () => {
-                nRef.value = null;
-              },
-            });
+          if (newVal === null || newVal === undefined) {
+            return;
           }
+
+          nRef.value = notification.create({
+            title: newVal.title,
+            description:
+              newVal.tagTitle === '' || newVal.tagTitle === undefined
+                ? undefined
+                : () =>
+                    h(
+                      NTag,
+                      {
+                        style: {
+                          marginRight: '6px',
+                        },
+                        type: newVal.tagProps?.type,
+                        bordered: false,
+                      },
+                      {
+                        default: () => newVal.tagTitle,
+                      }
+                    ),
+
+            content: () =>
+              newVal.content === '' || newVal.content === undefined
+                ? undefined
+                : h('div', { innerHTML: '<div>' + newVal.content + '</div>' }),
+            meta: newVal.createdAt,
+            avatar: () =>
+              newVal.senderAvatar !== '' || newVal.senderAvatar === undefined
+                ? h(NAvatar, {
+                    size: 'small',
+                    round: true,
+                    src: newVal.senderAvatar,
+                  })
+                : h(NIcon, null, { default: () => h(getIcon(newVal)) }),
+            action: () =>
+              h(
+                NButton,
+                {
+                  text: true,
+                  type: 'info',
+                  onClick: () => {
+                    (nRef.value as NotificationReactive).destroy();
+                    router.push({
+                      name: 'home_message',
+                      query: {
+                        type: newVal.type,
+                      },
+                    });
+                  },
+                },
+                {
+                  default: () => '查看详情',
+                }
+              ),
+            onClose: () => {
+              nRef.value = null;
+            },
+          });
         },
         { immediate: true, deep: true }
       );
 
+      onMounted(() => {
+        if (notificationStore.getUnreadCount() === 0) {
+          notificationStore.pullMessages();
+        }
+      });
       return {
         ...toRefs(state),
         iconList,
@@ -423,8 +496,10 @@
         getMenuLocation,
         mixMenu,
         NotificationsIcon,
-        PopoverMessage,
+        SystemMessage,
         notificationStore,
+        getIsMobile,
+        userStore,
       };
     },
   });

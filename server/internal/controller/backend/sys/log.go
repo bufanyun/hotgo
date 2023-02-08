@@ -23,7 +23,7 @@ type sLog struct{}
 
 // Clear 清空日志
 func (c *sLog) Clear(ctx context.Context, req *log.ClearReq) (res *log.ClearRes, err error) {
-	err = gerror.New("考虑安全，请到数据库清空")
+	err = gerror.New("暂时考虑到安全问题，请到数据库清空")
 	return
 }
 
@@ -31,58 +31,52 @@ func (c *sLog) Clear(ctx context.Context, req *log.ClearReq) (res *log.ClearRes,
 func (c *sLog) Export(ctx context.Context, req *log.ExportReq) (res *log.ExportRes, err error) {
 	var in sysin.LogListInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	if err = service.SysLog().Export(ctx, in); err != nil {
-		return nil, err
+		return
 	}
 
+	err = service.SysLog().Export(ctx, in)
 	return
 }
 
 // List 获取访问日志列表
-func (c *sLog) List(ctx context.Context, req *log.ListReq) (*log.ListRes, error) {
-	var (
-		in  sysin.LogListInp
-		res log.ListRes
-	)
-	if err := gconv.Scan(req, &in); err != nil {
-		return nil, err
+func (c *sLog) List(ctx context.Context, req *log.ListReq) (res *log.ListRes, err error) {
+	var in sysin.LogListInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
 	}
 
 	list, totalCount, err := service.SysLog().List(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
+	res = new(log.ListRes)
 	res.List = list
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-
-	return &res, nil
+	return
 }
 
 // View 获取指定信息
-func (c *sLog) View(ctx context.Context, req *log.ViewReq) (*log.ViewRes, error) {
-	var res log.ViewRes
+func (c *sLog) View(ctx context.Context, req *log.ViewReq) (res *log.ViewRes, err error) {
 	data, err := service.SysLog().View(ctx, sysin.LogViewInp{Id: req.Id})
 	if err != nil {
-		return nil, err
+		return
 	}
 
+	res = new(log.ViewRes)
 	res.LogViewModel = data
-	return &res, nil
+	return
 }
 
 // Delete 删除
 func (c *sLog) Delete(ctx context.Context, req *log.DeleteReq) (res *log.DeleteRes, err error) {
 	var in sysin.LogDeleteInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
-	if err = service.SysLog().Delete(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+
+	err = service.SysLog().Delete(ctx, in)
+	return
 }

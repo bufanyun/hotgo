@@ -23,7 +23,7 @@ import (
 @{ if eq .options.Step.HasEdit true }
 // @{.varName}EditInp 修改/新增@{.tableComment}
 type @{.varName}EditInp struct {
-	entity.Test
+	entity.@{.daoName}
 }
 
 func (in *@{.varName}EditInp) Filter(ctx context.Context) (err error) {
@@ -38,6 +38,10 @@ type @{.varName}DeleteInp struct {
 	@{.pk.GoName} interface{} `json:"@{.pk.TsName}" v:"required#@{.pk.Dc}不能为空" dc:"@{.pk.Dc}"`
 }
 
+func (in *@{.varName}DeleteInp) Filter(ctx context.Context) (err error) {
+	return
+}
+
 type @{.varName}DeleteModel struct{}
 @{end}
 @{ if eq .options.Step.HasView true }
@@ -46,8 +50,12 @@ type @{.varName}ViewInp struct {
 	@{.pk.GoName} @{.pk.GoType} `json:"@{.pk.TsName}" v:"required#@{.pk.Dc}不能为空" dc:"@{.pk.Dc}"`
 }
 
+func (in *@{.varName}ViewInp) Filter(ctx context.Context) (err error) {
+	return
+}
+
 type @{.varName}ViewModel struct {
-	entity.Test
+	entity.@{.daoName}
 }@{end}
 
 // @{.varName}ListInp 获取@{.tableComment}列表
@@ -56,13 +64,14 @@ type @{.varName}ListInp struct {
 @{.listInpColumns}
 }
 
+func (in *@{.varName}ListInp) Filter(ctx context.Context) (err error) {
+	return
+}
+
 type @{.varName}ListModel struct {
 @{.listModelColumns}
 }
 
-func (in *@{.varName}ListInp) Filter(ctx context.Context) (err error) {
-	return
-}
 @{ if eq .options.Step.HasExport true }
 // @{.varName}ExportModel 导出@{.tableComment}
 type @{.varName}ExportModel struct {
@@ -71,6 +80,10 @@ type @{.varName}ExportModel struct {
 @{ if and (eq .options.Step.HasEdit true) (eq .options.Step.HasMaxSort true) }
 // @{.varName}MaxSortInp 获取@{.tableComment}最大排序
 type @{.varName}MaxSortInp struct{}
+
+func (in *@{.varName}MaxSortInp) Filter(ctx context.Context) (err error) {
+	return
+}
 
 type @{.varName}MaxSortModel struct {
 	Sort int `json:"sort"  description:"排序"`
@@ -83,6 +96,10 @@ type @{.varName}StatusInp struct {
 	Status int   `json:"status" dc:"状态"`
 }
 
+func (in *@{.varName}StatusInp) Filter(ctx context.Context) (err error) {
+	return
+}
+
 type @{.varName}StatusModel struct{}
 @{end}
 @{ if eq .options.Step.HasSwitch true }
@@ -90,6 +107,10 @@ type @{.varName}StatusModel struct{}
 type @{.varName}SwitchInp struct {
 	form.SwitchReq
 	@{.pk.GoName} @{.pk.GoType} `json:"@{.pk.TsName}" v:"required#@{.pk.Dc}不能为空" dc:"@{.pk.Dc}"`
+}
+
+func (in *@{.varName}SwitchInp) Filter(ctx context.Context) (err error) {
+	return
 }
 
 type @{.varName}SwitchModel struct{}

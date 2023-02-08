@@ -18,23 +18,23 @@ import (
 )
 
 const (
-	CGenDaoConfig = `gfcli.hggen.dao`
-	CGenDaoUsage  = `gf hggen dao [OPTION]`
+	CGenDaoConfig = `gfcli.gen.dao`
+	CGenDaoUsage  = `gf gen dao [OPTION]`
 	CGenDaoBrief  = `automatically generate go files for dao/do/entity`
 	CGenDaoEg     = `
-gf hggen dao
-gf hggen dao -l "mysql:root:12345678@tcp(127.0.0.1:3306)/test"
-gf hggen dao -p ./model -g user-center -t user,user_detail,user_login
-gf hggen dao -r user_
+gf gen dao
+gf gen dao -l "mysql:root:12345678@tcp(127.0.0.1:3306)/test"
+gf gen dao -p ./model -g user-center -t user,user_detail,user_login
+gf gen dao -r user_
 `
 
 	CGenDaoAd = `
 CONFIGURATION SUPPORT
     Options are also supported by configuration file.
     It's suggested using configuration file instead of command line arguments making producing.
-    The configuration node name is "gfcli.hggen.dao", which also supports multiple databases, for example(config.yaml):
+    The configuration node name is "gfcli.gen.dao", which also supports multiple databases, for example(config.yaml):
 	gfcli:
-	  hggen:
+	  gen:
 		dao:
 		- link:     "mysql:root:12345678@tcp(127.0.0.1:3306)/test"
 		  tables:   "order,products"
@@ -179,7 +179,6 @@ type (
 )
 
 func (c CGenDao) Dao(ctx context.Context, in CGenDaoInput) (out *CGenDaoOutput, err error) {
-	g.Log().Warningf(ctx, "g.Cfg().Available(ctx):%v", g.Cfg().Available(ctx))
 	if g.Cfg().Available(ctx) {
 		v := g.Cfg().MustGet(ctx, CGenDaoConfig)
 		if v.IsSlice() {
@@ -200,7 +199,7 @@ func DoGenDaoForArray(ctx context.Context, in CGenDaoInput) {
 	doGenDaoForArray(ctx, -1, in)
 }
 
-// doGenDaoForArray implements the "hggen dao" command for configuration array.
+// doGenDaoForArray implements the "gen dao" command for configuration array.
 func doGenDaoForArray(ctx context.Context, index int, in CGenDaoInput) {
 	var (
 		err     error

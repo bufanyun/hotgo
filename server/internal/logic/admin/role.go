@@ -27,6 +27,7 @@ import (
 	"hotgo/utility/convert"
 	"hotgo/utility/tree"
 	"sort"
+	"strconv"
 )
 
 type sAdminRole struct{}
@@ -60,7 +61,7 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 	}
 	ok, err := casbin.Enforcer.Enforce(user.RoleKey, path, method)
 	if err != nil {
-		g.Log().Warningf(ctx, "admin Verify Enforce  err:%v", err)
+		g.Log().Warningf(ctx, "admin Verify Enforce  err:%+v", err)
 		return false
 	}
 
@@ -86,6 +87,12 @@ func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (list []g
 		return list, totalCount, err
 	}
 
+	for _, v := range models {
+		v.Label = v.Name
+		v.Value = v.Id
+		v.Key = strconv.FormatInt(v.Id, 10)
+	}
+
 	return tree.GenTree(gconv.SliceMap(models)), totalCount, err
 }
 
@@ -104,7 +111,7 @@ func (s *sAdminRole) GetName(ctx context.Context, RoleId int64) (name string, er
 	return roleName.String(), nil
 }
 
-// GetMemberList 获取指定会员的岗位列表
+// GetMemberList 获取指定用户的岗位列表
 func (s *sAdminRole) GetMemberList(ctx context.Context, RoleId int64) (list []*adminin.RoleListModel, err error) {
 	err = dao.AdminRole.Ctx(ctx).
 		Where("id", RoleId).

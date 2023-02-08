@@ -17,3 +17,10 @@ type SendTestEmailReq struct {
 }
 type SendTestEmailRes struct {
 }
+
+// SendBindEmsReq 发送换绑邮件
+type SendBindEmsReq struct {
+	g.Meta `path:"/ems/sendBind" tags:"邮件" method:"post" summary:"发送换绑邮件"`
+}
+type SendBindEmsRes struct {
+}

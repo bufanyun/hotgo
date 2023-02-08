@@ -8,14 +8,15 @@ package sys
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
-	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/crons"
 	"hotgo/internal/dao"
 	"hotgo/internal/model/entity"
+	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/validate"
@@ -33,10 +34,7 @@ func init() {
 }
 
 func (s *sSysCron) StartCron(ctx context.Context) {
-	var (
-		list []*entity.SysCron
-	)
-
+	var list []*entity.SysCron
 	if err := dao.SysCron.Ctx(ctx).
 		Where("status", consts.StatusEnabled).
 		Order("sort asc,id desc").
@@ -49,17 +47,30 @@ func (s *sSysCron) StartCron(ctx context.Context) {
 		g.Log().Fatalf(ctx, "定时任务启动失败, err . %v", err)
 		return
 	}
-
 }
 
 // Delete 删除
-func (s *sSysCron) Delete(ctx context.Context, in sysin.CronDeleteInp) error {
-	_, err := dao.SysCron.Ctx(ctx).Where("id", in.Id).Delete()
-	if err != nil {
+func (s *sSysCron) Delete(ctx context.Context, in sysin.CronDeleteInp) (err error) {
+	var models *entity.SysCron
+	if err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
+		return
 	}
 
+	if models == nil {
+		err = gerror.New("定时任务不存在或已被删除")
+		return
+	}
+
+	err = g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
+		_, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Delete()
+		if err != nil {
+			err = gerror.Wrap(err, consts.ErrorORM)
+			return err
+		}
+
+		return crons.Delete(models)
+	})
 	return nil
 }
 
@@ -67,34 +78,30 @@ func (s *sSysCron) Delete(ctx context.Context, in sysin.CronDeleteInp) error {
 func (s *sSysCron) Edit(ctx context.Context, in sysin.CronEditInp) (err error) {
 	if in.Name == "" {
 		err = gerror.New("标题不能为空")
-		return err
+		return
 	}
 
 	// 修改
-	in.UpdatedAt = gtime.Now()
 	if in.Id > 0 {
-		_, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Data(in).Update()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
+		err = g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
+			_, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+			if err != nil {
+				err = gerror.Wrap(err, consts.ErrorORM)
+				return err
+			}
 
-		return nil
+			return crons.RefreshStatus(&in.SysCron)
+		})
+		return
 	}
 
 	// 新增
-	in.CreatedAt = gtime.Now()
 	_, err = dao.SysCron.Ctx(ctx).Data(in).Insert()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-	return nil
+	return
 }
 
 // Status 更新部门状态
 func (s *sSysCron) Status(ctx context.Context, in sysin.CronStatusInp) (err error) {
-
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
 		return err
@@ -110,36 +117,46 @@ func (s *sSysCron) Status(ctx context.Context, in sysin.CronStatusInp) (err erro
 		return err
 	}
 
-	// 修改
-	in.UpdatedAt = gtime.Now()
-	_, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
-	if err != nil {
+	var models *entity.SysCron
+	if err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
+		return
 	}
 
-	return nil
+	if models == nil {
+		err = gerror.New("定时任务不存在")
+		return
+	}
+
+	err = g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
+		_, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
+		if err != nil {
+			err = gerror.Wrap(err, consts.ErrorORM)
+			return err
+		}
+
+		models.Status = in.Status
+		return crons.RefreshStatus(models)
+	})
+	return
 }
 
 // MaxSort 最大排序
-func (s *sSysCron) MaxSort(ctx context.Context, in sysin.CronMaxSortInp) (*sysin.CronMaxSortModel, error) {
-	var res sysin.CronMaxSortModel
-
-	if in.Id > 0 {
-		if err := dao.SysCron.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return nil, err
-		}
+func (s *sSysCron) MaxSort(ctx context.Context, in sysin.CronMaxSortInp) (res *sysin.CronMaxSortModel, err error) {
+	if err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return nil, err
+	}
+	if res == nil {
+		res = new(sysin.CronMaxSortModel)
 	}
 
-	res.Sort = res.Sort + 10
-
-	return &res, nil
+	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	return res, nil
 }
 
 // View 获取指定字典类型信息
 func (s *sSysCron) View(ctx context.Context, in sysin.CronViewInp) (res *sysin.CronViewModel, err error) {
-
 	if err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return nil, err
@@ -152,12 +169,10 @@ func (s *sSysCron) View(ctx context.Context, in sysin.CronViewInp) (res *sysin.C
 func (s *sSysCron) List(ctx context.Context, in sysin.CronListInp) (list []*sysin.CronListModel, totalCount int, err error) {
 	mod := dao.SysCron.Ctx(ctx)
 
-	// 访问路径
 	if in.Name != "" {
 		mod = mod.WhereLike("name", "%"+in.Name+"%")
 	}
 
-	// 请求方式
 	if in.Status > 0 {
 		mod = mod.Where("status", in.Status)
 	}
@@ -180,7 +195,6 @@ func (s *sSysCron) List(ctx context.Context, in sysin.CronListInp) (list []*sysi
 	for _, v := range list {
 		v.GroupName, _ = dao.SysCronGroup.GetName(ctx, v.GroupId)
 	}
-
 	return list, totalCount, err
 }
 
@@ -197,6 +211,5 @@ func (s *sSysCron) OnlineExec(ctx context.Context, in sysin.OnlineExecInp) (err 
 	}
 
 	newCtx := context.WithValue(gctx.New(), consts.ContextKeyCronArgs, strings.Split(data.Params, consts.CronSplitStr))
-
 	return crons.Once(newCtx, data)
 }

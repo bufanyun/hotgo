@@ -30,7 +30,7 @@ type LogListInp struct {
 
 type LogListModel struct {
 	entity.SysLog
-	MemberName string `json:"member_name"`
+	MemberName string `json:"memberName"`
 	Region     string `json:"region"`
 }
 
@@ -41,6 +41,7 @@ type LogViewInp struct {
 
 type LogViewModel struct {
 	entity.SysLog
+	CityLabel string `json:"cityLabel"          description:"城市标签"`
 }
 
 // LogDeleteInp 删除

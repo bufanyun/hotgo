@@ -59,7 +59,7 @@ func GetAddr(ctx context.Context) string {
 func GetDomain(ctx context.Context) string {
 	r := ghttp.RequestFromCtx(ctx)
 	if r == nil {
-		g.Log().Warningf(ctx, "GetDomain ctx not request")
+		g.Log().Info(ctx, "GetDomain ctx not request")
 		return ""
 	}
 	if validate.IsDNSName(r.Host) {

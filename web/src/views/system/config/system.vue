@@ -21,9 +21,9 @@
           <ThemeSetting v-if="type === 2" />
           <RevealSetting v-if="type === 3" />
           <EmailSetting v-if="type === 4" />
+          <SmsSetting v-if="type === 5" />
           <UploadSetting v-if="type === 8" />
           <GeoSetting v-if="type === 9" />
-          <SmsSetting v-if="type === 10" />
         </n-card>
       </n-grid-item>
     </n-grid>
@@ -59,11 +59,11 @@
       desc: '系统邮件设置',
       key: 4,
     },
-    // {
-    //   name: '客服设置',
-    //   desc: '系统客服设置',
-    //   key: 5,
-    // },
+    {
+      name: '短信配置',
+      desc: '短信验证码平台',
+      key: 5,
+    },
     // {
     //   name: '下游配置',
     //   desc: '默认设置和权限屏蔽',
@@ -83,11 +83,6 @@
       name: '地理位置',
       desc: '配置地理位置工具',
       key: 9,
-    },
-    {
-      name: '短信配置',
-      desc: '短信验证码平台',
-      key: 10,
     },
   ];
   export default defineComponent({

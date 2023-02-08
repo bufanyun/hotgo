@@ -28,16 +28,16 @@ type cLoginLog struct{}
 func (c *cLoginLog) List(ctx context.Context, req *loginlog.ListReq) (res *loginlog.ListRes, err error) {
 	var in sysin.LoginLogListInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	list, totalCount, err := service.SysLoginLog().List(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	res = new(loginlog.ListRes)
@@ -45,60 +45,56 @@ func (c *cLoginLog) List(ctx context.Context, req *loginlog.ListReq) (res *login
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-	return res, nil
+	return
 }
 
 // Export 导出登录日志列表
 func (c *cLoginLog) Export(ctx context.Context, req *loginlog.ExportReq) (res *loginlog.ExportRes, err error) {
 	var in sysin.LoginLogListInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
+		return
 	}
 
-	if err = service.SysLoginLog().Export(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+	err = service.SysLoginLog().Export(ctx, in)
+	return
 }
 
 // View 获取指定登录日志信息
 func (c *cLoginLog) View(ctx context.Context, req *loginlog.ViewReq) (res *loginlog.ViewRes, err error) {
 	var in sysin.LoginLogViewInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	data, err := service.SysLoginLog().View(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	res = new(loginlog.ViewRes)
 	res.LoginLogViewModel = data
-	return res, nil
+	return
 }
 
 // Delete 删除登录日志
 func (c *cLoginLog) Delete(ctx context.Context, req *loginlog.DeleteReq) (res *loginlog.DeleteRes, err error) {
 	var in sysin.LoginLogDeleteInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
+		return
 	}
 
-	if err = service.SysLoginLog().Delete(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+	err = service.SysLoginLog().Delete(ctx, in)
+	return
 }

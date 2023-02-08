@@ -8,11 +8,12 @@ import { isArray, isNullObject } from '@/utils/is';
 import { getFileExt } from '@/utils/urlUtils';
 import { defRangeShortcuts, defShortcuts, formatToDate } from '@/utils/dateUtil';
 import { validate } from '@/utils/validateUtil';
-import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
-import { errorImg } from '@/utils/hotgo';
+import { getOptionLabel, getOptionTag, Options, errorImg } from '@/utils/hotgo';
+
 import { usePermission } from '@/hooks/web/usePermission';
 const { hasPermission } = usePermission();
 const $message = window['$message'];
+
 
 export interface State {
   id: number;
@@ -22,6 +23,7 @@ export interface State {
   content: string;
   image: string;
   attachfile: string;
+  cityId: number;
   switch: number;
   sort: number;
   status: number;
@@ -40,6 +42,7 @@ export const defaultState = {
   content: '',
   image: '',
   attachfile: '',
+  cityId: 0,
   switch: 1,
   sort: 0,
   status: 1,
@@ -61,7 +64,8 @@ export const options = ref<Options>({
   sys_normal_disable: [],
 });
 
-export const rules = {};
+export const rules = {
+};
 
 export const schemas = ref<FormSchema[]>([
   {
@@ -218,6 +222,10 @@ export const columns = [
     key: 'createdAt',
   },
   {
+    title: '修改时间',
+    key: 'updatedAt',
+  },
+  {
     title: '分类名称',
     key: 'testCategoryName',
   },
@@ -225,14 +233,16 @@ export const columns = [
 
 async function loadOptions() {
   options.value = await Dicts({
-    types: ['sys_normal_disable'],
+    types: [
+      'sys_normal_disable',
+   ],
   });
   for (const item of schemas.value) {
     switch (item.field) {
       case 'status':
         item.componentProps.options = options.value.sys_normal_disable;
         break;
-    }
+     }
   }
 }
 

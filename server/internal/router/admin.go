@@ -40,7 +40,6 @@ func Admin(ctx context.Context, group *ghttp.RouterGroup) {
 			sys.Cron,       // 定时任务
 			sys.CronGroup,  // 定时任务分组
 			sys.Blacklist,  // 黑名单
-			sys.GenCodes,   // 生成代码
 			sys.Log,        // 访问日志
 			sys.LoginLog,   // 登录日志
 			sys.ServeLog,   // 服务日志
@@ -54,6 +53,9 @@ func Admin(ctx context.Context, group *ghttp.RouterGroup) {
 			admin.Post,     // 岗位
 			admin.Test,     // 测试
 		)
+
+		group.Middleware(service.Middleware().Develop)
+		group.Bind(sys.GenCodes) // 生成代码
 	})
 
 	// 注册生成路由

@@ -2,7 +2,7 @@
   <div class="tableAction">
     <div class="flex items-center justify-center">
       <template v-for="(action, index) in getActions" :key="`${index}-${action.label}`">
-        <n-button v-bind="action" class="mx-2">
+        <n-button v-bind="action" class="mx-1">
           {{ action.label }}
           <template #icon v-if="action.hasOwnProperty('icon')">
             <n-icon :component="action.icon" />
@@ -16,16 +16,14 @@
         @select="select"
       >
         <slot name="more"></slot>
-        <n-button v-bind="getMoreProps" class="mx-2" v-if="!$slots.more" icon-placement="right">
+        <n-button v-bind="getMoreProps" class="mx-1" v-if="!$slots.more" icon-placement="right">
           <div class="flex items-center">
             <span>更多</span>
             <n-icon size="14" class="ml-1">
               <DownOutlined />
             </n-icon>
           </div>
-          <!--          <template #icon>-->
-          <!--            -->
-          <!--          </template>-->
+          <!--          <template #icon> </template>-->
         </n-button>
       </n-dropdown>
     </div>
@@ -33,7 +31,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, PropType, computed, toRaw } from 'vue';
+  import { computed, defineComponent, PropType, toRaw } from 'vue';
   import { ActionItem } from '@/components/Table';
   import { usePermission } from '@/hooks/web/usePermission';
   import { isBoolean, isFunction } from '@/utils/is';
@@ -87,7 +85,7 @@
             return {
               size: 'small',
               text: actionText,
-              type: actionType,
+              type: getBtnType(action), //actionType,
               ...action,
               ...popConfirm,
               onConfirm: popConfirm?.confirm,
@@ -110,6 +108,28 @@
         return isIfShow;
       }
 
+      function getBtnType(action) {
+        if (action.type !== undefined && action.type !== '') {
+          return action.type;
+        }
+        switch (action.label) {
+          case '编辑':
+            return 'primary';
+          case '启用':
+          case '已禁用':
+            return 'warning';
+          case '已启用':
+          case '禁用':
+            return 'success';
+          case '删除':
+            return 'error';
+          case '查看详情':
+            return 'default';
+          default:
+            return 'primary';
+        }
+      }
+
       const getActions = computed(() => {
         return (toRaw(props.actions) || [])
           .filter((action) => {
@@ -121,7 +141,7 @@
             return {
               size: 'small',
               text: actionText,
-              type: actionType,
+              type: getBtnType(action), //actionType,
               ...action,
               ...(popConfirm || {}),
               onConfirm: popConfirm?.confirm,

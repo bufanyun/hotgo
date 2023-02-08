@@ -69,6 +69,7 @@
           {
             label: '强制退出',
             onClick: handleDelete.bind(null, record),
+            type: 'error',
           },
         ],
       });

@@ -1,5 +1,6 @@
 import { h } from 'vue';
 import { NAvatar, NTag } from 'naive-ui';
+import { formatBefore } from '@/utils/dateUtil';
 
 export const columns = [
   {
@@ -104,9 +105,15 @@ export const columns = [
     },
   },
   {
-    title: '访问次数',
-    key: 'visitCount',
+    title: '最近活跃',
+    key: 'lastActiveAt',
     width: 100,
+    render(row) {
+      if (row.lastActiveAt === null) {
+        return '从未登录';
+      }
+      return formatBefore(new Date(row.lastActiveAt));
+    },
   },
   {
     title: '创建时间',

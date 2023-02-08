@@ -130,8 +130,8 @@ export const columns = [
   },
   {
     title: 'IP归属地',
-    key: 'region',
-    width: 180,
+    key: 'cityLabel',
+    width: 200,
   },
   {
     title: '浏览器',

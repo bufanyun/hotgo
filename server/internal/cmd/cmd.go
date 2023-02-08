@@ -54,14 +54,14 @@ var (
 			g.Log().Debug(ctx, "starting all server")
 
 			simple.SafeGo(ctx, func(ctx context.Context) {
-				if err := Http.Func(ctx, parser); err != nil {
-					g.Log().Fatal(ctx, "http server start fail:", err)
+				if err := Queue.Func(ctx, parser); err != nil {
+					g.Log().Fatal(ctx, "queue consumer start fail:", err)
 				}
 			})
 
 			simple.SafeGo(ctx, func(ctx context.Context) {
-				if err := Queue.Func(ctx, parser); err != nil {
-					g.Log().Fatal(ctx, "queue consumer start fail:", err)
+				if err := Http.Func(ctx, parser); err != nil {
+					g.Log().Fatal(ctx, "http server start fail:", err)
 				}
 			})
 

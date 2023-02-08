@@ -3,7 +3,6 @@
     <n-spin :show="show" description="正在获取配置...">
       <n-grid cols="2 s:2 m:2 l:2 xl:2 2xl:2" responsive="screen">
         <n-grid-item>
-          <n-divider title-placement="left">通用配置</n-divider>
           <n-form :label-width="100" :model="formValue" :rules="rules" ref="formRef">
             <n-form-item label="默认驱动" path="smsDrive">
               <n-select
@@ -13,6 +12,7 @@
               />
             </n-form-item>
 
+            <n-divider title-placement="left">发信限制</n-divider>
             <n-form-item label="最小发送间隔" path="smsMinInterval">
               <n-input-number
                 :show-button="false"
@@ -184,8 +184,6 @@
   function formSubmit() {
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formValue.value:' + JSON.stringify(formValue.value));
-
         updateConfig({ group: group.value, list: formValue.value })
           .then((res) => {
             console.log('res:' + JSON.stringify(res));

@@ -16,6 +16,7 @@ import (
 	"hotgo/internal/dao"
 	"hotgo/internal/library/hgorm"
 	"hotgo/internal/model/entity"
+	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/tree"
@@ -165,7 +166,7 @@ func (s *sSysProvinces) MaxSort(ctx context.Context, in sysin.ProvincesMaxSortIn
 		return nil, err
 	}
 
-	res.Sort = res.Sort + g.Cfg().MustGet(ctx, "hotgo.admin.maxSortIncrement").Int()
+	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
 	return res, nil
 }
 
@@ -257,4 +258,35 @@ func (s *sSysProvinces) UniqueId(ctx context.Context, in sysin.ProvincesUniqueId
 	}
 
 	return res, nil
+}
+
+// Select 省市区选项
+func (s *sSysProvinces) Select(ctx context.Context, in sysin.ProvincesSelectInp) (res *sysin.ProvincesSelectModel, err error) {
+	res = new(sysin.ProvincesSelectModel)
+	mod := dao.SysProvinces.Ctx(ctx).
+		Fields("id as value, title as label, level").
+		Where("pid", in.Value)
+
+	if err = mod.Order("sort asc,id asc").Scan(&res.List); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return
+	}
+
+	for _, v := range res.List {
+		if in.DataType == "p" {
+			v.IsLeaf = true
+			continue
+		}
+		if in.DataType == "pc" && v.Level >= 2 {
+			v.IsLeaf = true
+			continue
+		}
+
+		if in.DataType == "pca" && v.Level >= 3 {
+			v.IsLeaf = true
+			continue
+		}
+	}
+
+	return
 }

@@ -46,6 +46,7 @@ type TestColumns struct {
 	Mobile      string // 手机号码
 	Hobby       string // 爱好
 	Channel     string // 渠道
+	CityId      string // 所在城市
 	Pid         string // 上级ID
 	Level       string // 树等级
 	Tree        string // 关系树
@@ -86,6 +87,7 @@ var testColumns = TestColumns{
 	Mobile:      "mobile",
 	Hobby:       "hobby",
 	Channel:     "channel",
+	CityId:      "city_id",
 	Pid:         "pid",
 	Level:       "level",
 	Tree:        "tree",

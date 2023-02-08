@@ -29,7 +29,7 @@ type DeleteRes struct{}
 
 // MaxSortReq 最大排序
 type MaxSortReq struct {
-	g.Meta `path:"/post/max_sort" method:"get" tags:"岗位" summary:"岗位最大排序"`
+	g.Meta `path:"/post/maxSort" method:"get" tags:"岗位" summary:"岗位最大排序"`
 	Id     int64 `json:"id" description:"岗位ID"`
 }
 type MaxSortRes struct {

@@ -21,52 +21,41 @@ var (
 type cDictType struct{}
 
 // Tree 树
-func (c *cDictType) Tree(ctx context.Context, req *dict.TypeTreeReq) (*dict.TypeTreeRes, error) {
-	var (
-		res dict.TypeTreeRes
-		err error
-	)
+func (c *cDictType) Tree(ctx context.Context, req *dict.TypeTreeReq) (res *dict.TypeTreeRes, err error) {
+	res = new(dict.TypeTreeRes)
 	res.List, err = service.SysDictType().Tree(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &res, nil
+	return
 }
 
 // Delete 删除
 func (c *cDictType) Delete(ctx context.Context, req *dict.TypeDeleteReq) (res *dict.TypeDeleteRes, err error) {
 	var in sysin.DictTypeDeleteInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
-	if err = service.SysDictType().Delete(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+
+	err = service.SysDictType().Delete(ctx, in)
+	return
 }
 
 // Edit 更新
 func (c *cDictType) Edit(ctx context.Context, req *dict.TypeEditReq) (res *dict.TypeEditRes, err error) {
-
 	var in sysin.DictTypeEditInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	if err = service.SysDictType().Edit(ctx, in); err != nil {
-		return nil, err
+		return
 	}
 
-	return res, nil
+	err = service.SysDictType().Edit(ctx, in)
+	return
 }
 
 // Select 选项
 func (c *cDictType) Select(ctx context.Context, req *dict.TypeSelectReq) (res *dict.TypeSelectRes, err error) {
 	list, err := service.SysDictType().Select(ctx, sysin.DictTypeSelectInp{})
 	if err != nil {
-		return nil, err
+		return
 	}
-	res = (*dict.TypeSelectRes)(&list)
 
-	return res, nil
+	res = (*dict.TypeSelectRes)(&list)
+	return
 }

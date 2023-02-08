@@ -14,7 +14,7 @@
       :segmented="{ content: true }"
     >
       <n-descriptions bordered label-placement="left" class="py-2">
-        <n-descriptions-item label="版本">
+        <n-descriptions-item label="HotGo版本">
           <n-tag type="info"> {{ config?.version }}</n-tag>
         </n-descriptions-item>
         <n-descriptions-item label="最后编译时间">

@@ -205,8 +205,6 @@ func (s *sCommonUpload) UploadUCloud(ctx context.Context, conf *model.UploadConf
 		return nil, err
 	}
 
-	g.Log().Warningf(ctx, "ras:%+v", string(req.LastResponseBody))
-
 	attachment, err := service.SysAttachment().Add(ctx, meta, fullPath, consts.UploadDriveUCloud)
 	if err != nil {
 		return nil, err

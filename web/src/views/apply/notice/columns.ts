@@ -1,20 +1,28 @@
 import { h } from 'vue';
-import { NTag } from 'naive-ui';
+import { NAvatar, NAvatarGroup, NTag, NTooltip } from 'naive-ui';
+import { noticeTagOptions, noticeTypeOptions } from '@/enums/systemMessageEnum';
+import { getOptionLabel, getOptionTag } from '@/utils/hotgo';
 
 export const columns = [
   {
     title: 'ID',
     key: 'id',
+    width: 80,
   },
   {
-    title: '公告标题',
+    title: '消息标题',
     key: 'title',
     render(row) {
-      return row.title;
+      return h('p', { id: 'app' }, [
+        h('div', {
+          innerHTML: '<div style="white-space: pre-wrap">' + row.title + '</div>',
+        }),
+      ]);
     },
+    width: 280,
   },
   {
-    title: '公告类型',
+    title: '消息类型',
     key: 'type',
     render(row) {
       return h(
@@ -23,30 +31,19 @@ export const columns = [
           style: {
             marginRight: '6px',
           },
-          type: row.type == 1 ? 'success' : 'warning',
+          type: getOptionTag(noticeTypeOptions, row.type),
           bordered: false,
         },
         {
-          default: () => (row.type == 1 ? '通知' : '公告'),
+          default: () => getOptionLabel(noticeTypeOptions, row.type),
         }
       );
     },
+    width: 100,
   },
   {
-    title: '公告内容',
-    key: 'content',
-  },
-  {
-    title: '备注',
-    key: 'remark',
-  },
-  {
-    title: '排序',
-    key: 'sort',
-  },
-  {
-    title: '公告状态',
-    key: 'status',
+    title: '标签',
+    key: 'tag',
     render(row) {
       return h(
         NTag,
@@ -54,21 +51,81 @@ export const columns = [
           style: {
             marginRight: '6px',
           },
-          type: row.status == 1 ? 'success' : 'warning',
+          type: getOptionTag(noticeTagOptions, row.tag),
           bordered: false,
         },
         {
-          default: () => (row.status == 1 ? '正常' : '隐藏'),
+          default: () => getOptionLabel(noticeTagOptions, row.tag),
         }
       );
     },
+    width: 100,
   },
   {
-    title: '已读人数',
-    key: 'receiveNum',
+    title: '接收人',
+    key: 'receiver',
+    render(row) {
+      if (row.type === 1 || row.type === 2) {
+        return '所有人';
+      }
+      return h(
+        NAvatarGroup,
+        {
+          max: 4,
+          size: 40,
+          options: row.receiverGroup,
+        },
+        {
+          avatar: (column) =>
+            h(NTooltip, null, {
+              trigger: () =>
+                column.option.src !== ''
+                  ? h(NAvatar, {
+                      src: column.option.src,
+                      round: true,
+                      size: 32,
+                      style: {
+                        marginRight: '4px',
+                      },
+                    })
+                  : h(
+                      NAvatar,
+                      {
+                        round: true,
+                        size: 32,
+                        style: {
+                          marginRight: '4px',
+                        },
+                      },
+                      {
+                        default: () => column.option.name?.substring(0, 1) as string,
+                      }
+                    ),
+              default: () => column.option.name,
+            }),
+        }
+      );
+    },
+    width: 180,
   },
   {
-    title: '发布时间',
+    title: '阅读量',
+    key: 'readCount',
+    width: 80,
+  },
+  {
+    title: '排序',
+    key: 'sort',
+    width: 80,
+  },
+  {
+    title: '备注',
+    key: 'remark',
+    width: 150,
+  },
+  {
+    title: '发送时间',
     key: 'createdAt',
+    width: 180,
   },
 ];

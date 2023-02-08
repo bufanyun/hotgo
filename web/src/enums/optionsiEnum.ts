@@ -37,7 +37,7 @@ export const statusOptions = [
   },
   {
     value: 2,
-    label: '已禁用',
+    label: '停用',
   },
 ].map((s) => {
   return s;

@@ -9,25 +9,26 @@ package admin
 import (
 	"context"
 	"github.com/gogf/gf/v2/crypto/gmd5"
-	"github.com/gogf/gf/v2/encoding/gbase64"
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/grand"
-	"hotgo/api/backend/member"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/contexts"
+	"hotgo/internal/library/hgorm/handler"
+	"hotgo/internal/library/hgorm/hook"
 	"hotgo/internal/library/jwt"
-	"hotgo/internal/library/location"
 	"hotgo/internal/model"
 	"hotgo/internal/model/do"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
+	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/encrypt"
+	"hotgo/utility/simple"
 	"hotgo/utility/tree"
 	"hotgo/utility/validate"
 )
@@ -42,7 +43,148 @@ func init() {
 	service.RegisterAdminMember(NewAdminMember())
 }
 
-// UpdateProfile 更新会员资料
+// UpdateCash 修改提现信息
+func (s *sAdminMember) UpdateCash(ctx context.Context, in adminin.MemberUpdateCashInp) (err error) {
+	memberId := contexts.Get(ctx).User.Id
+	if memberId <= 0 {
+		err = gerror.New("获取用户信息失败！")
+		return
+	}
+
+	var memberInfo entity.AdminMember
+	if err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Scan(&memberInfo); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return
+	}
+
+	if gmd5.MustEncryptString(in.Password+memberInfo.Salt) != memberInfo.PasswordHash {
+		err = gerror.New("登录密码不正确")
+		return
+	}
+
+	_, err = dao.AdminMember.Ctx(ctx).
+		Where("id", memberId).
+		Data(g.Map{
+			"cash": adminin.MemberCash{
+				Name:      in.Name,
+				Account:   in.Account,
+				PayeeCode: in.PayeeCode,
+			},
+		}).
+		Update()
+
+	return
+}
+
+// UpdateEmail 换绑邮箱
+func (s *sAdminMember) UpdateEmail(ctx context.Context, in adminin.MemberUpdateEmailInp) (err error) {
+	memberId := contexts.Get(ctx).User.Id
+	if memberId <= 0 {
+		err = gerror.New("获取用户信息失败！")
+		return err
+	}
+
+	var memberInfo *entity.AdminMember
+	if err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Scan(&memberInfo); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return err
+	}
+
+	if memberInfo == nil {
+		err = gerror.New("用户信息不存在")
+		return err
+	}
+
+	if memberInfo.Email == in.Email {
+		err = gerror.New("新旧邮箱不能一样")
+		return
+	}
+
+	if !validate.IsEmail(in.Email) {
+		err = gerror.New("邮箱地址不正确")
+		return
+	}
+
+	// 存在原绑定号码，需要进行验证
+	if memberInfo.Email != "" {
+		err = service.SysEmsLog().VerifyCode(ctx, sysin.VerifyEmsCodeInp{
+			Event: consts.EmsTemplateBind,
+			Email: memberInfo.Email,
+			Code:  in.Code,
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	update := g.Map{
+		dao.AdminMember.Columns().Email: in.Email,
+	}
+
+	_, err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Data(update).Update()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return err
+	}
+
+	return
+}
+
+// UpdateMobile 换绑手机号
+func (s *sAdminMember) UpdateMobile(ctx context.Context, in adminin.MemberUpdateMobileInp) (err error) {
+	memberId := contexts.Get(ctx).User.Id
+	if memberId <= 0 {
+		err = gerror.New("获取用户信息失败！")
+		return err
+	}
+
+	var memberInfo *entity.AdminMember
+	if err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Scan(&memberInfo); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return err
+	}
+
+	if memberInfo == nil {
+		err = gerror.New("用户信息不存在")
+		return err
+	}
+
+	if memberInfo.Mobile == in.Mobile {
+		err = gerror.New("新旧手机号不能一样")
+		return
+	}
+
+	if !validate.IsMobile(in.Mobile) {
+		err = gerror.New("手机号码不正确")
+		return
+	}
+
+	// 存在原绑定号码，需要进行验证
+	if memberInfo.Mobile != "" {
+		err = service.SysSmsLog().VerifyCode(ctx, sysin.VerifyCodeInp{
+			Event:  consts.SmsTemplateBind,
+			Mobile: memberInfo.Mobile,
+			Code:   in.Code,
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	update := g.Map{
+		dao.AdminMember.Columns().Mobile: in.Mobile,
+	}
+
+	_, err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Data(update).Update()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return err
+	}
+
+	return
+}
+
+// UpdateProfile 更新用户资料
 func (s *sAdminMember) UpdateProfile(ctx context.Context, in adminin.MemberUpdateProfileInp) (err error) {
 	memberId := contexts.Get(ctx).User.Id
 	if memberId <= 0 {
@@ -50,21 +192,28 @@ func (s *sAdminMember) UpdateProfile(ctx context.Context, in adminin.MemberUpdat
 		return err
 	}
 
-	var memberInfo entity.AdminMember
+	var memberInfo *entity.AdminMember
 	if err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Scan(&memberInfo); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
 
-	_, err = dao.AdminMember.Ctx(ctx).
-		Where("id", memberId).
-		Data(g.Map{
-			"mobile":    in.Mobile,
-			"email":     in.Email,
-			"real_name": in.Realname,
-		}).
-		Update()
+	if memberInfo == nil {
+		err = gerror.New("用户信息不存在")
+		return err
+	}
 
+	update := g.Map{
+		dao.AdminMember.Columns().Avatar:   in.Avatar,
+		dao.AdminMember.Columns().RealName: in.RealName,
+		dao.AdminMember.Columns().Qq:       in.Qq,
+		dao.AdminMember.Columns().Birthday: in.Birthday,
+		dao.AdminMember.Columns().Sex:      in.Sex,
+		dao.AdminMember.Columns().CityId:   in.CityId,
+		dao.AdminMember.Columns().Address:  in.Address,
+	}
+
+	_, err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Data(update).Update()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
@@ -104,19 +253,25 @@ func (s *sAdminMember) UpdatePwd(ctx context.Context, in adminin.MemberUpdatePwd
 // ResetPwd 重置密码
 func (s *sAdminMember) ResetPwd(ctx context.Context, in adminin.MemberResetPwdInp) (err error) {
 	var (
-		memberInfo entity.AdminMember
+		memberInfo *entity.AdminMember
 		memberId   = contexts.GetUserId(ctx)
 	)
-	if err = dao.AdminMember.Ctx(ctx).Where("id", in.Id).Scan(&memberInfo); err != nil {
+	if err = s.FilterAuthModel(ctx, memberId).Where("id", in.Id).Scan(&memberInfo); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
+
+	if memberInfo == nil {
+		err = gerror.New("用户信息不存在")
+		return err
+	}
+
 	if memberInfo.Pid != memberId && !s.VerifySuperId(ctx, memberId) {
 		err = gerror.New("操作非法")
 		return err
 	}
 
-	_, err = dao.AdminMember.Ctx(ctx).
+	_, err = s.FilterAuthModel(ctx, memberId).
 		Where("id", in.Id).
 		Data(g.Map{
 			"password_hash": gmd5.MustEncryptString(in.Password + memberInfo.Salt),
@@ -192,7 +347,7 @@ func (s *sAdminMember) Delete(ctx context.Context, in adminin.MemberDeleteInp) e
 		return gerror.New("获取用户信息失败！")
 	}
 
-	_, err := dao.AdminMember.Ctx(ctx).Where("id", in.Id).Where("pid", memberId).Delete()
+	_, err := s.FilterAuthModel(ctx, memberId).Where("id", in.Id).Delete()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
@@ -246,11 +401,7 @@ func (s *sAdminMember) Edit(ctx context.Context, in adminin.MemberEditInp) (err 
 		}
 
 		// 权限验证
-		var mm = dao.AdminMember.Ctx(ctx).Where("id", in.Id)
-		if !s.VerifySuperId(ctx, opMemberId) {
-			mm = mm.Where("pid", opMemberId)
-		}
-
+		var mm = s.FilterAuthModel(ctx, opMemberId).Where("id", in.Id)
 		_, err = mm.Data(in).Update()
 		if err != nil {
 			return gerror.Wrap(err, consts.ErrorORM)
@@ -307,7 +458,7 @@ func (s *sAdminMember) MaxSort(ctx context.Context, in adminin.MemberMaxSortInp)
 
 // View 获取信息
 func (s *sAdminMember) View(ctx context.Context, in adminin.MemberViewInp) (res *adminin.MemberViewModel, err error) {
-	if err = dao.AdminMember.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
+	if err = s.FilterAuthModel(ctx, contexts.GetUserId(ctx)).Hook(hook.MemberInfo).Where("id", in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return nil, err
 	}
@@ -317,10 +468,9 @@ func (s *sAdminMember) View(ctx context.Context, in adminin.MemberViewInp) (res 
 
 // List 获取列表
 func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list []*adminin.MemberListModel, totalCount int, err error) {
-	g.Log().Printf(ctx, "in:%#v", in)
-	mod := dao.AdminMember.Ctx(ctx)
-	if in.Realname != "" {
-		mod = mod.WhereLike("real_name", "%"+in.Realname+"%")
+	mod := s.FilterAuthModel(ctx, contexts.GetUserId(ctx))
+	if in.RealName != "" {
+		mod = mod.WhereLike("real_name", "%"+in.RealName+"%")
 	}
 	if in.Username != "" {
 		mod = mod.WhereLike("username", "%"+in.Username+"%")
@@ -349,32 +499,11 @@ func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Hook(hook.MemberInfo).Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		return nil, 0, gerror.Wrap(err, consts.ErrorORM)
 	}
 
-	// 重写树入参
 	for i := 0; i < len(list); i++ {
-		// 部门
-		deptName, err := dao.AdminDept.Ctx(ctx).
-			Fields("name").
-			Where("id", list[i].DeptId).
-			Value()
-		if err != nil {
-			return nil, 0, gerror.Wrap(err, consts.ErrorORM)
-		}
-		list[i].DeptName = deptName.String()
-
-		// 角色
-		roleName, err := dao.AdminRole.Ctx(ctx).
-			Fields("name").
-			Where("id", list[i].RoleId).
-			Value()
-		if err != nil {
-			return nil, 0, gerror.Wrap(err, consts.ErrorORM)
-		}
-		list[i].RoleName = roleName.String()
-
 		// 岗位
 		posts, err := dao.AdminMemberPost.Ctx(ctx).
 			Fields("post_id").
@@ -414,27 +543,43 @@ func (s *sAdminMember) genTree(ctx context.Context, pid int64) (level int, newTr
 }
 
 // LoginMemberInfo 获取登录用户信息
-func (s *sAdminMember) LoginMemberInfo(ctx context.Context, req *member.InfoReq) (res *adminin.MemberLoginModel, err error) {
-	identity := contexts.Get(ctx).User
-	if identity == nil {
+func (s *sAdminMember) LoginMemberInfo(ctx context.Context) (res *adminin.LoginMemberInfoModel, err error) {
+	var memberId = contexts.GetUserId(ctx)
+	if memberId <= 0 {
 		err = gerror.New("用户身份异常，请重新登录！")
 		return
 	}
 
-	permissions, err := service.AdminMenu().LoginPermissions(ctx, identity.Id)
+	err = dao.AdminMember.Ctx(ctx).
+		Hook(hook.MemberInfo).
+		Where("id", memberId).
+		Scan(&res)
 	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
 
-	res = &adminin.MemberLoginModel{
-		UserId:      identity.Id,
-		Username:    identity.Username,
-		RealName:    identity.RealName,
-		Avatar:      identity.Avatar,
-		Permissions: permissions,
-		Token:       jwt.GetAuthorization(ghttp.RequestFromCtx(ctx)),
+	if res == nil {
+		err = gerror.New("用户不存在！")
+		return
 	}
 
+	// 细粒度权限
+	permissions, err := service.AdminMenu().LoginPermissions(ctx, memberId)
+	if err != nil {
+		return
+	}
+	res.Permissions = permissions
+
+	// 登录统计
+	stat, err := s.MemberLoginStat(ctx, adminin.MemberLoginStatInp{MemberId: memberId})
+	if err != nil {
+		return nil, err
+	}
+	res.MemberLoginStatModel = stat
+
+	res.Mobile = gstr.HideStr(res.Mobile, 40, `*`)
+	res.Email = gstr.HideStr(res.Email, 40, `*`)
 	return
 }
 
@@ -443,11 +588,7 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 	var (
 		roleInfo   *entity.AdminRole
 		memberInfo *entity.AdminMember
-		identity   *model.Identity
-		timestamp  = gtime.Timestamp()
 		expires    = g.Cfg().MustGet(ctx, "jwt.expires", 1).Int64()
-		exp        = gconv.Int64(timestamp) + expires
-		lastIp     = location.GetClientIp(ghttp.RequestFromCtx(ctx))
 	)
 
 	err = dao.AdminMember.Ctx(ctx).Where("username", in.Username).Scan(&memberInfo)
@@ -465,18 +606,13 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 		return
 	}
 
-	// 解密密码
-	password, err := gbase64.Decode([]byte(in.Password))
+	err = simple.CheckPassword(in.Password, memberInfo.Salt, memberInfo.PasswordHash)
 	if err != nil {
-		return nil, err
-	}
-	password, err = encrypt.AesECBDecrypt(password, consts.RequestEncryptKey)
-	if err != nil {
-		return nil, err
+		return
 	}
 
-	if memberInfo.PasswordHash != gmd5.MustEncryptString(string(password)+memberInfo.Salt) {
-		err = gerror.New("用户密码不正确")
+	if memberInfo.Status != consts.StatusEnabled {
+		err = gerror.New("账号已被禁用")
 		return
 	}
 
@@ -494,27 +630,24 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 	}
 
 	if roleInfo.Status != consts.StatusEnabled {
-		err = gerror.New("角色权限已被禁用")
+		err = gerror.New("角色已被禁用")
 		return
 	}
 
-	identity = &model.Identity{
-		Id:         memberInfo.Id,
-		Pid:        memberInfo.Pid,
-		DeptId:     memberInfo.DeptId,
-		RoleId:     roleInfo.Id,
-		RoleKey:    roleInfo.Key,
-		Username:   memberInfo.Username,
-		RealName:   memberInfo.RealName,
-		Avatar:     memberInfo.Avatar,
-		Email:      memberInfo.Email,
-		Mobile:     memberInfo.Mobile,
-		VisitCount: memberInfo.VisitCount,
-		LastTime:   memberInfo.LastTime,
-		LastIp:     lastIp,
-		Exp:        exp,
-		Expires:    expires,
-		App:        consts.AppAdmin,
+	identity := &model.Identity{
+		Id:       memberInfo.Id,
+		Pid:      memberInfo.Pid,
+		DeptId:   memberInfo.DeptId,
+		RoleId:   roleInfo.Id,
+		RoleKey:  roleInfo.Key,
+		Username: memberInfo.Username,
+		RealName: memberInfo.RealName,
+		Avatar:   memberInfo.Avatar,
+		Email:    memberInfo.Email,
+		Mobile:   memberInfo.Mobile,
+		Exp:      gtime.Timestamp() + expires,
+		Expires:  expires,
+		App:      consts.AppAdmin,
 	}
 
 	token, err := jwt.GenerateLoginToken(ctx, identity, false)
@@ -524,14 +657,10 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 	}
 
 	// 更新登录信息
-	_, err = dao.AdminMember.Ctx(ctx).Data(do.AdminMember{
-		AuthKey:    gmd5.MustEncryptString(token),
-		VisitCount: memberInfo.VisitCount + 1,
-		LastTime:   timestamp,
-		LastIp:     lastIp,
-	}).Where(do.AdminMember{
-		Id: memberInfo.Id,
-	}).Update()
+	_, err = dao.AdminMember.Ctx(ctx).
+		Data(do.AdminMember{AuthKey: gmd5.MustEncryptString(token)}).
+		Where(do.AdminMember{Id: memberInfo.Id}).
+		Update()
 
 	if err != nil {
 		err = gerror.New(err.Error())
@@ -539,17 +668,15 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 	}
 
 	res = &adminin.MemberLoginModel{
-		UserId:   identity.Id,
-		Username: identity.Username,
-		RealName: identity.RealName,
-		Avatar:   identity.Avatar,
-		Token:    token,
+		Id:      identity.Id,
+		Token:   token,
+		Expires: expires,
 	}
 
 	return res, nil
 }
 
-// RoleMemberList 获取角色下的会员列表
+// RoleMemberList 获取角色下的用户列表
 func (s *sAdminMember) RoleMemberList(ctx context.Context, in adminin.RoleMemberListInp) (list []*adminin.MemberListModel, totalCount int, err error) {
 	mod := dao.AdminMember.Ctx(ctx)
 	if in.Role > 0 {
@@ -594,7 +721,7 @@ func (s *sAdminMember) Status(ctx context.Context, in adminin.MemberStatusInp) (
 
 	// 修改
 	in.UpdatedAt = gtime.Now()
-	_, err = dao.AdminMember.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
+	_, err = s.FilterAuthModel(ctx, contexts.GetUserId(ctx)).Where("id", in.Id).Data("status", in.Status).Update()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
@@ -603,7 +730,7 @@ func (s *sAdminMember) Status(ctx context.Context, in adminin.MemberStatusInp) (
 	return nil
 }
 
-// GetIdByCode 通过邀请码获取会员ID
+// GetIdByCode 通过邀请码获取用户ID
 func (s *sAdminMember) GetIdByCode(ctx context.Context, in adminin.GetIdByCodeInp) (res *adminin.GetIdByCodeModel, err error) {
 	if err = dao.AdminMember.Ctx(ctx).
 		Fields("invite_code").
@@ -614,4 +741,54 @@ func (s *sAdminMember) GetIdByCode(ctx context.Context, in adminin.GetIdByCodeIn
 	}
 
 	return res, nil
+}
+
+// Select 获取可选的用户选项
+func (s *sAdminMember) Select(ctx context.Context, in adminin.MemberSelectInp) (res []*adminin.MemberSelectModel, err error) {
+	err = dao.AdminMember.Ctx(ctx).
+		Fields("id as value,real_name as label,username,avatar").
+		Handler(handler.FilterAuthWithField("id")).
+		Scan(&res)
+	if err != nil {
+		return nil, gerror.Wrap(err, consts.ErrorORM)
+	}
+	return res, nil
+}
+
+func (s *sAdminMember) FilterAuthModel(ctx context.Context, memberId int64) *gdb.Model {
+	m := dao.AdminMember.Ctx(ctx)
+	if !s.VerifySuperId(ctx, memberId) {
+		m = m.Where("id <> ?", memberId)
+	}
+	return m.Handler(handler.FilterAuthWithField("id"))
+}
+
+// MemberLoginStat 用户登录统计
+func (s *sAdminMember) MemberLoginStat(ctx context.Context, in adminin.MemberLoginStatInp) (res *adminin.MemberLoginStatModel, err error) {
+	var models *entity.SysLoginLog
+	err = dao.SysLoginLog.Ctx(ctx).
+		Fields("login_at,login_ip").
+		Where("member_id", in.MemberId).
+		Where("status", consts.StatusEnabled).
+		Scan(&models)
+	if err != nil {
+		return nil, err
+	}
+
+	res = new(adminin.MemberLoginStatModel)
+	if models == nil {
+		return
+	}
+
+	res.LastLoginAt = models.LoginAt
+	res.LastLoginIp = models.LoginIp
+
+	res.LoginCount, err = dao.SysLoginLog.Ctx(ctx).
+		Where("member_id", in.MemberId).
+		Where("status", consts.StatusEnabled).Count()
+	if err != nil {
+		return nil, err
+	}
+
+	return
 }

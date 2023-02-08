@@ -141,12 +141,12 @@ func GetPublicIP(ctx context.Context) (ip string, err error) {
 	var data *WhoisRegionData
 	err = g.Client().Timeout(10*time.Second).GetVar(ctx, whoisApi).Scan(&data)
 	if err != nil {
-		g.Log().Warningf(ctx, "GetPublicIP alternatives are being tried err:%+v", err)
+		g.Log().Infof(ctx, "GetPublicIP alternatives are being tried err:%+v", err)
 		return GetPublicIP2()
 	}
 
 	if data == nil {
-		g.Log().Warningf(ctx, "publicIP address Parsing failure, check the network and firewall blocking.")
+		g.Log().Infof(ctx, "publicIP address Parsing failure, check the network and firewall blocking.")
 		return "0.0.0.0", nil
 	}
 	return data.Ip, nil

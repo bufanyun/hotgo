@@ -115,3 +115,14 @@ type SelectInt64 struct {
 	Label string `json:"label"`
 	Name  string `json:"name"`
 }
+
+// DefaultMaxSort 默认最大排序
+func DefaultMaxSort(ctx context.Context, baseSort int) int {
+	return baseSort + g.Cfg().MustGet(ctx, "hotgo.admin.maxSortIncrement", 10).Int()
+}
+
+// AvatarGroup 头像组
+type AvatarGroup struct {
+	Name string `json:"name" dc:"姓名"`
+	Src  string `json:"src" dc:"头像地址"`
+}

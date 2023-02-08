@@ -30,6 +30,60 @@ export function getUserInfo() {
   });
 }
 
+export function updateMemberProfile(params) {
+  return http.request({
+    url: '/member/updateProfile',
+    method: 'post',
+    params,
+  });
+}
+
+export function updateMemberPwd(params) {
+  return http.request({
+    url: '/member/updatePwd',
+    method: 'post',
+    params,
+  });
+}
+
+export function updateMemberMobile(params) {
+  return http.request({
+    url: '/member/updateMobile',
+    method: 'post',
+    params,
+  });
+}
+
+export function updateMemberEmail(params) {
+  return http.request({
+    url: '/member/updateEmail',
+    method: 'post',
+    params,
+  });
+}
+
+export function SendBindEmail() {
+  return http.request({
+    url: '/ems/sendBind',
+    method: 'post',
+  });
+}
+
+export function SendBindSms() {
+  return http.request({
+    url: '/sms/sendBind',
+    method: 'post',
+  });
+}
+
+export function updateMemberCash(params) {
+  return http.request({
+    url: '/member/updateCash',
+    method: 'post',
+    params,
+  });
+}
+
 /**
  * @description: 用户登录
  */

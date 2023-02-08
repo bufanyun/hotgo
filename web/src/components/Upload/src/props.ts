@@ -9,7 +9,7 @@ export const basicProps = {
   },
   accept: {
     type: String,
-    default: '.jpg,.png,.jpeg,.svg,.gif',
+    default: '.jpg,.png,.jpeg,.svg,.gif,.webp',
   },
   helpText: {
     type: String as PropType<string>,

@@ -168,6 +168,7 @@
           {
             label: '下载',
             onClick: handleDown.bind(null, record),
+            type: 'default',
           },
           {
             label: '删除',

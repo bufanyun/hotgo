@@ -35,6 +35,40 @@
               <n-input v-model:value="formValue.smtpAdminMailbox" placeholder="" />
             </n-form-item>
 
+            <n-divider title-placement="left">发信限制</n-divider>
+            <n-form-item label="最小发送间隔" path="smtpMinInterval">
+              <n-input-number
+                :show-button="false"
+                placeholder="请输入"
+                v-model:value="formValue.smtpMinInterval"
+              >
+                <template #suffix> 秒 </template>
+              </n-input-number>
+              <template #feedback> 同地址</template>
+            </n-form-item>
+            <n-form-item label="IP最大发送次数" path="smtpMaxIpLimit">
+              <n-input-number v-model:value="formValue.smtpMaxIpLimit" placeholder="" />
+              <template #feedback> 同IP每天最大允许发送次数 </template>
+            </n-form-item>
+            <n-form-item label="验证码有效期" path="smtpCodeExpire">
+              <n-input-number
+                :show-button="false"
+                placeholder="请输入"
+                v-model:value="formValue.smtpCodeExpire"
+              >
+                <template #suffix> 秒 </template>
+              </n-input-number>
+            </n-form-item>
+
+            <n-form-item label="邮件模板" path="smtpTemplate">
+              <n-dynamic-input
+                v-model:value="formValue.smtpTemplate"
+                preset="pair"
+                key-placeholder="事件KEY"
+                value-placeholder="模板路径"
+              />
+            </n-form-item>
+
             <div>
               <n-space>
                 <n-button type="primary" @click="formSubmit">保存更新</n-button>
@@ -63,7 +97,12 @@
         class="py-4"
       >
         <n-form-item label="接收邮箱" path="to">
-          <n-input placeholder="多个用;隔开" v-model:value="formParams.to" :required="true" />
+          <n-input
+            type="textarea"
+            placeholder="多个用;隔开"
+            v-model:value="formParams.to"
+            :required="true"
+          />
         </n-form-item>
       </n-form>
 
@@ -84,10 +123,8 @@
 
   const group = ref('smtp');
   const show = ref(false);
-
   const showModal = ref(false);
   const formBtnLoading = ref(false);
-
   const formParams = ref({ to: '' });
 
   const rules = {
@@ -108,6 +145,10 @@
     smtpPass: '',
     smtpSendName: 'HotGo',
     smtpAdminMailbox: '',
+    smtpMinInterval: 60,
+    smtpMaxIpLimit: 10,
+    smtpCodeExpire: 600,
+    smtpTemplate: null,
   });
 
   function confirmForm(e) {
@@ -134,15 +175,10 @@
   function formSubmit() {
     formRef.value.validate((errors) => {
       if (!errors) {
-        updateConfig({ group: group.value, list: formValue.value })
-          .then((res) => {
-            console.log('res:' + JSON.stringify(res));
-            message.success('更新成功');
-            load();
-          })
-          .catch((error) => {
-            message.error(error.toString());
-          });
+        updateConfig({ group: group.value, list: formValue.value }).then((res) => {
+          message.success('更新成功');
+          load();
+        });
       } else {
         message.error('验证失败，请填写完整信息');
       }
@@ -159,13 +195,11 @@
       getConfig({ group: group.value })
         .then((res) => {
           show.value = false;
-          // state.formValue.watermarkClarity = res;
+          res.list.smtpTemplate = JSON.parse(res.list.smtpTemplate);
           formValue.value = res.list;
-          console.log('res:' + JSON.stringify(res));
         })
-        .catch((error) => {
+        .finally(() => {
           show.value = false;
-          message.error(error.toString());
         });
     });
   }

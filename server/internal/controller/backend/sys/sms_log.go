@@ -25,89 +25,75 @@ type cSmsLog struct{}
 func (c *cSmsLog) Delete(ctx context.Context, req *smslog.DeleteReq) (res *smslog.DeleteRes, err error) {
 	var in sysin.SmsLogDeleteInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
-	if err = service.SysSmsLog().Delete(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+
+	err = service.SysSmsLog().Delete(ctx, in)
+	return
 }
 
 // Edit 更新
 func (c *cSmsLog) Edit(ctx context.Context, req *smslog.EditReq) (res *smslog.EditRes, err error) {
-
 	var in sysin.SmsLogEditInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	if err = service.SysSmsLog().Edit(ctx, in); err != nil {
-		return nil, err
+		return
 	}
 
-	return res, nil
+	err = service.SysSmsLog().Edit(ctx, in)
+	return
 }
 
 // MaxSort 最大排序
-func (c *cSmsLog) MaxSort(ctx context.Context, req *smslog.MaxSortReq) (*smslog.MaxSortRes, error) {
-
+func (c *cSmsLog) MaxSort(ctx context.Context, req *smslog.MaxSortReq) (res *smslog.MaxSortRes, err error) {
 	data, err := service.SysSmsLog().MaxSort(ctx, sysin.SmsLogMaxSortInp{Id: req.Id})
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	var res smslog.MaxSortRes
+	res = new(smslog.MaxSortRes)
 	res.Sort = data.Sort
-	return &res, nil
+	return
 }
 
 // View 获取指定信息
-func (c *cSmsLog) View(ctx context.Context, req *smslog.ViewReq) (*smslog.ViewRes, error) {
-
+func (c *cSmsLog) View(ctx context.Context, req *smslog.ViewReq) (res *smslog.ViewRes, err error) {
 	data, err := service.SysSmsLog().View(ctx, sysin.SmsLogViewInp{Id: req.Id})
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	var res smslog.ViewRes
+	res = new(smslog.ViewRes)
 	res.SmsLogViewModel = data
-	return &res, nil
+	return
 }
 
 // List 查看列表
-func (c *cSmsLog) List(ctx context.Context, req *smslog.ListReq) (*smslog.ListRes, error) {
-
-	var (
-		in  sysin.SmsLogListInp
-		res smslog.ListRes
-	)
-
-	if err := gconv.Scan(req, &in); err != nil {
-		return nil, err
+func (c *cSmsLog) List(ctx context.Context, req *smslog.ListReq) (res *smslog.ListRes, err error) {
+	var in sysin.SmsLogListInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
 	}
 
 	list, totalCount, err := service.SysSmsLog().List(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
+	res = new(smslog.ListRes)
 	res.List = list
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-
-	return &res, nil
+	return
 }
 
 // Status 更新部门状态
 func (c *cSmsLog) Status(ctx context.Context, req *smslog.StatusReq) (res *smslog.StatusRes, err error) {
-
 	var in sysin.SmsLogStatusInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
-	if err = service.SysSmsLog().Status(ctx, in); err != nil {
-		return nil, err
-	}
-
-	return res, nil
+	
+	err = service.SysSmsLog().Status(ctx, in)
+	return
 }

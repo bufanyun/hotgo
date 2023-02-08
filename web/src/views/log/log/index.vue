@@ -1,39 +1,41 @@
 <template>
-  <n-card :bordered="false" class="proCard">
+  <div>
     <div class="n-layout-page-header">
       <n-card :bordered="false" title="访问日志">
-        全局的访问日志，记录了管理后台中人员的操作记录和服务响应情况
+        全局访问日志，记录了系统中后台人员和客户端的操作记录，以及服务响应情况
       </n-card>
     </div>
-    <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset">
-      <template #statusSlot="{ model, field }">
-        <n-input v-model:value="model[field]" />
-      </template>
-    </BasicForm>
+    <n-card :bordered="false" class="proCard">
+      <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset">
+        <template #statusSlot="{ model, field }">
+          <n-input v-model:value="model[field]" />
+        </template>
+      </BasicForm>
 
-    <BasicTable
-      :openChecked="true"
-      :columns="columns"
-      :request="loadDataTable"
-      :row-key="(row) => row.id"
-      ref="actionRef"
-      :actionColumn="actionColumn"
-      @update:checked-row-keys="onCheckedRow"
-      :scroll-x="1090"
-      :resizeHeightOffset="-20000"
-    >
-      <template #tableTitle>
-        <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
-          <template #icon>
-            <n-icon>
-              <DeleteOutlined />
-            </n-icon>
-          </template>
-          批量删除
-        </n-button>
-      </template>
-    </BasicTable>
-  </n-card>
+      <BasicTable
+        :openChecked="true"
+        :columns="columns"
+        :request="loadDataTable"
+        :row-key="(row) => row.id"
+        ref="actionRef"
+        :actionColumn="actionColumn"
+        @update:checked-row-keys="onCheckedRow"
+        :scroll-x="1090"
+        :resizeHeightOffset="-20000"
+      >
+        <template #tableTitle>
+          <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
+            <template #icon>
+              <n-icon>
+                <DeleteOutlined />
+              </n-icon>
+            </template>
+            批量删除
+          </n-button>
+        </template>
+      </BasicTable>
+    </n-card>
+  </div>
 </template>
 
 <script lang="ts" setup>

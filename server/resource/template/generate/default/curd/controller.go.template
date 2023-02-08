@@ -28,16 +28,16 @@ type c@{.varName} struct{}
 func (c *c@{.varName}) List(ctx context.Context, req *@{.varName | ToLower}.ListReq) (res *@{.varName | ToLower}.ListRes, err error) {
 	var in @{.templateGroup}in.@{.varName}ListInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	list, totalCount, err := service.@{.templateGroup | UcFirst}@{.varName}().List(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	res = new(@{.varName | ToLower}.ListRes)
@@ -45,24 +45,22 @@ func (c *c@{.varName}) List(ctx context.Context, req *@{.varName | ToLower}.List
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-	return res, nil
+	return
 }
 @{ if eq .options.Step.HasExport true }
 // Export 导出@{.tableComment}列表
 func (c *c@{.varName}) Export(ctx context.Context, req *@{.varName | ToLower}.ExportReq) (res *@{.varName | ToLower}.ExportRes, err error) {
 	var in @{.templateGroup}in.@{.varName}ListInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
+		return
 	}
 
-	if err = service.@{.templateGroup | UcFirst}@{.varName}().Export(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+    err = service.@{.templateGroup | UcFirst}@{.varName}().Export(ctx, in)
+	return
 }
 @{end}
 @{ if eq .options.Step.HasEdit true }
@@ -70,17 +68,15 @@ func (c *c@{.varName}) Export(ctx context.Context, req *@{.varName | ToLower}.Ex
 func (c *c@{.varName}) Edit(ctx context.Context, req *@{.varName | ToLower}.EditReq) (res *@{.varName | ToLower}.EditRes, err error) {
 	var in @{.templateGroup}in.@{.varName}EditInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
+		return
 	}
 
-	if err = service.@{.templateGroup | UcFirst}@{.varName}().Edit(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+    err = service.@{.templateGroup | UcFirst}@{.varName}().Edit(ctx, in)
+	return
 }
 @{end}
 @{ if and (eq .options.Step.HasEdit true) (eq .options.Step.HasMaxSort true) }
@@ -88,12 +84,12 @@ func (c *c@{.varName}) Edit(ctx context.Context, req *@{.varName | ToLower}.Edit
 func (c *c@{.varName}) MaxSort(ctx context.Context, req *@{.varName | ToLower}.MaxSortReq) (res *@{.varName | ToLower}.MaxSortRes, err error) {
 	data, err := service.@{.templateGroup | UcFirst}@{.varName}().MaxSort(ctx, sysin.@{.varName}MaxSortInp{})
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	res = new(@{.varName | ToLower}.MaxSortRes)
 	res.@{.varName}MaxSortModel = data
-	return res, nil
+	return
 }
 @{end}
 @{ if eq .options.Step.HasView true }
@@ -101,21 +97,21 @@ func (c *c@{.varName}) MaxSort(ctx context.Context, req *@{.varName | ToLower}.M
 func (c *c@{.varName}) View(ctx context.Context, req *@{.varName | ToLower}.ViewReq) (res *@{.varName | ToLower}.ViewRes, err error) {
 	var in @{.templateGroup}in.@{.varName}ViewInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	data, err := service.@{.templateGroup | UcFirst}@{.varName}().View(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	res = new(@{.varName | ToLower}.ViewRes)
 	res.@{.varName}ViewModel = data
-	return res, nil
+	return
 }
 @{end}
 @{ if eq .options.Step.HasDel true }
@@ -123,17 +119,15 @@ func (c *c@{.varName}) View(ctx context.Context, req *@{.varName | ToLower}.View
 func (c *c@{.varName}) Delete(ctx context.Context, req *@{.varName | ToLower}.DeleteReq) (res *@{.varName | ToLower}.DeleteRes, err error) {
 	var in @{.templateGroup}in.@{.varName}DeleteInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
+		return
 	}
 
-	if err = service.@{.templateGroup | UcFirst}@{.varName}().Delete(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+    err = service.@{.templateGroup | UcFirst}@{.varName}().Delete(ctx, in)
+	return
 }
 @{end}
 @{ if eq .options.Step.HasStatus true }
@@ -141,17 +135,15 @@ func (c *c@{.varName}) Delete(ctx context.Context, req *@{.varName | ToLower}.De
 func (c *c@{.varName}) Status(ctx context.Context, req *@{.varName | ToLower}.StatusReq) (res *@{.varName | ToLower}.StatusRes, err error) {
 	var in @{.templateGroup}in.@{.varName}StatusInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
+		return
 	}
 
-	if err = service.@{.templateGroup | UcFirst}@{.varName}().Status(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+    err = service.@{.templateGroup | UcFirst}@{.varName}().Status(ctx, in)
+	return
 }
 @{end}
 @{ if eq .options.Step.HasSwitch true }
@@ -159,17 +151,14 @@ func (c *c@{.varName}) Status(ctx context.Context, req *@{.varName | ToLower}.St
 func (c *c@{.varName}) Switch(ctx context.Context, req *@{.varName | ToLower}.SwitchReq) (res *@{.varName | ToLower}.SwitchRes, err error) {
 	var in @{.templateGroup}in.@{.varName}SwitchInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
+		return
 	}
 
-	if err = service.@{.templateGroup | UcFirst}@{.varName}().Switch(ctx, in); err != nil {
-		return nil, err
-	}
-
-	return res, nil
+    err = service.@{.templateGroup | UcFirst}@{.varName}().Switch(ctx, in)
+	return
 }
 @{end}

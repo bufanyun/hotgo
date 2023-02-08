@@ -26,6 +26,7 @@ import (
 	"hotgo/utility/charset"
 	"hotgo/utility/simple"
 	"os"
+	"strings"
 )
 
 func Init(ctx context.Context) {
@@ -45,11 +46,11 @@ func Init(ctx context.Context) {
 	RootPtah, _ = os.Getwd()
 	fmt.Printf("欢迎使用HotGo！\r\n当前运行环境：%v, 运行根路径为：%v \r\nHotGo版本：v%v, gf版本：%v \n", SysType, RootPtah, consts.VersionApp, gf.VERSION)
 
-	g.Log().SetHandlers(LoggingServeLogHandler)
-
 	setOrmCacheAdapter()
 
 	service.SysBlacklist().Load(ctx)
+
+	g.Log().SetHandlers(LoggingServeLogHandler)
 
 	startMonitor(ctx)
 
@@ -61,13 +62,13 @@ func startMonitor(ctx context.Context) {
 		MonitorData.STartTime = gtime.Now()
 		intranetIP, err := location.GetLocalIP()
 		if err != nil {
-			g.Log().Warningf(ctx, "parse intranetIP err:%+v", err)
+			g.Log().Infof(ctx, "parse intranetIP err:%+v", err)
 		}
 		MonitorData.IntranetIP = intranetIP
 
 		publicIP, err := location.GetPublicIP(ctx)
 		if err != nil {
-			g.Log().Warningf(ctx, "parse publicIP err:%+v", err)
+			g.Log().Infof(ctx, "parse publicIP err:%+v", err)
 		}
 		MonitorData.PublicIP = publicIP
 	})
@@ -81,47 +82,59 @@ func setOrmCacheAdapter() {
 func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 	in.Next(ctx)
 
-	conf, err := service.SysConfig().GetLoadServeLog(ctx)
+	err := g.Try(ctx, func(ctx context.Context) {
+		var err error
+		defer func() {
+			if err != nil {
+				panic(err)
+			}
+		}()
+		conf, err := service.SysConfig().GetLoadServeLog(ctx)
+		if err != nil {
+			return
+		}
+
+		if conf == nil {
+			return
+		}
+
+		if !conf.Switch {
+			return
+		}
+
+		if in.LevelFormat == "" || !gstr.InArray(conf.LevelFormat, in.LevelFormat) {
+			return
+		}
+
+		if in.Stack == "" {
+			in.Stack = in.Logger.GetStack(4) // 4是跳过当前方法，如果调整本行位置需要重新调整skip
+		}
+
+		var data entity.SysServeLog
+		data.TraceId = gctx.CtxId(ctx)
+		data.LevelFormat = in.LevelFormat
+		data.Content = in.Content
+		data.Stack = gjson.New(charset.ParseStack(in.Stack))
+		data.Line = strings.TrimRight(in.CallerPath, ":")
+		data.TriggerNs = in.Time.UnixNano()
+		data.Status = consts.StatusEnabled
+
+		if data.Stack.IsNil() {
+			data.Stack = gjson.New(consts.NilJsonToString)
+		}
+
+		if gstr.Contains(in.Content, `exception recovered`) {
+			data.LevelFormat = "PANI"
+		}
+
+		if conf.Queue {
+			err = queue.Push(consts.QueueServeLogTopic, data)
+		} else {
+			err = service.SysServeLog().RealWrite(ctx, data)
+		}
+	})
+
 	if err != nil {
-		return
-	}
-
-	if conf == nil {
-		return
-	}
-
-	if !conf.Switch {
-		return
-	}
-
-	if in.LevelFormat == "" || !gstr.InArray(conf.LevelFormat, in.LevelFormat) {
-		return
-	}
-
-	var data entity.SysServeLog
-	data.TraceId = gctx.CtxId(ctx)
-	data.LevelFormat = in.LevelFormat
-	data.Content = in.Content
-	data.Stack = gjson.New(charset.ParseStack(in.Stack))
-	data.Line = in.CallerPath
-	data.TriggerNs = in.Time.UnixNano()
-	data.Status = consts.StatusEnabled
-
-	if data.Stack.IsNil() {
-		data.Stack = gjson.New(consts.NilJsonToString)
-	}
-
-	if gstr.Contains(in.Content, `exception recovered`) {
-		data.LevelFormat = "PANI"
-	}
-
-	if conf.Queue {
-		err = queue.Push(consts.QueueServeLogTopic, data)
-	} else {
-		err = service.SysServeLog().RealWrite(ctx, data)
-	}
-
-	if err != nil {
-		g.Log().Printf(ctx, "LoggingServeLogHandler err:%+v", err)
+		g.Log("serveLog").Errorf(ctx, "LoggingServeLogHandler err:%+v", err)
 	}
 }

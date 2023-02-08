@@ -1,14 +1,37 @@
 package model
 
+// BasicConfig 基础配置
+type BasicConfig struct {
+	CaptchaSwitch  int    `json:"basicCaptchaSwitch"`
+	CloseText      string `json:"basicCloseText"`
+	Copyright      string `json:"basicCopyright"`
+	IcpCode        string `json:"basicIcpCode"`
+	Logo           string `json:"basicLogo"`
+	Name           string `json:"basicName"`
+	Domain         string `json:"basicDomain"`
+	RegisterSwitch int    `json:"basicRegisterSwitch"`
+	SystemOpen     bool   `json:"basicSystemOpen"`
+}
+
+// EmailTemplate 邮件模板
+type EmailTemplate struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
 // EmailConfig 邮箱配置
 type EmailConfig struct {
-	User         string `json:"smtpUser"`
-	Password     string `json:"smtpPass"`
-	Addr         string `json:"smtpAddr"`
-	Host         string `json:"smtpHost"`
-	Port         int64  `json:"smtpPort"`
-	SendName     string `json:"smtpSendName"`
-	AdminMailbox string `json:"smtpAdminMailbox"`
+	User         string           `json:"smtpUser"`
+	Password     string           `json:"smtpPass"`
+	Addr         string           `json:"smtpAddr"`
+	Host         string           `json:"smtpHost"`
+	Port         int64            `json:"smtpPort"`
+	SendName     string           `json:"smtpSendName"`
+	AdminMailbox string           `json:"smtpAdminMailbox"`
+	MinInterval  int              `json:"smtpMinInterval"`
+	MaxIpLimit   int              `json:"smtpMaxIpLimit"`
+	CodeExpire   int              `json:"smtpCodeExpire"`
+	Template     []*EmailTemplate `json:"smtpTemplate"`
 }
 
 // CashConfig 提现配置
@@ -92,6 +115,7 @@ type ServeLogConfig struct {
 // GenerateAppCrudTemplate curd模板
 type GenerateAppCrudTemplate struct {
 	Group          string `json:"group"`
+	MasterPackage  string `json:"masterPackage"`
 	TemplatePath   string `json:"templatePath"`
 	ApiPath        string `json:"apiPath"`
 	InputPath      string `json:"inputPath"`

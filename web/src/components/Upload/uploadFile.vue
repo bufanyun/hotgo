@@ -1,21 +1,25 @@
 <template>
-  <BasicUpload
-    :action="`${uploadUrl}${urlPrefix}/upload/file`"
-    :headers="uploadHeaders"
-    :data="{ type: 0 }"
-    name="file"
-    :width="100"
-    :height="100"
-    fileType="file"
-    :maxNumber="maxNumber"
-    @uploadChange="uploadChange"
-    v-model:value="image"
-    v-model:values="images"
-  />
+  <div>
+    <BasicUpload
+      :action="`${uploadUrl}${urlPrefix}/upload/file`"
+      :headers="uploadHeaders"
+      :data="{ type: 0 }"
+      accept="*"
+      name="file"
+      :width="100"
+      :height="100"
+      fileType="file"
+      :maxNumber="maxNumber"
+      :helpText="helpText"
+      @uploadChange="uploadChange"
+      v-model:value="image"
+      v-model:values="images"
+    />
+  </div>
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted, unref, reactive } from 'vue';
+  import { ref, onMounted, unref, reactive, watch } from 'vue';
   import { BasicUpload } from '@/components/Upload';
   import { useGlobSetting } from '@/hooks/setting';
   import { useUserStoreWidthOut } from '@/store/modules/user';
@@ -23,6 +27,7 @@
   export interface Props {
     value: string | string[] | null;
     maxNumber: number;
+    helpText?: string;
   }
 
   const globSetting = useGlobSetting();
@@ -33,7 +38,7 @@
     Authorization: useUserStore.token,
   });
   const emit = defineEmits(['update:value']);
-  const props = withDefaults(defineProps<Props>(), { value: '', maxNumber: 1 });
+  const props = withDefaults(defineProps<Props>(), { value: '', maxNumber: 1, helpText: '' });
   const image = ref<string>('');
   const images = ref<string[] | object>([]);
 
@@ -47,12 +52,27 @@
     }
   }
 
-  onMounted(async () => {
+  function loadImage() {
     if (props.maxNumber === 1) {
       image.value = props.value as string;
     } else {
       images.value = props.value as string[];
     }
+  }
+
+  watch(
+    () => props.value,
+    () => {
+      loadImage();
+    },
+    {
+      immediate: true,
+      deep: true,
+    }
+  );
+
+  onMounted(async () => {
+    loadImage();
   });
 </script>
 

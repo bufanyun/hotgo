@@ -96,6 +96,19 @@ func (s *sSysConfig) GetSmtp(ctx context.Context) (conf *model.EmailConfig, err 
 	return conf, nil
 }
 
+// GetBasic 获取基础配置
+func (s *sSysConfig) GetBasic(ctx context.Context) (conf *model.BasicConfig, err error) {
+	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "basic"})
+	if err != nil {
+		return nil, err
+	}
+	if err = gconv.Struct(models.List, &conf); err != nil {
+		return nil, err
+	}
+
+	return conf, nil
+}
+
 // GetLoadSSL 获取本地日志配置
 func (s *sSysConfig) GetLoadSSL(ctx context.Context) (conf *model.SSLConfig, err error) {
 	if err = g.Cfg().MustGet(ctx, "hotgo.ssl").Struct(&conf); err != nil {

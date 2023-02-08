@@ -37,6 +37,7 @@ type Test struct {
 	Mobile      string      `json:"mobile"      description:"手机号码"`
 	Hobby       *gjson.Json `json:"hobby"       description:"爱好"`
 	Channel     int         `json:"channel"     description:"渠道"`
+	CityId      int64       `json:"cityId"      description:"所在城市"`
 	Pid         int64       `json:"pid"         description:"上级ID"`
 	Level       int         `json:"level"       description:"树等级"`
 	Tree        string      `json:"tree"        description:"关系树"`

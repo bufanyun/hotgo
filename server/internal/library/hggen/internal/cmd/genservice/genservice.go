@@ -20,12 +20,12 @@ import (
 )
 
 const (
-	CGenServiceConfig = `gfcli.hggen.service`
-	CGenServiceUsage  = `gf hggen service [OPTION]`
+	CGenServiceConfig = `gfcli.gen.service`
+	CGenServiceUsage  = `gf gen service [OPTION]`
 	CGenServiceBrief  = `parse struct and associated functions from packages to generate service go file`
 	CGenServiceEg     = `
-gf hggen service
-gf hggen service -f Snake
+gf gen service
+gf gen service -f Snake
 `
 	CGenServiceBriefSrcFolder    = `source folder path to be parsed. default: internal/logic`
 	CGenServiceBriefDstFolder    = `destination folder path storing automatically generated go files. default: internal/service`
@@ -89,13 +89,13 @@ const (
 func (c CGenService) Service(ctx context.Context, in CGenServiceInput) (out *CGenServiceOutput, err error) {
 	// File lock to avoid multiple processes.
 	var (
-		flockFilePath = gfile.Temp("gf.cli.hggen.service.lock")
+		flockFilePath = gfile.Temp("gf.cli.gen.service.lock")
 		flockContent  = gfile.GetContents(flockFilePath)
 	)
 	if flockContent != "" {
 		if gtime.Timestamp()-gconv.Int64(flockContent) < genServiceFileLockSeconds {
-			// If another "hggen service" process is running, it just exits.
-			mlog.Debug(`another "hggen service" process is running, exit`)
+			// If another "gen service" process is running, it just exits.
+			mlog.Debug(`another "gen service" process is running, exit`)
 			return
 		}
 	}
@@ -127,7 +127,7 @@ func (c CGenService) Service(ctx context.Context, in CGenServiceInput) (out *CGe
 		mlog.Debug("Chdir:", newWorkingDir)
 		_ = gfile.Remove(flockFilePath)
 		var command = fmt.Sprintf(
-			`%s hggen service -packages=%s`,
+			`%s gen service -packages=%s`,
 			gfile.SelfName(), gfile.Basename(watchFileDir),
 		)
 		err = gproc.ShellRun(ctx, command)

@@ -13,6 +13,19 @@ export const options = ref<Options>({
 
 export const schemas = ref<FormSchema[]>([
   {
+    field: 'drive',
+    component: 'NSelect',
+    label: '上传驱动',
+    defaultValue: null,
+    componentProps: {
+      placeholder: '请选择上传驱动',
+      options: [],
+      onUpdateValue: (e: any) => {
+        console.log(e);
+      },
+    },
+  },
+  {
     field: 'member_id',
     component: 'NInput',
     label: '用户ID',
@@ -23,19 +36,6 @@ export const schemas = ref<FormSchema[]>([
       },
     },
     rules: [{ message: '请输入用户ID', trigger: ['blur'] }],
-  },
-  {
-    field: 'drive',
-    component: 'NSelect',
-    label: '选择驱动',
-    defaultValue: null,
-    componentProps: {
-      placeholder: '请选择驱动',
-      options: [],
-      onUpdateValue: (e: any) => {
-        console.log(e);
-      },
-    },
   },
   {
     field: 'status',
@@ -54,16 +54,19 @@ export const schemas = ref<FormSchema[]>([
 
 export const columns = [
   {
-    title: 'ID',
+    title: '附件ID',
     key: 'id',
+    width: 80,
   },
   {
     title: '应用',
     key: 'appId',
+    width: 100,
   },
   {
     title: '用户ID',
     key: 'memberId',
+    width: 100,
   },
   {
     title: '驱动',
@@ -71,6 +74,7 @@ export const columns = [
     render(row) {
       return row.drive;
     },
+    width: 100,
   },
   {
     title: '上传类型',
@@ -90,6 +94,7 @@ export const columns = [
         }
       );
     },
+    width: 120,
   },
   {
     title: '文件',
@@ -134,10 +139,12 @@ export const columns = [
   {
     title: '扩展名',
     key: 'ext',
+    width: 80,
   },
   {
     title: '文件大小',
     key: 'sizeFormat',
+    width: 100,
   },
   {
     title: '状态',
@@ -160,10 +167,12 @@ export const columns = [
         }
       );
     },
+    width: 100,
   },
   {
     title: '上传时间',
     key: 'createdAt',
+    width: 180,
   },
 ];
 

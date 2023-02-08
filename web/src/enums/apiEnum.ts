@@ -6,8 +6,8 @@ export enum ApiEnum {
   SiteLogin = '/site/login', // 登录
   SiteConfig = '/site/config', // 配置信息
 
-  // 会员
-  MemberInfo = '/member/info', // 登录会员信息
+  // 用户
+  MemberInfo = '/member/info', // 登录用户信息
 
   // 角色
   RoleDynamic = '/role/dynamic', // 动态路由

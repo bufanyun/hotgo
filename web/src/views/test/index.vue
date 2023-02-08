@@ -1,11 +1,11 @@
 <template>
   <div>
+    <div class="n-layout-page-header">
+      <n-card :bordered="false" title="普通表格演示">
+        这里提供了一些常用的普通表格组件的用法和表单组件的例子，你可能会需要
+      </n-card>
+    </div>
     <n-card :bordered="false" class="proCard">
-      <div class="n-layout-page-header">
-        <n-card :bordered="false" title="普通表格演示">
-          这里提供了一些常用的普通表格组件的用法和表单组件的例子
-        </n-card>
-      </div>
       <BasicForm
         @register="register"
         @submit="reloadTable"
@@ -106,7 +106,6 @@
           {
             label: '编辑',
             onClick: handleEdit.bind(null, record),
-            // auth: ['basic_list'],
           },
           {
             label: '禁用',

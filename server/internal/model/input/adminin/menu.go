@@ -15,7 +15,7 @@ import (
 
 // MenuMaxSortReq 菜单最大排序
 type MenuMaxSortReq struct {
-	g.Meta `path:"/menu/max_sort" method:"get" tags:"菜单" summary:"菜单最大排序"`
+	g.Meta `path:"/menu/maxSort" method:"get" tags:"菜单" summary:"菜单最大排序"`
 	Id     int64 `json:"id" dc:"菜单ID"`
 }
 type MenuMaxSortRes struct {

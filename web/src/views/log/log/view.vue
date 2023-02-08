@@ -15,7 +15,7 @@
         </n-descriptions-item>
         <n-descriptions-item label="请求耗时">{{ data.takeUpTime }} ms</n-descriptions-item>
         <n-descriptions-item label="访问IP">{{ data.ip }}</n-descriptions-item>
-        <n-descriptions-item label="IP归属地">河南 郑州</n-descriptions-item>
+        <n-descriptions-item label="IP归属地">{{ data.cityLabel }}</n-descriptions-item>
         <n-descriptions-item label="链路ID">{{ data.reqId }}</n-descriptions-item>
         <n-descriptions-item label="响应时间">{{
           timestampToTime(data.timestamp)
@@ -61,7 +61,7 @@
         copyable
         boxed
         sort
-        style="width: 100%; min-width: 3.125rem"
+        class="json-width"
       />
     </n-card>
 
@@ -78,7 +78,7 @@
         copyable
         boxed
         sort
-        style="width: 100%; min-width: 3.125rem"
+        class="json-width"
       />
     </n-card>
 
@@ -89,14 +89,7 @@
       :segmented="{ content: true }"
       title="GET参数"
     >
-      <JsonViewer
-        :value="data.getData"
-        :expand-depth="5"
-        copyable
-        boxed
-        sort
-        style="width: 100%; min-width: 3.125rem"
-      />
+      <JsonViewer :value="data.getData" :expand-depth="5" copyable boxed sort class="json-width" />
     </n-card>
 
     <n-card
@@ -106,14 +99,7 @@
       :segmented="{ content: true }"
       title="POST参数"
     >
-      <JsonViewer
-        :value="data.postData"
-        :expand-depth="5"
-        copyable
-        boxed
-        sort
-        style="width: 100%; min-width: 3.125rem"
-      />
+      <JsonViewer :value="data.postData" :expand-depth="5" copyable boxed sort class="json-width" />
     </n-card>
   </div>
 </template>
@@ -147,4 +133,9 @@
   };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  ::v-deep(.json-width) {
+    width: 100%;
+    min-width: 3.125rem;
+  }
+</style>

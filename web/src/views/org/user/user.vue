@@ -81,10 +81,11 @@
           <n-grid x-gap="24" :cols="2">
             <n-gi>
               <n-form-item label="绑定角色" path="roleId">
-                <n-select
+                <n-tree-select
                   :default-value="formParams.roleId"
                   :options="roleList"
                   @update:value="handleUpdateRoleValue"
+                  :default-expand-all="true"
                 />
               </n-form-item>
             </n-gi>
@@ -385,16 +386,9 @@
     roleList.value = [];
     let roleLists = await getRoleList({ pageSize: 100 });
     if (roleLists.list === undefined || roleLists.list === null) {
-      roleLists = [];
+      roleList.value = [];
     } else {
-      roleLists = roleLists.list;
-    }
-    if (roleLists.length > 0) {
-      for (let i = 0; i < roleLists.length; i++) {
-        roleList.value[i] = {};
-        roleList.value[i].label = roleLists[i].name;
-        roleList.value[i].value = roleLists[i].id;
-      }
+      roleList.value = roleLists.list;
     }
 
     postList.value = [];

@@ -33,7 +33,7 @@ func Generate(ctx context.Context) (id string, base64 string) {
 	//	Fonts:  []string{"chromohv.ttf"},
 	//}
 
-	// 计算
+	// 算数
 	driver := &base64Captcha.DriverMath{
 		Height:          42,
 		Width:           100,

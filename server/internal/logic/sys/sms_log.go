@@ -143,7 +143,7 @@ func (s *sSysSmsLog) List(ctx context.Context, in sysin.SmsLogListInp) (list []*
 		return list, totalCount, nil
 	}
 
-	if err = mod.Page(int(in.Page), int(in.PerPage)).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}

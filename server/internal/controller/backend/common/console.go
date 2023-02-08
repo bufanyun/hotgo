@@ -37,6 +37,5 @@ func (c *cConsole) Stat(ctx context.Context, req *common.ConsoleStatReq) (res *c
 	res.Volume.Rise = 40202
 	res.Volume.Decline = 45003
 	res.Volume.Amount = 49004
-
 	return
 }

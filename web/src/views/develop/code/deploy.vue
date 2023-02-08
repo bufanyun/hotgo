@@ -44,9 +44,7 @@
               <n-button type="success" :loading="formBtnLoading" @click="submitBuild"
                 >提交生成</n-button
               >
-              <n-button type="info" dashed :loading="formBtnLoading" @click="submitSave"
-                >仅保存配置</n-button
-              >
+              <n-button type="info" dashed @click="submitSave">仅保存配置</n-button>
             </n-space>
           </template>
         </n-tabs>
@@ -217,12 +215,17 @@
       positiveText: '确定',
       negativeText: '取消',
       onPositiveClick: () => {
-        Build(genInfo.value).then((_res) => {
-          setTimeout(function () {
-            location.reload();
-          }, 1500);
-          message.success('生成提交成功，即将刷新页面..');
-        });
+        formBtnLoading.value = true;
+        Build(genInfo.value)
+          .then((_res) => {
+            setTimeout(function () {
+              location.reload();
+            }, 1500);
+            message.success('生成提交成功，即将刷新页面..');
+          })
+          .finally(() => {
+            formBtnLoading.value = false;
+          });
       },
       onNegativeClick: () => {
         // message.error('取消');

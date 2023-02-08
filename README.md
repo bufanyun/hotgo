@@ -91,30 +91,6 @@ git clone https://github.com/bufanyun/hotgo.git && cd hotgo
 - 项目数据库文件 `resource/data/db.sql` 创建数据库并导入
 - 修改配置 `manifest/config/config.yaml.bak` 复制改为`manifest/config/config.yaml`
 
-其中hotgo配置
-```yaml
-# hotgo配置
-hotgo:
-  debug: true                                      # debug开关，开启后：接口出现错误时会输出堆栈信息，默认为true
-  ipMethod: "whois"                                # IP归属地解析方法，可选：cz88|whois，默认为whois
-  wsAddr: "ws://127.0.0.1:8000/socket"             # 客户端websocket连接地址，如果项目在公网，请填写公网IP:运行端口
-  isDemo: false                                    # 是否為演示系統 false | true
-  ssl: # https
-    switch: false                                  # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
-    crtPath: "resource/ssl/server.crt"
-    keyPath: "resource/ssl/server.key"
-  log: # 全局请求日志
-    switch: true                            # 日志开关，默认为true
-    queue: true                             # 是否启用队列，启用时需要配置队列信息，默认为true
-    module: [ "admin", "api", "default" ]   # 需要记录的模块
-    skipCode: [ ]                           # 不记录的状态码，如： ["0", "-1"]
-  admin:
-    superIds: [ 1,2,3 ]                     # 后台超管账号ID，通过ID验证超管
-    superRoleKey: "super"                   # 超管角色唯一标识符，通过角色验证超管
-    defaultPage: 10                         # 列表分页默认加载数量
-    defaultPageSize: 1                      # 列表分页默认加载页码
-    maxSortIncrement: 10                    # 最大排序值增量
-```
 
 后台前端：
 - 配置服务端地址，包含在以下文件中：
@@ -212,7 +188,7 @@ web端：
 > <img src="https://bufanyun.cn-bj.ufileos.com/hotgo/hotgo1qun.png" width="400px"/>  
 
 
-> 感谢你使用HotGo,公司团队精力时间有限，因此我们不再提供免费的技术服务！
+> 感谢你使用HotGo，公司团队精力时间有限，因此我们不再提供免费的技术服务！
 >
 > 同时您也可以联系我们，雇佣我们团队为您干活，谢谢合作！
 
@@ -225,7 +201,7 @@ web端：
 
 * 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-* 版权所有Copyright © 2022-2024 by Ms (https://github.com/bufanyun/hotgo)
+* 版权所有Copyright © 2020-2024 by Ms (https://github.com/bufanyun/hotgo)
 
 * All rights reserved。
 
@@ -245,9 +221,9 @@ web端：
 ## [感谢JetBrains提供的免费GoLand](https://jb.gg/OpenSource)
 [![avatar](https://camo.githubusercontent.com/323657c6e81419b8e151e9da4c71f409e3fcc65d630535170c59fe4807dbc905/68747470733a2f2f676f6672616d652e6f72672f646f776e6c6f61642f7468756d626e61696c732f313131343131392f6a6574627261696e732e706e67)](https://jb.gg/OpenSource)
 
-  
 
-
+## License
+[MIT © HotGo-2021](./LICENSE)
   
 
 

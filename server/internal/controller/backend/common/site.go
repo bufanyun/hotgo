@@ -70,7 +70,7 @@ func (c *cSite) Captcha(ctx context.Context, req *common.LoginCaptchaReq) (res *
 func (c *cSite) Login(ctx context.Context, req *common.LoginReq) (res *common.LoginRes, err error) {
 	var in adminin.MemberLoginInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	defer func() {
@@ -89,33 +89,23 @@ func (c *cSite) Login(ctx context.Context, req *common.LoginReq) (res *common.Lo
 
 	model, err := service.AdminMember().Login(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	if err = gconv.Scan(model, &res); err != nil {
-		return nil, err
-	}
+	err = gconv.Scan(model, &res)
 	return
 }
 
 // Logout 注销登录
 func (c *cSite) Logout(ctx context.Context, req *common.LoginLogoutReq) (res *common.LoginLogoutRes, err error) {
-
-	var authorization = jwt.GetAuthorization(ghttp.RequestFromCtx(ctx))
-
-	// 获取jwtToken
-	jwtToken := consts.RedisJwtToken + gmd5.MustEncryptString(authorization)
-	if len(jwtToken) == 0 {
+	token := consts.RedisJwtToken + gmd5.MustEncryptString(jwt.GetAuthorization(ghttp.RequestFromCtx(ctx)))
+	if len(token) == 0 {
 		err = gerror.New("当前用户未登录！")
 		return res, err
 	}
 
 	// 删除登录token
 	ca := cache.New()
-	_, err = ca.Remove(ctx, jwtToken)
-	if err != nil {
-		return res, err
-	}
-
+	_, err = ca.Remove(ctx, token)
 	return
 }

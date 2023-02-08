@@ -2,6 +2,8 @@ import { SocketEnum } from '@/enums/socketEnum';
 import { notificationStoreWidthOut } from '@/store/modules/notification';
 import { useUserStoreWidthOut } from '@/store/modules/user';
 import { TABS_ROUTES } from '@/store/mutation-types';
+import { MessageRow } from '@/enums/systemMessageEnum';
+import { isJsonString } from '@/utils/is';
 
 let socket: WebSocket;
 let isActive: boolean;
@@ -133,6 +135,11 @@ export default (onMessage: Function) => {
       // console.log('WebSocket:收到一条消息', event.data);
 
       let isHeart = false;
+      if (!isJsonString(event.data)) {
+        console.log('socket message incorrect format:' + JSON.stringify(event));
+        return;
+      }
+
       const message = JSON.parse(event.data);
       if (message.event === 'ping') {
         isHeart = true;
@@ -150,7 +157,7 @@ export default (onMessage: Function) => {
 
       // 通知
       if (message.event === 'notice') {
-        notificationStore.addMessages(event.data);
+        notificationStore.triggerNewMessages(message.data);
         return;
       }
 

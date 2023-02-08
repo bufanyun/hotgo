@@ -47,7 +47,7 @@ func (dao *adminMemberPostDao) UpdatePostIds(ctx context.Context, memberId int64
 				PostId:   postIds[i],
 			})
 		if err != nil {
-			err = gerror.Wrap(err, "插入会员岗位失败")
+			err = gerror.Wrap(err, "插入用户岗位失败")
 			return err
 		}
 	}

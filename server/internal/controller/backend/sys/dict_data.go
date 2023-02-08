@@ -25,75 +25,63 @@ type cDictData struct{}
 func (c *cDictData) Delete(ctx context.Context, req *dict.DataDeleteReq) (res *dict.DataDeleteRes, err error) {
 	var in sysin.DictDataDeleteInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
-	if err = service.SysDictData().Delete(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+
+	err = service.SysDictData().Delete(ctx, in)
+	return
 }
 
 // Edit 更新
 func (c *cDictData) Edit(ctx context.Context, req *dict.DataEditReq) (res *dict.DataEditRes, err error) {
-
 	var in sysin.DictDataEditInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	if err = service.SysDictData().Edit(ctx, in); err != nil {
-		return nil, err
+		return
 	}
 
-	return res, nil
+	err = service.SysDictData().Edit(ctx, in)
+	return
 }
 
 // List 查看列表
-func (c *cDictData) List(ctx context.Context, req *dict.DataListReq) (*dict.DataListRes, error) {
-	var (
-		in  sysin.DictDataListInp
-		res dict.DataListRes
-	)
-
-	if err := gconv.Scan(req, &in); err != nil {
-		return nil, err
+func (c *cDictData) List(ctx context.Context, req *dict.DataListReq) (res *dict.DataListRes, err error) {
+	var in sysin.DictDataListInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
 	}
 
 	list, totalCount, err := service.SysDictData().List(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
+	res = new(dict.DataListRes)
 	res.List = list
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-
-	return &res, nil
+	return
 }
 
 // Select 指定选项
-func (c *cDictData) Select(ctx context.Context, req *dict.DataSelectReq) (*dict.DataSelectRes, error) {
-	var (
-		in  sysin.DataSelectInp
-		res dict.DataSelectRes
-	)
-
-	if err := gconv.Scan(req, &in); err != nil {
-		return nil, err
+func (c *cDictData) Select(ctx context.Context, req *dict.DataSelectReq) (res dict.DataSelectRes, err error) {
+	var in sysin.DataSelectInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
 	}
 
 	list, err := service.SysDictData().Select(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	res = dict.DataSelectRes(list)
-	return &res, nil
+	return
 }
 
 // Selects 多个选项
-func (c *cDictData) Selects(ctx context.Context, req *dict.DataSelectsReq) (*dict.DataSelectsRes, error) {
-	res := make(dict.DataSelectsRes)
+func (c *cDictData) Selects(ctx context.Context, req *dict.DataSelectsReq) (res dict.DataSelectsRes, err error) {
+	res = make(dict.DataSelectsRes)
 	for _, v := range req.Types {
 		option, err := service.SysDictData().Select(ctx, sysin.DataSelectInp{Type: v})
 		if err != nil {
@@ -102,5 +90,5 @@ func (c *cDictData) Selects(ctx context.Context, req *dict.DataSelectsReq) (*dic
 		res[v] = option
 	}
 
-	return &res, nil
+	return
 }

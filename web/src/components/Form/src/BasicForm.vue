@@ -60,7 +60,7 @@
             v-bind="getComponentProps(schema)"
             :is="schema.component"
             v-model:value="formModel[schema.field]"
-            :class="{ isFull: schema.isFull != false && getProps.isFull }"
+            :class="{ isFull: schema.isFull !== false && getProps.isFull }"
           />
           <!--组件后面的内容-->
           <template v-if="schema.suffix">
@@ -75,8 +75,8 @@
       </n-gi>
       <!--提交 重置 展开 收起 按钮-->
       <n-gi
-        :span="isInline ? '' : 24"
-        :suffix="isInline ? true : false"
+        :span="isInline ? 1 : 24"
+        :suffix="!!isInline"
         #="{ overflow }"
         v-if="getProps.showActionButtonGroup"
       >
@@ -134,7 +134,7 @@
   import type { GridProps } from 'naive-ui/lib/grid';
   import type { FormSchema, FormProps, FormActionType } from './types/form';
 
-  import { isArray } from '@/utils/is/index';
+  import { isArray } from '@/utils/is';
   import { deepMerge } from '@/utils';
 
   export default defineComponent({

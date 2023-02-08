@@ -19,11 +19,13 @@ import (
 const (
 	LogicWhereComments      = "\n\t// 查询%s\n"
 	LogicWhereNoSupport     = "\t// TODO 暂不支持生成[ %s ]查询方式，请自行补充此处代码！"
-	LogicListSimpleSelect   = "\tfields, err := hgorm.GenSelect(ctx, sysin.%sListModel{}, dao.%s)\n\tif err != nil {\n\t\treturn nil, 0, err\n\t}"
+	LogicListSimpleSelect   = "\tfields, err := hgorm.GenSelect(ctx, sysin.%sListModel{}, dao.%s)\n\tif err != nil {\n\t\treturn\n\t}"
 	LogicListJoinSelect     = "\t//关联表select\n\tfields, err := hgorm.GenJoinSelect(ctx, %sin.%sListModel{}, dao.%s, []*hgorm.Join{\n%v\t})"
 	LogicListJoinOnRelation = "\t// 关联表%s\n\tmod = mod.%s(hgorm.GenJoinOnRelation(\n\t\tdao.%s.Table(), dao.%s.Columns().%s, // 主表表名,关联条件\n\t\tdao.%s.Table(), \"%s\", dao.%s.Columns().%s, // 关联表表名,别名,关联条件\n\t)...)\n\n"
-	LogicEditUpdate         = "\t\t_, err = dao.%s.Ctx(ctx).\n\t\t\tFieldsEx(\n%s\t\t\t).\n\t\t\tWhere(dao.%s.Columns().%s, in.%s).Data(in).Update()\n\t\tif err != nil {\n\t\t\terr = gerror.Wrap(err, consts.ErrorORM)\n\t\t\treturn err\n\t\t}\n\t\treturn nil"
-	LogicEditInsert         = "\t_, err = dao.%s.Ctx(ctx).\n\t\tFieldsEx(\n%s\t\t).\n\t\tData(in).Insert()\n\tif err != nil {\n\t\terr = gerror.Wrap(err, consts.ErrorORM)\n\t\treturn err\n\t}"
+	LogicEditUpdate         = "\t\t_, err = s.Model(ctx).\n\t\t\tFieldsEx(\n%s\t\t\t).\n\t\t\tWhere(dao.%s.Columns().%s, in.%s).Data(in).Update()\n\t\treturn "
+	LogicEditInsert         = "\t_, err = s.Model(ctx, &handler.Option{FilterAuth: false}).\n\t\tFieldsEx(\n%s\t\t).\n\t\tData(in).Insert()"
+	LogicSwitchUpdate       = "g.Map{\n\t\tin.Key:                       in.Value,\n%s}"
+	LogicStatusUpdate       = "g.Map{\n\t\tdao.%s.Columns().Status:    in.Status,\n%s}"
 )
 
 func (l *gCurd) logicTplData(ctx context.Context, in *CurdPreviewInput) (data g.Map, err error) {
@@ -33,7 +35,33 @@ func (l *gCurd) logicTplData(ctx context.Context, in *CurdPreviewInput) (data g.
 	data["listOrder"] = l.generateLogicListOrder(ctx, in)
 	data["edit"] = l.generateLogicEdit(ctx, in)
 	data["switchFields"] = l.generateLogicSwitchFields(ctx, in)
+	data["switchUpdate"] = l.generateLogicSwitchUpdate(ctx, in)
+	data["statusUpdate"] = l.generateLogicStatusUpdate(ctx, in)
 	return
+}
+
+func (l *gCurd) generateLogicStatusUpdate(ctx context.Context, in *CurdPreviewInput) string {
+	var update string
+	for _, field := range in.masterFields {
+		if field.GoName == "UpdatedBy" {
+			update += "\t\tdao." + in.In.DaoName + ".Columns().UpdatedBy: contexts.GetUserId(ctx),\n"
+		}
+	}
+
+	update += "\t"
+	return fmt.Sprintf(LogicStatusUpdate, in.In.DaoName, update)
+}
+
+func (l *gCurd) generateLogicSwitchUpdate(ctx context.Context, in *CurdPreviewInput) string {
+	var update string
+	for _, field := range in.masterFields {
+		if field.GoName == "UpdatedBy" {
+			update += "\t\tdao." + in.In.DaoName + ".Columns().UpdatedBy: contexts.GetUserId(ctx),\n"
+		}
+	}
+
+	update += "\t"
+	return fmt.Sprintf(LogicSwitchUpdate, update)
 }
 
 func (l *gCurd) generateLogicSwitchFields(ctx context.Context, in *CurdPreviewInput) string {
@@ -71,8 +99,8 @@ func (l *gCurd) generateLogicEdit(ctx context.Context, in *CurdPreviewInput) g.M
 		}
 	}
 
-	updateBuffer.WriteString(fmt.Sprintf(LogicEditUpdate, in.In.DaoName, updateFieldsEx, in.In.DaoName, in.pk.GoName, in.pk.GoName))
-	insertBuffer.WriteString(fmt.Sprintf(LogicEditInsert, in.In.DaoName, insertFieldsEx))
+	updateBuffer.WriteString(fmt.Sprintf(LogicEditUpdate, updateFieldsEx, in.In.DaoName, in.pk.GoName, in.pk.GoName))
+	insertBuffer.WriteString(fmt.Sprintf(LogicEditInsert, insertFieldsEx))
 
 	data["update"] = updateBuffer.String()
 	data["insert"] = insertBuffer.String()

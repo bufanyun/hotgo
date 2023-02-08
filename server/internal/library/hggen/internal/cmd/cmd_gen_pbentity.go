@@ -44,22 +44,22 @@ type (
 )
 
 const (
-	cGenPbEntityConfig = `gfcli.hggen.pbentity`
+	cGenPbEntityConfig = `gfcli.gen.pbentity`
 	cGenPbEntityBrief  = `generate entity message files in protobuf3 format`
 	cGenPbEntityEg     = `
-gf hggen pbentity
-gf hggen pbentity -l "mysql:root:12345678@tcp(127.0.0.1:3306)/test"
-gf hggen pbentity -p ./protocol/demos/entity -t user,user_detail,user_login
-gf hggen pbentity -r user_
+gf gen pbentity
+gf gen pbentity -l "mysql:root:12345678@tcp(127.0.0.1:3306)/test"
+gf gen pbentity -p ./protocol/demos/entity -t user,user_detail,user_login
+gf gen pbentity -r user_
 `
 
 	cGenPbEntityAd = `
 CONFIGURATION SUPPORT
     Options are also supported by configuration file.
     It's suggested using configuration file instead of command line arguments making producing. 
-    The configuration node name is "gf.hggen.pbentity", which also supports multiple databases, for example(config.yaml):
+    The configuration node name is "gf.gen.pbentity", which also supports multiple databases, for example(config.yaml):
     gfcli:
-      hggen:
+      gen:
       - pbentity:
             link:    "mysql:root:12345678@tcp(127.0.0.1:3306)/test"
             path:    "protocol/demos/entity"

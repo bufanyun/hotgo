@@ -21,6 +21,13 @@ var GenCodesTypeNameMap = map[int]string{
 	GenCodesTypeCron:  "定时任务(未实现)",
 }
 
+var GenCodesTypeConfMap = map[int]string{
+	GenCodesTypeCurd:  "crud",
+	GenCodesTypeTree:  "tree",
+	GenCodesTypeQueue: "queue",
+	GenCodesTypeCron:  "cron",
+}
+
 // 生成代码状态
 const (
 	GenCodesStatusOk   = 1 // 生成成功

@@ -7,7 +7,3 @@
 package debris
 
 // 碎片
-
-func Test() {
-
-}

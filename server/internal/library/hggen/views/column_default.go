@@ -157,6 +157,11 @@ func setDefaultFormMode(field *sysin.GenCodesColumnListModel) {
 		return
 	}
 
+	if (field.GoName == "ProvinceId" || field.GoName == "CityId") && IsNumberType(field.GoType) {
+		field.FormMode = FormModeCitySelector
+		return
+	}
+
 	if field.DataType == "datetime" || field.DataType == "timestamp" || field.DataType == "timestamptz" {
 		field.FormMode = FormModeTime
 		return

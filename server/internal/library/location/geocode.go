@@ -46,8 +46,8 @@ type AddressRegion struct {
 	CountyCode   string `json:"countyCode"`
 }
 
-// AnalysisAddress 将地址解析出省市区编码
-func AnalysisAddress(ctx context.Context, address, key string) (region *AddressRegion, err error) {
+// ParseAddress 将地址解析出省市区编码
+func ParseAddress(ctx context.Context, address, key string) (region *AddressRegion, err error) {
 	var (
 		url         = fmt.Sprintf("https://restapi.amap.com/v3/geocode/geo?address=%v&output=JSON&key=%v", address, key)
 		responseMap = make(g.Map)

@@ -23,269 +23,228 @@ var (
 
 type cMember struct{}
 
-// UpdateProfile 修改登录密码
-func (c *cMember) UpdateProfile(ctx context.Context, req *member.UpdateProfileReq) (res *member.UpdateProfileRes, err error) {
+// UpdateCash 修改代理商提现信息
+func (c *cMember) UpdateCash(ctx context.Context, req *member.UpdateCashReq) (res *member.UpdateCashRes, err error) {
+	var in adminin.MemberUpdateCashInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
 
+	err = service.AdminMember().UpdateCash(ctx, in)
+	return
+}
+
+// UpdateEmail 换绑邮箱
+func (c *cMember) UpdateEmail(ctx context.Context, req *member.UpdateEmailReq) (res *member.UpdateEmailRes, err error) {
+	var in adminin.MemberUpdateEmailInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	err = service.AdminMember().UpdateEmail(ctx, in)
+	return
+}
+
+// UpdateMobile 换绑手机号
+func (c *cMember) UpdateMobile(ctx context.Context, req *member.UpdateMobileReq) (res *member.UpdateMobileRes, err error) {
+	var in adminin.MemberUpdateMobileInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	err = service.AdminMember().UpdateMobile(ctx, in)
+	return
+}
+
+// UpdateProfile 更新用户资料
+func (c *cMember) UpdateProfile(ctx context.Context, req *member.UpdateProfileReq) (res *member.UpdateProfileRes, err error) {
 	var in adminin.MemberUpdateProfileInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
-	if err = service.AdminMember().UpdateProfile(ctx, in); err != nil {
-		return nil, err
-	}
-
+	err = service.AdminMember().UpdateProfile(ctx, in)
 	return
 }
 
 // UpdatePwd 修改登录密码
 func (c *cMember) UpdatePwd(ctx context.Context, req *member.UpdatePwdReq) (res *member.UpdatePwdRes, err error) {
-
-	memberId := contexts.Get(ctx).User.Id
+	var memberId = contexts.Get(ctx).User.Id
 	if memberId <= 0 {
-		err := gerror.New("获取用户信息失败！")
+		err = gerror.New("获取用户信息失败！")
 		return nil, err
 	}
 
-	if err = service.AdminMember().
-		UpdatePwd(ctx, adminin.MemberUpdatePwdInp{Id: memberId, OldPassword: req.OldPassword, NewPassword: req.NewPassword}); err != nil {
-		return nil, err
+	var in = adminin.MemberUpdatePwdInp{
+		Id:          memberId,
+		OldPassword: req.OldPassword,
+		NewPassword: req.NewPassword,
 	}
 
+	err = service.AdminMember().UpdatePwd(ctx, in)
 	return
-}
-
-// Profile 获取登录用户的基本信息
-func (c *cMember) Profile(ctx context.Context, req *member.ProfileReq) (*member.ProfileRes, error) {
-
-	var res member.ProfileRes
-
-	memberId := contexts.Get(ctx).User.Id
-	if memberId <= 0 {
-		err := gerror.New("获取用户信息失败！")
-		return nil, err
-	}
-
-	// 用户基本信息
-	memberInfo, err := service.AdminMember().View(ctx, adminin.MemberViewInp{Id: memberId})
-	if err != nil {
-		return nil, err
-	}
-	res.User = memberInfo
-
-	// 所在部门
-	sysDept, err := service.AdminDept().View(ctx, adminin.DeptViewInp{Id: memberInfo.DeptId})
-	if err != nil {
-		return nil, err
-	}
-	res.SysDept = sysDept
-
-	// 角色列表
-	sysRoles, err := service.AdminRole().GetMemberList(ctx, memberInfo.RoleId)
-	if err != nil {
-		return nil, err
-	}
-	res.SysRoles = sysRoles
-
-	// 获取角色名称
-	roleGroup, err := service.AdminRole().GetName(ctx, memberInfo.RoleId)
-	if err != nil {
-		return nil, err
-	}
-	res.RoleGroup = roleGroup
-
-	// 获取第一岗位名称
-	postGroup, err := service.AdminPost().GetMemberByStartName(ctx, memberInfo.Id)
-	if err != nil {
-		return nil, err
-	}
-	res.PostGroup = postGroup
-
-	return &res, nil
 }
 
 // ResetPwd 重置密码
 func (c *cMember) ResetPwd(ctx context.Context, req *member.ResetPwdReq) (res *member.ResetPwdRes, err error) {
-
-	if err = service.AdminMember().
-		ResetPwd(ctx, adminin.MemberResetPwdInp{Id: req.Id, Password: req.Password}); err != nil {
-		return nil, err
+	var in = adminin.MemberResetPwdInp{
+		Id:       req.Id,
+		Password: req.Password,
 	}
 
+	err = service.AdminMember().ResetPwd(ctx, in)
 	return
 }
 
 // EmailUnique 邮箱是否唯一
-func (c *cMember) EmailUnique(ctx context.Context, req *member.EmailUniqueReq) (*member.EmailUniqueRes, error) {
-
-	data, err := service.AdminMember().EmailUnique(ctx, adminin.MemberEmailUniqueInp{Id: req.Id, Email: req.Email})
-	if err != nil {
-		return nil, err
+func (c *cMember) EmailUnique(ctx context.Context, req *member.EmailUniqueReq) (res *member.EmailUniqueRes, err error) {
+	var in = adminin.MemberEmailUniqueInp{
+		Id:    req.Id,
+		Email: req.Email,
 	}
 
-	var res member.EmailUniqueRes
+	data, err := service.AdminMember().EmailUnique(ctx, in)
+	if err != nil {
+		return
+	}
+
+	res = new(member.EmailUniqueRes)
 	res.IsUnique = data.IsUnique
-	return &res, nil
+	return
 }
 
 // MobileUnique 手机号是否唯一
-func (c *cMember) MobileUnique(ctx context.Context, req *member.MobileUniqueReq) (*member.MobileUniqueRes, error) {
-
-	data, err := service.AdminMember().MobileUnique(ctx, adminin.MemberMobileUniqueInp{Id: req.Id, Mobile: req.Mobile})
-	if err != nil {
-		return nil, err
+func (c *cMember) MobileUnique(ctx context.Context, req *member.MobileUniqueReq) (res *member.MobileUniqueRes, err error) {
+	var in = adminin.MemberMobileUniqueInp{
+		Id:     req.Id,
+		Mobile: req.Mobile,
 	}
 
-	var res member.MobileUniqueRes
+	data, err := service.AdminMember().MobileUnique(ctx, in)
+	if err != nil {
+		return
+	}
+
+	res = new(member.MobileUniqueRes)
 	res.IsUnique = data.IsUnique
-	return &res, nil
+	return
 }
 
 // NameUnique 名称是否唯一
-func (c *cMember) NameUnique(ctx context.Context, req *member.NameUniqueReq) (*member.NameUniqueRes, error) {
-
-	data, err := service.AdminMember().NameUnique(ctx, adminin.MemberNameUniqueInp{Id: req.Id, Username: req.Username})
-	if err != nil {
-		return nil, err
+func (c *cMember) NameUnique(ctx context.Context, req *member.NameUniqueReq) (res *member.NameUniqueRes, err error) {
+	var in = adminin.MemberNameUniqueInp{
+		Id:       req.Id,
+		Username: req.Username,
 	}
 
-	var res member.NameUniqueRes
+	data, err := service.AdminMember().NameUnique(ctx, in)
+	if err != nil {
+		return
+	}
+
+	res = new(member.NameUniqueRes)
 	res.IsUnique = data.IsUnique
-	return &res, nil
+	return
 }
 
 // Delete 删除
 func (c *cMember) Delete(ctx context.Context, req *member.DeleteReq) (res *member.DeleteRes, err error) {
-
 	var in adminin.MemberDeleteInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
-	if err = service.AdminMember().Delete(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+
+	err = service.AdminMember().Delete(ctx, in)
+	return
 }
 
 // Edit 修改/新增
 func (c *cMember) Edit(ctx context.Context, req *member.EditReq) (res *member.EditRes, err error) {
-
 	var in adminin.MemberEditInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	in.PostIds = req.PostIds
-	if err = service.AdminMember().Edit(ctx, in); err != nil {
-		return nil, err
-	}
-
-	return res, nil
+	err = service.AdminMember().Edit(ctx, in)
+	return
 }
 
 // MaxSort 最大排序
-func (c *cMember) MaxSort(ctx context.Context, req *member.MaxSortReq) (*member.MaxSortRes, error) {
-
-	data, err := service.AdminMember().MaxSort(ctx, adminin.MemberMaxSortInp{Id: req.Id})
+func (c *cMember) MaxSort(ctx context.Context, req *member.MaxSortReq) (res *member.MaxSortRes, err error) {
+	var in = adminin.MemberMaxSortInp{Id: req.Id}
+	data, err := service.AdminMember().MaxSort(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	var res member.MaxSortRes
+	res = new(member.MaxSortRes)
 	res.Sort = data.Sort
-	return &res, nil
+	return
 }
 
 // View 获取指定信息
-func (c *cMember) View(ctx context.Context, req *member.ViewReq) (*member.ViewRes, error) {
-
-	postsList, _, err := service.AdminPost().List(ctx, adminin.PostListInp{})
+func (c *cMember) View(ctx context.Context, req *member.ViewReq) (res *member.ViewRes, err error) {
+	data, err := service.AdminMember().View(ctx, adminin.MemberViewInp{Id: req.Id})
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	//roleList, _, err := service.AdminRole().List(ctx, adminin.RoleListInp{})
-	//if err != nil {
-	//	return nil, err
-	//}
-
-	var res member.ViewRes
-	res.Posts = postsList
-	//res.Roles = roleList
-
-	if req.Id <= 0 {
-		return &res, err
-	}
-
-	memberInfo, err := service.AdminMember().View(ctx, adminin.MemberViewInp{Id: req.Id})
-	if err != nil {
-		return nil, err
-	}
-
-	res.MemberViewModel = memberInfo
-
-	res.PostIds, err = service.AdminMemberPost().GetMemberByIds(ctx, memberInfo.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	res.RoleIds = []int64{memberInfo.RoleId}
-	res.DeptName, err = service.AdminDept().GetName(ctx, memberInfo.DeptId)
-	if err != nil {
-		return nil, err
-	}
-	return &res, nil
+	res = new(member.ViewRes)
+	res.MemberViewModel = data
+	return
 }
 
 // List 查看列表
-func (c *cMember) List(ctx context.Context, req *member.ListReq) (*member.ListRes, error) {
-
-	var (
-		in  adminin.MemberListInp
-		res member.ListRes
-	)
-
-	if err := gconv.Scan(req, &in); err != nil {
-		return nil, err
+func (c *cMember) List(ctx context.Context, req *member.ListReq) (res *member.ListRes, err error) {
+	var in adminin.MemberListInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
 	}
 
 	list, totalCount, err := service.AdminMember().List(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
+	res = new(member.ListRes)
 	res.List = list
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-
-	return &res, nil
+	return
 }
 
-// Info 登录用户信息
-func (c *cMember) Info(ctx context.Context, req *member.InfoReq) (res *member.InfoRes, err error) {
-
-	model, err := service.AdminMember().LoginMemberInfo(ctx, req)
+// LoginInfo 登录用户信息
+func (c *cMember) LoginInfo(ctx context.Context, req *member.LoginInfoReq) (res *member.LoginInfoRes, err error) {
+	data, err := service.AdminMember().LoginMemberInfo(ctx)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	if err = gconv.Scan(model, &res); err != nil {
-		return nil, err
-	}
+	res = new(member.LoginInfoRes)
+	res.LoginMemberInfoModel = data
 	return
 }
 
 // Status 更新状态
 func (c *cMember) Status(ctx context.Context, req *member.StatusReq) (res *member.StatusRes, err error) {
-
 	var in adminin.MemberStatusInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	if err = service.AdminMember().Status(ctx, in); err != nil {
-		return nil, err
+		return
 	}
 
-	return res, nil
+	err = service.AdminMember().Status(ctx, in)
+	return
+}
+
+// Select 获取可选的后台用户选项
+func (c *cMember) Select(ctx context.Context, req *member.SelectReq) (res *member.SelectRes, err error) {
+	data, err := service.AdminMember().Select(ctx, adminin.MemberSelectInp{})
+	if err != nil {
+		return
+	}
+
+	res = (*member.SelectRes)(&data)
+	return
 }

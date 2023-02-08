@@ -1,11 +1,11 @@
 <template>
   <div>
+    <div class="n-layout-page-header">
+      <n-card :bordered="false" title="服务日志">
+        在这里开发者可以快速定位服务端在运行时产生的重要日志，方便排查系统异常和日常运维工作
+      </n-card>
+    </div>
     <n-card :bordered="false" class="proCard">
-      <div class="n-layout-page-header">
-        <n-card :bordered="false" title="服务日志">
-          在这里开发者可以快速定位服务端在运行时产生的重要日志，方便排查系统异常和日常运维
-        </n-card>
-      </div>
       <BasicForm
         @register="register"
         @submit="reloadTable"
@@ -132,13 +132,15 @@
         style: 'button',
         actions: [
           {
-            label: '详细报错',
-            onClick: handleStack.bind(null, record),
-          },
-          {
             label: '访问日志',
             onClick: handleView.bind(null, record),
             ifShow: record.sysLogId > 0,
+            type: 'default',
+          },
+          {
+            label: '堆栈',
+            onClick: handleStack.bind(null, record),
+            type: 'primary',
           },
           {
             label: '删除',

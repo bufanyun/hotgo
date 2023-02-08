@@ -17,7 +17,23 @@
         :pagination="false"
         :scroll-x="1090"
         :scrollbar-props="{ trigger: 'none' }"
-      />
+      >
+        <template #tableTitle>
+          <n-tooltip placement="top-start" trigger="hover">
+            <template #trigger>
+              <n-button type="primary" @click="reloadFields(true)" class="min-left-space">
+                <template #icon>
+                  <n-icon>
+                    <Reload />
+                  </n-icon>
+                </template>
+                重置字段
+              </n-button>
+            </template>
+            主要用于重置字段设置或数据库表字段发生变化时重新载入
+          </n-tooltip>
+        </template>
+      </BasicTable>
     </n-card>
   </n-spin>
 </template>
@@ -28,7 +44,7 @@
   import { genInfoObj, selectListObj } from '@/views/develop/code/components/model';
   import { ColumnList } from '@/api/develop/code';
   import { NButton, NCheckbox, NInput, NSelect, NTooltip, NTreeSelect } from 'naive-ui';
-  import { HelpCircleOutline } from '@vicons/ionicons5';
+  import { HelpCircleOutline, Reload } from '@vicons/ionicons5';
   import { renderIcon } from '@/utils';
   import { cloneDeep } from 'lodash-es';
 
@@ -64,14 +80,26 @@
   const columns = ref<any>([]);
   const show = ref(false);
   const dataSource = ref(formValue.value.masterColumns);
+
+  async function reloadFields(loading = false) {
+    if (loading) {
+      show.value = true;
+    }
+
+    formValue.value.masterColumns = await ColumnList({
+      name: formValue.value.dbName,
+      table: formValue.value.tableName,
+    });
+    dataSource.value = formValue.value.masterColumns;
+    if (loading) {
+      show.value = false;
+    }
+  }
+
   onMounted(async () => {
     show.value = true;
     if (formValue.value.masterColumns.length === 0) {
-      formValue.value.masterColumns = await ColumnList({
-        name: formValue.value.dbName,
-        table: formValue.value.tableName,
-      });
-      dataSource.value = formValue.value.masterColumns;
+      await reloadFields();
     }
 
     columns.value = [

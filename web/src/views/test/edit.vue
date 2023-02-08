@@ -99,6 +99,10 @@
           <n-select v-model:value="params.channel" :options="options.sys_user_channel" />
         </n-form-item>
 
+        <n-form-item label="所在城市" path="cityId">
+          <CitySelector v-model:value="params.cityId" />
+        </n-form-item>
+
         <n-form-item label="用户爱好" path="hobby">
           <n-select multiple v-model:value="params.hobby" :options="options.sys_user_hobby" />
         </n-form-item>
@@ -155,6 +159,7 @@
   import Editor from '@/components/Editor/editor.vue';
   import UploadImage from '@/components/Upload/uploadImage.vue';
   import UploadFile from '@/components/Upload/uploadFile.vue';
+  import CitySelector from '@/components/CitySelector/citySelector.vue';
   const emit = defineEmits(['reloadTable', 'updateShowModal']);
 
   interface Props {

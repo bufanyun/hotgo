@@ -13,6 +13,7 @@ import (
 type SysGenCodes struct {
 	Id            int64       `json:"id"            description:"生成ID"`
 	GenType       uint        `json:"genType"       description:"生成类型"`
+	GenTemplate   int         `json:"genTemplate"   description:"生成模板"`
 	VarName       string      `json:"varName"       description:"实体命名"`
 	Options       *gjson.Json `json:"options"       description:"配置选项"`
 	DbName        string      `json:"dbName"        description:"数据库名称"`

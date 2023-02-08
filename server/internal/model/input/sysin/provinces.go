@@ -81,3 +81,27 @@ type ProvincesUniqueIdInp struct {
 type ProvincesUniqueIdModel struct {
 	IsUnique bool `json:"unique" dc:"是否唯一"`
 }
+
+type ProvincesSelectInp struct {
+	DataType string `json:"dataType" v:"required#数据类型不能为空"  dc:"数据类型"`
+	Value    int64  `json:"value" dc:"上级ID"`
+}
+
+type ProvincesSelectModel struct {
+	List []*ProvincesSelectData `json:"list" dc:"数据列表"`
+}
+
+type ProvincesSelectData struct {
+	Label  string `json:"label"     description:"地区名称"`
+	Value  int64  `json:"value"     description:"地区ID"`
+	Level  int    `json:"level"     description:"地区等级"`
+	IsLeaf bool   `json:"isLeaf"    description:"是否还有下一级"`
+}
+
+// ProvincesCityLabelInp 获取指定城市标签
+type ProvincesCityLabelInp struct {
+	Id    int64  `json:"oldId" dc:"城市ID"`
+	Spilt string `json:"spilt" dc:"分隔符"`
+}
+
+type ProvincesCityLabelModel string

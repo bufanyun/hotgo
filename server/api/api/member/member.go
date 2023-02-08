@@ -8,9 +8,9 @@ package member
 
 import "github.com/gogf/gf/v2/frame/g"
 
-// GetIdByCodeReq 通过邀请码获取会员ID
+// GetIdByCodeReq 通过邀请码获取用户ID
 type GetIdByCodeReq struct {
-	g.Meta `path:"/member/getIdByCode" method:"post" tags:"会员" summary:"通过邀请码获取会员ID"`
+	g.Meta `path:"/member/getIdByCode" method:"post" tags:"用户" summary:"通过邀请码获取用户ID"`
 	Code   string `json:"code"   dc:"邀请码"`
 }
 type GetIdByCodeRes struct{}

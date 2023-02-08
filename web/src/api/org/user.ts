@@ -39,3 +39,11 @@ export function ResetPwd(params) {
     params,
   });
 }
+
+// 获取可选的后台用户选项
+export function GetMemberOption() {
+  return http.request({
+    url: '/member/option',
+    method: 'GET',
+  });
+}

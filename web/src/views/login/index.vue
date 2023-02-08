@@ -33,7 +33,7 @@
             <n-input
               @keyup.enter="handleSubmit"
               v-model:value="formInline.pass"
-              type="pass"
+              type="password"
               showpassOn="click"
               placeholder="请输入密码"
             >

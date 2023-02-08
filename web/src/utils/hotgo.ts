@@ -1,5 +1,7 @@
 import { Ref, UnwrapRef } from '@vue/reactivity';
 import onerrorImg from '@/assets/images/onerror.png';
+import { NTag, SelectRenderTag } from 'naive-ui';
+import { h } from 'vue';
 
 export interface Option {
   label: string;
@@ -42,9 +44,9 @@ export function getOptionTag(options: Option[], value) {
 }
 
 // 自适应模板宽度
-export function adaModalWidth(dialogWidth: Ref<UnwrapRef<string>>) {
+export function adaModalWidth(dialogWidth: Ref<UnwrapRef<string>>, def = 840) {
   const val = document.body.clientWidth;
-  const def = 840; // 默认宽度
+
   if (val <= def) {
     dialogWidth.value = '100%';
   } else {
@@ -57,4 +59,28 @@ export function adaModalWidth(dialogWidth: Ref<UnwrapRef<string>>) {
 export function errorImg(e: any): void {
   e.target.src = onerrorImg;
   e.target.onerror = null;
+}
+
+export const renderTag: SelectRenderTag = ({ option }) => {
+  return h(
+    NTag,
+    {
+      type: option.listClass as 'success' | 'warning' | 'error' | 'info' | 'primary' | 'default',
+    },
+    { default: () => option.label }
+  );
+};
+
+export function timeFix() {
+  const time = new Date();
+  const hour = time.getHours();
+  return hour < 9
+    ? '早上好'
+    : hour <= 11
+    ? '上午好'
+    : hour <= 13
+    ? '中午好'
+    : hour < 20
+    ? '下午好'
+    : '晚上好';
 }

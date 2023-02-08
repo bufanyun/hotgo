@@ -26,30 +26,27 @@ type RocketMq struct {
 
 // rewriteLog 重写日志
 func rewriteLog() {
-	level := g.Cfg().MustGet(ctx, "queue.rocketmq.logLevel", "debug").String()
-	rlog.SetLogger(&RocketMqLogger{Flag: "[rocket_mq]", LevelLog: level})
+	rlog.SetLogger(&RocketMqLogger{Flag: "[rocket_mq]", LevelLog: g.Cfg().MustGet(ctx, "queue.rocketmq.logLevel", "debug").String()})
 }
 
-// RegisterRocketProducerMust 注册并启动生产者接口实现
-func RegisterRocketProducerMust(endPoints []string, groupName string, retry int) (client MqProducer) {
+// RegisterRocketProducer 注册并启动生产者接口实现
+func RegisterRocketProducer(endPoints []string, groupName string, retry int) (client MqProducer, err error) {
 	rewriteLog()
-	var err error
 	client, err = RegisterRocketMqProducer(endPoints, groupName, retry)
 	if err != nil {
-		panic(err)
+		return
 	}
-	return client
+	return
 }
 
-// RegisterRocketConsumerMust 注册消费者
-func RegisterRocketConsumerMust(endPoints []string, groupName string) (client MqConsumer) {
+// RegisterRocketConsumer 注册消费者
+func RegisterRocketConsumer(endPoints []string, groupName string) (client MqConsumer, err error) {
 	rewriteLog()
-	var err error
 	client, err = RegisterRocketMqConsumer(endPoints, groupName)
 	if err != nil {
-		panic(err)
+		return
 	}
-	return client
+	return
 }
 
 // SendMsg 按字符串类型生产数据
@@ -90,8 +87,7 @@ func (r *RocketMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg))
 		return errors.New("RocketMq consumer not register")
 	}
 
-	err = r.consumerIns.Subscribe(topic, consumer.MessageSelector{}, func(ctx context.Context,
-		msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
+	err = r.consumerIns.Subscribe(topic, consumer.MessageSelector{}, func(ctx context.Context, msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 		for _, item := range msgs {
 			go receiveDo(MqMsg{
 				RunType: ReceiveMsg,

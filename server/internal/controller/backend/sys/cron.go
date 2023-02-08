@@ -26,91 +26,77 @@ type cCron struct{}
 func (c *cCron) Delete(ctx context.Context, req *cron.DeleteReq) (res *cron.DeleteRes, err error) {
 	var in sysin.CronDeleteInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
-	if err = service.SysCron().Delete(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+
+	err = service.SysCron().Delete(ctx, in)
+	return
 }
 
 // Edit 更新
 func (c *cCron) Edit(ctx context.Context, req *cron.EditReq) (res *cron.EditRes, err error) {
-
 	var in sysin.CronEditInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	if err = service.SysCron().Edit(ctx, in); err != nil {
-		return nil, err
+		return
 	}
 
-	return res, nil
+	err = service.SysCron().Edit(ctx, in)
+	return
 }
 
 // MaxSort 最大排序
-func (c *cCron) MaxSort(ctx context.Context, req *cron.MaxSortReq) (*cron.MaxSortRes, error) {
-
+func (c *cCron) MaxSort(ctx context.Context, req *cron.MaxSortReq) (res *cron.MaxSortRes, err error) {
 	data, err := service.SysCron().MaxSort(ctx, sysin.CronMaxSortInp{Id: req.Id})
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	var res cron.MaxSortRes
+	res = new(cron.MaxSortRes)
 	res.Sort = data.Sort
-	return &res, nil
+	return
 }
 
 // View 获取指定信息
-func (c *cCron) View(ctx context.Context, req *cron.ViewReq) (*cron.ViewRes, error) {
-
+func (c *cCron) View(ctx context.Context, req *cron.ViewReq) (res *cron.ViewRes, err error) {
 	data, err := service.SysCron().View(ctx, sysin.CronViewInp{Id: req.Id})
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	var res cron.ViewRes
+	res = new(cron.ViewRes)
 	res.CronViewModel = data
-	return &res, nil
+	return
 }
 
 // List 查看列表
-func (c *cCron) List(ctx context.Context, req *cron.ListReq) (*cron.ListRes, error) {
-
-	var (
-		in  sysin.CronListInp
-		res cron.ListRes
-	)
-
-	if err := gconv.Scan(req, &in); err != nil {
-		return nil, err
+func (c *cCron) List(ctx context.Context, req *cron.ListReq) (res *cron.ListRes, err error) {
+	var in sysin.CronListInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
 	}
 
 	list, totalCount, err := service.SysCron().List(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
+	res = new(cron.ListRes)
 	res.List = list
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-
-	return &res, nil
+	return
 }
 
 // Status 更新部门状态
 func (c *cCron) Status(ctx context.Context, req *cron.StatusReq) (res *cron.StatusRes, err error) {
-
 	var in sysin.CronStatusInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	if err = service.SysCron().Status(ctx, in); err != nil {
-		return nil, err
+		return
 	}
 
-	return res, nil
+	err = service.SysCron().Status(ctx, in)
+	return
 }
 
 // OnlineExec 在线执行
@@ -121,7 +107,7 @@ func (c *cCron) OnlineExec(ctx context.Context, req *cron.OnlineExecReq) (res *c
 
 	var in sysin.OnlineExecInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	return res, service.SysCron().OnlineExec(ctx, in)

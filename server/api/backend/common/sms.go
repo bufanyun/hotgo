@@ -17,3 +17,10 @@ type SendTestSmsReq struct {
 }
 type SendTestSmsRes struct {
 }
+
+// SendBindSmsReq 发送换绑短信
+type SendBindSmsReq struct {
+	g.Meta `path:"/sms/sendBind" tags:"短信" method:"post" summary:"发送换绑短信"`
+}
+type SendBindSmsRes struct {
+}

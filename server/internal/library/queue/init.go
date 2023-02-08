@@ -79,8 +79,9 @@ var (
 func init() {
 	mqProducerInstanceMap = make(map[string]MqProducer)
 	mqConsumerInstanceMap = make(map[string]MqConsumer)
-	get := g.Cfg().MustGet(ctx, "queue")
-	get.Scan(&config)
+	if err := g.Cfg().MustGet(ctx, "queue").Scan(&config); err != nil {
+		g.Log().Infof(ctx, "queue init err:%+v", err)
+	}
 }
 
 // InstanceConsumer 实例化消费者
@@ -100,30 +101,34 @@ func NewProducer(groupName string) (mqClient MqProducer, err error) {
 	}
 
 	if groupName == "" {
-		return mqClient, gerror.New("mq groupName is empty.")
+		err = gerror.New("mq groupName is empty.")
+		return
 	}
 
 	switch config.Driver {
 	case "rocketmq":
 		if len(config.Rocketmq.Address) == 0 {
-			g.Log().Fatal(ctx, "queue rocketmq address is not support")
+			err = gerror.New("queue rocketmq address is not support")
+			return
 		}
-		mqClient = RegisterRocketProducerMust(config.Rocketmq.Address, groupName, config.Retry)
+		mqClient, err = RegisterRocketProducer(config.Rocketmq.Address, groupName, config.Retry)
 	case "kafka":
 		if len(config.Kafka.Address) == 0 {
-			g.Log().Fatal(ctx, "queue kafka address is not support")
+			err = gerror.New("queue kafka address is not support")
+			return
 		}
-		mqClient = RegisterKafkaProducerMust(KafkaConfig{
+		mqClient, err = RegisterKafkaProducer(KafkaConfig{
 			Brokers: config.Kafka.Address,
 			GroupID: groupName,
 			Version: config.Kafka.Version,
 		})
 	case "redis":
-		address := g.Cfg().MustGet(ctx, "queue.redis.address", nil)
-		if len(address.String()) == 0 {
-			g.Log().Fatal(ctx, "queue redis address is not support")
+		address := g.Cfg().MustGet(ctx, "queue.redis.address", nil).String()
+		if len(address) == 0 {
+			err = gerror.New("queue redis address is not support")
+			return
 		}
-		mqClient = RegisterRedisMqProducerMust(RedisOption{
+		mqClient, err = RegisterRedisMqProducer(RedisOption{
 			Addr:    config.Redis.Address,
 			Passwd:  config.Redis.Pass,
 			DBnum:   config.Redis.Db,
@@ -133,14 +138,18 @@ func NewProducer(groupName string) (mqClient MqProducer, err error) {
 		}, groupName, config.Retry)
 
 	default:
-		g.Log().Fatal(ctx, "queue driver is not support")
+		err = gerror.New("queue driver is not support")
+	}
+
+	if err != nil {
+		return
 	}
 
 	mutex.Lock()
 	defer mutex.Unlock()
 	mqProducerInstanceMap[groupName] = mqClient
 
-	return mqClient, nil
+	return
 }
 
 // NewConsumer 初始化消费者实例
@@ -157,18 +166,21 @@ func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 	}
 
 	if groupName == "" {
-		return mqClient, gerror.New("mq groupName is empty.")
+		err = gerror.New("mq groupName is empty.")
+		return
 	}
 
 	switch config.Driver {
 	case "rocketmq":
 		if len(config.Rocketmq.Address) == 0 {
-			return nil, gerror.New("queue.rocketmq.address is empty.")
+			err = gerror.New("queue.rocketmq.address is empty.")
+			return
 		}
-		mqClient = RegisterRocketConsumerMust(config.Rocketmq.Address, groupName)
+		mqClient, err = RegisterRocketConsumer(config.Rocketmq.Address, groupName)
 	case "kafka":
 		if len(config.Kafka.Address) == 0 {
-			g.Log().Fatal(ctx, "queue kafka address is not support")
+			err = gerror.New("queue kafka address is not support")
+			return
 		}
 
 		clientId := "HOTGO-Consumer-" + groupName
@@ -176,7 +188,7 @@ func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 			clientId += "-" + randTag
 		}
 
-		mqClient = RegisterKafkaMqConsumerMust(KafkaConfig{
+		mqClient, err = RegisterKafkaMqConsumer(KafkaConfig{
 			Brokers:  config.Kafka.Address,
 			GroupID:  groupName,
 			Version:  config.Kafka.Version,
@@ -184,10 +196,11 @@ func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 		})
 	case "redis":
 		if len(config.Redis.Address) == 0 {
-			g.Log().Fatal(ctx, "queue redis address is not support")
+			err = gerror.New("queue redis address is not support")
+			return
 		}
 
-		mqClient = RegisterRedisMqConsumerMust(RedisOption{
+		mqClient, err = RegisterRedisMqConsumer(RedisOption{
 			Addr:    config.Redis.Address,
 			Passwd:  config.Redis.Pass,
 			DBnum:   config.Redis.Db,
@@ -196,14 +209,18 @@ func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 			5, 50, 5,
 		}, groupName)
 	default:
-		g.Log().Fatal(ctx, "queue driver is not support")
+		err = gerror.New("queue driver is not support")
+	}
+
+	if err != nil {
+		return
 	}
 
 	mutex.Lock()
 	defer mutex.Unlock()
 	mqConsumerInstanceMap[groupName] = mqClient
 
-	return mqClient, nil
+	return
 }
 
 // BodyString 返回消息体

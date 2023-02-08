@@ -8,10 +8,35 @@ package simple
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/crypto/gmd5"
+	"github.com/gogf/gf/v2/encoding/gbase64"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/glog"
 	"github.com/gogf/gf/v2/util/gconv"
+	"hotgo/internal/consts"
+	"hotgo/utility/encrypt"
 )
+
+// CheckPassword 检查密码
+func CheckPassword(input, salt, hash string) (err error) {
+	// 解密密码
+	password, err := gbase64.Decode([]byte(input))
+	if err != nil {
+		return err
+	}
+	password, err = encrypt.AesECBDecrypt(password, consts.RequestEncryptKey)
+	if err != nil {
+		return err
+	}
+
+	if hash != gmd5.MustEncryptString(string(password)+salt) {
+		err = gerror.New("用户密码不正确")
+		return
+	}
+
+	return
+}
 
 func SafeGo(ctx context.Context, f func(ctx context.Context), level ...interface{}) {
 	go func() {

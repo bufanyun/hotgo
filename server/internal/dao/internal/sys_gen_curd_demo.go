@@ -27,6 +27,7 @@ type SysGenCurdDemoColumns struct {
 	Content     string // 内容
 	Image       string // 单图
 	Attachfile  string // 附件
+	CityId      string // 所在城市
 	Switch      string // 显示开关
 	Sort        string // 排序
 	Status      string // 状态
@@ -46,6 +47,7 @@ var sysGenCurdDemoColumns = SysGenCurdDemoColumns{
 	Content:     "content",
 	Image:       "image",
 	Attachfile:  "attachfile",
+	CityId:      "city_id",
 	Switch:      "switch",
 	Sort:        "sort",
 	Status:      "status",

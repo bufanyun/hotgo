@@ -20,6 +20,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/contexts"
+	"hotgo/internal/library/hgorm/hook"
 	"hotgo/internal/library/location"
 	"hotgo/internal/library/queue"
 	"hotgo/internal/model/entity"
@@ -54,7 +55,7 @@ func (s *sSysLog) Export(ctx context.Context, in sysin.LogListInp) (err error) {
 		ReqId      string      `json:"req_id"       description:"对外id"`
 		TakeUpTime int64       `json:"take_up_time" description:"请求耗时"`
 		CreatedAt  *gtime.Time `json:"created_at"   description:"创建时间"`
-		MemberName string      `json:"member_name"`
+		MemberName string      `json:"memberName"`
 		Region     string      `json:"region"`
 	}
 
@@ -222,7 +223,7 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 // View 获取指定字典类型信息
 func (s *sSysLog) View(ctx context.Context, in sysin.LogViewInp) (res *sysin.LogViewModel, err error) {
 
-	if err = dao.SysLog.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
+	if err = dao.SysLog.Ctx(ctx).Hook(hook.CityLabel).Where("id", in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return nil, err
 	}

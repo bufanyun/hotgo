@@ -24,12 +24,12 @@ export const columns = [
   },
   {
     title: '操作人',
-    key: 'member_name',
+    key: 'memberName',
     render(row) {
       if (row.memberId === 0) {
-        return row.member_name;
+        return row.memberName;
       }
-      return row.member_name + '(' + row.memberId + ')';
+      return row.memberName + '(' + row.memberId + ')';
     },
     width: 150,
   },

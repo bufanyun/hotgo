@@ -115,6 +115,7 @@ const (
 	FormModeUploadFiles    = "UploadFiles"    // 多文件上传
 	FormModeSwitch         = "Switch"         // 开关
 	FormModeRate           = "Rate"           // 评分
+	FormModeCitySelector   = "CitySelector"   // 省市区选择
 )
 
 var FormModes = []string{
@@ -124,6 +125,7 @@ var FormModes = []string{
 	FormModeUploadImage, FormModeUploadImages, FormModeUploadFile, FormModeUploadFiles,
 	FormModeSwitch,
 	FormModeRate,
+	FormModeCitySelector,
 }
 
 var FormModeMap = map[string]string{
@@ -146,6 +148,7 @@ var FormModeMap = map[string]string{
 	FormModeUploadFiles:    "多文件上传",
 	FormModeSwitch:         "开关",
 	FormModeRate:           "评分",
+	FormModeCitySelector:   "省市区选择",
 }
 
 // 表单验证

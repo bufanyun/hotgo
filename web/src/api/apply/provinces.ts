@@ -79,3 +79,25 @@ export function CheckProvincesUniqueId(params) {
     params,
   });
 }
+
+/**
+ * 省市区选项
+ */
+export function ProvincesSelect(params) {
+  return http.request({
+    url: '/provinces/select',
+    method: 'GET',
+    params,
+  });
+}
+
+/**
+ * 获取指定城市标签
+ */
+export function GetCityLabel(params) {
+  return http.request({
+    url: '/provinces/cityLabel',
+    method: 'GET',
+    params,
+  });
+}

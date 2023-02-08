@@ -1,9 +1,9 @@
 <template>
   <div>
+    <div class="n-layout-page-header">
+      <n-card :bordered="false" title="登录日志"> 在这里会记录管理后台所有的来访登录情况 </n-card>
+    </div>
     <n-card :bordered="false" class="proCard">
-      <div class="n-layout-page-header">
-        <n-card :bordered="false" title="登录日志"> 在这里会记录管理后台所有的来访登录情况 </n-card>
-      </div>
       <BasicForm
         @register="register"
         @submit="reloadTable"

@@ -93,3 +93,19 @@ type UniqueIdReq struct {
 type UniqueIdRes struct {
 	*sysin.ProvincesUniqueIdModel
 }
+
+// SelectReq 省市区选项
+type SelectReq struct {
+	g.Meta `path:"/provinces/select" method:"get" summary:"省市区" tags:"省市区选项"`
+	sysin.ProvincesSelectInp
+}
+type SelectRes struct {
+	*sysin.ProvincesSelectModel
+}
+
+// CityLabelReq 获取指定城市标签
+type CityLabelReq struct {
+	g.Meta `path:"/provinces/cityLabel" method:"get" summary:"省市区" tags:"获取指定城市标签"`
+	sysin.ProvincesCityLabelInp
+}
+type CityLabelRes sysin.ProvincesCityLabelModel

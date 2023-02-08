@@ -21,6 +21,7 @@ web:
 killmain:
 	@kill -9 $(ps -ef|grep main|grep -v grep|awk '{print $2}')
 
+
 # Install/Update to the latest CLI tool.
 .PHONY: cli
 cli:

@@ -20,34 +20,22 @@ type cUpload struct{}
 
 // UploadImage 上传图片
 func (c *cUpload) UploadImage(ctx context.Context, req *common.UploadImageReq) (res common.UploadImageRes, err error) {
-	r := g.RequestFromCtx(ctx)
-	file := r.GetUploadFile("file")
+	file := g.RequestFromCtx(ctx).GetUploadFile("file")
 	if file == nil {
 		err = gerror.New("没有找到上传的文件")
 		return
 	}
 
-	res, err = service.CommonUpload().UploadImage(ctx, file)
-	if err != nil {
-		return
-	}
-
-	return
+	return service.CommonUpload().UploadImage(ctx, file)
 }
 
 // UploadFile 上传附件
 func (c *cUpload) UploadFile(ctx context.Context, req *common.UploadFileReq) (res common.UploadFileRes, err error) {
-	r := g.RequestFromCtx(ctx)
-	file := r.GetUploadFile("file")
+	file := g.RequestFromCtx(ctx).GetUploadFile("file")
 	if file == nil {
 		err = gerror.New("没有找到上传的文件")
 		return
 	}
 
-	res, err = service.CommonUpload().UploadFile(ctx, file)
-	if err != nil {
-		return
-	}
-
-	return
+	return service.CommonUpload().UploadFile(ctx, file)
 }

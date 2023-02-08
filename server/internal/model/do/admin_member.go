@@ -5,6 +5,7 @@
 package do
 
 import (
+	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 )
@@ -21,22 +22,20 @@ type AdminMember struct {
 	Salt               interface{} // 密码盐
 	AuthKey            interface{} // 授权令牌
 	PasswordResetToken interface{} // 密码重置令牌
+	Balance            interface{} // 余额
 	Avatar             interface{} // 头像
 	Sex                interface{} // 性别
 	Qq                 interface{} // qq
 	Email              interface{} // 邮箱
 	Mobile             interface{} // 手机号码
 	Birthday           *gtime.Time // 生日
-	ProvinceId         interface{} // 省编码
 	CityId             interface{} // 城市编码
-	CountyId           interface{} // 区域编码
 	Address            interface{} // 联系地址
-	VisitCount         interface{} // 访问次数
-	LastTime           interface{} // 最后一次登录时间
-	LastIp             interface{} // 最后一次登录ip
 	Pid                interface{} // 上级管理员ID
 	Level              interface{} // 关系树等级
 	Tree               interface{} // 关系树
+	Cash               *gjson.Json // 提现配置
+	LastActiveAt       *gtime.Time // 最后活跃时间
 	Remark             interface{} // 备注
 	Status             interface{} // 状态
 	CreatedAt          *gtime.Time // 创建时间

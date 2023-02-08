@@ -15,7 +15,7 @@ import (
 
 // MemberListReq 查询列表
 type MemberListReq struct {
-	g.Meta `path:"/role/member_list" method:"get" tags:"角色" summary:"获取角色下的会员列表"`
+	g.Meta `path:"/role/member_list" method:"get" tags:"角色" summary:"获取角色下的用户列表"`
 	form.PageReq
 	form.RangeDateReq
 	form.StatusReq

@@ -98,9 +98,9 @@ router:
       "/member/info",                   # 登录用户信息
       "/role/dynamic",                  # 获取动态路由
       "/site/config",                   # 获取后台配置
-      "/notice/pullUnreadList",         # 获取未读公告
-      "/notice/readAll",                # 设置全部已读公告
-      "/notice/upRead",                 # 更新已读公告
+      "/notice/pullMessages",           # 拉取我的消息
+      "/notice/readAll",                # 设置全部已读消息
+      "/notice/upRead",                 # 更新已读消息
       "/dictData/option",               # 数据字典
       "/dictData/options",              # 多个数据字典
     ]

@@ -62,6 +62,16 @@
             placeholder="请选择"
             :options="selectList.genType"
             v-model:value="formParams.genType"
+            :on-update:value="onUpdateValueGenType"
+          />
+        </n-form-item>
+
+        <n-form-item label="生成模板" path="genTemplate">
+          <n-select
+            placeholder="请选择"
+            :options="genTemplateOptions"
+            v-model:value="formParams.genTemplate"
+            :onFocus="onFocusGenTemplate"
           />
         </n-form-item>
 
@@ -446,6 +456,21 @@
     formParams.value.varName = option?.defVarName as string;
     formParams.value.daoName = option?.daoName as string;
     formParams.value.tableComment = option?.defTableComment as string;
+  }
+
+  const genTemplateOptions = ref([]);
+  function onFocusGenTemplate() {
+    for (let i = 0; i < selectList.value.genType?.length; i++) {
+      if (selectList.value.genType[i].value === formParams.value.genType) {
+        genTemplateOptions.value = selectList.value.genType[i].templates;
+        formParams.value.genTemplate = null;
+      }
+    }
+  }
+
+  function onUpdateValueGenType(value) {
+    formParams.value.genType = value;
+    onFocusGenTemplate();
   }
 </script>
 

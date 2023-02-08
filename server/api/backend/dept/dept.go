@@ -37,7 +37,7 @@ type ListReq struct {
 	g.Meta `path:"/dept/list" method:"get" tags:"部门" summary:"获取部门列表"`
 }
 
-type ListRes []*g.Map
+type ListRes adminin.DeptListModel
 
 // ViewReq 获取指定信息
 type ViewReq struct {
@@ -65,7 +65,7 @@ type DeleteRes struct{}
 // MaxSortReq 最大排序
 type MaxSortReq struct {
 	Id     int64 `json:"id" dc:"部门ID"`
-	g.Meta `path:"/dept/max_sort" method:"get" tags:"部门" summary:"部门最大排序"`
+	g.Meta `path:"/dept/maxSort" method:"get" tags:"部门" summary:"部门最大排序"`
 }
 type MaxSortRes struct {
 	Sort int `json:"sort" dc:"排序"`

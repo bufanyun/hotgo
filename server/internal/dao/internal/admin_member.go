@@ -29,22 +29,20 @@ type AdminMemberColumns struct {
 	Salt               string // 密码盐
 	AuthKey            string // 授权令牌
 	PasswordResetToken string // 密码重置令牌
+	Balance            string // 余额
 	Avatar             string // 头像
 	Sex                string // 性别
 	Qq                 string // qq
 	Email              string // 邮箱
 	Mobile             string // 手机号码
 	Birthday           string // 生日
-	ProvinceId         string // 省编码
 	CityId             string // 城市编码
-	CountyId           string // 区域编码
 	Address            string // 联系地址
-	VisitCount         string // 访问次数
-	LastTime           string // 最后一次登录时间
-	LastIp             string // 最后一次登录ip
 	Pid                string // 上级管理员ID
 	Level              string // 关系树等级
 	Tree               string // 关系树
+	Cash               string // 提现配置
+	LastActiveAt       string // 最后活跃时间
 	Remark             string // 备注
 	Status             string // 状态
 	CreatedAt          string // 创建时间
@@ -62,22 +60,20 @@ var adminMemberColumns = AdminMemberColumns{
 	Salt:               "salt",
 	AuthKey:            "auth_key",
 	PasswordResetToken: "password_reset_token",
+	Balance:            "balance",
 	Avatar:             "avatar",
 	Sex:                "sex",
 	Qq:                 "qq",
 	Email:              "email",
 	Mobile:             "mobile",
 	Birthday:           "birthday",
-	ProvinceId:         "province_id",
 	CityId:             "city_id",
-	CountyId:           "county_id",
 	Address:            "address",
-	VisitCount:         "visit_count",
-	LastTime:           "last_time",
-	LastIp:             "last_ip",
 	Pid:                "pid",
 	Level:              "level",
 	Tree:               "tree",
+	Cash:               "cash",
+	LastActiveAt:       "last_active_at",
 	Remark:             "remark",
 	Status:             "status",
 	CreatedAt:          "created_at",

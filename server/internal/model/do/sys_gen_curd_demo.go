@@ -19,6 +19,7 @@ type SysGenCurdDemo struct {
 	Content     interface{} // 内容
 	Image       interface{} // 单图
 	Attachfile  interface{} // 附件
+	CityId      interface{} // 所在城市
 	Switch      interface{} // 显示开关
 	Sort        interface{} // 排序
 	Status      interface{} // 状态

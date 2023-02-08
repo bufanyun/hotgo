@@ -36,7 +36,8 @@ var (
 			})
 
 			// 请求结束事件回调
-			s.BindHookHandler("/*any", ghttp.HookAfterOutput, service.Hook().GlobalLog)
+			s.BindHookHandler("/*any", ghttp.HookAfterOutput, service.Hook().AccessLog)
+			s.BindHookHandler("/*any", ghttp.HookAfterOutput, service.Hook().LastActive)
 
 			s.Group("/", func(group *ghttp.RouterGroup) {
 
@@ -74,7 +75,7 @@ var (
 			// Just run the server.
 			s.Run()
 
-			return nil
+			return
 		},
 	}
 )
@@ -83,7 +84,6 @@ func setSSL(ctx context.Context, s *ghttp.Server) {
 	config, err := service.SysConfig().GetLoadSSL(ctx)
 	if err != nil {
 		g.Log().Fatal(ctx, "ssl配置获取失败：err:%+v", err)
-		return
 	}
 	if config != nil && config.Switch {
 		s.EnableHTTPS(config.CrtPath, config.KeyPath)

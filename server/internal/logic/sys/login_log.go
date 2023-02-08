@@ -13,12 +13,16 @@ import (
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/hgorm"
+	"hotgo/internal/library/hgorm/handler"
+	"hotgo/internal/library/hgorm/hook"
+	"hotgo/internal/library/location"
 	"hotgo/internal/library/queue"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
@@ -89,18 +93,19 @@ func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list
 		{Dao: dao.SysLog, Alias: "sysLog"},
 	})
 
-	if err = mod.Fields(fields).Handler(hgorm.HandlerFilterAuth).Page(in.Page, in.PerPage).OrderDesc(dao.SysLoginLog.Columns().Id).Scan(&list); err != nil {
+	if err = mod.Fields(fields).Hook(hook.CityLabel).Handler(handler.FilterAuth).Page(in.Page, in.PerPage).OrderDesc(dao.SysLoginLog.Columns().Id).Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}
 
 	for _, v := range list {
-		// 获取省市编码对应的地区名称
-		region, err := dao.SysProvinces.GetRegion(ctx, v.SysLogProvinceId, v.SysLogCityId)
-		if err != nil {
-			return list, totalCount, err
-		}
-		v.Region = region
+		g.DumpWithType(v)
+		//// 获取省市编码对应的地区名称
+		//region, err := location.ParseRegion(ctx, v.SysLogProvinceId, v.SysLogCityId, 0)
+		//if err != nil {
+		//	return list, totalCount, err
+		//}
+		//v.Region = region
 		v.Os = useragent.GetOs(v.SysLogUserAgent)
 		v.Browser = useragent.GetBrowser(v.SysLogUserAgent)
 	}
@@ -162,9 +167,10 @@ func (s *sSysLoginLog) View(ctx context.Context, in sysin.LoginLogViewInp) (res 
 func (s *sSysLoginLog) Push(ctx context.Context, in sysin.LoginLogPushInp) {
 	var models entity.SysLoginLog
 	models.ReqId = gctx.CtxId(ctx)
-	models.MemberId = in.Response.UserId
+	models.MemberId = in.Response.Id
 	models.Username = in.Input.Username
 	models.LoginAt = gtime.Now()
+	models.LoginIp = location.GetClientIp(ghttp.RequestFromCtx(ctx))
 	models.Status = consts.StatusEnabled
 
 	if in.Err != nil {
@@ -173,7 +179,7 @@ func (s *sSysLoginLog) Push(ctx context.Context, in sysin.LoginLogPushInp) {
 	}
 
 	models.Response = gjson.New(consts.NilJsonToString)
-	if in.Response != nil && in.Response.UserId > 0 {
+	if in.Response != nil && in.Response.Id > 0 {
 		models.Response = gjson.New(in.Response)
 	}
 

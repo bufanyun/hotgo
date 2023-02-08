@@ -19,6 +19,8 @@ type RoleListInp struct {
 
 type RoleListModel struct {
 	entity.AdminRole
+	Label string `json:"label" dc:"标签"`
+	Value int64  `json:"value" dc:"键值"`
 }
 
 // RoleMemberListInp 查询列表

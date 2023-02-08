@@ -25,89 +25,75 @@ type cBlacklist struct{}
 func (c *cBlacklist) Delete(ctx context.Context, req *blacklist.DeleteReq) (res *blacklist.DeleteRes, err error) {
 	var in sysin.BlacklistDeleteInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
-	if err = service.SysBlacklist().Delete(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+
+	err = service.SysBlacklist().Delete(ctx, in)
+	return
 }
 
 // Edit 更新
 func (c *cBlacklist) Edit(ctx context.Context, req *blacklist.EditReq) (res *blacklist.EditRes, err error) {
-
 	var in sysin.BlacklistEditInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	if err = service.SysBlacklist().Edit(ctx, in); err != nil {
-		return nil, err
+		return
 	}
 
-	return res, nil
+	err = service.SysBlacklist().Edit(ctx, in)
+	return
 }
 
 // MaxSort 最大排序
-func (c *cBlacklist) MaxSort(ctx context.Context, req *blacklist.MaxSortReq) (*blacklist.MaxSortRes, error) {
-
+func (c *cBlacklist) MaxSort(ctx context.Context, req *blacklist.MaxSortReq) (res *blacklist.MaxSortRes, err error) {
 	data, err := service.SysBlacklist().MaxSort(ctx, sysin.BlacklistMaxSortInp{Id: req.Id})
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	var res blacklist.MaxSortRes
+	res = new(blacklist.MaxSortRes)
 	res.Sort = data.Sort
-	return &res, nil
+	return
 }
 
 // View 获取指定信息
-func (c *cBlacklist) View(ctx context.Context, req *blacklist.ViewReq) (*blacklist.ViewRes, error) {
-
+func (c *cBlacklist) View(ctx context.Context, req *blacklist.ViewReq) (res *blacklist.ViewRes, err error) {
 	data, err := service.SysBlacklist().View(ctx, sysin.BlacklistViewInp{Id: req.Id})
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	var res blacklist.ViewRes
+	res = new(blacklist.ViewRes)
 	res.BlacklistViewModel = data
-	return &res, nil
+	return
 }
 
 // List 查看列表
-func (c *cBlacklist) List(ctx context.Context, req *blacklist.ListReq) (*blacklist.ListRes, error) {
-
-	var (
-		in  sysin.BlacklistListInp
-		res blacklist.ListRes
-	)
-
-	if err := gconv.Scan(req, &in); err != nil {
-		return nil, err
+func (c *cBlacklist) List(ctx context.Context, req *blacklist.ListReq) (res *blacklist.ListRes, err error) {
+	var in sysin.BlacklistListInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
 	}
 
 	list, totalCount, err := service.SysBlacklist().List(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
+	res = new(blacklist.ListRes)
 	res.List = list
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-
-	return &res, nil
+	return
 }
 
 // Status 更新部门状态
 func (c *cBlacklist) Status(ctx context.Context, req *blacklist.StatusReq) (res *blacklist.StatusRes, err error) {
-
 	var in sysin.BlacklistStatusInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	if err = service.SysBlacklist().Status(ctx, in); err != nil {
-		return nil, err
+		return
 	}
 
-	return res, nil
+	err = service.SysBlacklist().Status(ctx, in)
+	return
 }

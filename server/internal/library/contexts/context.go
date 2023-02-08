@@ -50,6 +50,16 @@ func SetTakeUpTime(ctx context.Context, takeUpTime int64) {
 	Get(ctx).TakeUpTime = takeUpTime
 }
 
+// GetUser 获取用户信息
+func GetUser(ctx context.Context) *model.Identity {
+	c := Get(ctx)
+	if c == nil {
+		return nil
+	}
+
+	return c.User
+}
+
 // GetUserId 获取用户ID
 func GetUserId(ctx context.Context) int64 {
 	user := Get(ctx).User

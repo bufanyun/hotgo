@@ -23,14 +23,17 @@ type AdminNoticeColumns struct {
 	Id        string // 公告ID
 	Title     string // 公告标题
 	Type      string // 公告类型
+	Tag       string // 标签
 	Content   string // 公告内容
 	Receiver  string // 接收者
-	Reader    string // 已读人
 	Remark    string // 备注
 	Sort      string // 排序
 	Status    string // 公告状态
+	CreatedBy string // 发送人
+	UpdatedBy string // 修改人
 	CreatedAt string // 创建时间
 	UpdatedAt string // 更新时间
+	DeletedAt string // 删除时间
 }
 
 // adminNoticeColumns holds the columns for table hg_admin_notice.
@@ -38,14 +41,17 @@ var adminNoticeColumns = AdminNoticeColumns{
 	Id:        "id",
 	Title:     "title",
 	Type:      "type",
+	Tag:       "tag",
 	Content:   "content",
 	Receiver:  "receiver",
-	Reader:    "reader",
 	Remark:    "remark",
 	Sort:      "sort",
 	Status:    "status",
+	CreatedBy: "created_by",
+	UpdatedBy: "updated_by",
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
+	DeletedAt: "deleted_at",
 }
 
 // NewAdminNoticeDao creates and returns a new DAO object for table data access.

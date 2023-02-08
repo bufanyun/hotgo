@@ -20,6 +20,7 @@ export interface joinAttr {
 export const genInfoObj = {
   id: 0,
   genType: 10,
+  genTemplate: null,
   varName: '',
   options: {
     headOps: ['add', 'batchDel', 'export'],

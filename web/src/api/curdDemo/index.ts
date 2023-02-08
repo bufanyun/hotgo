@@ -18,6 +18,7 @@ export function Delete(params) {
   });
 }
 
+
 // 添加/编辑生成演示
 export function Edit(params) {
   return http.request({
@@ -26,6 +27,7 @@ export function Edit(params) {
     params,
   });
 }
+
 
 // 修改生成演示状态
 export function Status(params) {
@@ -36,6 +38,7 @@ export function Status(params) {
   });
 }
 
+
 // 操作生成演示开关
 export function Switch(params) {
   return http.request({
@@ -44,6 +47,7 @@ export function Switch(params) {
     params,
   });
 }
+
 
 // 获取生成演示指定详情
 export function View(params) {
@@ -54,6 +58,7 @@ export function View(params) {
   });
 }
 
+
 // 获取生成演示最大排序
 export function MaxSort() {
   return http.request({
@@ -61,6 +66,7 @@ export function MaxSort() {
     method: 'GET',
   });
 }
+
 
 // 导出生成演示
 export function Export(params) {

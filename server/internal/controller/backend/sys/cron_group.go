@@ -25,90 +25,76 @@ type cCronGroup struct{}
 func (c *cCronGroup) Delete(ctx context.Context, req *cron.GroupDeleteReq) (res *cron.GroupDeleteRes, err error) {
 	var in sysin.CronGroupDeleteInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
-	if err = service.SysCronGroup().Delete(ctx, in); err != nil {
-		return nil, err
-	}
-	return res, nil
+
+	err = service.SysCronGroup().Delete(ctx, in)
+	return
 }
 
 // Edit 更新
 func (c *cCronGroup) Edit(ctx context.Context, req *cron.GroupEditReq) (res *cron.GroupEditRes, err error) {
-
 	var in sysin.CronGroupEditInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	if err = service.SysCronGroup().Edit(ctx, in); err != nil {
-		return nil, err
+		return
 	}
 
+	err = service.SysCronGroup().Edit(ctx, in)
 	return res, nil
 }
 
 // MaxSort 最大排序
-func (c *cCronGroup) MaxSort(ctx context.Context, req *cron.GroupMaxSortReq) (*cron.GroupMaxSortRes, error) {
-
+func (c *cCronGroup) MaxSort(ctx context.Context, req *cron.GroupMaxSortReq) (res *cron.GroupMaxSortRes, err error) {
 	data, err := service.SysCronGroup().MaxSort(ctx, sysin.CronGroupMaxSortInp{Id: req.Id})
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	var res cron.GroupMaxSortRes
+	res = new(cron.GroupMaxSortRes)
 	res.Sort = data.Sort
-	return &res, nil
+	return
 }
 
 // View 获取指定信息
-func (c *cCronGroup) View(ctx context.Context, req *cron.GroupViewReq) (*cron.GroupViewRes, error) {
-
+func (c *cCronGroup) View(ctx context.Context, req *cron.GroupViewReq) (res *cron.GroupViewRes, err error) {
 	data, err := service.SysCronGroup().View(ctx, sysin.CronGroupViewInp{Id: req.Id})
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	var res cron.GroupViewRes
+	res = new(cron.GroupViewRes)
 	res.CronGroupViewModel = data
-	return &res, nil
+	return
 }
 
 // List 查看列表
-func (c *cCronGroup) List(ctx context.Context, req *cron.GroupListReq) (*cron.GroupListRes, error) {
-
-	var (
-		in  sysin.CronGroupListInp
-		res cron.GroupListRes
-	)
-
-	if err := gconv.Scan(req, &in); err != nil {
-		return nil, err
+func (c *cCronGroup) List(ctx context.Context, req *cron.GroupListReq) (res *cron.GroupListRes, err error) {
+	var in sysin.CronGroupListInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
 	}
 
 	list, totalCount, err := service.SysCronGroup().List(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
+	res = new(cron.GroupListRes)
 	res.List = list
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-
-	return &res, nil
+	return
 }
 
-// Status 更新部门状态
+// Status 更新状态
 func (c *cCronGroup) Status(ctx context.Context, req *cron.GroupStatusReq) (res *cron.GroupStatusRes, err error) {
-
 	var in sysin.CronGroupStatusInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-	if err = service.SysCronGroup().Status(ctx, in); err != nil {
-		return nil, err
+		return
 	}
 
+	err = service.SysCronGroup().Status(ctx, in)
 	return res, nil
 }
 
@@ -116,9 +102,9 @@ func (c *cCronGroup) Status(ctx context.Context, req *cron.GroupStatusReq) (res 
 func (c *cCronGroup) Select(ctx context.Context, req *cron.GroupSelectReq) (res *cron.GroupSelectRes, err error) {
 	list, err := service.SysCronGroup().Select(ctx, sysin.CronGroupSelectInp{})
 	if err != nil {
-		return nil, err
+		return
 	}
-	res = (*cron.GroupSelectRes)(&list)
 
-	return res, nil
+	res = (*cron.GroupSelectRes)(&list)
+	return
 }

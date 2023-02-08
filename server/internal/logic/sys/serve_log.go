@@ -16,6 +16,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/hgorm"
+	"hotgo/internal/library/hgorm/handler"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
@@ -83,7 +84,7 @@ func (s *sSysServeLog) List(ctx context.Context, in sysin.ServeLogListInp) (list
 	fields, err := hgorm.GenJoinSelect(ctx, sysin.ServeLogListModel{}, dao.SysServeLog, []*hgorm.Join{
 		{Dao: dao.SysLog, Alias: "sysLog"},
 	})
-	if err = mod.Fields(fields).Handler(hgorm.HandlerFilterAuth).Page(in.Page, in.PerPage).OrderDesc(dao.SysServeLog.Columns().Id).Scan(&list); err != nil {
+	if err = mod.Fields(fields).Handler(handler.FilterAuth).Page(in.Page, in.PerPage).OrderDesc(dao.SysServeLog.Columns().Id).Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}

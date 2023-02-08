@@ -17,7 +17,7 @@ const (
 	SmsTemplateCash     = "cash"     // 申请提现
 )
 
-// 短信状态码
+// 验证码状态
 const (
 	SmsStatusNotUsed = 1 // 未使用
 	SmsStatusUsed    = 2 // 已使用

@@ -25,7 +25,7 @@ func IsDNSName(s string) bool {
 func IsHTTPS(ctx context.Context) bool {
 	r := ghttp.RequestFromCtx(ctx)
 	if r == nil {
-		g.Log().Warningf(ctx, "IsHTTPS ctx not request")
+		g.Log().Infof(ctx, "IsHTTPS ctx not request")
 		return false
 	}
 	var (

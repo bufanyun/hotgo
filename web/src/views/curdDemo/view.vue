@@ -45,6 +45,11 @@
           </div>
         </n-descriptions-item>
 
+        <n-descriptions-item>
+          <template #label>所在城市</template>
+          {{ formValue.cityId }}
+        </n-descriptions-item>
+
         <n-descriptions-item label="显示开关">
           <n-switch v-model:value="formValue.switch" :unchecked-value="2" :checked-value="1" :disabled="true"
         /></n-descriptions-item>

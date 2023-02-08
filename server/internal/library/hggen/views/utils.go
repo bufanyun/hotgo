@@ -1,4 +1,4 @@
-// Package hggen
+// Package views
 // @Link  https://github.com/bufanyun/hotgo
 // @Copyright  Copyright (c) 2022 HotGo CLI
 // @Author  Ms <133814250@qq.com>
@@ -8,9 +8,12 @@ package views
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
+	"hotgo/internal/model"
 	"hotgo/internal/model/input/sysin"
 	"io/ioutil"
 	"strings"
@@ -93,4 +96,42 @@ func ImportSql(ctx context.Context, path string) error {
 	}
 
 	return nil
+}
+
+func checkCurdPath(temp *model.GenerateAppCrudTemplate) (err error) {
+	if temp == nil {
+		return gerror.New("生成模板配置不能为空")
+	}
+
+	tip := `生成模板配置参数'%s'路径不存在，请先创建路径`
+
+	if !gfile.Exists(temp.TemplatePath) {
+		return gerror.Newf(tip, "TemplatePath")
+	}
+	if !gfile.Exists(temp.ApiPath) {
+		return gerror.Newf(tip, "ApiPath")
+	}
+	if !gfile.Exists(temp.InputPath) {
+		return gerror.Newf(tip, "InputPath")
+	}
+	if !gfile.Exists(temp.ControllerPath) {
+		return gerror.Newf(tip, "ControllerPath")
+	}
+	if !gfile.Exists(temp.LogicPath) {
+		return gerror.Newf(tip, "LogicPath")
+	}
+	if !gfile.Exists(temp.RouterPath) {
+		return gerror.Newf(tip, "RouterPath")
+	}
+	if !gfile.Exists(temp.SqlPath) {
+		return gerror.Newf(tip, "SqlPath")
+	}
+	if !gfile.Exists(temp.WebApiPath) {
+		return gerror.Newf(tip, "WebApiPath")
+	}
+	if !gfile.Exists(temp.WebViewsPath) {
+		return gerror.Newf(tip, "WebViewsPath")
+	}
+
+	return
 }

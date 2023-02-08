@@ -17,6 +17,7 @@ type SysLoginLog struct {
 	Username  string      `json:"username"  description:"用户名"`
 	Response  *gjson.Json `json:"response"  description:"响应数据"`
 	LoginAt   *gtime.Time `json:"loginAt"   description:"登录时间"`
+	LoginIp   string      `json:"loginIp"   description:"登录IP"`
 	ErrMsg    string      `json:"errMsg"    description:"错误提示"`
 	Status    int         `json:"status"    description:"状态"`
 	CreatedAt *gtime.Time `json:"createdAt" description:"创建时间"`

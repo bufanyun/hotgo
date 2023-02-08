@@ -1,82 +1,84 @@
 <template>
-  <div class="w-full">
-    <div class="upload">
-      <div class="upload-card">
-        <!--图片列表-->
-        <div
-          class="upload-card-item"
-          :style="getCSSProperties"
-          v-for="(item, index) in imgList"
-          :key="`img_${index}`"
-        >
-          <div class="upload-card-item-info">
-            <div class="img-box">
-              <template v-if="fileType === 'image'">
-                <img :src="item" @error="errorImg($event)" />
-              </template>
-              <template v-else>
-                <n-avatar :style="fileAvatarCSS">{{ getFileExt(item) }}</n-avatar>
-              </template>
-            </div>
-            <div class="img-box-actions">
-              <template v-if="fileType === 'image'">
-                <n-icon size="18" class="mx-2 action-icon" @click="preview(item)">
-                  <EyeOutlined />
+  <div>
+    <div class="w-full">
+      <div class="upload">
+        <div class="upload-card">
+          <!--图片列表-->
+          <div
+            class="upload-card-item"
+            :style="getCSSProperties"
+            v-for="(item, index) in imgList"
+            :key="`img_${index}`"
+          >
+            <div class="upload-card-item-info">
+              <div class="img-box">
+                <template v-if="fileType === 'image'">
+                  <img :src="item" @error="errorImg($event)" />
+                </template>
+                <template v-else>
+                  <n-avatar :style="fileAvatarCSS">{{ getFileExt(item) }}</n-avatar>
+                </template>
+              </div>
+              <div class="img-box-actions">
+                <template v-if="fileType === 'image'">
+                  <n-icon size="18" class="mx-2 action-icon" @click="preview(item)">
+                    <EyeOutlined />
+                  </n-icon>
+                </template>
+                <template v-else>
+                  <n-icon size="18" class="mx-2 action-icon" @click="download(item)">
+                    <CloudDownloadOutlined />
+                  </n-icon>
+                </template>
+                <n-icon size="18" class="mx-2 action-icon" @click="remove(index)">
+                  <DeleteOutlined />
                 </n-icon>
-              </template>
-              <template v-else>
-                <n-icon size="18" class="mx-2 action-icon" @click="download(item)">
-                  <CloudDownloadOutlined />
-                </n-icon>
-              </template>
-              <n-icon size="18" class="mx-2 action-icon" @click="remove(index)">
-                <DeleteOutlined />
-              </n-icon>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!--上传图片-->
-        <div
-          class="upload-card-item upload-card-item-select-picture"
-          :style="getCSSProperties"
-          v-if="imgList.length < maxNumber"
-        >
-          <n-upload
-            v-bind="$props"
-            :file-list-style="{ display: 'none' }"
-            @before-upload="beforeUpload"
-            @finish="finish"
+          <!--上传图片-->
+          <div
+            class="upload-card-item upload-card-item-select-picture"
+            :style="getCSSProperties"
+            v-if="imgList.length < maxNumber"
           >
-            <div class="flex flex-col justify-center">
-              <n-icon size="18" class="m-auto">
-                <PlusOutlined />
-              </n-icon>
-              <span class="upload-title">{{ uploadTitle }}</span>
-            </div>
-          </n-upload>
+            <n-upload
+              v-bind="$props"
+              :file-list-style="{ display: 'none' }"
+              @before-upload="beforeUpload"
+              @finish="finish"
+            >
+              <div class="flex flex-col justify-center">
+                <n-icon size="18" class="m-auto">
+                  <PlusOutlined />
+                </n-icon>
+                <span class="upload-title">{{ uploadTitle }}</span>
+              </div>
+            </n-upload>
+          </div>
         </div>
       </div>
+
+      <!--上传图片-->
+      <n-space>
+        <n-alert title="提示" type="info" v-if="helpText" class="flex w-full">
+          {{ helpText }}
+        </n-alert>
+      </n-space>
     </div>
 
-    <!--上传图片-->
-    <n-space>
-      <n-alert title="提示" type="info" v-if="helpText" class="flex w-full">
-        {{ helpText }}
-      </n-alert>
-    </n-space>
+    <!--预览图片-->
+    <n-modal
+      v-model:show="showModal"
+      preset="card"
+      title="预览"
+      :bordered="false"
+      :style="{ width: '520px' }"
+    >
+      <img :src="previewUrl" />
+    </n-modal>
   </div>
-
-  <!--预览图片-->
-  <n-modal
-    v-model:show="showModal"
-    preset="card"
-    title="预览"
-    :bordered="false"
-    :style="{ width: '520px' }"
-  >
-    <img :src="previewUrl" />
-  </n-modal>
 </template>
 
 <script lang="ts">
@@ -87,7 +89,7 @@
   import { ResultEnum } from '@/enums/httpEnum';
   import componentSetting from '@/settings/componentSetting';
   import { useGlobSetting } from '@/hooks/setting';
-  import { isJsonString, isNullOrUnDef } from '@/utils/is';
+  import { isArray, isJsonString, isNullOrUnDef } from '@/utils/is';
   import { getFileExt } from '@/utils/urlUtils';
   import { errorImg } from '@/utils/hotgo';
   const globSetting = useGlobSetting();
@@ -131,6 +133,10 @@
         () => {
           loadValue(props.value);
           return;
+        },
+        {
+          immediate: true,
+          deep: true,
         }
       );
 
@@ -139,12 +145,16 @@
         () => {
           loadValue(props.values);
           return;
+        },
+        {
+          immediate: true,
+          deep: true,
         }
       );
 
       // 加载默认
       function loadValue(value: any) {
-        if (value === null) {
+        if (value === undefined || value === null) {
           return;
         }
 
@@ -161,6 +171,10 @@
         } else {
           // 多图模式
           data = value;
+        }
+
+        if (!isArray(data) || data.length === 0) {
+          return;
         }
 
         state.imgList = data.map((item) => {

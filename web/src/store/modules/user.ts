@@ -7,13 +7,41 @@ import { getConfig, getUserInfo, login } from '@/api/system/user';
 
 const Storage = createStorage({ storage: localStorage });
 
+export interface UserInfoState {
+  id: number;
+  deptName: string;
+  roleName: string;
+  cityLabel: string;
+  permissions: string[];
+  username: string;
+  realName: string;
+  avatar: string;
+  balance: number;
+  sex: number;
+  qq: string;
+  email: string;
+  mobile: string;
+  birthday: string;
+  cityId: number;
+  address: string;
+  cash: {
+    name: string;
+    account: string;
+    payeeCode: string;
+  };
+  createdAt: string;
+  loginCount: number;
+  lastLoginAt: string;
+  lastLoginIp: string;
+}
+
 export interface IUserState {
   token: string;
   username: string;
-  welcome: string;
+  realName: string;
   avatar: string;
   permissions: any[];
-  info: any;
+  info: UserInfoState | null;
   config: any;
 }
 
@@ -22,11 +50,11 @@ export const useUserStore = defineStore({
   state: (): IUserState => ({
     token: Storage.get(ACCESS_TOKEN, ''),
     username: '',
-    welcome: '',
+    realName: '',
     avatar: '',
     permissions: [],
-    info: Storage.get(CURRENT_USER, {}),
-    config: Storage.get(CURRENT_CONFIG, {}),
+    info: Storage.get(CURRENT_USER, null),
+    config: Storage.get(CURRENT_CONFIG, null),
   }),
   getters: {
     getToken(): string {
@@ -35,13 +63,16 @@ export const useUserStore = defineStore({
     getAvatar(): string {
       return this.avatar;
     },
-    getNickname(): string {
+    getUsername(): string {
       return this.username;
+    },
+    getRealName(): string {
+      return this.realName;
     },
     getPermissions(): [any][] {
       return this.permissions;
     },
-    getUserInfo(): object {
+    getUserInfo(): UserInfoState | null {
       return this.info;
     },
     getConfig(): object {
@@ -55,10 +86,16 @@ export const useUserStore = defineStore({
     setAvatar(avatar: string) {
       this.avatar = avatar;
     },
-    setPermissions(permissions) {
+    setUsername(username: string) {
+      this.username = username;
+    },
+    setRealName(realName: string) {
+      this.realName = realName;
+    },
+    setPermissions(permissions: string[]) {
       this.permissions = permissions;
     },
-    setUserInfo(info) {
+    setUserInfo(info: UserInfoState | null) {
       this.info = info;
     },
     setConfig(config) {
@@ -69,7 +106,6 @@ export const useUserStore = defineStore({
       try {
         const response = await login(userInfo);
         const { data, code } = response;
-        console.log('data:' + JSON.stringify(data));
         if (code === ResultEnum.SUCCESS) {
           const ex = 7 * 24 * 60 * 60 * 1000;
           storage.set(ACCESS_TOKEN, data.token, ex);
@@ -86,8 +122,7 @@ export const useUserStore = defineStore({
 
     // 获取用户信息
     GetInfo() {
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const that = this;
+      const that: any = this;
       return new Promise((resolve, reject) => {
         getUserInfo()
           .then((res) => {
@@ -96,10 +131,12 @@ export const useUserStore = defineStore({
               const permissionsList = result.permissions;
               that.setPermissions(permissionsList);
               that.setUserInfo(result);
+              that.setAvatar(result.avatar);
+              that.setUsername(result.username);
+              that.setRealName(result.realName);
             } else {
               reject(new Error('getInfo: permissionsList must be a non-null array !'));
             }
-            that.setAvatar(result.avatar);
             resolve(res);
           })
           .catch((error) => {
@@ -107,9 +144,8 @@ export const useUserStore = defineStore({
           });
       });
     },
-    // 获取用户信息
+    // 获取用户配置
     GetConfig() {
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const that = this;
       return new Promise((resolve, reject) => {
         getConfig()
@@ -127,7 +163,7 @@ export const useUserStore = defineStore({
     // 登出
     async logout() {
       this.setPermissions([]);
-      this.setUserInfo('');
+      this.setUserInfo(null);
       storage.remove(ACCESS_TOKEN);
       storage.remove(CURRENT_USER);
       return Promise.resolve('');

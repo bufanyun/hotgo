@@ -10,6 +10,7 @@ import (
 	"context"
 	"hotgo/internal/model/input/websocketin"
 	"hotgo/internal/websocket"
+	"hotgo/utility/simple"
 )
 
 // Send 通过http发送ws消息
@@ -19,10 +20,11 @@ type send struct{}
 
 // ToTag 发送标签消息
 func (c *send) ToTag(ctx context.Context, req *websocketin.SendToTagReq) (res *websocketin.SendToTagRes, err error) {
-
-	go websocket.SendToTag(req.Tag, &websocket.WResponse{
-		Event: req.Response.Event,
-		Data:  req.Response,
+	simple.SafeGo(ctx, func(ctx context.Context) {
+		websocket.SendToTag(req.Tag, &websocket.WResponse{
+			Event: req.Response.Event,
+			Data:  req.Response,
+		})
 	})
 	return
 }

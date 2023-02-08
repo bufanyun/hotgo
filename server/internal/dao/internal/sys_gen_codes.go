@@ -22,6 +22,7 @@ type SysGenCodesDao struct {
 type SysGenCodesColumns struct {
 	Id            string // 生成ID
 	GenType       string // 生成类型
+	GenTemplate   string // 生成模板
 	VarName       string // 实体命名
 	Options       string // 配置选项
 	DbName        string // 数据库名称
@@ -38,6 +39,7 @@ type SysGenCodesColumns struct {
 var sysGenCodesColumns = SysGenCodesColumns{
 	Id:            "id",
 	GenType:       "gen_type",
+	GenTemplate:   "gen_template",
 	VarName:       "var_name",
 	Options:       "options",
 	DbName:        "db_name",

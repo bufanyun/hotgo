@@ -27,6 +27,10 @@
               />
             </n-form-item>
 
+            <n-form-item label="网站域名" path="basicDomain">
+              <n-input v-model:value="formValue.basicDomain" placeholder="请输入网站域名" />
+            </n-form-item>
+
             <n-form-item label="用户是否可注册开关" path="basicRegisterSwitch">
               <n-radio-group
                 v-model:value="formValue.basicRegisterSwitch"
@@ -122,6 +126,7 @@
   const formValue = ref({
     basicName: 'HotGo',
     basicLogo: '',
+    basicDomain: 'https://hotgo.facms.cn',
     basicIcpCode: '',
     basicLoginCode: 0,
     basicRegisterSwitch: 1,
