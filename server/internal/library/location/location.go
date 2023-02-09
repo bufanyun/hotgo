@@ -200,5 +200,9 @@ func GetClientIp(r *ghttp.Request) string {
 	if gstr.Contains(ip, ",") {
 		ip = gstr.TrimStr(ip, ",", -1)
 	}
+
+	if gstr.Contains(ip, ", ") {
+		ip = gstr.TrimStr(ip, ", ", -1)
+	}
 	return ip
 }
