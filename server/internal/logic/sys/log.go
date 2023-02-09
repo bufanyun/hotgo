@@ -104,29 +104,40 @@ func (s *sSysLog) RealWrite(ctx context.Context, commonLog entity.SysLog) (err e
 }
 
 // AutoLog 根据配置自动记录请求日志
-func (s *sSysLog) AutoLog(ctx context.Context) (err error) {
-	config, err := service.SysConfig().GetLoadLog(ctx)
-	if err != nil {
-		return err
-	}
+func (s *sSysLog) AutoLog(ctx context.Context) error {
+	return g.Try(ctx, func(ctx context.Context) {
+		var err error
+		defer func() {
+			if err != nil {
+				panic(err)
+			}
+		}()
 
-	if !config.Switch {
-		return nil
-	}
+		config, err := service.SysConfig().GetLoadLog(ctx)
+		if err != nil {
+			return
+		}
 
-	data := s.AnalysisLog(ctx)
-	if ok := validate.InSliceExistStr(config.Module, data.Module); !ok {
-		return nil
-	}
+		if !config.Switch {
+			return
+		}
 
-	if ok := validate.InSliceExistStr(config.SkipCode, gconv.String(data.ErrorCode)); ok {
-		return nil
-	}
+		data := s.AnalysisLog(ctx)
+		if ok := validate.InSliceExistStr(config.Module, data.Module); !ok {
+			return
+		}
 
-	if config.Queue {
-		return queue.Push(consts.QueueLogTopic, data)
-	}
-	return s.RealWrite(ctx, data)
+		if ok := validate.InSliceExistStr(config.SkipCode, gconv.String(data.ErrorCode)); ok {
+			return
+		}
+
+		if config.Queue {
+			err = queue.Push(consts.QueueLogTopic, data)
+			return
+		}
+		err = s.RealWrite(ctx, data)
+		return
+	})
 }
 
 // AnalysisLog 解析日志数据

@@ -82,7 +82,7 @@
             <n-gi>
               <n-form-item label="绑定角色" path="roleId">
                 <n-tree-select
-                  :default-value="formParams.roleId"
+                  :default-value="formParams.roleId.toString()"
                   :options="roleList"
                   @update:value="handleUpdateRoleValue"
                   :default-expand-all="true"

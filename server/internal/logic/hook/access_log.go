@@ -7,11 +7,13 @@
 package hook
 
 import (
+	"context"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/service"
+	"hotgo/utility/simple"
 )
 
 // AccessLog 访问日志
@@ -29,9 +31,9 @@ func (s *sHook) AccessLog(r *ghttp.Request) {
 	// 计算运行耗时
 	contexts.SetTakeUpTime(ctx, gtime.TimestampMilli()-r.EnterTime)
 
-	go func() {
+	simple.SafeGo(ctx, func(ctx context.Context) {
 		if err := service.SysLog().AutoLog(ctx); err != nil {
-			g.Log().Info(ctx, "hook AccessLog err:", err)
+			g.Log().Warningf(ctx, "hook AccessLog err:%+v", err)
 		}
-	}()
+	})
 }

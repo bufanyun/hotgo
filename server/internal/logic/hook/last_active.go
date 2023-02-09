@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/os/gtimer"
 	"hotgo/internal/library/contexts"
+	"hotgo/utility/simple"
 	"sync"
 	"time"
 )
@@ -69,12 +70,15 @@ func (s *sHook) LastActive(r *ghttp.Request) {
 	}
 
 	if allow(memberId) {
-		_, err := g.Model("admin_member").Ctx(ctx).
-			Where("id", memberId).
-			Data(g.Map{"last_active_at": gtime.Now()}).
-			Update()
-		if err != nil {
-			g.Log().Warningf(ctx, "hook LastActive err:%+v, memberId:%v", err, memberId)
-		}
+		simple.SafeGo(ctx, func(ctx context.Context) {
+			_, err := g.Model("admin_member").Ctx(ctx).
+				Where("id", memberId).
+				WhereLT("last_active_at", gtime.Now()).
+				Data(g.Map{"last_active_at": gtime.Now()}).
+				Update()
+			if err != nil {
+				g.Log().Warningf(ctx, "hook LastActive err:%+v, memberId:%v", err, memberId)
+			}
+		})
 	}
 }
