@@ -146,14 +146,17 @@ func (s *sAdminNotice) Status(ctx context.Context, in adminin.NoticeStatusInp) (
 }
 
 // MaxSort 最大排序
-func (s *sAdminNotice) MaxSort(ctx context.Context, in adminin.NoticeMaxSortInp) (*adminin.NoticeMaxSortModel, error) {
-	var res adminin.NoticeMaxSortModel
-	if err := s.Model(ctx).Order("sort desc").Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
+func (s *sAdminNotice) MaxSort(ctx context.Context, in adminin.NoticeMaxSortInp) (res *adminin.NoticeMaxSortModel, err error) {
+	if err = dao.AdminNotice.Ctx(ctx).Order("sort desc").Scan(&res); err != nil {
+		return
 	}
+
+	if res == nil {
+		res = new(adminin.NoticeMaxSortModel)
+	}
+
 	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
-	return &res, nil
+	return
 }
 
 // View 获取指定字典类型信息

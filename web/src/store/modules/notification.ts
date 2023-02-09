@@ -91,7 +91,11 @@ export const notificationStore = defineStore({
       });
     },
     getUnreadCount() {
-      return this.notifyUnread + this.noticeUnread + this.letterUnread;
+      const count = this.notifyUnread + this.noticeUnread + this.letterUnread;
+      if (count > 0) {
+        return count;
+      }
+      return 0;
     },
   },
 });

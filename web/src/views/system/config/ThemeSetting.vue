@@ -58,17 +58,10 @@
   function formSubmit() {
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formValue.value:' + JSON.stringify(formValue.value));
-
-        updateConfig({ group: group.value, list: formValue.value })
-          .then((res) => {
-            console.log('res:' + JSON.stringify(res));
-            message.success('更新成功');
-            load();
-          })
-          .catch((error) => {
-            message.error(error.toString());
-          });
+        updateConfig({ group: group.value, list: formValue.value }).then((_res) => {
+          message.success('更新成功');
+          load();
+        });
       } else {
         message.error('验证失败，请填写完整信息');
       }
@@ -84,14 +77,10 @@
     new Promise((_resolve, _reject) => {
       getConfig({ group: group.value })
         .then((res) => {
-          show.value = false;
-          // state.formValue.watermarkClarity = res;
           formValue.value = res.list;
-          console.log('res:' + JSON.stringify(res));
         })
-        .catch((error) => {
+        .finally(() => {
           show.value = false;
-          message.error(error.toString());
         });
     });
   }

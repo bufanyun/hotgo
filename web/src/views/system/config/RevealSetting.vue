@@ -179,10 +179,6 @@
         });
       }
 
-      function resetForm() {
-        formRef.value.restoreValidation();
-      }
-
       return {
         formRef,
         ...toRefs(state),
@@ -191,7 +187,6 @@
         pricePreciseNumList,
         rules,
         formSubmit,
-        resetForm,
       };
     },
   });

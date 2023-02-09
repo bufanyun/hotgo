@@ -55,6 +55,7 @@ type GenCodesListInp struct {
 
 type GenCodesListModel struct {
 	entity.SysGenCodes
+	GenTemplateGroup string `json:"genTemplateGroup" dc:"生成模板组名"`
 }
 
 // GenCodesStatusInp 更新状态

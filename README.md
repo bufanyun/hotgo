@@ -20,7 +20,7 @@
 		<a href="https://vitejs.dev/" target="_blank">
 		    <img src="https://img.shields.io/badge/vite-%3E2.0.0-yellow" alt="vite">
 		</a>
-		<a href="https://raw.githubusercontent.com/tusen-ai/naive-ui/main/LICENSE" target="_blank">
+		<a href="https://github.com/bufanyun/hotgo/blob/v2.0/LICENSE" target="_blank">
 		    <img src="https://img.shields.io/badge/license-MIT-success" alt="license">
 		</a>
 	</p>
@@ -47,20 +47,20 @@
 2. 部门管理：配置系统组织机构（公司、部门、岗位），树结构展现支持数据权限。
 3. 岗位管理：配置系统用户所属担任职务。
 4. 菜单管理：配置系统菜单，操作权限，按钮权限标识等。
-5. 角色管理：角色菜单权限分配、设置角色按机构进行数据范围权限划分。
+5. 角色管理：角色菜单权限分配、设置角色按机构或按上下级关系进行数据范围权限划分。
 6. 字典管理：对系统中经常使用的一些较为固定的数据进行维护。
 7. 配置管理：对系统动态配置常用参数。
 8. 操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
 9. 登录日志：系统登录日志记录查询包含登录异常。
-10. 调度日志：服务端运行所产生的警告、异常、崩溃日志的详细数据和堆栈信息。
+10. 服务日志：服务端运行所产生的警告、异常、崩溃日志的详细数据和堆栈信息。
 11. 在线用户：当前系统中活跃用户状态监控。
 12. 定时任务：在线（添加、修改、删除)任务调度包含执行结果日志。
 13. 代码生成：支持自动化生成前后端代码。CURD关联表、树表、消息队列、定时任务一键生成等。
 14. 服务监控：监视当前系统CPU、内存、磁盘、网络、堆栈等相关信息。
 15. 附件管理：文件上传，多种上传方式适配。
-16. 消息队列：同时兼容 kafka、redis、rocketmq，一键配置切换到自己想用的MQ。
-17. 通知公告：采用websocket及时推送在线用户最新公告。
-18. 地区编码：整合国内通用省市区编码，运用于项目于一身。
+16. 消息队列：同时兼容 kafka、redis、rocketmq、磁盘队列，一键配置切换到场景适用的MQ。
+17. 通知公告：采用websocket实时推送在线用户最新通知、公告、私信消息。
+18. 地区编码：整合国内通用省市区编码，运用于项目于一身，支持动态省市区选项。
 19. 常用工具：集成常用的工具包和命令行工具，可以快速开发自定义命令行，多种启动入口。
 
 
@@ -201,7 +201,7 @@ web端：
 
 * 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-* 版权所有Copyright © 2020-2024 by Ms (https://github.com/bufanyun/hotgo)
+* 版权所有Copyright © 2020-2023 by Ms (https://github.com/bufanyun/hotgo)
 
 * All rights reserved。
 
@@ -223,7 +223,7 @@ web端：
 
 
 ## License
-[MIT © HotGo-2021](./LICENSE)
+[MIT © HotGo-2023](./LICENSE)
   
 
 

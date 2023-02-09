@@ -19,7 +19,7 @@
                 placeholder="请输入"
                 v-model:value="formValue.uploadImageSize"
               >
-                <template #suffix> MB </template>
+                <template #suffix> MB</template>
               </n-input-number>
             </n-form-item>
             <n-form-item label="图片类型限制" path="uploadImageType">
@@ -32,7 +32,7 @@
                 placeholder="请输入"
                 v-model:value="formValue.uploadFileSize"
               >
-                <template #suffix> MB </template>
+                <template #suffix> MB</template>
               </n-input-number>
             </n-form-item>
             <n-form-item label="文件类型限制" path="uploadFileType">
@@ -48,19 +48,33 @@
             <n-divider title-placement="left">UCloud存储</n-divider>
             <n-form-item label="公钥" path="uploadUCloudPublicKey">
               <n-input
-                v-model:value="formValue.uploadUCloudPublicKey"
-                placeholder=""
                 type="password"
-              />
+                v-model:value="formValue.uploadUCloudPublicKey"
+                show-password-on="click"
+              >
+                <template #password-visible-icon>
+                  <n-icon :size="16" :component="GlassesOutline" />
+                </template>
+                <template #password-invisible-icon>
+                  <n-icon :size="16" :component="Glasses" />
+                </template>
+              </n-input>
               <template #feedback>获取地址：https://console.ucloud.cn/ufile/token</template>
             </n-form-item>
 
             <n-form-item label="私钥" path="uploadUCloudPrivateKey">
               <n-input
-                v-model:value="formValue.uploadUCloudPrivateKey"
-                placeholder=""
                 type="password"
-              />
+                v-model:value="formValue.uploadUCloudPrivateKey"
+                show-password-on="click"
+              >
+                <template #password-visible-icon>
+                  <n-icon :size="16" :component="GlassesOutline" />
+                </template>
+                <template #password-invisible-icon>
+                  <n-icon :size="16" :component="Glasses" />
+                </template>
+              </n-input>
             </n-form-item>
             <n-form-item label="存储路径" path="uploadUCloudPath">
               <n-input v-model:value="formValue.uploadUCloudPath" placeholder="" />
@@ -94,9 +108,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted } from 'vue';
+  import { onMounted, ref } from 'vue';
   import { useMessage } from 'naive-ui';
   import { getConfig, updateConfig } from '@/api/sys/config';
+  import { Glasses, GlassesOutline } from '@vicons/ionicons5';
 
   const group = ref('upload');
   const show = ref(false);
@@ -142,10 +157,7 @@
   function formSubmit() {
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formValue.value:' + JSON.stringify(formValue.value));
-
-        updateConfig({ group: group.value, list: formValue.value }).then((res) => {
-          console.log('res:' + JSON.stringify(res));
+        updateConfig({ group: group.value, list: formValue.value }).then((_res) => {
           message.success('更新成功');
           load();
         });
@@ -164,13 +176,10 @@
     new Promise((_resolve, _reject) => {
       getConfig({ group: group.value })
         .then((res) => {
-          show.value = false;
           formValue.value = res.list;
-          console.log('res:' + JSON.stringify(res));
         })
-        .catch((error) => {
+        .finally(() => {
           show.value = false;
-          message.error(error.toString());
         });
     });
   }

@@ -1,5 +1,5 @@
 import { h, ref } from 'vue';
-import { NAvatar, NImage, NTag, NSwitch, NRate } from 'naive-ui';
+import { NAvatar, NImage, NTag, NSwitch, NRate, NButton } from 'naive-ui';
 import { cloneDeep } from 'lodash-es';
 import { FormSchema } from '@/components/Form';
 import { Dicts } from '@/api/dict/dict';
@@ -9,6 +9,8 @@ import { getFileExt } from '@/utils/urlUtils';
 import { defRangeShortcuts, defShortcuts, formatToDate } from '@/utils/dateUtil';
 import { format } from 'date-fns';
 import { getOptionLabel, getOptionTag, Options, errorImg } from '@/utils/hotgo';
+import { renderIcon, renderTooltip } from '@/utils';
+import { HelpCircleOutline } from '@vicons/ionicons5';
 
 export interface State {
   id: number;
@@ -99,7 +101,23 @@ export const columns = [
     width: 80,
   },
   {
-    title: '链路ID',
+    title(_column) {
+      return renderTooltip(
+        h(
+          NButton,
+          {
+            ghost: true,
+            strong: true,
+            tertiary: true,
+            size: 'small',
+            text: true,
+            iconPlacement: 'right',
+          },
+          { default: () => '链路ID', icon: renderIcon(HelpCircleOutline) }
+        ),
+        'hotgo默认支持链路追踪，如果是web请求产生的日志则还可以关联对应的访问日志'
+      );
+    },
     key: 'traceId',
     width: 280,
     render(row) {

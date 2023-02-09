@@ -162,6 +162,34 @@ func (s *sSysGenCodes) List(ctx context.Context, in sysin.GenCodesListInp) (list
 		return list, totalCount, err
 	}
 
+	typeSelect, err := hggen.GenTypeSelect(ctx)
+	if err != nil {
+		return
+	}
+
+	getTemplateGroup := func(row *sysin.GenCodesListModel) string {
+		if row == nil {
+			return ""
+		}
+		for _, v := range typeSelect {
+			if v.Value == int(row.GenType) {
+				for index, template := range v.Templates {
+					if index == row.GenTemplate {
+						return template.Label
+					}
+				}
+			}
+		}
+
+		return ""
+	}
+
+	if len(list) > 0 {
+		for _, v := range list {
+			v.GenTemplateGroup = getTemplateGroup(v)
+		}
+	}
+
 	return list, totalCount, err
 }
 

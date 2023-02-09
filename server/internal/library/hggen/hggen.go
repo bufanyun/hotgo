@@ -49,36 +49,11 @@ func TableColumns(ctx context.Context, in sysin.GenCodesColumnListInp) (fields [
 
 func TableSelects(ctx context.Context, in sysin.GenCodesSelectsInp) (res *sysin.GenCodesSelectsModel, err error) {
 	res = new(sysin.GenCodesSelectsModel)
-	for k, v := range consts.GenCodesTypeNameMap {
-		row := &sysin.GenTypeSelect{
-			Value:     k,
-			Name:      v,
-			Label:     v,
-			Templates: make(form.Selects, 0),
-		}
-
-		confName, ok := consts.GenCodesTypeConfMap[k]
-		if ok {
-			var temps []*model.GenerateAppCrudTemplate
-			err = g.Cfg().MustGet(ctx, "hggen.application."+confName+".templates").Scan(&temps)
-			if err != nil {
-				return
-			}
-			if len(temps) > 0 {
-				for index, temp := range temps {
-					row.Templates = append(row.Templates, &form.Select{
-						Value: index,
-						Label: temp.Group,
-						Name:  temp.Group,
-					})
-				}
-				sort.Sort(row.Templates)
-			}
-		}
-
-		res.GenType = append(res.GenType, row)
+	res.GenType, err = GenTypeSelect(ctx)
+	if err != nil {
+		return
 	}
-	sort.Sort(res.GenType)
+
 	res.Db = DbSelect(ctx)
 
 	for k, v := range consts.GenCodesStatusNameMap {
@@ -126,9 +101,12 @@ func TableSelects(ctx context.Context, in sysin.GenCodesSelectsInp) (res *sysin.
 	}
 	sort.Sort(res.FormRole)
 
-	dictMode, _ := service.SysDictType().TreeSelect(ctx, sysin.DictTreeSelectInp{})
-
+	dictMode, err := service.SysDictType().TreeSelect(ctx, sysin.DictTreeSelectInp{})
+	if err != nil {
+		return
+	}
 	res.DictMode = dictMode
+
 	for _, v := range views.WhereModes {
 		res.WhereMode = append(res.WhereMode, &form.Select{
 			Value: v,
@@ -136,6 +114,42 @@ func TableSelects(ctx context.Context, in sysin.GenCodesSelectsInp) (res *sysin.
 			Label: v,
 		})
 	}
+
+	return
+}
+
+// GenTypeSelect 获取生成类型选项
+func GenTypeSelect(ctx context.Context) (res sysin.GenTypeSelects, err error) {
+	for k, v := range consts.GenCodesTypeNameMap {
+		row := &sysin.GenTypeSelect{
+			Value:     k,
+			Name:      v,
+			Label:     v,
+			Templates: make(form.Selects, 0),
+		}
+
+		confName, ok := consts.GenCodesTypeConfMap[k]
+		if ok {
+			var temps []*model.GenerateAppCrudTemplate
+			err = g.Cfg().MustGet(ctx, "hggen.application."+confName+".templates").Scan(&temps)
+			if err != nil {
+				return
+			}
+			if len(temps) > 0 {
+				for index, temp := range temps {
+					row.Templates = append(row.Templates, &form.Select{
+						Value: index,
+						Label: temp.Group,
+						Name:  temp.Group,
+					})
+				}
+				sort.Sort(row.Templates)
+			}
+		}
+
+		res = append(res, row)
+	}
+	sort.Sort(res)
 
 	return
 }

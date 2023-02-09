@@ -1,13 +1,30 @@
 import { h } from 'vue';
-import { NTag } from 'naive-ui';
-
+import { NTag, NButton } from 'naive-ui';
+import { HelpCircleOutline } from '@vicons/ionicons5';
+import { renderTooltip, renderIcon } from '@/utils';
 export const columns = [
   // {
   //   title: '角色ID',
   //   key: 'id',
   // },
   {
-    title: '角色',
+    title(_column) {
+      return renderTooltip(
+        h(
+          NButton,
+          {
+            ghost: true,
+            strong: true,
+            tertiary: true,
+            size: 'small',
+            text: true,
+            iconPlacement: 'right',
+          },
+          { default: () => '角色', icon: renderIcon(HelpCircleOutline) }
+        ),
+        '支持上下级角色，点击列表中左侧 > 按钮可展开下级角色列表'
+      );
+    },
     key: 'name',
     render(row) {
       return h(

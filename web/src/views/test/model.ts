@@ -420,7 +420,6 @@ export const columns = [
         checked: '开启',
         unchecked: '关闭',
         onUpdateValue: function (e) {
-          console.log('onUpdateValue e:' + JSON.stringify(e));
           row.switch = e ? 1 : 2;
           Switch({ id: row.id, key: 'switch', value: row.switch }).then((_res) => {
             $message.success('操作成功');

@@ -175,6 +175,26 @@
       width: 180,
     },
     {
+      title: '生成模板',
+      key: 'genTemplate',
+      render(row) {
+        return h(
+          NTag,
+          {
+            style: {
+              marginRight: '6px',
+            },
+            type: 'default',
+            bordered: false,
+          },
+          {
+            default: () => row.genTemplateGroup,
+          }
+        );
+      },
+      width: 120,
+    },
+    {
       title: '实体命名',
       key: 'varName',
       render(row) {

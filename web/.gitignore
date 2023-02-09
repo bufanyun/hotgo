@@ -4,6 +4,8 @@ node_modules
 /dist
 dist.zip
 dist_electron
+package-lock.json
+yarn.lock
 
 # local env files
 .env.local

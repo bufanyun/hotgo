@@ -134,6 +134,7 @@
             <template v-if="formParams.type === 1">
               <n-input
                 type="textarea"
+                :autosize="{ minRows: 3, maxRows: 30 }"
                 placeholder="请输入通知内容"
                 v-model:value="formParams.content"
               />

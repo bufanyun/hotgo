@@ -117,6 +117,8 @@
   import { statusActions, statusOptions } from '@/enums/optionsiEnum';
   import { Delete, Edit, getDeptList, Status } from '@/api/org/dept';
   import { cloneDeep } from 'lodash-es';
+  import { renderIcon, renderTooltip } from '@/utils';
+  import { HelpCircleOutline } from '@vicons/ionicons5';
 
   const rules = {
     name: {
@@ -199,7 +201,23 @@
   const data = ref([]);
   const columns: DataTableColumns<RowData> = [
     {
-      title: '部门',
+      title(_column) {
+        return renderTooltip(
+          h(
+            NButton,
+            {
+              ghost: true,
+              strong: true,
+              tertiary: true,
+              size: 'small',
+              text: true,
+              iconPlacement: 'right',
+            },
+            { default: () => '部门', icon: renderIcon(HelpCircleOutline) }
+          ),
+          '支持上下级部门，点击列表中左侧 > 按钮可展开下级部门列表'
+        );
+      },
       key: 'name',
       render(row) {
         return h(

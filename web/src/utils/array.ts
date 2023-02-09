@@ -127,7 +127,6 @@ export function encodeParams(obj) {
  * @param obj1
  */
 export function copyObj(obj2: any, obj1: any) {
-  console.log('obj1:' + JSON.stringify(obj1));
   for (const key in obj1) {
     if (obj2[key] !== undefined) {
       obj2[key] = obj1[key];

@@ -23,7 +23,19 @@
             </n-form-item>
 
             <n-form-item label="SMTP密码" path="smtpPass">
-              <n-input v-model:value="formValue.smtpPass" placeholder="" type="password" />
+              <n-input
+                v-model:value="formValue.smtpPass"
+                placeholder=""
+                type="password"
+                show-password-on="click"
+              >
+                <template #password-visible-icon>
+                  <n-icon :size="16" :component="GlassesOutline" />
+                </template>
+                <template #password-invisible-icon>
+                  <n-icon :size="16" :component="Glasses" />
+                </template>
+              </n-input>
               <template #feedback>填写您的密码</template>
             </n-form-item>
 
@@ -120,6 +132,7 @@
   import { onMounted, ref } from 'vue';
   import { useMessage } from 'naive-ui';
   import { getConfig, sendTestEmail, updateConfig } from '@/api/sys/config';
+  import { GlassesOutline, Glasses } from '@vicons/ionicons5';
 
   const group = ref('smtp');
   const show = ref(false);
@@ -194,7 +207,6 @@
     new Promise((_resolve, _reject) => {
       getConfig({ group: group.value })
         .then((res) => {
-          show.value = false;
           res.list.smtpTemplate = JSON.parse(res.list.smtpTemplate);
           formValue.value = res.list;
         })

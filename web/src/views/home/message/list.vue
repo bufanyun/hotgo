@@ -1,6 +1,10 @@
 <template>
   <n-spin :show="loading">
-    <n-empty v-show="dataSource.list?.length === 0" description="无数据" />
+    <n-empty
+      v-show="dataSource.list?.length === undefined || dataSource.list?.length === 0"
+      description="无数据"
+    />
+
     <n-list hoverable clickable class="list-item">
       <n-list-item v-for="item in dataSource.list" :key="item.id" @click="UnRead(item)">
         <n-thing
@@ -30,7 +34,7 @@
           </template>
 
           <template #footer>
-            <span v-html="item.content"></span>
+            <span v-html="filters(item.content)"></span>
           </template>
         </n-thing>
       </n-list-item>
@@ -139,6 +143,10 @@
   onMounted(() => {
     loadDataSource();
   });
+
+  function filters(data) {
+    return data.replace(/\n/g, '<br>');
+  }
 </script>
 
 <style lang="less" scoped>

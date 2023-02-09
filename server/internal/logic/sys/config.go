@@ -13,6 +13,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
@@ -21,6 +22,13 @@ import (
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 )
+
+var MaskDemoField = []string{
+	"smtpUser", "smtpPass", // 邮箱
+	"uploadUCloudPublicKey", "uploadUCloudPrivateKey", // 云存储
+	"geoAmapWebKey",                                    // 地图
+	"smsAliyunAccessKeyID", "smsAliyunAccessKeySecret", // 短信
+}
 
 type sSysConfig struct{}
 
@@ -156,7 +164,12 @@ func (s *sSysConfig) GetConfigByGroup(ctx context.Context, in sysin.GetConfigInp
 				return nil, err
 			}
 			res.List[v.Key] = val
-			if isDemo.Bool() && (v.Key == "smtpUser" || v.Key == "smtpPass") {
+			//if isDemo.Bool() && (v.Key == "smtpUser" || v.Key == "smtpPass") {
+			//	res.List[v.Key] = consts.DemoTips
+			//	res.List[v.Key] = consts.DemoTips
+			//}
+
+			if isDemo.Bool() && gstr.InArray(MaskDemoField, v.Key) {
 				res.List[v.Key] = consts.DemoTips
 				res.List[v.Key] = consts.DemoTips
 			}
