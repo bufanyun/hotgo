@@ -18,11 +18,11 @@ import (
 
 // AccessLog 访问日志
 func (s *sHook) AccessLog(r *ghttp.Request) {
-	var (
-		ctx = r.Context()
-	)
+	if r.IsFileRequest() {
+		return
+	}
 
-	// 没有上下文的请求不记录，如：doc、favicon.ico等非功能类业务
+	var ctx = r.Context()
 	modelCtx := contexts.Get(ctx)
 	if modelCtx == nil {
 		return

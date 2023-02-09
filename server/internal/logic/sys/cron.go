@@ -19,6 +19,7 @@ import (
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
+	"hotgo/utility/simple"
 	"hotgo/utility/validate"
 	"strings"
 )
@@ -90,7 +91,10 @@ func (s *sSysCron) Edit(ctx context.Context, in sysin.CronEditInp) (err error) {
 				return err
 			}
 
-			return crons.RefreshStatus(&in.SysCron)
+			simple.SafeGo(ctx, func(ctx context.Context) {
+				crons.RefreshStatus(&in.SysCron)
+			})
+			return
 		})
 		return
 	}
@@ -136,7 +140,10 @@ func (s *sSysCron) Status(ctx context.Context, in sysin.CronStatusInp) (err erro
 		}
 
 		models.Status = in.Status
-		return crons.RefreshStatus(models)
+		simple.SafeGo(ctx, func(ctx context.Context) {
+			crons.RefreshStatus(models)
+		})
+		return
 	})
 	return
 }

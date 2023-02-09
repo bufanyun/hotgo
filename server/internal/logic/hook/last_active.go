@@ -60,6 +60,10 @@ func allow(memberId int64) bool {
 
 // LastActive 更新用户最后活跃
 func (s *sHook) LastActive(r *ghttp.Request) {
+	if r.IsFileRequest() {
+		return
+	}
+
 	var (
 		ctx      = r.Context()
 		memberId = contexts.GetUserId(ctx)

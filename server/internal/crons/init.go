@@ -139,7 +139,6 @@ func RefreshStatus(sysCron *entity.SysCron) (err error) {
 	if sysCron == nil {
 		return
 	}
-	g.DumpWithType(sysCron)
 
 	if sysCron.Status == consts.StatusEnabled {
 		return Start(sysCron)
