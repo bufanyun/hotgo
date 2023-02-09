@@ -56,7 +56,7 @@ server:
 # Global logging.
 logger:
   level: "all"
-  flags: 44
+  flags: 44                               # 年-月-日 时:分:秒.毫秒 文件名:行号
   path: "logs/logger"                     # 日志文件路径。默认为空，表示关闭，仅输出到终端
   file: "{Y-m-d}.log"                     # 日志文件格式。默认为"{Y-m-d}.log"
   stdoutColorDisabled: false              # 关闭终端的颜色打印。默认开启
@@ -68,10 +68,10 @@ logger:
 
 # 模板配置
 viewer:
-  paths: "resource/template"
-  defaultFile:  "index.html"
-  delimiters: ["@{", "}"]
-  homeLayout:     "home/index.html"
+  paths: "resource/template"              # 模板路径
+  defaultFile:  "index.html"              # 默认页面
+  delimiters: ["@{", "}"]                 # 变量分隔符
+  homeLayout:     "home/index.html"       # 首页
 
 
 # 内容设置
@@ -95,34 +95,35 @@ router:
     ]
     # 不需要验证权限的路由地址
     exceptAuth: [
+      "/site/config",                   # 获取后台配置
       "/member/info",                   # 登录用户信息
       "/role/dynamic",                  # 获取动态路由
-      "/site/config",                   # 获取后台配置
       "/notice/pullMessages",           # 拉取我的消息
-      "/notice/readAll",                # 设置全部已读消息
-      "/notice/upRead",                 # 更新已读消息
-      "/dictData/option",               # 数据字典
+      "/notice/readAll",                # 设置全部已读公告
+      "/notice/upRead",                 # 已读指定公告
+      "/dictData/option",               # 单个数据字典
       "/dictData/options",              # 多个数据字典
+      "/provinces/select",              # 动态省市区选项
+      "/provinces/cityLabel",           # 动态解析省市区名称
     ]
   # 接口
   api:
     # 前缀
     prefix: "/api"
     # 不需要验证登录的路由地址
-    exceptPath: [ ]
+    exceptPath: []
   # ws
   ws:
     # 前缀
     prefix: "/socket"
     # 不需要验证登录的路由地址
-    exceptLogin: [
-    ]
+    exceptLogin: []
   # 前台页面
   home:
     # 前缀
     prefix: "/home"
     # 不需要验证登录的路由地址
-    exceptPath: [ ]
+    exceptPath: []
 
 
 #JWT
@@ -176,7 +177,7 @@ database:
 
 # 生成代码
 hggen:
-  allowedIPs: ["127.0.0.1", "*"]                                      # 白名单，*代表所有，只有允许的IP后台才能使用生成代码功能
+  allowedIPs: ["127.0.0.1", "*"]                                      # 白名单，*代表允许所有，只有允许的IP后台才能使用生成代码功能
   selectDbs: [ "default" ]                                            # 可选生成表的数据库配置名称，支持多库
   disableTables : ["hg_sys_gen_codes","hg_admin_role_casbin"]         # 禁用的表，禁用以后将不会在选择表中看到
   delimiters: ["@{", "}"]                                             # 模板引擎变量分隔符号
@@ -186,8 +187,9 @@ hggen:
     crud:
       templates:
         - group: "default"                                              # 分组名称
+          masterPackage: "sys"                                          # 主包名称，需和controllerPath、logicPath、inputPath保持关联
           templatePath: "./resource/template/generate/default/curd"     # 模板路径
-          apiPath: "./api/backend"                                      # gfApi生成路径
+          apiPath: "./api/backend"                                      # goApi生成路径
           controllerPath: "./internal/controller/backend/sys"           # 控制器生成路径
           logicPath : "./internal/logic/sys"                            # 主要业务生成路径
           inputPath: "./internal/model/input/sysin"                     # 表单过滤器生成路径
