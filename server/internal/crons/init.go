@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2022 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package crons
 
 import (
@@ -16,6 +15,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/model/entity"
+	"hotgo/utility/validate"
 	"strings"
 	"sync"
 )
@@ -79,7 +79,16 @@ func StartALL(sysCron []*entity.SysCron) error {
 	for _, cron := range sysCron {
 		f := inst.Get(cron.Name)
 		if f == nil {
-			return gerror.Newf("该任务没有加入任务列表:%v", cron.Name)
+			if validate.IsURL(cron.Name) {
+				f = &TaskItem{
+					Name: cron.Name,
+					Fun: func(ctx context.Context) {
+						webRequest(ctx, cron.Name)
+					},
+				}
+			} else {
+				return gerror.Newf("该任务没有加入任务列表:%v", cron.Name)
+			}
 		}
 
 		// 没有则添加
@@ -159,6 +168,10 @@ func Stop(sysCron *entity.SysCron) (err error) {
 
 // Once 立即执行一次某个任务
 func Once(ctx context.Context, sysCron *entity.SysCron) error {
+	if validate.IsURL(sysCron.Name) {
+		go webRequest(ctx, sysCron.Name)
+		return nil
+	}
 	for _, v := range cronList {
 		if v.GetName() == sysCron.Name {
 			go v.Execute(ctx)
