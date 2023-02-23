@@ -26,14 +26,14 @@
         <n-form-item label="网站域名" path="basicDomain">
           <n-input v-model:value="formValue.basicDomain" placeholder="请输入网站域名" />
           <template #feedback>
-            如果客户端通过IP访问，则认为是调试模式，走实际请求地址，否则走该配置
+            如果客户端通过本地或内网访问，则认为是调试模式，走实际请求地址，否则走该配置
           </template>
         </n-form-item>
 
         <n-form-item label="websocket地址" path="basicWsAddr">
           <n-input v-model:value="formValue.basicWsAddr" placeholder="请输入websocket地址" />
           <template #feedback>
-            如果客户端通过IP访问，则认为是调试模式，走实际请求地址，否则走该配置
+            如果客户端通过本地或内网访问，则认为是调试模式，走实际请求地址，否则走该配置
           </template>
         </n-form-item>
 

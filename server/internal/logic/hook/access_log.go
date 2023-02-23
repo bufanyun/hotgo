@@ -32,7 +32,7 @@ func (s *sHook) accessLog(r *ghttp.Request) {
 
 	simple.SafeGo(ctx, func(ctx context.Context) {
 		if err := service.SysLog().AutoLog(ctx); err != nil {
-			g.Log().Warningf(ctx, "hook accessLog err:%+v", err)
+			g.Log().Infof(ctx, "hook accessLog err:%+v", err)
 		}
 	})
 }
