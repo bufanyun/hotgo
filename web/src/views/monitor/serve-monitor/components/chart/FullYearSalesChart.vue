@@ -1,88 +1,90 @@
 <template>
-  <n-card
-    :content-style="{ padding: '10px' }"
-    :header-style="{ padding: '10px' }"
-    :segmented="true"
-  >
-    <template #header>
-      <n-skeleton text style="width: 50%" v-if="loading" />
-      <template v-else>
-        <div class="text-sm"> 实时网卡流量（全部网卡）</div>
+  <div>
+    <n-card
+      :content-style="{ padding: '10px' }"
+      :header-style="{ padding: '10px' }"
+      :segmented="true"
+    >
+      <template #header>
+        <n-skeleton text style="width: 50%" v-if="loading" />
+        <template v-else>
+          <div class="text-sm"> 实时网卡流量（全部网卡）</div>
+        </template>
       </template>
-    </template>
 
-    <div class="chart-item-container">
-      <n-skeleton text v-if="loading" :repeat="10" />
-      <template v-else>
-        <n-grid responsive="screen" cols="1 s:2 m:4 l:4 xl:4 2xl:4" x-gap="5" y-gap="5">
-          <n-grid-item class="item-wrapper">
-            <n-card
-              :bordered="false"
-              :content-style="{ padding: '10px' }"
-              :header-style="{ padding: '5px' }"
-              :segmented="true"
-            >
-              <div class="text-number">{{ last.up }} KB</div>
-              <div class="title-text">
-                <n-badge :value="1" dot color="rgb(58, 104, 255)" />
-                上行
-              </div>
-            </n-card>
-          </n-grid-item>
-          <n-grid-item class="item-wrapper">
-            <n-card
-              :bordered="false"
-              :content-style="{ padding: '10px' }"
-              :header-style="{ padding: '5px' }"
-              :segmented="true"
-            >
-              <div class="text-number"> {{ last.down ?? 0 }} KB</div>
-              <div class="title-text">
-                <n-badge :value="1" dot color="rgb(241, 136, 136)" />
-                下行
-              </div>
-            </n-card>
-          </n-grid-item>
-          <n-grid-item class="item-wrapper">
-            <n-card
-              :bordered="false"
-              :content-style="{ padding: '10px' }"
-              :header-style="{ padding: '5px' }"
-              :segmented="true"
-            >
-              <div class="text-number">{{ last.bytesSent ?? 0 }}</div>
-              <div class="title-text"> 总发送</div>
-            </n-card>
-          </n-grid-item>
-          <n-grid-item class="item-wrapper">
-            <n-card
-              :bordered="false"
-              :content-style="{ padding: '10px' }"
-              :header-style="{ padding: '5px' }"
-              :segmented="true"
-            >
-              <div class="text-number">{{ last.bytesRecv ?? 0 }}</div>
-              <div class="title-text"> 总接收</div>
-            </n-card>
-          </n-grid-item>
-        </n-grid>
-        <div ref="fullYearSalesChart" class="chart-item"></div>
-      </template>
-    </div>
-  </n-card>
+      <div class="chart-item-container">
+        <n-skeleton text v-if="loading" :repeat="10" />
+        <template v-else>
+          <n-grid responsive="screen" cols="1 s:2 m:4 l:4 xl:4 2xl:4" x-gap="5" y-gap="5">
+            <n-grid-item class="item-wrapper">
+              <n-card
+                :bordered="false"
+                :content-style="{ padding: '10px' }"
+                :header-style="{ padding: '5px' }"
+                :segmented="true"
+              >
+                <div class="text-number">{{ last?.up }} KB</div>
+                <div class="title-text">
+                  <n-badge :value="1" dot color="rgb(58, 104, 255)" />
+                  上行
+                </div>
+              </n-card>
+            </n-grid-item>
+            <n-grid-item class="item-wrapper">
+              <n-card
+                :bordered="false"
+                :content-style="{ padding: '10px' }"
+                :header-style="{ padding: '5px' }"
+                :segmented="true"
+              >
+                <div class="text-number"> {{ last?.down ?? 0 }} KB</div>
+                <div class="title-text">
+                  <n-badge :value="1" dot color="rgb(241, 136, 136)" />
+                  下行
+                </div>
+              </n-card>
+            </n-grid-item>
+            <n-grid-item class="item-wrapper">
+              <n-card
+                :bordered="false"
+                :content-style="{ padding: '10px' }"
+                :header-style="{ padding: '5px' }"
+                :segmented="true"
+              >
+                <div class="text-number">{{ last?.bytesSent ?? 0 }}</div>
+                <div class="title-text"> 总发送</div>
+              </n-card>
+            </n-grid-item>
+            <n-grid-item class="item-wrapper">
+              <n-card
+                :bordered="false"
+                :content-style="{ padding: '10px' }"
+                :header-style="{ padding: '5px' }"
+                :segmented="true"
+              >
+                <div class="text-number">{{ last?.bytesRecv ?? 0 }}</div>
+                <div class="title-text"> 总接收</div>
+              </n-card>
+            </n-grid-item>
+          </n-grid>
+          <div ref="fullYearSalesChart" class="chart-item"></div>
+        </template>
+      </div>
+    </n-card>
+  </div>
 </template>
 <script lang="ts">
   import useEcharts from '@/hooks/useEcharts';
-  import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+  import { defineComponent, nextTick, onBeforeUnmount, ref, watch } from 'vue';
   import { dispose, graphic } from 'echarts';
+  import { object } from 'vue-types';
 
   export default defineComponent({
     name: 'FullYearSalesChart',
     props: {
       dataModel: {
-        type: Array,
+        type: Array || object,
         default: () => {
-          // eslint-disable-next-line vue/require-valid-default-prop
           return {};
         },
       },
@@ -94,7 +96,7 @@
       },
     },
     setup(props) {
-      const last = ref({
+      const last = ref<any>({
         bytesSent: '0B',
         bytesRecv: '0B',
         down: '0',
@@ -198,7 +200,6 @@
       const fullYearSalesChart = ref<HTMLDivElement | null>(null);
       watch(props, (_newVal, _oldVal) => {
         last.value = _newVal.dataModel[_newVal.dataModel.length - 1];
-        // console.log('last _newVal:' + JSON.stringify(last.value));
 
         if (months.value.length < 10) {
           for (let i = 0; i < _newVal.dataModel?.length; i++) {
@@ -227,7 +228,9 @@
         useEcharts(fullYearSalesChart.value as HTMLDivElement).resize();
       };
       onBeforeUnmount(() => {
-        dispose(fullYearSalesChart.value as HTMLDivElement);
+        if (fullYearSalesChart.value !== null) {
+          dispose(fullYearSalesChart.value as HTMLDivElement);
+        }
       });
       return {
         fullYearSalesChart,

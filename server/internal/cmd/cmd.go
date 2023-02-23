@@ -1,6 +1,6 @@
 // Package cmd
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -41,7 +41,7 @@ var (
 		---------------------------------------------------------------------------------
 		更多
        	github地址：https://github.com/bufanyun/hotgo
-		文档地址：文档正在书写中，请耐心等一等。	
+		文档地址：https://github.com/bufanyun/hotgo/tree/v2.0/docs	
 		HotGo框架交流1群：190966648
     `,
 	}

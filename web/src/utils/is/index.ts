@@ -138,3 +138,7 @@ export function isNullOrUnDef(val: unknown): val is null | undefined {
 export function isLetterBegin(str) {
   return /^[A-z]/.test(str);
 }
+
+export function isUrl(url: string): boolean {
+  return /(^http|https:\/\/)/g.test(url);
+}

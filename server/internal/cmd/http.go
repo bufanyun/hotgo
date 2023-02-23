@@ -1,9 +1,8 @@
 // Package cmd
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package cmd
 
 import (
@@ -11,6 +10,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
+	"hotgo/internal/library/addons"
 	"hotgo/internal/library/casbin"
 	"hotgo/internal/router"
 	"hotgo/internal/service"
@@ -36,8 +36,7 @@ var (
 			})
 
 			// 请求结束事件回调
-			s.BindHookHandler("/*any", ghttp.HookAfterOutput, service.Hook().AccessLog)
-			s.BindHookHandler("/*any", ghttp.HookAfterOutput, service.Hook().LastActive)
+			s.BindHookHandler("/*any", ghttp.HookAfterOutput, service.Hook().AfterOutput)
 
 			s.Group("/", func(group *ghttp.RouterGroup) {
 
@@ -61,6 +60,9 @@ var (
 
 				// 注册前台页面路由
 				router.Home(ctx, group)
+
+				// 注册插件路由
+				addons.RegisterModulesRouter(ctx, group)
 			})
 
 			// 启动定时任务

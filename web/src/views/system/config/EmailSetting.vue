@@ -1,95 +1,87 @@
 <template>
   <div>
-    <n-spin :show="show" description="正在获取配置...">
-      <n-grid cols="2 s:2 m:2 l:2 xl:2 2xl:2" responsive="screen">
-        <n-grid-item>
-          <n-form :label-width="80" :model="formValue" :rules="rules" ref="formRef">
-            <n-form-item label="SMTP服务器" path="smtpHost">
-              <n-input v-model:value="formValue.smtpHost" placeholder="" />
-              <template #feedback> 错误的配置发送邮件会导致服务器超时</template>
-            </n-form-item>
+    <n-spin :show="show" description="请稍候...">
+      <n-form :label-width="80" :model="formValue" :rules="rules" ref="formRef">
+        <n-form-item label="SMTP服务器" path="smtpHost">
+          <n-input v-model:value="formValue.smtpHost" placeholder="" />
+          <template #feedback> 错误的配置发送邮件会导致服务器超时</template>
+        </n-form-item>
 
-            <n-form-item label="SMTP端口" path="smtpPort">
-              <n-input-number
-                v-model:value="formValue.smtpPort"
-                placeholder=""
-                :show-button="false"
-              />
-              <template #feedback> (不加密默认25,SSL默认465,TLS默认587)</template>
-            </n-form-item>
-            <n-form-item label="SMTP用户名" path="smtpUser">
-              <n-input v-model:value="formValue.smtpUser" placeholder="" />
-              <template #feedback>填写完整用户名</template>
-            </n-form-item>
+        <n-form-item label="SMTP端口" path="smtpPort">
+          <n-input-number v-model:value="formValue.smtpPort" placeholder="" :show-button="false" />
+          <template #feedback> (不加密默认25,SSL默认465,TLS默认587)</template>
+        </n-form-item>
+        <n-form-item label="SMTP用户名" path="smtpUser">
+          <n-input v-model:value="formValue.smtpUser" placeholder="" />
+          <template #feedback>填写完整用户名</template>
+        </n-form-item>
 
-            <n-form-item label="SMTP密码" path="smtpPass">
-              <n-input
-                v-model:value="formValue.smtpPass"
-                placeholder=""
-                type="password"
-                show-password-on="click"
-              >
-                <template #password-visible-icon>
-                  <n-icon :size="16" :component="GlassesOutline" />
-                </template>
-                <template #password-invisible-icon>
-                  <n-icon :size="16" :component="Glasses" />
-                </template>
-              </n-input>
-              <template #feedback>填写您的密码</template>
-            </n-form-item>
+        <n-form-item label="SMTP密码" path="smtpPass">
+          <n-input
+            v-model:value="formValue.smtpPass"
+            placeholder=""
+            type="password"
+            show-password-on="click"
+          >
+            <template #password-visible-icon>
+              <n-icon :size="16" :component="GlassesOutline" />
+            </template>
+            <template #password-invisible-icon>
+              <n-icon :size="16" :component="Glasses" />
+            </template>
+          </n-input>
+          <template #feedback>填写您的密码</template>
+        </n-form-item>
 
-            <n-form-item label="发件人名称" path="smtpSendName">
-              <n-input v-model:value="formValue.smtpSendName" placeholder="" />
-            </n-form-item>
+        <n-form-item label="发件人名称" path="smtpSendName">
+          <n-input v-model:value="formValue.smtpSendName" placeholder="" />
+        </n-form-item>
 
-            <n-form-item label="管理员邮箱" path="smtpAdminMailbox">
-              <n-input v-model:value="formValue.smtpAdminMailbox" placeholder="" />
-            </n-form-item>
+        <n-form-item label="管理员邮箱" path="smtpAdminMailbox">
+          <n-input v-model:value="formValue.smtpAdminMailbox" placeholder="" />
+        </n-form-item>
 
-            <n-divider title-placement="left">发信限制</n-divider>
-            <n-form-item label="最小发送间隔" path="smtpMinInterval">
-              <n-input-number
-                :show-button="false"
-                placeholder="请输入"
-                v-model:value="formValue.smtpMinInterval"
-              >
-                <template #suffix> 秒 </template>
-              </n-input-number>
-              <template #feedback> 同地址</template>
-            </n-form-item>
-            <n-form-item label="IP最大发送次数" path="smtpMaxIpLimit">
-              <n-input-number v-model:value="formValue.smtpMaxIpLimit" placeholder="" />
-              <template #feedback> 同IP每天最大允许发送次数 </template>
-            </n-form-item>
-            <n-form-item label="验证码有效期" path="smtpCodeExpire">
-              <n-input-number
-                :show-button="false"
-                placeholder="请输入"
-                v-model:value="formValue.smtpCodeExpire"
-              >
-                <template #suffix> 秒 </template>
-              </n-input-number>
-            </n-form-item>
+        <n-divider title-placement="left">发信限制</n-divider>
+        <n-form-item label="最小发送间隔" path="smtpMinInterval">
+          <n-input-number
+            :show-button="false"
+            placeholder="请输入"
+            v-model:value="formValue.smtpMinInterval"
+          >
+            <template #suffix> 秒 </template>
+          </n-input-number>
+          <template #feedback> 同地址</template>
+        </n-form-item>
+        <n-form-item label="IP最大发送次数" path="smtpMaxIpLimit">
+          <n-input-number v-model:value="formValue.smtpMaxIpLimit" placeholder="" />
+          <template #feedback> 同IP每天最大允许发送次数 </template>
+        </n-form-item>
+        <n-form-item label="验证码有效期" path="smtpCodeExpire">
+          <n-input-number
+            :show-button="false"
+            placeholder="请输入"
+            v-model:value="formValue.smtpCodeExpire"
+          >
+            <template #suffix> 秒 </template>
+          </n-input-number>
+        </n-form-item>
 
-            <n-form-item label="邮件模板" path="smtpTemplate">
-              <n-dynamic-input
-                v-model:value="formValue.smtpTemplate"
-                preset="pair"
-                key-placeholder="事件KEY"
-                value-placeholder="模板路径"
-              />
-            </n-form-item>
+        <n-form-item label="邮件模板" path="smtpTemplate">
+          <n-dynamic-input
+            v-model:value="formValue.smtpTemplate"
+            preset="pair"
+            key-placeholder="事件KEY"
+            value-placeholder="模板路径"
+          />
+        </n-form-item>
 
-            <div>
-              <n-space>
-                <n-button type="primary" @click="formSubmit">保存更新</n-button>
-                <n-button type="default" @click="sendTest">发送测试邮件</n-button>
-              </n-space>
-            </div>
-          </n-form>
-        </n-grid-item>
-      </n-grid>
+        <div>
+          <n-space>
+            <n-button type="primary" @click="formSubmit">保存更新</n-button>
+            <n-button type="default" @click="sendTest">发送测试邮件</n-button>
+          </n-space>
+        </div>
+      </n-form>
     </n-spin>
 
     <n-modal

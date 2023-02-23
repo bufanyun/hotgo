@@ -1,6 +1,6 @@
 // Package validate
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -60,6 +60,31 @@ func IsPublicIp(Ip string) bool {
 
 	return true
 
+}
+
+// IsLocalIPAddr 检测 IP 地址字符串是否是内网地址
+func IsLocalIPAddr(ip string) bool {
+	if "localhost" == ip {
+		return true
+	}
+	return HasLocalIP(net.ParseIP(ip))
+}
+
+// HasLocalIP 检测 IP 地址是否是内网地址
+func HasLocalIP(ip net.IP) bool {
+	if ip.IsLoopback() {
+		return true
+	}
+
+	ip4 := ip.To4()
+	if ip4 == nil {
+		return false
+	}
+
+	return ip4[0] == 10 || // 10.0.0.0/8
+		(ip4[0] == 172 && ip4[1] >= 16 && ip4[1] <= 31) || // 172.16.0.0/12
+		(ip4[0] == 169 && ip4[1] == 254) || // 169.254.0.0/16
+		(ip4[0] == 192 && ip4[1] == 168) // 192.168.0.0/16
 }
 
 // IsMobile 是否为手机号码

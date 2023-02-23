@@ -1,6 +1,6 @@
 // Package simple
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -25,6 +25,7 @@ func CheckPassword(input, salt, hash string) (err error) {
 	if err != nil {
 		return err
 	}
+
 	password, err = encrypt.AesECBDecrypt(password, consts.RequestEncryptKey)
 	if err != nil {
 		return err
@@ -34,7 +35,6 @@ func CheckPassword(input, salt, hash string) (err error) {
 		err = gerror.New("用户密码不正确")
 		return
 	}
-
 	return
 }
 

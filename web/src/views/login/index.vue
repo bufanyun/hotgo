@@ -57,13 +57,21 @@
                 </template>
                 <template #suffix> </template>
               </n-input>
-              <img
-                style="width: 100px"
-                :src="codeBase64"
-                @click="refreshCode"
-                loading="lazy"
-                alt="点击获取"
-              />
+
+              <n-loading-bar-provider
+                :to="loadingBarTargetRef"
+                container-style="position: absolute;"
+              >
+                <img
+                  ref="loadingBarTargetRef"
+                  style="width: 100px"
+                  :src="codeBase64"
+                  @click="refreshCode"
+                  loading="lazy"
+                  alt="点击获取"
+                />
+                <loading-bar-trigger />
+              </n-loading-bar-provider>
             </n-input-group>
           </n-form-item>
           <n-form-item class="default-color">
@@ -112,10 +120,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, unref, onMounted } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import { useUserStore } from '@/store/modules/user';
-  import { useMessage } from 'naive-ui';
+  import { useMessage, useLoadingBar } from 'naive-ui';
   import { ResultEnum } from '@/enums/httpEnum';
   import { PersonOutline, LockClosedOutline, LogoGithub, LogoFacebook } from '@vicons/ionicons5';
   import { PageEnum } from '@/enums/pageEnum';
@@ -136,6 +144,8 @@
   const loading = ref(false);
   const autoLogin = ref(true);
   const codeBase64 = ref('');
+  const loadingBar = useLoadingBar();
+  const loadingBarTargetRef = ref<undefined | HTMLElement>(undefined);
   const LOGIN_NAME = PageEnum.BASE_LOGIN_NAME;
 
   const formInline = ref<FormState>({
@@ -191,10 +201,12 @@
   };
 
   async function refreshCode() {
+    loadingBar.start();
     const data = await GetCaptcha();
     codeBase64.value = data.base64;
     formInline.value.cid = data.cid;
     formInline.value.code = '';
+    loadingBar.finish();
   }
 
   onMounted(() => {

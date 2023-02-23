@@ -1,9 +1,8 @@
 // Package jwt
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package jwt
 
 import (
@@ -54,18 +53,17 @@ func GenerateLoginToken(ctx context.Context, user *model.Identity, isRefresh boo
 	var (
 		tokenStringMd5 = gmd5.MustEncryptString(tokenString)
 		// 绑定登录token
-		c   = cache.New()
-		key = consts.RedisJwtToken + tokenStringMd5
+		key = consts.CacheJwtToken + tokenStringMd5
 		// 将有效期转为持续时间，单位：秒
 		expires, _ = time.ParseDuration(fmt.Sprintf("+%vs", user.Expires))
 	)
 
-	err = c.Set(ctx, key, tokenString, expires)
+	err = cache.Instance().Set(ctx, key, tokenString, expires)
 	if err != nil {
 		return "", err
 	}
 
-	err = c.Set(ctx, consts.RedisJwtUserBind+user.App+":"+gconv.String(user.Id), key, expires)
+	err = cache.Instance().Set(ctx, consts.CacheJwtUserBind+user.App+":"+gconv.String(user.Id), key, expires)
 	if err != nil {
 		return "", err
 	}

@@ -3,8 +3,8 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-// @AutoGenerate Version 2.1.2
-// @AutoGenerate Date 2023-02-08 17:47:32
+// @AutoGenerate Version 2.1.4
+// @AutoGenerate Date 2023-02-20 16:41:58
 //
 package sysin
 
@@ -18,7 +18,7 @@ import (
 
 // CurdDemoEditInp 修改/新增生成演示
 type CurdDemoEditInp struct {
-	entity.Test
+	entity.SysGenCurdDemo
 }
 
 func (in *CurdDemoEditInp) Filter(ctx context.Context) (err error) {
@@ -48,7 +48,7 @@ func (in *CurdDemoViewInp) Filter(ctx context.Context) (err error) {
 }
 
 type CurdDemoViewModel struct {
-	entity.Test
+	entity.SysGenCurdDemo
 }
 
 // CurdDemoListInp 获取生成演示列表

@@ -3,8 +3,8 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-// @AutoGenerate Version 2.1.2
-// @AutoGenerate Date 2023-02-08 17:47:32
+// @AutoGenerate Version 2.1.4
+// @AutoGenerate Date 2023-02-20 16:41:58
 //
 package sys
 
@@ -77,7 +77,6 @@ func (s *sSysCurdDemo) List(ctx context.Context, in sysin.CurdDemoListInp) (list
 
 	totalCount, err = mod.Clone().Count(1)
 	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
 
@@ -90,11 +89,7 @@ func (s *sSysCurdDemo) List(ctx context.Context, in sysin.CurdDemoListInp) (list
 		{Dao: dao.TestCategory, Alias: "testCategory"},
 	})
 
-	if err = mod.Fields(fields).Page(in.Page, in.PerPage).OrderAsc(dao.SysGenCurdDemo.Columns().Sort).OrderDesc(dao.SysGenCurdDemo.Columns().Id).Scan(&list); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return
-	}
-
+	err = mod.Fields(fields).Page(in.Page, in.PerPage).OrderAsc(dao.SysGenCurdDemo.Columns().Sort).OrderDesc(dao.SysGenCurdDemo.Columns().Id).Scan(&list)
 	return
 }
 
@@ -162,7 +157,6 @@ func (s *sSysCurdDemo) Delete(ctx context.Context, in sysin.CurdDemoDeleteInp) (
 // MaxSort 获取生成演示最大排序
 func (s *sSysCurdDemo) MaxSort(ctx context.Context, in sysin.CurdDemoMaxSortInp) (res *sysin.CurdDemoMaxSortModel, err error) {
 	if err = dao.SysGenCurdDemo.Ctx(ctx).Fields(dao.SysGenCurdDemo.Columns().Sort).OrderDesc(dao.SysGenCurdDemo.Columns().Sort).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
 

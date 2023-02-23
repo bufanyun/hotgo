@@ -1,9 +1,8 @@
 // Package hggen
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package hggen
 
 import (
@@ -12,8 +11,10 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
+	"hotgo/internal/library/addons"
 	"hotgo/internal/library/hggen/internal/cmd"
 	"hotgo/internal/library/hggen/internal/cmd/gendao"
+	"hotgo/internal/library/hggen/internal/cmd/genservice"
 	"hotgo/internal/library/hggen/views"
 	"hotgo/internal/model"
 	"hotgo/internal/model/input/form"
@@ -38,7 +39,16 @@ func Dao(ctx context.Context) (err error) {
 
 // Service 生成业务接口
 func Service(ctx context.Context) (err error) {
-	_, err = cmd.Gen.Service(ctx, GetServiceConfig())
+	return ServiceWithCfg(ctx, GetServiceConfig())
+}
+
+// ServiceWithCfg 生成业务接口
+func ServiceWithCfg(ctx context.Context, cfg ...genservice.CGenServiceInput) (err error) {
+	c := GetServiceConfig()
+	if len(cfg) > 0 {
+		c = cfg[0]
+	}
+	_, err = cmd.Gen.Service(ctx, c)
 	return
 }
 
@@ -115,6 +125,8 @@ func TableSelects(ctx context.Context, in sysin.GenCodesSelectsInp) (res *sysin.
 		})
 	}
 
+	res.Addons = addons.ModuleSelect()
+
 	return
 }
 
@@ -125,7 +137,7 @@ func GenTypeSelect(ctx context.Context) (res sysin.GenTypeSelects, err error) {
 			Value:     k,
 			Name:      v,
 			Label:     v,
-			Templates: make(form.Selects, 0),
+			Templates: make(sysin.GenTemplateSelects, 0),
 		}
 
 		confName, ok := consts.GenCodesTypeConfMap[k]
@@ -137,10 +149,11 @@ func GenTypeSelect(ctx context.Context) (res sysin.GenTypeSelects, err error) {
 			}
 			if len(temps) > 0 {
 				for index, temp := range temps {
-					row.Templates = append(row.Templates, &form.Select{
-						Value: index,
-						Label: temp.Group,
-						Name:  temp.Group,
+					row.Templates = append(row.Templates, &sysin.GenTemplateSelect{
+						Value:   index,
+						Label:   temp.Group,
+						Name:    temp.Group,
+						IsAddon: temp.IsAddon,
 					})
 				}
 				sort.Sort(row.Templates)
@@ -207,14 +220,31 @@ func Build(ctx context.Context, in sysin.GenCodesBuildInp) (err error) {
 
 	switch in.GenType {
 	case consts.GenCodesTypeCurd:
+		pin := sysin.GenCodesPreviewInp(in)
 		return views.Curd.DoBuild(ctx, &views.CurdBuildInput{
 			PreviewIn: &views.CurdPreviewInput{
-				In:        sysin.GenCodesPreviewInp(in),
+				In:        pin,
 				DaoConfig: GetDaoConfig(in.DbName),
 				Config:    genConfig,
 			},
 			BeforeEvent: views.CurdBuildEvent{"runDao": Dao},
-			AfterEvent:  views.CurdBuildEvent{"runService": Service},
+			AfterEvent: views.CurdBuildEvent{"runService": func(ctx context.Context) (err error) {
+				cfg := GetServiceConfig()
+				if err = ServiceWithCfg(ctx, cfg); err != nil {
+					return
+				}
+
+				// 插件模块，同时运行模块下的gen service
+				if genConfig.Application.Crud.Templates[pin.GenTemplate].IsAddon {
+					// 依然使用配置中的参数，只是将生成路径指向插件模块路径
+					cfg.SrcFolder = "addons/" + pin.AddonName + "/logic"
+					cfg.DstFolder = "addons/" + pin.AddonName + "/service"
+					if err = ServiceWithCfg(ctx, cfg); err != nil {
+						return
+					}
+				}
+				return
+			}},
 		})
 	case consts.GenCodesTypeTree:
 		err = gerror.Newf("生成类型开发中！")

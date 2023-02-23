@@ -1,9 +1,8 @@
 // Package global
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package global
 
 import (
@@ -12,20 +11,18 @@ import (
 	"github.com/gogf/gf/v2"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/gcache"
 	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/os/glog"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
+	"hotgo/internal/library/cache"
 	"hotgo/internal/library/hggen"
-	"hotgo/internal/library/location"
 	"hotgo/internal/library/queue"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/service"
 	"hotgo/utility/charset"
-	"hotgo/utility/simple"
-	"os"
 	"strings"
 )
 
@@ -38,45 +35,28 @@ func Init(ctx context.Context) {
 	//g.SetDebug(debug.Bool())
 
 	// 默认上海时区
-	if err := gtime.SetTimeZone("Asia/Shanghai"); err != nil {
-		g.Log().Fatalf(ctx, "时区设置异常err：%+v", err)
+	if err = gtime.SetTimeZone("Asia/Shanghai"); err != nil {
+		g.Log().Fatalf(ctx, "时区设置异常 err：%+v", err)
 		return
 	}
 
-	RootPtah, _ = os.Getwd()
+	RootPtah = gfile.Pwd()
 	fmt.Printf("欢迎使用HotGo！\r\n当前运行环境：%v, 运行根路径为：%v \r\nHotGo版本：v%v, gf版本：%v \n", SysType, RootPtah, consts.VersionApp, gf.VERSION)
 
-	setOrmCacheAdapter()
+	// 设置缓存适配器
+	cache.SetAdapter(ctx)
 
-	service.SysBlacklist().Load(ctx)
-
+	// 设置服务日志处理
 	g.Log().SetHandlers(LoggingServeLogHandler)
 
-	startMonitor(ctx)
+	// 启动服务监控
+	service.AdminMonitor().StartMonitor(ctx)
 
+	// 加载ip访问黑名单
+	service.SysBlacklist().Load(ctx)
+
+	// 初始化生成代码配置
 	hggen.InIt(ctx)
-}
-
-func startMonitor(ctx context.Context) {
-	simple.SafeGo(ctx, func(ctx context.Context) {
-		MonitorData.STartTime = gtime.Now()
-		intranetIP, err := location.GetLocalIP()
-		if err != nil {
-			g.Log().Infof(ctx, "parse intranetIP err:%+v", err)
-		}
-		MonitorData.IntranetIP = intranetIP
-
-		publicIP, err := location.GetPublicIP(ctx)
-		if err != nil {
-			g.Log().Infof(ctx, "parse publicIP err:%+v", err)
-		}
-		MonitorData.PublicIP = publicIP
-	})
-}
-
-func setOrmCacheAdapter() {
-	redisCache := gcache.NewAdapterRedis(g.Redis())
-	g.DB().GetCache().SetAdapter(redisCache)
 }
 
 func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
@@ -89,6 +69,7 @@ func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 				panic(err)
 			}
 		}()
+
 		conf, err := service.SysConfig().GetLoadServeLog(ctx)
 		if err != nil {
 			return

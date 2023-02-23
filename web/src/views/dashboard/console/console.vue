@@ -87,7 +87,8 @@
               <template v-else>
                 <div class="text-sn"> 总激活卡板： </div>
                 <div class="text-sn">
-                  <CountTo  :startVal="1" :endVal="saleroom.amount" />  <!-- prefix="￥"-->
+                  <CountTo :startVal="1" :endVal="saleroom.amount" />
+                  <!-- prefix="￥"-->
                 </div>
               </template>
             </div>
@@ -325,7 +326,6 @@
 
   onMounted(async () => {
     const data = await getConsoleInfo();
-    console.log('data:'+JSON.stringify(data))
     visits.value = data.visits;
     saleroom.value = data.saleroom;
     orderLarge.value = data.orderLarge;

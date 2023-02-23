@@ -15,8 +15,8 @@ export const renderTooltip = (trigger, content) => {
 /**
  * render 图标
  * */
-export function renderIcon(icon) {
-  return () => h(NIcon, null, { default: () => h(icon) });
+export function renderIcon(icon, props = null) {
+  return () => h(NIcon, props, { default: () => h(icon) });
 }
 
 /**

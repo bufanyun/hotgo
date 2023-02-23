@@ -1,6 +1,6 @@
 // Package admin
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -17,8 +17,8 @@ import (
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/process"
 	"hotgo/internal/consts"
-	"hotgo/internal/global"
 	"hotgo/internal/model"
+	"hotgo/internal/service"
 	"hotgo/internal/websocket"
 	"hotgo/utility/file"
 	"hotgo/utility/format"
@@ -51,6 +51,7 @@ type MonitorHead struct {
 func (c *cMonitor) RunInfo(client *websocket.Client, req *websocket.WRequest) {
 	var (
 		data     = g.Map{}
+		meta     = service.AdminMonitor().GetMeta(client.Context())
 		mHost, _ = host.Info()
 		pwd, _   = os.Getwd()
 		gm       runtime.MemStats
@@ -63,14 +64,14 @@ func (c *cMonitor) RunInfo(client *websocket.Client, req *websocket.WRequest) {
 		"hostname":    mHost.Hostname,
 		"os":          mHost.OS,
 		"arch":        mHost.KernelArch,
-		"intranet_ip": global.MonitorData.IntranetIP,
-		"public_ip":   global.MonitorData.PublicIP,
+		"intranet_ip": meta.IntranetIP,
+		"public_ip":   meta.PublicIP,
 
 		// GO运行信息
 		"goName":    "Golang",
 		"version":   runtime.Version(),
-		"startTime": global.MonitorData.STartTime,
-		"runTime":   gtime.Now().Timestamp() - global.MonitorData.STartTime.Timestamp(),
+		"startTime": meta.STartTime,
+		"runTime":   gtime.Now().Timestamp() - meta.STartTime.Timestamp(),
 		"rootPath":  runtime.GOROOT(),
 		"pwd":       pwd,
 		"goroutine": runtime.NumGoroutine(),
@@ -111,6 +112,7 @@ func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
 		data         = g.Map{}
 		monitorHeads []MonitorHead
 		nets         []NetC
+		meta         = service.AdminMonitor().GetMeta(client.Context())
 	)
 
 	// cpu使用率
@@ -123,8 +125,8 @@ func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
 	mMemUsed, _ = strconv.ParseFloat(fmt.Sprintf("%.2f", mMem.UsedPercent), 64)
 
 	// 负载
-	if len(global.MonitorData.LoadAvg) > 0 {
-		mLoadAvg = global.MonitorData.LoadAvg[len(global.MonitorData.LoadAvg)-1]
+	if len(meta.LoadAvg) > 0 {
+		mLoadAvg = meta.LoadAvg[len(meta.LoadAvg)-1]
 	}
 
 	monitorHeads = append(monitorHeads, MonitorHead{
@@ -164,7 +166,7 @@ func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
 			IconClass:   "Analytics",
 		})
 
-	for _, v := range global.MonitorData.NetIO {
+	for _, v := range meta.NetIO {
 		nets = append(nets, NetC{
 			Time:      v.Time,
 			BytesSent: format.FileSize(int64(v.BytesSent)), // 转换为最大整数单位
@@ -176,7 +178,7 @@ func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
 
 	data = g.Map{
 		"head": monitorHeads,
-		"load": global.MonitorData.LoadAvg,
+		"load": meta.LoadAvg,
 		"net":  nets,
 	}
 

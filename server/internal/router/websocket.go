@@ -1,6 +1,6 @@
 // Package router
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -23,7 +23,7 @@ func WebSocket(ctx context.Context, group *ghttp.RouterGroup) {
 	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
 		group.Middleware()
 		group.Bind(
-			controller.Send, // 发送
+			controller.Send, // 通过http发送ws消息。方便测试没有放权限中间件，实际使用时请自行调整
 		)
 
 		// ws连接中间件

@@ -89,7 +89,7 @@
   import { ResultEnum } from '@/enums/httpEnum';
   import componentSetting from '@/settings/componentSetting';
   import { useGlobSetting } from '@/hooks/setting';
-  import { isArray, isJsonString, isNullOrUnDef } from '@/utils/is';
+  import { isArray, isJsonString, isNullOrUnDef, isUrl } from '@/utils/is';
   import { getFileExt } from '@/utils/urlUtils';
   import { errorImg } from '@/utils/hotgo';
   const globSetting = useGlobSetting();
@@ -217,7 +217,7 @@
       //组装完整图片地址
       function getImgUrl(url: string): string {
         const { imgUrl } = globSetting;
-        return /(^http|https:\/\/)/g.test(url) ? url : `${imgUrl}${url}`;
+        return isUrl(url) ? url : `${imgUrl}${url}`;
       }
 
       function checkFileType(map: string[], fileType: string) {

@@ -1,0 +1,46 @@
+// Package sys
+// @Link  https://github.com/bufanyun/hotgo
+// @Copyright  Copyright (c) 2023 HotGo CLI
+// @Author  Ms <133814250@qq.com>
+// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
+package sys
+
+import (
+	"context"
+	"github.com/gogf/gf/v2/util/gconv"
+	"hotgo/addons/hgexample/model/input/sysin"
+	"hotgo/addons/hgexample/service"
+	"hotgo/api/admin/config"
+	isysin "hotgo/internal/model/input/sysin"
+)
+
+var (
+	Config = cConfig{}
+)
+
+type cConfig struct{}
+
+// GetConfig 获取指定分组的配置
+func (c *cConfig) GetConfig(ctx context.Context, req *config.GetReq) (res *config.GetRes, err error) {
+	var in sysin.GetConfigInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	data, err := service.SysConfig().GetConfigByGroup(ctx, in)
+
+	res = new(config.GetRes)
+	res.GetConfigModel = (*isysin.GetConfigModel)(data)
+	return
+}
+
+// UpdateConfig 更新指定分组的配置
+func (c *cConfig) UpdateConfig(ctx context.Context, req *config.UpdateReq) (res *config.UpdateRes, err error) {
+	var in sysin.UpdateConfigInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	err = service.SysConfig().UpdateConfigByGroup(ctx, in)
+	return
+}

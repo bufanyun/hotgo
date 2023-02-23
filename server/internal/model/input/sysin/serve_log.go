@@ -26,7 +26,7 @@ type ServeLogViewInp struct {
 }
 
 type ServeLogViewModel struct {
-	entity.Test
+	entity.SysServeLog
 }
 
 // ServeLogListInp 获取服务日志列表

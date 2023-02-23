@@ -1,1 +1,1 @@
-## HotGo 管理后台前端
+## HotGo 管理web前端

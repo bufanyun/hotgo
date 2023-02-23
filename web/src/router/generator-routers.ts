@@ -45,6 +45,7 @@ export const routerGenerator = (routerMap, parent?): any[] => {
       // Recursion
       currentRouter.children = routerGenerator(item.children, currentRouter);
     }
+
     return currentRouter;
   });
 };

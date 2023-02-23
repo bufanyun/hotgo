@@ -82,7 +82,7 @@
 <script lang="ts" setup>
   import { onMounted, ref, watch } from 'vue';
   import { useRouter } from 'vue-router';
-  import { useDialog, useMessage } from 'naive-ui';
+  import { useDialog, useMessage, useNotification } from 'naive-ui';
   import BaseInfo from './components/BaseInfo.vue';
   import EditMasterCell from './components/EditMasterCell.vue';
   import EditSlaveCell from './components/EditSlaveCell.vue';
@@ -110,6 +110,7 @@
   const formBtnLoading = ref(false);
   const previewModel = ref<any>();
   const dialog = useDialog();
+  const notification = useNotification();
 
   onMounted(async () => {
     if (genId < 1 && props.genId < 1) {
@@ -181,15 +182,6 @@
     }
   }
 
-  function _handleSlaveClose(name: string) {
-    const nameIndex = panels.value.findIndex((panelName) => panelName === name);
-    if (!~nameIndex) return;
-    panels.value.splice(nameIndex, 1);
-    if (name === value.value) {
-      value.value = panels.value[Math.min(nameIndex, panels.value.length - 1)];
-    }
-  }
-
   function handleClose(name: string) {
     const nameIndex = panels.value.findIndex((panelName) => panelName === name);
     if (!~nameIndex) return;
@@ -218,10 +210,7 @@
         formBtnLoading.value = true;
         Build(genInfo.value)
           .then((_res) => {
-            setTimeout(function () {
-              location.reload();
-            }, 1500);
-            message.success('生成提交成功，即将刷新页面..');
+            buildSuccessNotify();
           })
           .finally(() => {
             formBtnLoading.value = false;
@@ -246,6 +235,29 @@
       },
       onNegativeClick: () => {
         // message.error('取消');
+      },
+    });
+  }
+
+  function buildSuccessNotify() {
+    let count = 6;
+    const n = notification.success({
+      title: '生成提交成功',
+      content: `如果你使用的热编译，页面将在 ${count} 秒后自动刷新即可生效。否则请手动重启服务后刷新页面！`,
+      duration: 6000,
+      closable: false,
+      onAfterEnter: () => {
+        const minusCount = () => {
+          count--;
+          n.content = `如果你使用的热编译，页面将在 ${count} 秒后自动刷新即可生效。否则请手动重启服务后刷新页面！`;
+          if (count > 0) {
+            window.setTimeout(minusCount, 1000);
+          }
+        };
+        window.setTimeout(minusCount, 1000);
+      },
+      onAfterLeave: () => {
+        location.reload();
       },
     });
   }

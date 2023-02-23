@@ -1,6 +1,6 @@
 // Package crons
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -17,7 +17,7 @@ func init() {
 	cronList = append(cronList, Test2)
 }
 
-// Test2 测试2任务
+// Test2 测试2任务（带参数）
 var Test2 = &cTest2{name: "test2"}
 
 type cTest2 struct {

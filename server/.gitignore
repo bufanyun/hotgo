@@ -19,8 +19,10 @@ manifest/output/
 resource/log/
 resource/public/admin/
 resource/public/attachment/
-resource/ssl/server.crt
-resource/ssl/server.key
+storage/cache/
+storage/diskqueue/
+storage/ssl/server.crt
+storage/ssl/server.key
 temp/
 main.exe
 main.exe~

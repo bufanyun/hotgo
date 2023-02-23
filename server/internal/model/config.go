@@ -9,6 +9,7 @@ type BasicConfig struct {
 	Logo           string `json:"basicLogo"`
 	Name           string `json:"basicName"`
 	Domain         string `json:"basicDomain"`
+	WsAddr         string `json:"basicWsAddr"`
 	RegisterSwitch int    `json:"basicRegisterSwitch"`
 	SystemOpen     bool   `json:"basicSystemOpen"`
 }
@@ -115,6 +116,7 @@ type ServeLogConfig struct {
 // GenerateAppCrudTemplate curd模板
 type GenerateAppCrudTemplate struct {
 	Group          string `json:"group"`
+	IsAddon        bool   `json:"isAddon"`
 	MasterPackage  string `json:"masterPackage"`
 	TemplatePath   string `json:"templatePath"`
 	ApiPath        string `json:"apiPath"`
@@ -153,8 +155,21 @@ type GenerateConfig struct {
 			Templates []*GenerateAppTreeTemplate `json:"templates"`
 		} `json:"tree"`
 	} `json:"application"`
-	Delimiters    []string `json:"delimiters"`
-	DevPath       string   `json:"devPath"`
-	DisableTables []string `json:"disableTables"`
-	SelectDbs     []string `json:"selectDbs"`
+	Delimiters    []string          `json:"delimiters"`
+	DevPath       string            `json:"devPath"`
+	DisableTables []string          `json:"disableTables"`
+	SelectDbs     []string          `json:"selectDbs"`
+	Addon         *BuildAddonConfig `json:"addon"`
+}
+
+// BuildAddonConfig 构建插件模块配置
+type BuildAddonConfig struct {
+	SrcPath      string `json:"srcPath"`
+	TemplatePath string `json:"templatePath"`
+}
+
+// CacheConfig 缓存配置
+type CacheConfig struct {
+	Adapter string `json:"adapter"`
+	FileDir string `json:"fileDir"`
 }

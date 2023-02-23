@@ -1,9 +1,8 @@
 // Package sys
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -38,6 +37,12 @@ func NewSysConfig() *sSysConfig {
 
 func init() {
 	service.RegisterSysConfig(NewSysConfig())
+}
+
+// GetLoadCache 获取本地缓存配置
+func (s *sSysConfig) GetLoadCache(ctx context.Context) (conf *model.CacheConfig, err error) {
+	err = g.Cfg().MustGet(ctx, "cache").Scan(&conf)
+	return
 }
 
 // GetLoadGenerate 获取本地生成配置
@@ -217,7 +222,7 @@ func (s *sSysConfig) UpdateConfigByGroup(ctx context.Context, in sysin.UpdateCon
 				//	return err
 				//}
 				//continue
-				return gerror.Newf("暂不支持从前台添加变量，请从数据库中添加变量：%v", k)
+				return gerror.Newf("暂不支持从前台添加变量，请先在数据库表[%v]中配置变量：%v", dao.SysConfig.Table(), k)
 			}
 
 			// 更新

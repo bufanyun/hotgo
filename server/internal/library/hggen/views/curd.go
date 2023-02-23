@@ -1,9 +1,8 @@
 // Package views
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package views
 
 import (
@@ -70,6 +69,7 @@ type CurdOptions struct {
 	Step          *CurdStep          // 转换后的流程控制条件
 	dictMap       g.Map              // 字典选项 -> 字段映射关系
 	TemplateGroup string             `json:"templateGroup"`
+	ApiPrefix     string             `json:"apiPrefix"`
 }
 
 type CurdPreviewInput struct {
@@ -123,7 +123,14 @@ func (l *gCurd) initInput(ctx context.Context, in *CurdPreviewInput) (err error)
 		return gerror.New("没有找到生成模板的配置，请检查！")
 	}
 
-	err = checkCurdPath(in.Config.Application.Crud.Templates[in.In.GenTemplate])
+	// api前缀
+	apiPrefix := gstr.LcFirst(in.In.VarName)
+	if in.Config.Application.Crud.Templates[in.In.GenTemplate].IsAddon {
+		apiPrefix = in.In.AddonName + "/" + apiPrefix
+	}
+	in.options.ApiPrefix = apiPrefix
+
+	err = checkCurdPath(in.Config.Application.Crud.Templates[in.In.GenTemplate], in.In.AddonName)
 	if err != nil {
 		return
 	}
@@ -147,9 +154,10 @@ func initStep(ctx context.Context, in *CurdPreviewInput) {
 }
 
 func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) (err error) {
+	temp := in.Config.Application.Crud.Templates[in.In.GenTemplate]
 	view := gview.New()
 	err = view.SetConfigWithMap(g.Map{
-		"Paths":      in.Config.Application.Crud.Templates[in.In.GenTemplate].TemplatePath,
+		"Paths":      temp.TemplatePath,
 		"Delimiters": in.Config.Delimiters,
 	})
 	if err != nil {
@@ -168,19 +176,48 @@ func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) (err error) 
 		return
 	}
 
+	modName, err := GetModName(ctx)
+	if err != nil {
+		return
+	}
+	importApi := gstr.Replace(temp.ApiPath, "./", modName+"/") + "/" + strings.ToLower(in.In.VarName)
+	importInput := gstr.Replace(temp.InputPath, "./", modName+"/")
+	importController := gstr.Replace(temp.ControllerPath, "./", modName+"/")
+	importService := "hotgo/internal/service"
+	if temp.IsAddon {
+		importService = "hotgo/addons/" + in.In.AddonName + "/service"
+	}
+
+	importWebApi := "@/api/" + gstr.LcFirst(in.In.VarName)
+	if temp.IsAddon {
+		importWebApi = "@/api/addons/" + in.In.AddonName + "/" + gstr.LcFirst(in.In.VarName)
+	}
+
+	componentPrefix := gstr.LcFirst(in.In.VarName)
+	if temp.IsAddon {
+		componentPrefix = "addons/" + in.In.AddonName + "/" + componentPrefix
+	}
+
 	view.Assigns(gview.Params{
-		"templateGroup": in.options.TemplateGroup,                                    // 生成模板分组名称
-		"servFunName":   l.parseServFunName(in.options.TemplateGroup, in.In.VarName), // 业务服务名称
-		"nowTime":       gtime.Now().Format("Y-m-d H:i:s"),                           // 当前时间
-		"version":       runtime.Version(),                                           // GO 版本
-		"hgVersion":     consts.VersionApp,                                           // HG 版本
-		"varName":       in.In.VarName,                                               // 实体名称
-		"tableComment":  in.In.TableComment,                                          // 对外名称
-		"daoName":       in.In.DaoName,                                               // ORM模型
-		"masterFields":  in.masterFields,                                             // 主表字段
-		"pk":            in.pk,                                                       // 主键属性
-		"options":       in.options,                                                  // 提交选项
-		"dictOptions":   dictOptions,                                                 // web字典选项
+		"templateGroup":    in.options.TemplateGroup,                                    // 生成模板分组名称
+		"servFunName":      l.parseServFunName(in.options.TemplateGroup, in.In.VarName), // 业务服务名称
+		"nowTime":          gtime.Now().Format("Y-m-d H:i:s"),                           // 当前时间
+		"version":          runtime.Version(),                                           // GO 版本
+		"hgVersion":        consts.VersionApp,                                           // HG 版本
+		"varName":          in.In.VarName,                                               // 实体名称
+		"tableComment":     in.In.TableComment,                                          // 对外名称
+		"daoName":          in.In.DaoName,                                               // ORM模型
+		"masterFields":     in.masterFields,                                             // 主表字段
+		"pk":               in.pk,                                                       // 主键属性
+		"options":          in.options,                                                  // 提交选项
+		"dictOptions":      dictOptions,                                                 // web字典选项
+		"importApi":        importApi,                                                   // 导入goApi包
+		"importInput":      importInput,                                                 // 导入input包
+		"importController": importController,                                            // 导入控制器包
+		"importService":    importService,                                               // 导入业务服务
+		"importWebApi":     importWebApi,                                                // 导入webApi
+		"apiPrefix":        in.options.ApiPrefix,                                        // api前缀
+		"componentPrefix":  componentPrefix,                                             // vue子组件前缀
 	})
 	in.view = view
 	return

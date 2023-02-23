@@ -1,6 +1,6 @@
 // Package sys
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -252,7 +252,7 @@ func (s *sSysProvinces) UniqueId(ctx context.Context, in sysin.ProvincesUniqueId
 		return
 	}
 
-	if err = hgorm.IsUnique(ctx, dao.SysProvinces, g.Map{dao.Test.Columns().Id: in.NewId}, "", in.OldId); err != nil {
+	if err = hgorm.IsUnique(ctx, dao.SysProvinces, g.Map{dao.SysProvinces.Columns().Id: in.NewId}, "", in.OldId); err != nil {
 		res.IsUnique = false
 		return res, nil
 	}
