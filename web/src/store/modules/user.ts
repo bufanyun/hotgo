@@ -35,6 +35,12 @@ export interface UserInfoState {
   lastLoginIp: string;
 }
 
+export interface ConfigState {
+  domain: string;
+  version: string;
+  wsAddr: string;
+}
+
 export interface IUserState {
   token: string;
   username: string;
@@ -42,7 +48,7 @@ export interface IUserState {
   avatar: string;
   permissions: any[];
   info: UserInfoState | null;
-  config: any;
+  config: ConfigState | null;
 }
 
 export const useUserStore = defineStore({
@@ -75,7 +81,7 @@ export const useUserStore = defineStore({
     getUserInfo(): UserInfoState | null {
       return this.info;
     },
-    getConfig(): object {
+    getConfig(): ConfigState | null {
       return this.config;
     },
   },
@@ -98,7 +104,7 @@ export const useUserStore = defineStore({
     setUserInfo(info: UserInfoState | null) {
       this.info = info;
     },
-    setConfig(config) {
+    setConfig(config: ConfigState | null) {
       this.config = config;
     },
     // 登录

@@ -87,7 +87,7 @@
                 <FormOutlined />
               </n-icon>
               <span>编辑菜单{{ treeItemTitle ? `：${treeItemTitle}` : '' }}</span>
-              <span style="font-size: 14px">{{ treeItemTitle }}</span>
+              <!--              <span style="font-size: 14px">{{ treeItemTitle }}</span>-->
             </n-space>
           </template>
 

@@ -1,31 +1,27 @@
 <template>
   <div>
-    <n-spin :show="show" description="正在获取配置...">
-      <n-grid cols="2 s:2 m:2 l:2 xl:2 2xl:2" responsive="screen">
-        <n-grid-item>
-          <n-form :label-width="80" :model="formValue" :rules="rules" ref="formRef">
-            <n-form-item label="默认主题" path="themeDarkTheme">
-              <n-input v-model:value="formValue.themeDarkTheme" placeholder="" />
-              <template #feedback> 可选：'dark' 、 'light' </template>
-            </n-form-item>
+    <n-spin :show="show" description="请稍候...">
+      <n-form :label-width="80" :model="formValue" :rules="rules" ref="formRef">
+        <n-form-item label="默认主题" path="themeDarkTheme">
+          <n-input v-model:value="formValue.themeDarkTheme" placeholder="" />
+          <template #feedback> 可选：'dark' 、 'light' </template>
+        </n-form-item>
 
-            <n-form-item label="默认系统主题" path="themeAppTheme">
-              <n-input v-model:value="formValue.themeAppTheme" placeholder="" />
-              <template #feedback> 默认：#2d8cf0 </template>
-            </n-form-item>
-            <n-form-item label="默认侧边栏风格" path="themeNavTheme">
-              <n-input v-model:value="formValue.themeNavTheme" placeholder="" />
-              <template #feedback>可选：'light'、 'header-dark'</template>
-            </n-form-item>
+        <n-form-item label="默认系统主题" path="themeAppTheme">
+          <n-input v-model:value="formValue.themeAppTheme" placeholder="" />
+          <template #feedback> 默认：#2d8cf0 </template>
+        </n-form-item>
+        <n-form-item label="默认侧边栏风格" path="themeNavTheme">
+          <n-input v-model:value="formValue.themeNavTheme" placeholder="" />
+          <template #feedback>可选：'light'、 'header-dark'</template>
+        </n-form-item>
 
-            <div>
-              <n-space>
-                <n-button type="primary" @click="formSubmit">保存更新</n-button>
-              </n-space>
-            </div>
-          </n-form>
-        </n-grid-item>
-      </n-grid>
+        <div>
+          <n-space>
+            <n-button type="primary" @click="formSubmit">保存更新</n-button>
+          </n-space>
+        </div>
+      </n-form>
     </n-spin>
   </div>
 </template>

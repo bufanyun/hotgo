@@ -17,6 +17,7 @@ export function getConfig() {
   return http.request({
     url: ApiEnum.SiteConfig,
     method: 'get',
+    headers: { hostname: location.hostname },
   });
 }
 

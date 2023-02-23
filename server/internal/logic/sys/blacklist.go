@@ -1,6 +1,6 @@
 // Package sys
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -172,7 +172,7 @@ func (s *sSysBlacklist) Load(ctx context.Context) {
 		Where(dao.SysBlacklist.Columns().Status, consts.StatusEnabled).
 		Array()
 	if err != nil {
-		g.Log().Fatal(ctx, "load blacklist fail：%+v", err)
+		g.Log().Fatalf(ctx, "load blacklist fail：%+v", err)
 		return
 	}
 

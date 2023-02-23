@@ -1,6 +1,6 @@
 // Package router
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -19,9 +19,11 @@ import (
 func Api(ctx context.Context, group *ghttp.RouterGroup) {
 	prefix := g.Cfg().MustGet(ctx, "router.api.prefix", "/api")
 	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
-		group.Middleware(service.Middleware().ApiAuth)
 		group.Bind(
 			user.Hello,
+		)
+		group.Middleware(service.Middleware().ApiAuth)
+		group.Bind(
 			member.Member, // 管理员
 		)
 	})

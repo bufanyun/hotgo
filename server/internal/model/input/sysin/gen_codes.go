@@ -1,13 +1,16 @@
 // Package sysin
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sysin
 
 import (
+	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/text/gregex"
 	"github.com/gogf/gf/v2/util/gconv"
+	"hotgo/internal/consts"
 	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
@@ -26,6 +29,11 @@ type GenCodesMaxSortModel struct {
 type GenCodesEditInp struct {
 	entity.SysGenCodes
 }
+
+func (in *GenCodesEditInp) Filter(ctx context.Context) (err error) {
+	return genFilter(ctx, in.SysGenCodes)
+}
+
 type GenCodesEditModel struct {
 	entity.SysGenCodes
 }
@@ -75,19 +83,38 @@ type GenCodesSelectsModel struct {
 	LinkMode  form.Selects   `json:"linkMode" dc:"关联表方式"`
 	BuildMeth form.Selects   `json:"buildMeth" dc:"生成方式"`
 	// 字段表格选项
-	FormMode  form.Selects        `json:"formMode" dc:"表单组件"`
-	FormRole  form.Selects        `json:"formRole" dc:"表单验证"`
-	DictMode  DictTreeSelectModel `json:"dictMode" dc:"字典类型"`
+	FormMode  form.Selects        `json:"formMode"  dc:"表单组件"`
+	FormRole  form.Selects        `json:"formRole"  dc:"表单验证"`
+	DictMode  DictTreeSelectModel `json:"dictMode"  dc:"字典类型"`
 	WhereMode form.Selects        `json:"whereMode" dc:"查询条件"`
+	Addons    form.Selects        `json:"addons"    dc:"插件选项"`
 }
 
 type GenTypeSelects []*GenTypeSelect
 
 type GenTypeSelect struct {
-	Value     int          `json:"value"`
-	Label     string       `json:"label"`
-	Name      string       `json:"name"`
-	Templates form.Selects `json:"templates"`
+	Value     int                `json:"value"`
+	Label     string             `json:"label"`
+	Name      string             `json:"name"`
+	Templates GenTemplateSelects `json:"templates"`
+}
+
+type GenTemplateSelects []*GenTemplateSelect
+type GenTemplateSelect struct {
+	Value   interface{} `json:"value"`
+	Label   string      `json:"label"`
+	Name    string      `json:"name"`
+	IsAddon bool        `json:"isAddon"`
+}
+
+func (p GenTemplateSelects) Len() int {
+	return len(p)
+}
+func (p GenTemplateSelects) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
+}
+func (p GenTemplateSelects) Less(i, j int) bool {
+	return gconv.Int64(p[j].Value) > gconv.Int64(p[i].Value)
 }
 
 func (p GenTypeSelects) Len() int {
@@ -141,6 +168,10 @@ type GenCodesPreviewInp struct {
 	entity.SysGenCodes
 }
 
+func (in *GenCodesPreviewInp) Filter(ctx context.Context) (err error) {
+	return genFilter(ctx, in.SysGenCodes)
+}
+
 // GenFile 生成文件配置
 type GenFile struct {
 	Content  string `json:"content" dc:"页面内容"`
@@ -157,4 +188,37 @@ type GenCodesPreviewModel struct {
 // GenCodesBuildInp 提交生成
 type GenCodesBuildInp struct {
 	entity.SysGenCodes
+}
+
+func (in *GenCodesBuildInp) Filter(ctx context.Context) (err error) {
+	return genFilter(ctx, in.SysGenCodes)
+}
+
+func genFilter(ctx context.Context, in entity.SysGenCodes) (err error) {
+	if in.VarName == "" {
+		err = gerror.New("实体命名不能为空")
+		return
+	}
+
+	if !gregex.IsMatchString(`^[a-zA-Z]{1}\w{1,23}$`, in.VarName) {
+		err = gerror.New("实体命名格式不正确，字母开头，只能包含字母、数字和下划线，长度在2~24之间")
+		return
+	}
+
+	if in.GenType == consts.GenCodesTypeCurd || in.GenType == consts.GenCodesTypeTree {
+		if in.DbName == "" {
+			err = gerror.New("数据库不能为空")
+			return
+		}
+		if in.TableName == "" {
+			err = gerror.New("数据库表不能为空")
+			return
+		}
+		if in.TableComment == "" {
+			err = gerror.New("菜单名称不能为空")
+			return
+		}
+	}
+
+	return
 }

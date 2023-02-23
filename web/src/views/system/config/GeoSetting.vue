@@ -1,34 +1,30 @@
 <template>
   <div>
-    <n-spin :show="show" description="正在获取配置...">
-      <n-grid cols="2 s:2 m:2 l:2 xl:2 2xl:2" responsive="screen">
-        <n-grid-item>
-          <n-form :label-width="100" :model="formValue" :rules="rules" ref="formRef">
-            <n-form-item label="高德Web服务key" path="geoAmapWebKey">
-              <n-input
-                v-model:value="formValue.geoAmapWebKey"
-                placeholder=""
-                type="password"
-                show-password-on="click"
-              >
-                <template #password-visible-icon>
-                  <n-icon :size="16" :component="GlassesOutline" />
-                </template>
-                <template #password-invisible-icon>
-                  <n-icon :size="16" :component="Glasses" />
-                </template>
-              </n-input>
-              <template #feedback> 申请地址：https://console.amap.com/dev/key/app</template>
-            </n-form-item>
+    <n-spin :show="show" description="请稍候...">
+      <n-form :label-width="100" :model="formValue" :rules="rules" ref="formRef">
+        <n-form-item label="高德Web服务key" path="geoAmapWebKey">
+          <n-input
+            v-model:value="formValue.geoAmapWebKey"
+            placeholder=""
+            type="password"
+            show-password-on="click"
+          >
+            <template #password-visible-icon>
+              <n-icon :size="16" :component="GlassesOutline" />
+            </template>
+            <template #password-invisible-icon>
+              <n-icon :size="16" :component="Glasses" />
+            </template>
+          </n-input>
+          <template #feedback> 申请地址：https://console.amap.com/dev/key/app</template>
+        </n-form-item>
 
-            <div>
-              <n-space>
-                <n-button type="primary" @click="formSubmit">保存更新</n-button>
-              </n-space>
-            </div>
-          </n-form>
-        </n-grid-item>
-      </n-grid>
+        <div>
+          <n-space>
+            <n-button type="primary" @click="formSubmit">保存更新</n-button>
+          </n-space>
+        </div>
+      </n-form>
     </n-spin>
   </div>
 </template>

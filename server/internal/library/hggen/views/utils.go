@@ -1,9 +1,8 @@
 // Package views
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package views
 
 import (
@@ -11,6 +10,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gfile"
+	"github.com/gogf/gf/v2/text/gregex"
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
 	"hotgo/internal/model"
@@ -98,40 +98,73 @@ func ImportSql(ctx context.Context, path string) error {
 	return nil
 }
 
-func checkCurdPath(temp *model.GenerateAppCrudTemplate) (err error) {
+func checkCurdPath(temp *model.GenerateAppCrudTemplate, addonName string) (err error) {
 	if temp == nil {
 		return gerror.New("生成模板配置不能为空")
 	}
 
-	tip := `生成模板配置参数'%s'路径不存在，请先创建路径`
+	if temp.IsAddon {
+		temp.TemplatePath = gstr.Replace(temp.TemplatePath, "{$name}", addonName)
+		temp.ApiPath = gstr.Replace(temp.ApiPath, "{$name}", addonName)
+		temp.InputPath = gstr.Replace(temp.InputPath, "{$name}", addonName)
+		temp.ControllerPath = gstr.Replace(temp.ControllerPath, "{$name}", addonName)
+		temp.LogicPath = gstr.Replace(temp.LogicPath, "{$name}", addonName)
+		temp.RouterPath = gstr.Replace(temp.RouterPath, "{$name}", addonName)
+		temp.SqlPath = gstr.Replace(temp.SqlPath, "{$name}", addonName)
+		temp.WebApiPath = gstr.Replace(temp.WebApiPath, "{$name}", addonName)
+		temp.WebViewsPath = gstr.Replace(temp.WebViewsPath, "{$name}", addonName)
+	}
+
+	tip := `生成模板配置参数'%s'路径不存在，请先创建路径:%s`
 
 	if !gfile.Exists(temp.TemplatePath) {
-		return gerror.Newf(tip, "TemplatePath")
+		return gerror.Newf(tip, "TemplatePath", temp.TemplatePath)
 	}
 	if !gfile.Exists(temp.ApiPath) {
-		return gerror.Newf(tip, "ApiPath")
+		return gerror.Newf(tip, "ApiPath", temp.ApiPath)
 	}
 	if !gfile.Exists(temp.InputPath) {
-		return gerror.Newf(tip, "InputPath")
+		return gerror.Newf(tip, "InputPath", temp.InputPath)
 	}
 	if !gfile.Exists(temp.ControllerPath) {
-		return gerror.Newf(tip, "ControllerPath")
+		return gerror.Newf(tip, "ControllerPath", temp.ControllerPath)
 	}
 	if !gfile.Exists(temp.LogicPath) {
-		return gerror.Newf(tip, "LogicPath")
+		return gerror.Newf(tip, "LogicPath", temp.LogicPath)
 	}
 	if !gfile.Exists(temp.RouterPath) {
-		return gerror.Newf(tip, "RouterPath")
+		return gerror.Newf(tip, "RouterPath", temp.RouterPath)
 	}
 	if !gfile.Exists(temp.SqlPath) {
-		return gerror.Newf(tip, "SqlPath")
+		return gerror.Newf(tip, "SqlPath", temp.SqlPath)
 	}
 	if !gfile.Exists(temp.WebApiPath) {
-		return gerror.Newf(tip, "WebApiPath")
+		return gerror.Newf(tip, "WebApiPath", temp.WebApiPath)
 	}
 	if !gfile.Exists(temp.WebViewsPath) {
-		return gerror.Newf(tip, "WebViewsPath")
+		return gerror.Newf(tip, "WebViewsPath", temp.WebViewsPath)
 	}
 
+	return
+}
+
+// GetModName 获取主包名
+func GetModName(ctx context.Context) (modName string, err error) {
+	if !gfile.Exists("go.mod") {
+		err = gerror.New("go.mod does not exist in current working directory")
+		return
+	}
+
+	var (
+		goModContent = gfile.GetContents("go.mod")
+		match, _     = gregex.MatchString(`^module\s+(.+)\s*`, goModContent)
+	)
+
+	if len(match) > 1 {
+		modName = gstr.Trim(match[1])
+	} else {
+		err = gerror.New("module name does not found in go.mod")
+		return
+	}
 	return
 }

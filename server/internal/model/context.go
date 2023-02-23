@@ -1,9 +1,8 @@
 // Package model
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package model
 
 import (
@@ -12,11 +11,12 @@ import (
 
 // Context 请求上下文结构
 type Context struct {
-	Module     string    // 应用模块
+	Module     string    // 应用模块 admin｜api｜home｜websocket
+	AddonName  string    // 插件名称 如果不是插件模块请求，可能为空
 	TakeUpTime int64     // 请求耗时 ms
 	User       *Identity // 上下文用户信息
 	Response   *Response // 请求响应
-	Data       g.Map     // 自定kv变量，业务模块根据需要设置，不固定
+	Data       g.Map     // 自定kv变量 业务模块根据需要设置，不固定
 }
 
 // Identity 通用身份模型

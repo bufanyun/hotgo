@@ -1,6 +1,6 @@
 // Package crons
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -72,7 +72,7 @@ func StartALL(sysCron []*entity.SysCron) error {
 	)
 
 	if len(sysCron) == 0 {
-		g.Log().Info(ct, "没有可用的定时任务")
+		g.Log().Debug(ct, "no scheduled task is available.")
 		return nil
 	}
 

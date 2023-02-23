@@ -1,9 +1,8 @@
 // Package middleware
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package middleware
 
 import (
@@ -12,8 +11,10 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
+	"hotgo/internal/library/addons"
 	"hotgo/internal/library/cache"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/jwt"
@@ -94,13 +95,35 @@ func (s *sMiddleware) DemoLimit(r *ghttp.Request) {
 	r.Middleware.Next()
 }
 
+// Addon 插件中间件
+func (s *sMiddleware) Addon(r *ghttp.Request) {
+	var (
+		ctx = r.Context()
+	)
+
+	if contexts.Get(ctx).Module == "" {
+		g.Log().Warning(ctx, "application module is not initialized.")
+		return
+	}
+
+	// 替换掉应用模块前缀
+	path := gstr.Replace(r.URL.Path, "/"+contexts.Get(ctx).Module+"/", "", 1)
+	ss := gstr.Explode("/", path)
+	if len(ss) == 0 {
+		g.Log().Warning(ctx, "addon was not recognized.")
+		return
+	}
+
+	contexts.SetAddonName(ctx, addons.GetModule(ss[0]).GetSkeleton().Name)
+	r.Middleware.Next()
+}
+
 // inspectAuth 检查并完成身份认证
 func inspectAuth(r *ghttp.Request, appName string) error {
 	var (
 		ctx           = r.Context()
 		user          = new(model.Identity)
 		authorization = jwt.GetAuthorization(r)
-		c             = cache.New()
 		customCtx     = &model.Context{}
 	)
 
@@ -109,7 +132,7 @@ func inspectAuth(r *ghttp.Request, appName string) error {
 	}
 
 	// 获取jwtToken
-	jwtToken := consts.RedisJwtToken + gmd5.MustEncryptString(authorization)
+	jwtToken := consts.CacheJwtToken + gmd5.MustEncryptString(authorization)
 	jwtSign := g.Cfg().MustGet(ctx, "jwt.sign", "hotgo")
 
 	data, ParseErr := jwt.ParseToken(authorization, jwtSign.Bytes())
@@ -123,18 +146,18 @@ func inspectAuth(r *ghttp.Request, appName string) error {
 	}
 
 	// 判断token跟redis的缓存的token是否一样
-	isContains, containsErr := c.Contains(ctx, jwtToken)
+	isContains, containsErr := cache.Instance().Contains(ctx, jwtToken)
 	if containsErr != nil {
 		return gerror.Newf("token无效！ err :%+v", ParseErr.Error())
 	}
 	if !isContains {
-		return gerror.New("token已过期")
+		return gerror.Newf("token已过期")
 	}
 
 	// 是否开启多端登录
-	if multiPort := g.Cfg().MustGet(ctx, "jwt.multiPort", true); !multiPort.Bool() {
-		key := consts.RedisJwtUserBind + appName + ":" + gconv.String(user.Id)
-		originJwtToken, originErr := c.Get(ctx, key)
+	if !g.Cfg().MustGet(ctx, "jwt.multiPort", true).Bool() {
+		key := consts.CacheJwtUserBind + appName + ":" + gconv.String(user.Id)
+		originJwtToken, originErr := cache.Instance().Get(ctx, key)
 		if originErr != nil {
 			return gerror.Newf("信息异常，请重新登录！ err :%+v", originErr.Error())
 		}
@@ -167,6 +190,5 @@ func inspectAuth(r *ghttp.Request, appName string) error {
 		}
 	}
 	contexts.SetUser(ctx, customCtx.User)
-
 	return nil
 }

@@ -30,6 +30,7 @@ type SysGenCodesColumns struct {
 	TableComment  string // 主表注释
 	DaoName       string // 主表dao模型
 	MasterColumns string // 主表字段
+	AddonName     string // 插件名称
 	Status        string // 生成状态
 	CreatedAt     string // 创建时间
 	UpdatedAt     string // 更新时间
@@ -47,6 +48,7 @@ var sysGenCodesColumns = SysGenCodesColumns{
 	TableComment:  "table_comment",
 	DaoName:       "dao_name",
 	MasterColumns: "master_columns",
+	AddonName:     "addon_name",
 	Status:        "status",
 	CreatedAt:     "created_at",
 	UpdatedAt:     "updated_at",

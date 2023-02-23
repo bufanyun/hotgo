@@ -23,6 +23,7 @@ type SysGenCodes struct {
 	TableComment  interface{} // 主表注释
 	DaoName       interface{} // 主表dao模型
 	MasterColumns *gjson.Json // 主表字段
+	AddonName     interface{} // 插件名称
 	Status        interface{} // 生成状态
 	CreatedAt     *gtime.Time // 创建时间
 	UpdatedAt     *gtime.Time // 更新时间

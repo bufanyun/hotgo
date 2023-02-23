@@ -1,130 +1,145 @@
 <template>
-  <n-card :bordered="false" class="proCard" title="代码生成">
-    <!--    <n-card :bordered="false" title="代码生成"> 你可以在这里查看到平台所有的短信发送记录。 </n-card>-->
-    <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset" ref="searchFormRef">
-      <template #statusSlot="{ model, field }">
-        <n-input v-model:value="model[field]" />
-      </template>
-    </BasicForm>
-
-    <BasicTable
-      :columns="columns"
-      :request="loadDataTable"
-      :row-key="(row) => row.id"
-      ref="actionRef"
-      :actionColumn="actionColumn"
-      @update:checked-row-keys="onCheckedRow"
-      :scroll-x="1090"
-    >
-      <template #tableTitle>
-        <n-button type="primary" @click="addTable">
-          <template #icon>
-            <n-icon>
-              <PlusOutlined />
-            </n-icon>
-          </template>
-          立即生成
-        </n-button>
-        &nbsp;
-        <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
-          <template #icon>
-            <n-icon>
-              <DeleteOutlined />
-            </n-icon>
-          </template>
-          批量删除
-        </n-button>
-      </template>
-    </BasicTable>
-
-    <n-modal
-      v-model:show="showModal"
-      :show-icon="false"
-      preset="dialog"
-      title="立即生成"
-      :style="{
-        width: dialogWidth,
-      }"
-    >
-      <!--      <n-alert :show-icon="false" type="info">-->
-      <!--        注意：！-->
-      <!--      </n-alert>-->
-      <n-form
-        :model="formParams"
-        :rules="rules"
-        ref="formRef"
-        label-placement="left"
-        :label-width="80"
-        class="py-4"
+  <div>
+    <n-card :bordered="false" class="proCard" title="代码生成">
+      <BasicForm
+        @register="register"
+        @submit="handleSubmit"
+        @reset="handleReset"
+        ref="searchFormRef"
       >
-        <n-form-item label="生成类型" path="genType">
-          <n-select
-            placeholder="请选择"
-            :options="selectList.genType"
-            v-model:value="formParams.genType"
-            :on-update:value="onUpdateValueGenType"
-          />
-        </n-form-item>
+        <template #statusSlot="{ model, field }">
+          <n-input v-model:value="model[field]" />
+        </template>
+      </BasicForm>
 
-        <n-form-item label="生成模板" path="genTemplate">
-          <n-select
-            placeholder="请选择"
-            :options="genTemplateOptions"
-            v-model:value="formParams.genTemplate"
-            :onFocus="onFocusGenTemplate"
-          />
-        </n-form-item>
+      <BasicTable
+        :columns="columns"
+        :request="loadDataTable"
+        :row-key="(row) => row.id"
+        ref="actionRef"
+        :actionColumn="actionColumn"
+        @update:checked-row-keys="onCheckedRow"
+        :scroll-x="1090"
+      >
+        <template #tableTitle>
+          <n-button type="primary" @click="addTable">
+            <template #icon>
+              <n-icon>
+                <PlusOutlined />
+              </n-icon>
+            </template>
+            立即生成
+          </n-button>
+          &nbsp;
+          <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
+            <template #icon>
+              <n-icon>
+                <DeleteOutlined />
+              </n-icon>
+            </template>
+            批量删除
+          </n-button>
+        </template>
+      </BasicTable>
 
-        <n-form-item
-          label="数据库"
-          path="dbName"
-          v-if="formParams.genType >= 10 && formParams.genType < 20"
+      <n-modal
+        v-model:show="showModal"
+        :show-icon="false"
+        preset="dialog"
+        title="立即生成"
+        :style="{
+          width: dialogWidth,
+        }"
+      >
+        <!--      <n-alert :show-icon="false" type="info">-->
+        <!--        注意：！-->
+        <!--      </n-alert>-->
+        <n-form
+          :model="formParams"
+          :rules="rules"
+          ref="formRef"
+          label-placement="left"
+          :label-width="80"
+          class="py-4"
         >
-          <n-select
-            placeholder="请选择"
-            :options="selectList.db"
-            v-model:value="formParams.dbName"
-            @update:value="handleDbUpdateValue"
-          />
-        </n-form-item>
-        <n-form-item
-          label="数据库表"
-          path="tableName"
-          v-if="formParams.genType >= 10 && formParams.genType < 20"
-        >
-          <n-select
-            filterable
-            tag
-            :loading="tablesLoading"
-            placeholder="请选择"
-            :options="selectList.tables"
-            v-model:value="formParams.tableName"
-            @update:value="handleTableUpdateValue"
-            :disabled="formParams.dbName === ''"
-          />
-        </n-form-item>
+          <n-form-item label="生成类型" path="genType">
+            <n-select
+              placeholder="请选择"
+              :options="selectList.genType"
+              v-model:value="formParams.genType"
+              :on-update:value="onUpdateValueGenType"
+            />
+          </n-form-item>
 
-        <n-form-item
-          label="菜单名称"
-          path="tableComment"
-          v-show="formParams.genType >= 10 && formParams.genType < 20"
-        >
-          <n-input placeholder="请输入" v-model:value="formParams.tableComment" />
-        </n-form-item>
+          <n-form-item
+            label="数据库"
+            path="dbName"
+            v-if="formParams.genType >= 10 && formParams.genType < 20"
+          >
+            <n-select
+              placeholder="请选择"
+              :options="selectList.db"
+              v-model:value="formParams.dbName"
+              @update:value="handleDbUpdateValue"
+            />
+          </n-form-item>
+          <n-form-item
+            label="数据库表"
+            path="tableName"
+            v-if="formParams.genType >= 10 && formParams.genType < 20"
+          >
+            <n-select
+              filterable
+              tag
+              :loading="tablesLoading"
+              placeholder="请选择"
+              :options="selectList.tables"
+              v-model:value="formParams.tableName"
+              @update:value="handleTableUpdateValue"
+              :disabled="formParams.dbName === ''"
+            />
+          </n-form-item>
 
-        <n-form-item label="实体命名" path="varName">
-          <n-input placeholder="请输入" v-model:value="formParams.varName" />
-        </n-form-item>
-      </n-form>
+          <n-form-item label="生成模板" path="genTemplate">
+            <n-select
+              placeholder="请选择"
+              :options="genTemplateOptions"
+              v-model:value="formParams.genTemplate"
+              :onFocus="onFocusGenTemplate"
+              @update:value="handleGenTemplateUpdateValue"
+            />
+          </n-form-item>
 
-      <template #action>
-        <n-space>
-          <n-button @click="() => (showModal = false)">取消</n-button>
-          <n-button type="info" :loading="formBtnLoading" @click="confirmForm">生成配置</n-button>
-        </n-space>
-      </template>
-    </n-modal>
-  </n-card>
+          <n-form-item label="选择插件" path="addonName" v-show="selectAddon">
+            <n-select
+              placeholder="请选择"
+              :options="selectList.addons"
+              v-model:value="formParams.addonName"
+            />
+          </n-form-item>
+
+          <n-form-item
+            label="菜单名称"
+            path="tableComment"
+            v-show="formParams.genType >= 10 && formParams.genType < 20"
+          >
+            <n-input placeholder="请输入" v-model:value="formParams.tableComment" />
+          </n-form-item>
+
+          <n-form-item label="实体命名" path="varName">
+            <n-input placeholder="请输入" v-model:value="formParams.varName" />
+          </n-form-item>
+        </n-form>
+
+        <template #action>
+          <n-space>
+            <n-button @click="() => (showModal = false)">取消</n-button>
+            <n-button type="info" :loading="formBtnLoading" @click="confirmForm">生成配置</n-button>
+          </n-space>
+        </template>
+      </n-modal>
+    </n-card>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -147,52 +162,44 @@
     formRole: [],
     dictMode: [],
     whereMode: [],
+    addons: [],
   });
   const columns = [
     {
-      title: '生成ID',
+      title: 'ID',
       key: 'id',
-      width: 80,
+      width: 60,
     },
     {
-      title: '生成类型',
-      key: 'genType',
-      render(row) {
-        return h(
-          NTag,
-          {
-            style: {
-              marginRight: '6px',
-            },
-            type: 'info',
-            bordered: false,
-          },
-          {
-            default: () => getOptionLabel(selectList.value.genType, row.genType),
-          }
-        );
-      },
-      width: 180,
-    },
-    {
-      title: '生成模板',
+      title: '模板',
       key: 'genTemplate',
       render(row) {
-        return h(
-          NTag,
-          {
-            style: {
-              marginRight: '6px',
-            },
-            type: 'default',
-            bordered: false,
-          },
-          {
-            default: () => row.genTemplateGroup,
-          }
-        );
+        return h('p', { id: 'app' }, [
+          h('div', {
+            innerHTML: '<div><p>' + row.genTemplateGroup + '</p></div>',
+          }),
+          h('div', {
+            innerHTML:
+              '<div><p>' + getOptionLabel(selectList.value.genType, row.genType) + '</p></div>',
+          }),
+        ]);
       },
       width: 120,
+    },
+    {
+      title: '数据库',
+      key: 'dbName',
+      width: 280,
+      render(row) {
+        return h('p', { id: 'app' }, [
+          h('div', {
+            innerHTML: '<div><p>' + row.dbName + '</p></div>',
+          }),
+          h('div', {
+            innerHTML: '<div><p>' + row.tableName + '</p></div>',
+          }),
+        ]);
+      },
     },
     {
       title: '实体命名',
@@ -200,22 +207,12 @@
       render(row) {
         return row.varName;
       },
-      width: 180,
-    },
-    {
-      title: '数据库',
-      key: 'dbName',
-      width: 150,
-    },
-    {
-      title: '数据表',
-      key: 'tableName',
-      width: 200,
+      width: 140,
     },
     {
       title: '菜单名称',
       key: 'tableComment',
-      width: 200,
+      width: 140,
     },
     {
       title: '生成状态',
@@ -242,11 +239,6 @@
       key: 'createdAt',
       width: 180,
     },
-    // {
-    //   title: '更新时间',
-    //   key: 'updatedAt',
-    //   width: 180,
-    // },
   ];
 
   const dialog = useDialog();
@@ -409,6 +401,7 @@
     e.preventDefault();
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
+      console.log('formParams:' + JSON.stringify(formParams.value));
       if (!errors) {
         console.log('formParams:' + JSON.stringify(formParams.value));
         Edit(formParams.value).then((res) => {
@@ -491,6 +484,12 @@
   function onUpdateValueGenType(value) {
     formParams.value.genType = value;
     onFocusGenTemplate();
+  }
+
+  const selectAddon = ref(false);
+  function handleGenTemplateUpdateValue(value, option) {
+    formParams.value.genTemplate = value;
+    selectAddon.value = option.isAddon === true;
   }
 </script>
 

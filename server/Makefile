@@ -2,22 +2,27 @@ ROOT_DIR    = $(shell pwd)
 NAMESPACE   = "default"
 DEPLOY_NAME = "template-single"
 DOCKER_NAME = "template-single"
+ADMIN_RESOURCE_PATH = "/resource/public/admin/"
 
+# 一键编译。编译web前端，并将编译后的包移动到服务端对应静态资源路径下，最后编译服务端
+.PHONY: build
 build:
-	@rm -rf ./resource/public/admin/*
-	@cd ../web && yarn build && \cp -rf ./dist/*  ../server/resource/public/admin/
+	@rm -rf ./$(ADMIN_RESOURCE_PATH)
+	@mkdir ./$(ADMIN_RESOURCE_PATH)
+	@cd ../web && yarn build && \cp -rf ./dist/*  ../server$(ADMIN_RESOURCE_PATH)
 	@echo "y" | gf build
 
-push:
-	@cd $(ROOT_DIR) && cd .. && ./push.sh
-
+# 通过热编译启动所有服务
+.PHONY: all
 all:
 	gf run main.go --args "all"
 
+# 启动web服务
+.PHONY: web
 web:
-	@cd ../web && yarn serve
+	@cd ../web && yarn dev
 
-# 清理gf调试进程
+.PHONY: killmain
 killmain:
 	@kill -9 $(ps -ef|grep main|grep -v grep|awk '{print $2}')
 
@@ -91,3 +96,6 @@ deploy:
 	kubectl   patch -n $(NAMESPACE) deployment/$(DEPLOY_NAME) -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"date\":\"$(shell date +%s)\"}}}}}";
 
 
+.PHONY: push
+push:
+	@cd $(ROOT_DIR) && cd .. && ./push.sh

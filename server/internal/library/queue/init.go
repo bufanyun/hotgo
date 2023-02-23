@@ -1,15 +1,15 @@
 // Package queue
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package queue
 
 import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
+	"hotgo/internal/library/queue/disk"
 	"hotgo/utility/charset"
 	"sync"
 	"time"
@@ -31,21 +31,21 @@ const (
 )
 
 type Config struct {
-	Switch        bool   `json:"switch"`
-	Driver        string `json:"driver"`
-	Retry         int    `json:"retry"`
-	MultiComsumer bool   `json:"multiComsumer"`
-	GroupName     string `json:"groupName"`
-	Redis         RedisConf
-	Rocketmq      RocketmqConf
-	Kafka         KafkaConf
+	Switch    bool   `json:"switch"`
+	Driver    string `json:"driver"`
+	Retry     int    `json:"retry"`
+	GroupName string `json:"groupName"`
+	Redis     RedisConf
+	Rocketmq  RocketmqConf
+	Kafka     KafkaConf
+	Disk      *disk.Config
 }
 
 type RedisConf struct {
-	Address string `json:"address"`
-	Db      int    `json:"db"`
-	Pass    string `json:"pass"`
-	Timeout int    `json:"timeout"`
+	Address     string `json:"address"`
+	Db          int    `json:"db"`
+	Pass        string `json:"pass"`
+	IdleTimeout int    `json:"idleTimeout"`
 }
 type RocketmqConf struct {
 	Address  []string `json:"address"`
@@ -53,9 +53,10 @@ type RocketmqConf struct {
 }
 
 type KafkaConf struct {
-	Address    []string `json:"address"`
-	Version    string   `json:"version"`
-	RandClient bool     `json:"randClient"`
+	Address       []string `json:"address"`
+	Version       string   `json:"version"`
+	RandClient    bool     `json:"randClient"`
+	MultiConsumer bool     `json:"multiConsumer"`
 }
 
 type MqMsg struct {
@@ -80,7 +81,7 @@ func init() {
 	mqProducerInstanceMap = make(map[string]MqProducer)
 	mqConsumerInstanceMap = make(map[string]MqConsumer)
 	if err := g.Cfg().MustGet(ctx, "queue").Scan(&config); err != nil {
-		g.Log().Infof(ctx, "queue init err:%+v", err)
+		g.Log().Warning(ctx, "queue init err:%+v", err)
 	}
 }
 
@@ -132,11 +133,13 @@ func NewProducer(groupName string) (mqClient MqProducer, err error) {
 			Addr:    config.Redis.Address,
 			Passwd:  config.Redis.Pass,
 			DBnum:   config.Redis.Db,
-			Timeout: config.Redis.Timeout,
+			Timeout: config.Redis.IdleTimeout,
 		}, PoolOption{
 			5, 50, 5,
 		}, groupName, config.Retry)
-
+	case "disk":
+		config.Disk.GroupName = groupName
+		mqClient, err = RegisterDiskMqProducer(config.Disk)
 	default:
 		err = gerror.New("queue driver is not support")
 	}
@@ -154,17 +157,6 @@ func NewProducer(groupName string) (mqClient MqProducer, err error) {
 
 // NewConsumer 初始化消费者实例
 func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
-	randTag := string(charset.RandomCreateBytes(6))
-
-	// 是否支持创建多个消费者
-	if config.MultiComsumer == false {
-		randTag = "001"
-	}
-
-	if item, ok := mqConsumerInstanceMap[groupName+"-"+randTag]; ok {
-		return item, nil
-	}
-
 	if groupName == "" {
 		err = gerror.New("mq groupName is empty.")
 		return
@@ -181,6 +173,16 @@ func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 		if len(config.Kafka.Address) == 0 {
 			err = gerror.New("queue kafka address is not support")
 			return
+		}
+
+		randTag := string(charset.RandomCreateBytes(6))
+		// 是否支持创建多个消费者
+		if config.Kafka.MultiConsumer == false {
+			randTag = "001"
+		}
+
+		if item, ok := mqConsumerInstanceMap[groupName+"-"+randTag]; ok {
+			return item, nil
 		}
 
 		clientId := "HOTGO-Consumer-" + groupName
@@ -204,10 +206,13 @@ func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 			Addr:    config.Redis.Address,
 			Passwd:  config.Redis.Pass,
 			DBnum:   config.Redis.Db,
-			Timeout: config.Redis.Timeout,
+			Timeout: config.Redis.IdleTimeout,
 		}, PoolOption{
 			5, 50, 5,
 		}, groupName)
+	case "disk":
+		config.Disk.GroupName = groupName
+		mqClient, err = RegisterDiskMqConsumer(config.Disk)
 	default:
 		err = gerror.New("queue driver is not support")
 	}

@@ -21,6 +21,7 @@ type SysGenCodes struct {
 	TableComment  string      `json:"tableComment"  description:"主表注释"`
 	DaoName       string      `json:"daoName"       description:"主表dao模型"`
 	MasterColumns *gjson.Json `json:"masterColumns" description:"主表字段"`
+	AddonName     string      `json:"addonName"     description:"插件名称"`
 	Status        int         `json:"status"        description:"生成状态"`
 	CreatedAt     *gtime.Time `json:"createdAt"     description:"创建时间"`
 	UpdatedAt     *gtime.Time `json:"updatedAt"     description:"更新时间"`

@@ -38,6 +38,7 @@ export const genInfoObj = {
   tableComment: '',
   daoName: '',
   masterColumns: [],
+  addonName: null,
   status: 2,
   createdAt: '',
   updatedAt: '',

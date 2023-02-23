@@ -1,6 +1,6 @@
 // Package sys
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -135,6 +135,7 @@ func (s *sSysLog) AutoLog(ctx context.Context) error {
 			err = queue.Push(consts.QueueLogTopic, data)
 			return
 		}
+
 		err = s.RealWrite(ctx, data)
 		return
 	})
@@ -195,15 +196,12 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 		appId = user.App
 	}
 
-	var ipData = new(location.IpLocationData)
-	if validate.IsPublicIp(clientIp) {
-		ipData, err := location.GetLocation(ctx, clientIp)
-		if err != nil {
-			g.Log().Errorf(ctx, "location.GetLocation err:%+v", err)
-		}
-		if ipData == nil {
-			ipData = new(location.IpLocationData)
-		}
+	ipData, err := location.GetLocation(ctx, clientIp)
+	if err != nil {
+		g.Log().Errorf(ctx, "location.GetLocation err:%+v", err)
+	}
+	if ipData == nil {
+		ipData = new(location.IpLocationData)
 	}
 
 	data = entity.SysLog{
@@ -233,30 +231,26 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 
 // View 获取指定字典类型信息
 func (s *sSysLog) View(ctx context.Context, in sysin.LogViewInp) (res *sysin.LogViewModel, err error) {
-
 	if err = dao.SysLog.Ctx(ctx).Hook(hook.CityLabel).Where("id", in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
+		return
 	}
+
 	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false)
 	if isDemo.Bool() {
-		//		res.HeaderData = `{
-		//    "none": [
-		//        "` + consts.DemoTips + `"
-		//    ]
-		//}`
+		res.HeaderData = gjson.New(`{
+		   "none": [
+		       "` + consts.DemoTips + `"
+		   ]
+		}`)
 	}
-	return res, nil
+	return
 }
 
 // Delete 删除
-func (s *sSysLog) Delete(ctx context.Context, in sysin.LogDeleteInp) error {
-	if _, err := dao.SysLog.Ctx(ctx).Where("id", in.Id).Delete(); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+func (s *sSysLog) Delete(ctx context.Context, in sysin.LogDeleteInp) (err error) {
+	_, err = dao.SysLog.Ctx(ctx).Where("id", in.Id).Delete()
+	return
 }
 
 // List 列表
@@ -361,11 +355,11 @@ func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.
 		}
 
 		if isDemo.Bool() {
-			//			list[i].HeaderData = `{
-			//    "none": [
-			//        "` + consts.DemoTips + `"
-			//    ]
-			//}`
+			list[i].HeaderData = gjson.New(`{
+			   "none": [
+			       "` + consts.DemoTips + `"
+			   ]
+			}`)
 		}
 
 	}

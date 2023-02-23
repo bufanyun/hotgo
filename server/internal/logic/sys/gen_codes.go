@@ -1,9 +1,8 @@
 // Package sys
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -13,10 +12,12 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/text/gregex"
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/hggen"
+	"hotgo/internal/model"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/validate"
@@ -53,6 +54,25 @@ func (s *sSysGenCodes) Edit(ctx context.Context, in sysin.GenCodesEditInp) (res 
 		err = gerror.New("实体名称不能为空")
 		return nil, err
 	}
+
+	if in.GenType == consts.GenCodesTypeCurd {
+		var temp *model.GenerateAppCrudTemplate
+		cfg := fmt.Sprintf("hggen.application.crud.templates.%v", in.GenTemplate)
+		if err = g.Cfg().MustGet(ctx, cfg).Scan(&temp); err != nil {
+			return
+		}
+
+		if temp == nil {
+			err = gerror.Newf("选择的模板不存在:%v", cfg)
+			return
+		}
+
+		if temp.IsAddon && in.AddonName == "" {
+			err = gerror.New("插件模板必须选择一个有效的插件")
+			return nil, err
+		}
+	}
+
 	// 修改
 	in.UpdatedAt = gtime.Now()
 	if in.Id > 0 {
@@ -212,16 +232,27 @@ func (s *sSysGenCodes) TableSelect(ctx context.Context, in sysin.GenCodesTableSe
 		return nil, err
 	}
 
+	patternStr := `addon_(\w+)_`
+	repStr := ``
+
 	for _, v := range lists {
 		if gstr.InArray(disableTables, v.Value) {
 			continue
 		}
 
+		// 如果是插件模块，则移除掉插件表前缀
+		defVarName := gstr.SubStrFromEx(v.Value, config.Prefix)
+		bt, err := gregex.Replace(patternStr, []byte(repStr), []byte(defVarName))
+		if err != nil {
+			break
+		}
+		defVarName = gstr.CaseCamel(string(bt))
+
 		row := new(sysin.GenCodesTableSelectModel)
 		row = v
 		row.DefTableComment = v.Label
 		row.DaoName = gstr.CaseCamel(gstr.SubStrFromEx(v.Value, config.Prefix))
-		row.DefVarName = row.DaoName
+		row.DefVarName = defVarName
 		row.DefAlias = gstr.CaseCamelLower(gstr.SubStrFromEx(v.Value, config.Prefix))
 		row.Name = fmt.Sprintf("%s (%s)", v.Value, v.Label)
 		row.Label = row.Name

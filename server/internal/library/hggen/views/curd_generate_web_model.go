@@ -1,9 +1,8 @@
 // Package views
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package views
 
 import (
@@ -11,7 +10,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/utility/convert"
 )
@@ -271,7 +269,7 @@ func (l *gCurd) generateWebModelColumnsEach(buffer *bytes.Buffer, in *CurdPrevie
 			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (isNullObject(row.%s)) {\n        return ``;\n      }\n      return row.%s.map((attachfile) => {\n        return h(\n          %s,\n          {\n            size: 'small',\n            style: {\n              'margin-left': '2px',\n            },\n          },\n          {\n            default: () => getFileExt(attachfile),\n          }\n        );\n      });\n    },\n  },\n", field.Dc, field.TsName, field.TsName, field.TsName, "NAvatar")
 
 		case FormModeSwitch:
-			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    width: 100,\n    render(row) {\n      return h(%s, {\n        value: row.%s === 1,\n        checked: '开启',\n        unchecked: '关闭',\n        disabled: !hasPermission(['%s']),\n        onUpdateValue: function (e) {\n          console.log('onUpdateValue e:' + JSON.stringify(e));\n          row.%s = e ? 1 : 2;\n          Switch({ %s: row.%s, key: '%s', value: row.%s }).then((_res) => {\n            $message.success('操作成功');\n          });\n        },\n      });\n    },\n  },\n", field.Dc, field.TsName, "NSwitch", field.TsName, "/"+gstr.LcFirst(in.In.VarName)+"/switch", field.TsName, in.pk.TsName, in.pk.TsName, field.TsName, field.TsName)
+			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    width: 100,\n    render(row) {\n      return h(%s, {\n        value: row.%s === 1,\n        checked: '开启',\n        unchecked: '关闭',\n        disabled: !hasPermission(['%s']),\n        onUpdateValue: function (e) {\n          console.log('onUpdateValue e:' + JSON.stringify(e));\n          row.%s = e ? 1 : 2;\n          Switch({ %s: row.%s, key: '%s', value: row.%s }).then((_res) => {\n            $message.success('操作成功');\n          });\n        },\n      });\n    },\n  },\n", field.Dc, field.TsName, "NSwitch", field.TsName, "/"+in.options.ApiPrefix+"/switch", field.TsName, in.pk.TsName, in.pk.TsName, field.TsName, field.TsName)
 
 		case FormModeRate:
 			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      return h(%s, {\n        allowHalf: true,\n        readonly: true,\n        defaultValue: row.%s,\n      });\n    },\n  },\n", field.Dc, field.TsName, "NRate", field.TsName)

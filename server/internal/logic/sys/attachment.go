@@ -1,6 +1,6 @@
 // Package sys
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -161,6 +161,7 @@ func (s *sSysAttachment) List(ctx context.Context, in sysin.AttachmentListInp) (
 	if err != nil {
 		return list, totalCount, err
 	}
+
 	for _, v := range list {
 		v.SizeFormat = format.FileSize(v.Size)
 		v.FileUrl = service.CommonUpload().LastUrl(ctx, conf, v.FileUrl, v.Drive)

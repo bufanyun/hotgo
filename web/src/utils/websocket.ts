@@ -2,7 +2,6 @@ import { SocketEnum } from '@/enums/socketEnum';
 import { notificationStoreWidthOut } from '@/store/modules/notification';
 import { useUserStoreWidthOut } from '@/store/modules/user';
 import { TABS_ROUTES } from '@/store/mutation-types';
-import { MessageRow } from '@/enums/systemMessageEnum';
 import { isJsonString } from '@/utils/is';
 
 let socket: WebSocket;
@@ -103,7 +102,7 @@ export default (onMessage: Function) => {
       if (useUserStore.token === '') {
         throw new Error('用户未登录，稍后重试...');
       }
-      socket = new WebSocket(useUserStore.config.wsAddr + '?authorization=' + useUserStore.token);
+      socket = new WebSocket(useUserStore.config?.wsAddr + '?authorization=' + useUserStore.token);
       init();
     } catch (e) {
       console.log('createSocket err:' + e);

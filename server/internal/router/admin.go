@@ -1,6 +1,6 @@
 // Package router
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -10,9 +10,9 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
-	"hotgo/internal/controller/backend/admin"
-	"hotgo/internal/controller/backend/common"
-	"hotgo/internal/controller/backend/sys"
+	"hotgo/internal/controller/admin/admin"
+	"hotgo/internal/controller/admin/common"
+	"hotgo/internal/controller/admin/sys"
 	"hotgo/internal/router/genrouter"
 	"hotgo/internal/service"
 )
@@ -51,11 +51,13 @@ func Admin(ctx context.Context, group *ghttp.RouterGroup) {
 			admin.Menu,     // 菜单
 			admin.Notice,   // 公告
 			admin.Post,     // 岗位
-			admin.Test,     // 测试
 		)
 
 		group.Middleware(service.Middleware().Develop)
-		group.Bind(sys.GenCodes) // 生成代码
+		group.Bind(
+			sys.GenCodes, // 生成代码
+			sys.Addons,   // 插件管理
+		)
 	})
 
 	// 注册生成路由

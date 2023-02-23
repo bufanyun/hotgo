@@ -4,15 +4,13 @@ hotgo:
   debug: true
   # IP归属地解析方法，可选：cz88|whois，默认为whois
   ipMethod: "whois"
-  # 客户端websocket连接地址，如果项目在公网，请填写公网IP:运行端口
-  wsAddr: "ws://127.0.0.1:8000/socket"
-  # 是否为演示系统 false | true
+  # 是否为演示系统 false|true
   isDemo: false
   # https
   ssl:
     switch: false                           # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
-    crtPath: "resource/ssl/server.crt"      # 证书路径
-    keyPath: "resource/ssl/server.key"      # 密钥路径
+    crtPath: "storage/ssl/server.crt"       # 证书路径
+    keyPath: "storage/ssl/server.key"       # 密钥路径
   # 全局请求日志
   log:
     switch: true                            # 日志开关，默认为true
@@ -49,14 +47,14 @@ server:
   serverAgent: "HG HTTP Server"
 
   # PProf配置
-  pprofEnabled: true                        # 是否开启PProf性能调试特性。默认为false
-  pprofPattern: "/pprof"                    # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
+  pprofEnabled: true                          # 是否开启PProf性能调试特性。默认为false
+  pprofPattern: "/pprof"                      # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
 
 
 # Global logging.
 logger:
   level: "all"
-  flags: 44                               # 年-月-日 时:分:秒.毫秒 文件名:行号
+  flags: 44
   path: "logs/logger"                     # 日志文件路径。默认为空，表示关闭，仅输出到终端
   file: "{Y-m-d}.log"                     # 日志文件格式。默认为"{Y-m-d}.log"
   stdoutColorDisabled: false              # 关闭终端的颜色打印。默认开启
@@ -68,10 +66,10 @@ logger:
 
 # 模板配置
 viewer:
-  paths: "resource/template"              # 模板路径
-  defaultFile:  "index.html"              # 默认页面
-  delimiters: ["@{", "}"]                 # 变量分隔符
-  homeLayout:     "home/index.html"       # 首页
+  paths: "resource/template"
+  defaultFile:  "index.html"
+  delimiters: ["@{", "}"]
+  homeLayout:     "home/index.html"
 
 
 # 内容设置
@@ -126,6 +124,12 @@ router:
     exceptPath: []
 
 
+#缓存
+cache:
+  adapter: "file"                    # 缓存驱动方式，支持：memory|redis|file，不填默认memory
+  fileDir: "./storage/cache"         # 文件缓存路径，adapter=file时必填
+
+
 #JWT
 jwt:
   version: "1.0"                         # 版本号
@@ -136,24 +140,30 @@ jwt:
 
 #消息队列
 queue:
-  switch: true                                      # 队列开关，默认为false
-  driver: "redis"                                   # 队列驱动，可选：redis|rocketmq|kafka
-  retry: 2                                          # 重试次数
-  multiComsumer: true                               # 是否支持创建多个消费者
-  groupName: "hotgo"                                # mq群组名称
+  switch: true                                        # 队列开关，可选：true|false，默认为true
+  driver: "disk"                                      # 队列驱动，可选：redis|rocketmq|kafka，默认为disk
+  retry: 2                                            # 重试次数，仅rocketmq|redis支持
+  groupName: "hotgo"                                  # mq群组名称
+  #磁盘队列
+  disk:
+    path: "./storage/diskqueue"                       # 数据存放路径
+    batchSize: 100                                    # 每100条消息同步一次，batchSize和batchTime满足其一就会同步一次
+    batchTime: 1                                      # 每1秒消息同步一次
+    segmentSize: 10485760                             # 每个topic分片数据文件最大字节，默认10M
+    segmentLimit: 3000                                # 每个topic最大分片数据文件数量，超出部分将会丢弃
   redis:
-    address: "127.0.0.1:6379"                       # redis服务地址，默认为127.0.0.1:6379
-    db: 2                                           # 指定redis库
-    pass: ""                                        # redis密码
-    timeout: 0                                      # 队列超时时间(s) ，0为永不超时，当队列一直没有被消费到达超时时间则队列会被销毁
+    address: "127.0.0.1:6379"                         # redis服务地址，默认为127.0.0.1:6379
+    db: 2                                             # 指定redis库
+    pass: ""                                          # redis密码
+    timeout: 0                                        # 队列超时时间(s) ，0为永不超时，当队列一直没有被消费到达超时时间则队列会被销毁
   rocketmq:
-    address: "127.0.0.1:9876"                       # brocker地址+端口
-    logLevel: "all"                                 # 系统日志级别，可选：all|close|debug|info|warn|error|fatal
+    address: "127.0.0.1:9876"                         # brocker地址+端口
+    logLevel: "all"                                   # 系统日志级别，可选：all|close|debug|info|warn|error|fatal
   kafka:
-    address: "127.0.0.1:9092"                       # kafka地址+端口
-    version: "2.0.0.0"                              # kafka专属配置，默认2.0.0.0
-    randClient: true                                # 开启随机生成clientID，可以实现启动多实例同时一起消费相同topic，加速消费能力的特性，默认为true
-
+    address: "127.0.0.1:9092"                         # kafka地址+端口
+    version: "2.0.0.0"                                # kafka专属配置，默认2.0.0.0
+    randClient: true                                  # 开启随机生成clientID，可以实现启动多实例同时一起消费相同topic，加速消费能力的特性，默认为true
+    multiConsumer: true                               # 是否支持创建多个消费者
 
 # Redis
 redis:
@@ -177,7 +187,7 @@ database:
 
 # 生成代码
 hggen:
-  allowedIPs: ["127.0.0.1", "*"]                                      # 白名单，*代表允许所有，只有允许的IP后台才能使用生成代码功能
+  allowedIPs: ["127.0.0.1", "*"]                                      # 白名单，*代表所有，只有允许的IP后台才能使用生成代码功能
   selectDbs: [ "default" ]                                            # 可选生成表的数据库配置名称，支持多库
   disableTables : ["hg_sys_gen_codes","hg_admin_role_casbin"]         # 禁用的表，禁用以后将不会在选择表中看到
   delimiters: ["@{", "}"]                                             # 模板引擎变量分隔符号
@@ -186,32 +196,53 @@ hggen:
     # CRUD模板
     crud:
       templates:
+        # 默认的主包模板
         - group: "default"                                              # 分组名称
+          isAddon: false                                                # 是否为插件模板 false｜true
           masterPackage: "sys"                                          # 主包名称，需和controllerPath、logicPath、inputPath保持关联
-          templatePath: "./resource/template/generate/default/curd"     # 模板路径
-          apiPath: "./api/backend"                                      # goApi生成路径
-          controllerPath: "./internal/controller/backend/sys"           # 控制器生成路径
+          templatePath: "./resource/generate/default/curd"              # 模板路径
+          apiPath: "./api/admin"                                        # gfApi生成路径
+          controllerPath: "./internal/controller/admin/sys"             # 控制器生成路径
           logicPath : "./internal/logic/sys"                            # 主要业务生成路径
           inputPath: "./internal/model/input/sysin"                     # 表单过滤器生成路径
           routerPath : "./internal/router/genrouter"                    # 生成路由表路径
-          sqlPath : "./resource/data/generate"                          # 生成sql语句路径
+          sqlPath : "./storage/data/generate"                           # 生成sql语句路径
           webApiPath: "../web/src/api"                                  # webApi生成路径
           webViewsPath : "../web/src/views"                             # web页面生成路径
+
+        # 默认的插件包模板
+        - group: "addon"                                                # 分组名称
+          isAddon: true                                                 # 是否为插件模板 false｜true
+          masterPackage: "sys"                                          # 主包名称，需和controllerPath、logicPath、inputPath保持关联
+          templatePath: "./resource/generate/default/curd"              # 模板路径
+          apiPath: "./addons/{$name}/api/admin"                         # gfApi生成路径
+          controllerPath: "./addons/{$name}/controller/admin/sys"       # 控制器生成路径
+          logicPath : "./addons/{$name}/logic/sys"                      # 主要业务生成路径
+          inputPath: "./addons/{$name}/model/input/sysin"               # 表单过滤器生成路径
+          routerPath : "./addons/{$name}/router/genrouter"              # 生成路由表路径
+          sqlPath : "./storage/data/generate/addons"                    # 生成sql语句路径
+          webApiPath: "../web/src/api/addons/{$name}"                   # webApi生成路径
+          webViewsPath : "../web/src/views/addons/{$name}"              # web页面生成路径
 
     # 关系树列表模板
     tree:
       templates:
         - group: "default"
-          templatePath: "./resource/template/generate/default/tree"
+          templatePath: "./resource/generate/default/tree"
 
     # 消息队列模板
     queue:
       templates:
         - group: "default"
-          templatePath: "./resource/template/generate/default/queue"
+          templatePath: "./resource/generate/default/queue"
 
     # 定时任务模板
     cron:
       templates:
         - group: "default"
-          templatePath: "./resource/template/generate/default/cron"
+          templatePath: "./resource/generate/default/cron"
+
+  # 生成插件模块，通过后台创建新插件时使用的模板，允许自定义，可以参考default模板进行改造
+  addon:
+    srcPath: "./resource/generate/default/addon"                    # 生成模板路径
+    templatePath: "./resource/template/addons/{$name}"              # 页面模板路径

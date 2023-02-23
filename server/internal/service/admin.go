@@ -7,9 +7,10 @@ package service
 
 import (
 	"context"
-	"hotgo/api/backend/menu"
-	"hotgo/api/backend/role"
+	"hotgo/api/admin/menu"
+	"hotgo/api/admin/role"
 	"hotgo/internal/library/hgorm/handler"
+	"hotgo/internal/model"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
 
@@ -18,29 +19,16 @@ import (
 )
 
 type (
-	IAdminMemberPost interface {
-		UpdatePostIds(ctx context.Context, member_id int64, post_ids []int64) (err error)
-		GetMemberByIds(ctx context.Context, member_id int64) (post_ids []int64, err error)
-	}
-	IAdminMenu interface {
-		RoleList(ctx context.Context, in adminin.MenuRoleListInp) (*adminin.MenuRoleListModel, error)
-		SearchList(ctx context.Context, req *menu.SearchListReq) (*menu.SearchListRes, error)
-		MaxSort(ctx context.Context, req *menu.MaxSortReq) (*menu.MaxSortRes, error)
-		NameUnique(ctx context.Context, req *menu.NameUniqueReq) (*menu.NameUniqueRes, error)
-		CodeUnique(ctx context.Context, req *menu.CodeUniqueReq) (*menu.CodeUniqueRes, error)
-		Delete(ctx context.Context, req *menu.DeleteReq) error
-		Edit(ctx context.Context, req *menu.EditReq) (err error)
-		View(ctx context.Context, req *menu.ViewReq) (res *menu.ViewRes, err error)
-		List(ctx context.Context, req *menu.ListReq) (lists []map[string]interface{}, err error)
-		GetMenuList(ctx context.Context, memberId int64) (lists role.DynamicRes, err error)
-		LoginPermissions(ctx context.Context, memberId int64) (lists adminin.MemberLoginPermissions, err error)
+	IAdminMonitor interface {
+		StartMonitor(ctx context.Context)
+		GetMeta(ctx context.Context) *model.MonitorData
 	}
 	IAdminNotice interface {
 		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
 		Delete(ctx context.Context, in adminin.NoticeDeleteInp) error
 		Edit(ctx context.Context, in adminin.NoticeEditInp) (err error)
 		Status(ctx context.Context, in adminin.NoticeStatusInp) (err error)
-		MaxSort(ctx context.Context, in adminin.NoticeMaxSortInp) (*adminin.NoticeMaxSortModel, error)
+		MaxSort(ctx context.Context, in adminin.NoticeMaxSortInp) (res *adminin.NoticeMaxSortModel, err error)
 		View(ctx context.Context, in adminin.NoticeViewInp) (res *adminin.NoticeViewModel, err error)
 		List(ctx context.Context, in adminin.NoticeListInp) (list []*adminin.NoticeListModel, totalCount int, err error)
 		PullMessages(ctx context.Context, in adminin.PullMessagesInp) (res *adminin.PullMessagesModel, err error)
@@ -71,17 +59,6 @@ type (
 		Delete(ctx context.Context, in *role.DeleteReq) (err error)
 		DataScopeSelect(ctx context.Context) (res form.Selects)
 		DataScopeEdit(ctx context.Context, in *adminin.DataScopeEditInp) (err error)
-	}
-	IAdminTest interface {
-		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
-		List(ctx context.Context, in adminin.TestListInp) (list []*adminin.TestListModel, totalCount int, err error)
-		Export(ctx context.Context, in adminin.TestListInp) (err error)
-		Edit(ctx context.Context, in adminin.TestEditInp) (err error)
-		Delete(ctx context.Context, in adminin.TestDeleteInp) (err error)
-		Status(ctx context.Context, in adminin.TestStatusInp) (err error)
-		Switch(ctx context.Context, in adminin.TestSwitchInp) (err error)
-		MaxSort(ctx context.Context, in adminin.TestMaxSortInp) (res *adminin.TestMaxSortModel, err error)
-		View(ctx context.Context, in adminin.TestViewInp) (res *adminin.TestViewModel, err error)
 	}
 	IAdminDept interface {
 		NameUnique(ctx context.Context, in adminin.DeptNameUniqueInp) (*adminin.DeptNameUniqueModel, error)
@@ -119,18 +96,57 @@ type (
 		FilterAuthModel(ctx context.Context, memberId int64) *gdb.Model
 		MemberLoginStat(ctx context.Context, in adminin.MemberLoginStatInp) (res *adminin.MemberLoginStatModel, err error)
 	}
+	IAdminMemberPost interface {
+		UpdatePostIds(ctx context.Context, member_id int64, post_ids []int64) (err error)
+		GetMemberByIds(ctx context.Context, member_id int64) (post_ids []int64, err error)
+	}
+	IAdminMenu interface {
+		RoleList(ctx context.Context, in adminin.MenuRoleListInp) (*adminin.MenuRoleListModel, error)
+		SearchList(ctx context.Context, req *menu.SearchListReq) (*menu.SearchListRes, error)
+		MaxSort(ctx context.Context, req *menu.MaxSortReq) (*menu.MaxSortRes, error)
+		NameUnique(ctx context.Context, req *menu.NameUniqueReq) (*menu.NameUniqueRes, error)
+		CodeUnique(ctx context.Context, req *menu.CodeUniqueReq) (*menu.CodeUniqueRes, error)
+		Delete(ctx context.Context, req *menu.DeleteReq) error
+		Edit(ctx context.Context, req *menu.EditReq) (err error)
+		View(ctx context.Context, req *menu.ViewReq) (res *menu.ViewRes, err error)
+		List(ctx context.Context, req *menu.ListReq) (lists []map[string]interface{}, err error)
+		GetMenuList(ctx context.Context, memberId int64) (lists role.DynamicRes, err error)
+		LoginPermissions(ctx context.Context, memberId int64) (lists adminin.MemberLoginPermissions, err error)
+	}
 )
 
 var (
-	localAdminMenu       IAdminMenu
-	localAdminNotice     IAdminNotice
-	localAdminPost       IAdminPost
 	localAdminRole       IAdminRole
-	localAdminTest       IAdminTest
 	localAdminDept       IAdminDept
 	localAdminMember     IAdminMember
 	localAdminMemberPost IAdminMemberPost
+	localAdminMenu       IAdminMenu
+	localAdminMonitor    IAdminMonitor
+	localAdminNotice     IAdminNotice
+	localAdminPost       IAdminPost
 )
+
+func AdminDept() IAdminDept {
+	if localAdminDept == nil {
+		panic("implement not found for interface IAdminDept, forgot register?")
+	}
+	return localAdminDept
+}
+
+func RegisterAdminDept(i IAdminDept) {
+	localAdminDept = i
+}
+
+func AdminMember() IAdminMember {
+	if localAdminMember == nil {
+		panic("implement not found for interface IAdminMember, forgot register?")
+	}
+	return localAdminMember
+}
+
+func RegisterAdminMember(i IAdminMember) {
+	localAdminMember = i
+}
 
 func AdminMemberPost() IAdminMemberPost {
 	if localAdminMemberPost == nil {
@@ -152,6 +168,17 @@ func AdminMenu() IAdminMenu {
 
 func RegisterAdminMenu(i IAdminMenu) {
 	localAdminMenu = i
+}
+
+func AdminMonitor() IAdminMonitor {
+	if localAdminMonitor == nil {
+		panic("implement not found for interface IAdminMonitor, forgot register?")
+	}
+	return localAdminMonitor
+}
+
+func RegisterAdminMonitor(i IAdminMonitor) {
+	localAdminMonitor = i
 }
 
 func AdminNotice() IAdminNotice {
@@ -185,37 +212,4 @@ func AdminRole() IAdminRole {
 
 func RegisterAdminRole(i IAdminRole) {
 	localAdminRole = i
-}
-
-func AdminTest() IAdminTest {
-	if localAdminTest == nil {
-		panic("implement not found for interface IAdminTest, forgot register?")
-	}
-	return localAdminTest
-}
-
-func RegisterAdminTest(i IAdminTest) {
-	localAdminTest = i
-}
-
-func AdminDept() IAdminDept {
-	if localAdminDept == nil {
-		panic("implement not found for interface IAdminDept, forgot register?")
-	}
-	return localAdminDept
-}
-
-func RegisterAdminDept(i IAdminDept) {
-	localAdminDept = i
-}
-
-func AdminMember() IAdminMember {
-	if localAdminMember == nil {
-		panic("implement not found for interface IAdminMember, forgot register?")
-	}
-	return localAdminMember
-}
-
-func RegisterAdminMember(i IAdminMember) {
-	localAdminMember = i
 }

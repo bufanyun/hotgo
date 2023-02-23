@@ -11,8 +11,7 @@ import (
 
 type (
 	IHook interface {
-		AccessLog(r *ghttp.Request)
-		LastActive(r *ghttp.Request)
+		AfterOutput(r *ghttp.Request)
 	}
 )
 

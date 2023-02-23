@@ -1,6 +1,6 @@
 // Package location
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -198,11 +198,11 @@ func GetClientIp(r *ghttp.Request) string {
 
 	// 如果存在多个，默认取第一个
 	if gstr.Contains(ip, ",") {
-		ip = gstr.TrimStr(ip, ",", -1)
+		ip = gstr.StrTillEx(ip, ",")
 	}
 
 	if gstr.Contains(ip, ", ") {
-		ip = gstr.TrimStr(ip, ", ", -1)
+		ip = gstr.StrTillEx(ip, ", ")
 	}
 
 	return ip

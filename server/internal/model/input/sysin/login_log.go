@@ -27,7 +27,7 @@ type LoginLogViewInp struct {
 }
 
 type LoginLogViewModel struct {
-	entity.Test
+	entity.SysLoginLog
 }
 
 // LoginLogListInp 获取登录日志列表

@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/os/gtimer"
+	"hotgo/internal/consts"
 	"hotgo/internal/library/contexts"
 	"hotgo/utility/simple"
 	"sync"
@@ -58,30 +59,30 @@ func allow(memberId int64) bool {
 	return false
 }
 
-// LastActive 更新用户最后活跃
-func (s *sHook) LastActive(r *ghttp.Request) {
+// lastAdminActive 更新后台用户最后活跃
+func (s *sHook) lastAdminActive(r *ghttp.Request) {
 	if r.IsFileRequest() {
 		return
 	}
 
 	var (
-		ctx      = r.Context()
-		memberId = contexts.GetUserId(ctx)
+		ctx    = r.Context()
+		member = contexts.GetUser(ctx)
 	)
 
-	if memberId == 0 {
+	if member == nil || member.App != consts.AppAdmin {
 		return
 	}
 
-	if allow(memberId) {
+	if allow(member.Id) {
 		simple.SafeGo(ctx, func(ctx context.Context) {
 			_, err := g.Model("admin_member").Ctx(ctx).
-				Where("id", memberId).
+				Where("id", member.Id).
 				WhereLT("last_active_at", gtime.Now()).
 				Data(g.Map{"last_active_at": gtime.Now()}).
 				Update()
 			if err != nil {
-				g.Log().Warningf(ctx, "hook LastActive err:%+v, memberId:%v", err, memberId)
+				g.Log().Warningf(ctx, "hook lastActive err:%+v, memberId:%v", err, member.Id)
 			}
 		})
 	}

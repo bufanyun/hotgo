@@ -1,6 +1,6 @@
 // Package hook
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2022 HotGo CLI
+// @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 //
@@ -16,12 +16,11 @@ import (
 	"hotgo/utility/simple"
 )
 
-// AccessLog 访问日志
-func (s *sHook) AccessLog(r *ghttp.Request) {
+// accessLog 访问日志
+func (s *sHook) accessLog(r *ghttp.Request) {
 	if r.IsFileRequest() {
 		return
 	}
-
 	var ctx = r.Context()
 	modelCtx := contexts.Get(ctx)
 	if modelCtx == nil {
@@ -33,7 +32,7 @@ func (s *sHook) AccessLog(r *ghttp.Request) {
 
 	simple.SafeGo(ctx, func(ctx context.Context) {
 		if err := service.SysLog().AutoLog(ctx); err != nil {
-			g.Log().Warningf(ctx, "hook AccessLog err:%+v", err)
+			g.Log().Warningf(ctx, "hook accessLog err:%+v", err)
 		}
 	})
 }

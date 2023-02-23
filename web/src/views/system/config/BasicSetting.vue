@@ -1,89 +1,90 @@
 <template>
   <div>
-    <n-spin :show="show" description="正在获取配置...">
-      <n-grid cols="2 s:2 m:2 l:2 xl:2 2xl:2" responsive="screen">
-        <n-grid-item>
-          <n-form :label-width="80" :model="formValue" :rules="rules" ref="formRef">
-            <n-form-item label="网站名称" path="basicName">
-              <n-input v-model:value="formValue.basicName" placeholder="请输入网站名称" />
-            </n-form-item>
+    <n-spin :show="show" description="请稍候...">
+      <n-form :label-width="80" :model="formValue" :rules="rules" ref="formRef">
+        <n-form-item label="网站名称" path="basicName">
+          <n-input v-model:value="formValue.basicName" placeholder="请输入网站名称" />
+        </n-form-item>
 
-            <n-form-item label="网站logo" path="basicLogo">
-              <BasicUpload
-                :action="`${uploadUrl}/admin/upload/image`"
-                :headers="uploadHeaders"
-                :data="{ type: 0 }"
-                name="file"
-                :width="100"
-                :height="100"
-                :maxNumber="1"
-                @uploadChange="uploadChange"
-                v-model:value="formValue.basicLogo"
-                :helpText="
-                  '网站logo适用于客户端使用，图片大小不超过' +
-                  componentSetting.upload.maxSize +
-                  'MB'
-                "
-              />
-            </n-form-item>
+        <n-form-item label="网站logo" path="basicLogo">
+          <BasicUpload
+            :action="`${uploadUrl}/admin/upload/image`"
+            :headers="uploadHeaders"
+            :data="{ type: 0 }"
+            name="file"
+            :width="100"
+            :height="100"
+            :maxNumber="1"
+            @uploadChange="uploadChange"
+            v-model:value="formValue.basicLogo"
+            :helpText="
+              '网站logo适用于客户端使用，图片大小不超过' + componentSetting.upload.maxSize + 'MB'
+            "
+          />
+        </n-form-item>
 
-            <n-form-item label="网站域名" path="basicDomain">
-              <n-input v-model:value="formValue.basicDomain" placeholder="请输入网站域名" />
-            </n-form-item>
+        <n-form-item label="网站域名" path="basicDomain">
+          <n-input v-model:value="formValue.basicDomain" placeholder="请输入网站域名" />
+          <template #feedback>
+            如果客户端通过IP访问，则认为是调试模式，走实际请求地址，否则走该配置
+          </template>
+        </n-form-item>
 
-            <n-form-item label="用户是否可注册开关" path="basicRegisterSwitch">
-              <n-radio-group
-                v-model:value="formValue.basicRegisterSwitch"
-                name="basicRegisterSwitch"
-              >
-                <n-space>
-                  <n-radio :value="1">开启</n-radio>
-                  <n-radio :value="0">关闭</n-radio>
-                </n-space>
-              </n-radio-group>
-            </n-form-item>
+        <n-form-item label="websocket地址" path="basicWsAddr">
+          <n-input v-model:value="formValue.basicWsAddr" placeholder="请输入websocket地址" />
+          <template #feedback>
+            如果客户端通过IP访问，则认为是调试模式，走实际请求地址，否则走该配置
+          </template>
+        </n-form-item>
 
-            <n-form-item label="验证码开关" path="basicCaptchaSwitch">
-              <n-radio-group v-model:value="formValue.basicCaptchaSwitch" name="basicCaptchaSwitch">
-                <n-space>
-                  <n-radio :value="1">开启</n-radio>
-                  <n-radio :value="0">关闭</n-radio>
-                </n-space>
-              </n-radio-group>
-            </n-form-item>
+        <n-form-item label="用户是否可注册开关" path="basicRegisterSwitch">
+          <n-radio-group v-model:value="formValue.basicRegisterSwitch" name="basicRegisterSwitch">
+            <n-space>
+              <n-radio :value="1">开启</n-radio>
+              <n-radio :value="0">关闭</n-radio>
+            </n-space>
+          </n-radio-group>
+        </n-form-item>
 
-            <n-form-item label="网站开启访问" path="basicSystemOpen">
-              <n-switch
-                size="large"
-                v-model:value="formValue.basicSystemOpen"
-                @update:value="systemOpenChange"
-              />
-            </n-form-item>
+        <n-form-item label="验证码开关" path="basicCaptchaSwitch">
+          <n-radio-group v-model:value="formValue.basicCaptchaSwitch" name="basicCaptchaSwitch">
+            <n-space>
+              <n-radio :value="1">开启</n-radio>
+              <n-radio :value="0">关闭</n-radio>
+            </n-space>
+          </n-radio-group>
+        </n-form-item>
 
-            <n-form-item label="网站关闭提示" path="basicCloseText">
-              <n-input
-                v-model:value="formValue.basicCloseText"
-                type="textarea"
-                placeholder="请输入网站关闭提示"
-              />
-            </n-form-item>
+        <n-form-item label="网站开启访问" path="basicSystemOpen">
+          <n-switch
+            size="large"
+            v-model:value="formValue.basicSystemOpen"
+            @update:value="systemOpenChange"
+          />
+        </n-form-item>
 
-            <n-form-item label="备案编号" path="basicIcpCode">
-              <n-input placeholder="请输入备案编号" v-model:value="formValue.basicIcpCode" />
-            </n-form-item>
+        <n-form-item label="网站关闭提示" path="basicCloseText">
+          <n-input
+            v-model:value="formValue.basicCloseText"
+            type="textarea"
+            placeholder="请输入网站关闭提示"
+          />
+        </n-form-item>
 
-            <n-form-item label="版权所有" path="basicCopyright">
-              <n-input placeholder="版权所有" v-model:value="formValue.basicCopyright" />
-            </n-form-item>
+        <n-form-item label="备案编号" path="basicIcpCode">
+          <n-input placeholder="请输入备案编号" v-model:value="formValue.basicIcpCode" />
+        </n-form-item>
 
-            <div>
-              <n-space>
-                <n-button type="primary" @click="formSubmit">保存更新</n-button>
-              </n-space>
-            </div>
-          </n-form>
-        </n-grid-item>
-      </n-grid>
+        <n-form-item label="版权所有" path="basicCopyright">
+          <n-input placeholder="版权所有" v-model:value="formValue.basicCopyright" />
+        </n-form-item>
+
+        <div>
+          <n-space>
+            <n-button type="primary" @click="formSubmit">保存更新</n-button>
+          </n-space>
+        </div>
+      </n-form>
     </n-spin>
   </div>
 </template>
@@ -127,6 +128,7 @@
     basicName: 'HotGo',
     basicLogo: '',
     basicDomain: 'https://hotgo.facms.cn',
+    basicWsAddr: 'wss://hotgo.facms.cn/socket',
     basicIcpCode: '',
     basicLoginCode: 0,
     basicRegisterSwitch: 1,

@@ -22,7 +22,7 @@
         </n-descriptions-item>
         <n-descriptions-item label="文档地址">
           <div class="flex items-center">
-            <a href="https://github.com/bufanyun/hotgo" class="py-2" target="_blank"
+            <a href="https://github.com/bufanyun/hotgo/tree/v2.0/docs" class="py-2" target="_blank"
               >查看文档地址</a
             >
           </div>

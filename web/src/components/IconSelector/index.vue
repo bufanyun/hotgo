@@ -1,13 +1,13 @@
 <template>
   <div>
     <n-input-group>
-      <n-input v-bind="$props" :value="formValue" :style="{ width: '70%' }" />
       <template v-if="option === 'ionicons5'">
         <Ionicons5Selector v-model:value="formValue" />
       </template>
       <template v-else>
         <AntdSelector v-model:value="formValue" />
       </template>
+      <n-input v-bind="$props" :value="formValue" :style="{ width: '70%' }" />
     </n-input-group>
   </div>
 </template>
