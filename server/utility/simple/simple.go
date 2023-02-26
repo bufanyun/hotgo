@@ -38,6 +38,7 @@ func CheckPassword(input, salt, hash string) (err error) {
 	return
 }
 
+// SafeGo 安全的调用协程，遇到错误时输出错误日志而不是抛出panic
 func SafeGo(ctx context.Context, f func(ctx context.Context), level ...interface{}) {
 	go func() {
 		defer func() {

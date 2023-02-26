@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package queues
 
 import (
@@ -16,7 +15,7 @@ import (
 )
 
 func init() {
-	jobList = append(jobList, ServeLog)
+	queue.RegisterConsumer(ServeLog)
 }
 
 // ServeLog 登录日志
@@ -24,13 +23,13 @@ var ServeLog = &qServeLog{}
 
 type qServeLog struct{}
 
-// getTopic 主题
-func (q *qServeLog) getTopic() string {
+// GetTopic 主题
+func (q *qServeLog) GetTopic() string {
 	return consts.QueueServeLogTopic
 }
 
-// handle 处理消息
-func (q *qServeLog) handle(ctx context.Context, mqMsg queue.MqMsg) (err error) {
+// Handle 处理消息
+func (q *qServeLog) Handle(ctx context.Context, mqMsg queue.MqMsg) (err error) {
 	var data entity.SysServeLog
 	if err = json.Unmarshal(mqMsg.Body, &data); err != nil {
 		return err

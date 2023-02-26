@@ -15,6 +15,7 @@ import (
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
+	"hotgo/utility/validate"
 )
 
 var (
@@ -162,6 +163,10 @@ func (c *cMember) Delete(ctx context.Context, req *member.DeleteReq) (res *membe
 func (c *cMember) Edit(ctx context.Context, req *member.EditReq) (res *member.EditRes, err error) {
 	var in adminin.MemberEditInp
 	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
 		return
 	}
 

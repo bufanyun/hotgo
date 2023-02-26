@@ -141,7 +141,7 @@
     width: 220,
     title: '操作',
     key: 'action',
-    fixed: 'right',
+    // fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',
@@ -209,7 +209,8 @@
   }
 
   async function setDictSelect() {
-    optionTreeData.value = await getSelect({});
+    const tmp = await getSelect({});
+    optionTreeData.value = tmp.list;
     if (optionTreeData.value === undefined || optionTreeData.value === null) {
       optionTreeData.value = [];
     }

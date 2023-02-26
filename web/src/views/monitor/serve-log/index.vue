@@ -105,7 +105,7 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { usePermission } from '@/hooks/web/usePermission';
   import { List, Export, Delete } from '@/api/serveLog';
-  import { State, columns, schemas } from './model';
+  import { columns, schemas } from './model';
   import { ExportOutlined, DeleteOutlined } from '@vicons/antd';
   import { useRouter } from 'vue-router';
   import { JsonViewer } from 'vue3-json-viewer';
@@ -120,7 +120,6 @@
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
   const showModal = ref(false);
-  const formParams = ref<State>();
 
   const actionColumn = reactive({
     width: 300,
@@ -173,7 +172,6 @@
 
   const preview = ref<Recordable>();
   function handleStack(record: Recordable) {
-    console.log('handleStack record:' + JSON.stringify(record));
     showModal.value = true;
     preview.value = record;
   }

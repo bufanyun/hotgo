@@ -246,3 +246,5 @@ hggen:
   addon:
     srcPath: "./resource/generate/default/addon"                    # 生成模板路径
     templatePath: "./resource/template/addons/{$name}"              # 页面模板路径
+    webApiPath: "../web/src/api/addons/{$name}"                     # webApi生成路径
+    webViewsPath: "../web/src/views/addons/{$name}"                 # web页面生成路径

@@ -9,14 +9,12 @@ package sys
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/tree"
 )
 
 type sSysDictType struct{}
@@ -30,35 +28,19 @@ func init() {
 }
 
 // Tree 树
-func (s *sSysDictType) Tree(ctx context.Context) (list []g.Map, err error) {
+func (s *sSysDictType) Tree(ctx context.Context) (list []*sysin.DictTypeTree, err error) {
 	var (
 		mod    = dao.SysDictType.Ctx(ctx)
 		models []*entity.SysDictType
 	)
 
-	if err = mod.Order("pid asc,sort asc").Scan(&models); err != nil {
+	if err = mod.Order("sort asc,id asc").Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, err
 	}
 
-	for i := 0; i < len(models); i++ {
-		list = append(list, g.Map{
-			"index":      models[i].Id,
-			"key":        models[i].Id,
-			"label":      models[i].Name,
-			"id":         models[i].Id,
-			"pid":        models[i].Pid,
-			"name":       models[i].Name,
-			"type":       models[i].Type,
-			"sort":       models[i].Sort,
-			"remark":     models[i].Remark,
-			"status":     models[i].Status,
-			"updated_at": models[i].UpdatedAt,
-			"created_at": models[i].CreatedAt,
-		})
-	}
-
-	return tree.GenTree(list), nil
+	list = s.treeList(0, models)
+	return
 }
 
 // Delete 删除
@@ -141,42 +123,11 @@ func (s *sSysDictType) Edit(ctx context.Context, in sysin.DictTypeEditInp) (err 
 	return nil
 }
 
-// Select 选项
-func (s *sSysDictType) Select(ctx context.Context, in sysin.DictTypeSelectInp) (list sysin.DictTypeSelectModel, err error) {
-	var (
-		mod      = dao.SysDictType.Ctx(ctx)
-		models   []*entity.SysDictType
-		typeList []g.Map
-	)
-
-	if err = mod.Order("pid asc,sort asc").Scan(&models); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, err
-	}
-
-	for i := 0; i < len(models); i++ {
-		typeList = append(typeList, g.Map{
-			"index":      models[i].Id,
-			"key":        models[i].Id,
-			"label":      models[i].Name,
-			"id":         models[i].Id,
-			"pid":        models[i].Pid,
-			"name":       models[i].Name,
-			"sort":       models[i].Sort,
-			"created_at": models[i].CreatedAt,
-			"status":     models[i].Status,
-		})
-	}
-
-	return tree.GenTree(typeList), nil
-}
-
 // TreeSelect 获取类型关系树选项
-func (s *sSysDictType) TreeSelect(ctx context.Context, in sysin.DictTreeSelectInp) (list sysin.DictTreeSelectModel, err error) {
+func (s *sSysDictType) TreeSelect(ctx context.Context, in sysin.DictTreeSelectInp) (list []*sysin.DictTypeTree, err error) {
 	var (
-		mod      = dao.SysDictType.Ctx(ctx)
-		models   []*entity.SysDictType
-		typeList []g.Map
+		mod    = dao.SysDictType.Ctx(ctx)
+		models []*entity.SysDictType
 	)
 
 	if err = mod.Order("pid asc,sort asc").Scan(&models); err != nil {
@@ -184,26 +135,39 @@ func (s *sSysDictType) TreeSelect(ctx context.Context, in sysin.DictTreeSelectIn
 		return list, err
 	}
 
-	for i := 0; i < len(models); i++ {
-		typeList = append(typeList, g.Map{
-			"index":      models[i].Id,
-			"key":        models[i].Id,
-			"label":      models[i].Name,
-			"id":         models[i].Id,
-			"pid":        models[i].Pid,
-			"name":       models[i].Name,
-			"sort":       models[i].Sort,
-			"created_at": models[i].CreatedAt,
-			"status":     models[i].Status,
-		})
-	}
+	list = s.treeList(0, models)
 
-	maps := tree.GenTree(typeList)
-	for _, v := range maps {
+	for _, v := range list {
 		// 父类一律禁止选中
-		if _, ok := v["children"]; ok {
-			v["disabled"] = true
+		if len(v.Children) > 0 {
+			v.Disabled = true
+			for _, v2 := range v.Children {
+				if len(v2.Children) > 0 {
+					v2.Disabled = true
+				}
+			}
 		}
 	}
-	return tree.GenTree(typeList), nil
+	return
+}
+
+// treeList 树状列表
+func (s *sSysDictType) treeList(pid int64, nodes []*entity.SysDictType) (list []*sysin.DictTypeTree) {
+	list = make([]*sysin.DictTypeTree, 0)
+	for _, v := range nodes {
+		if v.Pid == pid {
+			item := new(sysin.DictTypeTree)
+			item.SysDictType = *v
+			item.Label = v.Name
+			item.Value = v.Id
+			item.Key = v.Id
+
+			child := s.treeList(v.Id, nodes)
+			if len(child) > 0 {
+				item.Children = child
+			}
+			list = append(list, item)
+		}
+	}
+	return
 }

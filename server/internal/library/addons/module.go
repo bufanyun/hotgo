@@ -66,11 +66,12 @@ func RegisterModulesRouter(ctx context.Context, group *ghttp.RouterGroup) {
 func RegisterModule(m Module) Module {
 	mLock.Lock()
 	defer mLock.Unlock()
-	_, ok := modules[m.GetSkeleton().Name]
+	name := m.GetSkeleton().Name
+	_, ok := modules[name]
 	if ok {
-		panic("module repeat registration, name:" + m.GetSkeleton().Name)
+		panic("module repeat registration, name:" + name)
 	}
-	modules[m.GetSkeleton().Name] = m
+	modules[name] = m
 	return m
 }
 

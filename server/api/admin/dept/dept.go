@@ -22,14 +22,6 @@ type NameUniqueRes struct {
 	IsUnique bool `json:"is_unique" dc:"是否唯一"`
 }
 
-// ListTreeReq 查询列表树
-type ListTreeReq struct {
-	Id     int64 `json:"id" dc:"部门ID"`
-	g.Meta `path:"/dept/list_tree" method:"get" tags:"部门" summary:"获取部门列表树"`
-}
-
-type ListTreeRes []*adminin.DeptListTreeModel
-
 // ListReq 查询列表
 type ListReq struct {
 	Name   string `json:"name" dc:"部门名称"`
@@ -37,7 +29,9 @@ type ListReq struct {
 	g.Meta `path:"/dept/list" method:"get" tags:"部门" summary:"获取部门列表"`
 }
 
-type ListRes adminin.DeptListModel
+type ListRes struct {
+	adminin.DeptListModel
+}
 
 // ViewReq 获取指定信息
 type ViewReq struct {

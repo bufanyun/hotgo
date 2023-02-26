@@ -44,7 +44,7 @@ queue:
 
 ### 一个例子
 
-每个被发送到队列的消息应该被定义为一个文件的结构。
+每个被发送到队列的消息应该被定义为一个单独的文件结构。
 
 例如，如果您需要异步记录系统日志，内容大致如下：
 
@@ -63,7 +63,7 @@ import (
 )
 
 func init() {
-	jobList = append(jobList, SysLog)
+	queue.RegisterConsumer(SysLog)
 }
 
 // SysLog 系统日志
@@ -71,20 +71,19 @@ var SysLog = &qSysLog{}
 
 type qSysLog struct{}
 
-// getTopic 主题
-func (q *qSysLog) getTopic() string {
+// GetTopic 主题
+func (q *qSysLog) GetTopic() string {
 	return consts.QueueLogTopic
 }
 
-// handle 处理消息
-func (q *qSysLog) handle(ctx context.Context, mqMsg queue.MqMsg) (err error) {
+// Handle 处理消息
+func (q *qSysLog) Handle(ctx context.Context, mqMsg queue.MqMsg) (err error) {
 	var data entity.SysLog
 	if err = json.Unmarshal(mqMsg.Body, &data); err != nil {
 		return err
 	}
 	return service.SysLog().RealWrite(ctx, data)
 }
-
 
 ```
 
@@ -101,7 +100,9 @@ import (
 )
 
 func test()  {
-	data := &entity.SysLog{}
+	data := &entity.SysLog{
+		//...
+    }
 	if err := queue.Push(consts.QueueLogTopic, data); err != nil {
 		fmt.Printf("queue.Push err:%+v", err)
 	}

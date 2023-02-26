@@ -10,7 +10,6 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/hgorm"
@@ -18,7 +17,6 @@ import (
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
-	"hotgo/utility/tree"
 	"hotgo/utility/validate"
 )
 
@@ -33,27 +31,21 @@ func init() {
 }
 
 // NameUnique 菜单名称是否唯一
-func (s *sAdminDept) NameUnique(ctx context.Context, in adminin.DeptNameUniqueInp) (*adminin.DeptNameUniqueModel, error) {
-
-	var res adminin.DeptNameUniqueModel
+func (s *sAdminDept) NameUnique(ctx context.Context, in adminin.DeptNameUniqueInp) (res *adminin.DeptNameUniqueModel, err error) {
 	isUnique, err := dao.AdminDept.IsUniqueName(ctx, in.Id, in.Name)
 	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
+		return
 	}
 
+	res = new(adminin.DeptNameUniqueModel)
 	res.IsUnique = isUnique
-	return &res, nil
+	return
 }
 
 // Delete 删除
 func (s *sAdminDept) Delete(ctx context.Context, in adminin.DeptDeleteInp) (err error) {
-
-	var (
-		models *entity.AdminDept
-	)
-	err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Scan(&models)
-	if err != nil {
+	var models *entity.AdminDept
+	if err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
 		return err
 	}
 
@@ -71,115 +63,86 @@ func (s *sAdminDept) Delete(ctx context.Context, in adminin.DeptDeleteInp) (err 
 	}
 
 	_, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // Edit 修改/新增
 func (s *sAdminDept) Edit(ctx context.Context, in adminin.DeptEditInp) (err error) {
-
 	if in.Name == "" {
 		err = gerror.New("名称不能为空")
-		return err
+		return
 	}
 
 	uniqueName, err := dao.AdminDept.IsUniqueName(ctx, in.Id, in.Name)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
+		return
 	}
 	if !uniqueName {
 		err = gerror.New("名称已存在")
-		return err
+		return
 	}
 
-	in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, dao.AdminDept, in.Pid)
-	if err != nil {
-		return err
+	if in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, dao.AdminDept, in.Pid); err != nil {
+		return
 	}
 
 	// 修改
 	if in.Id > 0 {
 		_, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Data(in).Update()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
-
-		return nil
+		return
 	}
 
 	// 新增
 	_, err = dao.AdminDept.Ctx(ctx).Data(in).Insert()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-	return nil
+	return
 }
 
 // Status 更新部门状态
 func (s *sAdminDept) Status(ctx context.Context, in adminin.DeptStatusInp) (err error) {
-
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
-		return err
+		return
 	}
 
 	if in.Status <= 0 {
 		err = gerror.New("状态不能为空")
-		return err
+		return
 	}
 
 	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
-		return err
+		return
 	}
 
 	// 修改
 	in.UpdatedAt = gtime.Now()
 	_, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // MaxSort 最大排序
-func (s *sAdminDept) MaxSort(ctx context.Context, in adminin.DeptMaxSortInp) (*adminin.DeptMaxSortModel, error) {
-	var res adminin.DeptMaxSortModel
-
+func (s *sAdminDept) MaxSort(ctx context.Context, in adminin.DeptMaxSortInp) (res *adminin.DeptMaxSortModel, err error) {
+	res = new(adminin.DeptMaxSortModel)
 	if in.Id > 0 {
-		if err := dao.AdminDept.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
+		if err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
-			return nil, err
+			return
 		}
 	}
 
 	res.Sort = res.Sort + 10
-
-	return &res, nil
+	return
 }
 
 // View 获取指定字典类型信息
 func (s *sAdminDept) View(ctx context.Context, in adminin.DeptViewInp) (res *adminin.DeptViewModel, err error) {
-
-	if err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	return res, nil
+	err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Scan(&res)
+	return
 }
 
 // List 获取列表
-func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (list adminin.DeptListModel, err error) {
+func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (res *adminin.DeptListModel, err error) {
 	var (
 		mod    = dao.AdminDept.Ctx(ctx)
 		models []*entity.AdminDept
@@ -228,114 +191,12 @@ func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (list adm
 
 	if err = mod.Order("pid asc,sort asc").Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, err
+		return
 	}
 
-	list = gconv.SliceMap(models)
-	for k, v := range list {
-		list[k]["index"] = v["id"]
-		list[k]["key"] = v["id"]
-		list[k]["label"] = v["name"]
-	}
-
-	return tree.GenTree(list), nil
-}
-
-type DeptTree struct {
-	entity.AdminDept
-	Children []*DeptTree `json:"children"`
-}
-
-// getDeptChildIds 将列表转为父子关系列表
-func (s *sAdminDept) getDeptChildIds(ctx context.Context, lists []*DeptTree, pid int64) []*DeptTree {
-
-	var (
-		count    = len(lists)
-		newLists []*DeptTree
-	)
-
-	if count == 0 {
-		return nil
-	}
-
-	for i := 0; i < len(lists); i++ {
-		if lists[i].Id > 0 && lists[i].Pid == pid {
-			var row *DeptTree
-			if err := gconv.Structs(lists[i], &row); err != nil {
-				panic(err)
-			}
-			row.Children = s.getDeptChildIds(ctx, lists, row.Id)
-			newLists = append(newLists, row)
-		}
-	}
-
-	return newLists
-}
-
-type DeptListTree struct {
-	Id       int64           `json:"id" `
-	Key      int64           `json:"key" `
-	Pid      int64           `json:"pid"  `
-	Label    string          `json:"label"`
-	Title    string          `json:"title"`
-	Name     string          `json:"name"`
-	Type     string          `json:"type"`
-	Children []*DeptListTree `json:"children"`
-}
-
-// ListTree 获取列表树
-func (s *sAdminDept) ListTree(ctx context.Context, in adminin.DeptListTreeInp) (list []*adminin.DeptListTreeModel, err error) {
-	var (
-		mod      = dao.AdminDept.Ctx(ctx)
-		dataList []*entity.AdminDept
-		models   []*DeptListTree
-	)
-
-	err = mod.Order("id desc").Scan(&dataList)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, err
-	}
-
-	_ = gconv.Structs(dataList, &models)
-
-	// 重写树入参
-	for i := 0; i < len(models); i++ {
-		models[i].Key = models[i].Id
-		models[i].Title = models[i].Name
-		models[i].Label = models[i].Name
-	}
-
-	childIds := s.getDeptTreeChildIds(ctx, models, 0)
-
-	_ = gconv.Structs(childIds, &list)
-
-	return list, nil
-}
-
-// getDeptTreeChildIds 将列表转为父子关系列表
-func (s *sAdminDept) getDeptTreeChildIds(ctx context.Context, lists []*DeptListTree, pid int64) []*DeptListTree {
-	var (
-		count    = len(lists)
-		newLists []*DeptListTree
-	)
-
-	if count == 0 {
-		return nil
-	}
-
-	for i := 0; i < len(lists); i++ {
-		if lists[i].Id > 0 && lists[i].Pid == pid {
-			var row *DeptListTree
-			if err := gconv.Structs(lists[i], &row); err != nil {
-				panic(err)
-			}
-			row.Children = s.getDeptTreeChildIds(ctx, lists, row.Id)
-			newLists = append(newLists, row)
-		}
-	}
-
-	return newLists
+	res = new(adminin.DeptListModel)
+	res.List = s.treeList(0, models)
+	return
 }
 
 // GetName 获取部门名称
@@ -351,4 +212,24 @@ func (s *sAdminDept) GetName(ctx context.Context, id int64) (name string, err er
 	}
 
 	return data.Name, nil
+}
+
+// treeList 树状列表
+func (s *sAdminDept) treeList(pid int64, nodes []*entity.AdminDept) (list []*adminin.DeptTree) {
+	list = make([]*adminin.DeptTree, 0)
+	for _, v := range nodes {
+		if v.Pid == pid {
+			item := new(adminin.DeptTree)
+			item.AdminDept = *v
+			item.Label = v.Name
+			item.Value = v.Id
+
+			child := s.treeList(v.Id, nodes)
+			if len(child) > 0 {
+				item.Children = child
+			}
+			list = append(list, item)
+		}
+	}
+	return
 }

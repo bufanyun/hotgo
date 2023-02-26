@@ -50,6 +50,7 @@
         >
           <n-form-item label="上级部门" path="pid">
             <n-tree-select
+              key-field="id"
               :options="options"
               :default-value="optionsDefaultValue"
               :default-expand-all="true"
@@ -387,7 +388,6 @@
   }
 
   async function handleSubmit(values: Recordable) {
-    // reloadTable();
     await loadDataTable(values);
   }
 
@@ -395,8 +395,8 @@
 
   const loadDataTable = async (res) => {
     loading.value = true;
-    data.value = await getDeptList({ ...res, ...formRef.value?.formModel });
-
+    const tmp = await getDeptList({ ...res, ...formRef.value?.formModel });
+    data.value = tmp.list;
     if (data.value === undefined || data.value === null) {
       data.value = [];
     }

@@ -15,14 +15,9 @@ import (
 	"hotgo/internal/model/input/form"
 
 	"github.com/gogf/gf/v2/database/gdb"
-	"github.com/gogf/gf/v2/frame/g"
 )
 
 type (
-	IAdminMonitor interface {
-		StartMonitor(ctx context.Context)
-		GetMeta(ctx context.Context) *model.MonitorData
-	}
 	IAdminNotice interface {
 		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
 		Delete(ctx context.Context, in adminin.NoticeDeleteInp) error
@@ -50,7 +45,7 @@ type (
 	}
 	IAdminRole interface {
 		Verify(ctx context.Context, path, method string) bool
-		List(ctx context.Context, in adminin.RoleListInp) (list []g.Map, totalCount int, err error)
+		List(ctx context.Context, in adminin.RoleListInp) (res *adminin.RoleListModel, totalCount int, err error)
 		GetName(ctx context.Context, RoleId int64) (name string, err error)
 		GetMemberList(ctx context.Context, RoleId int64) (list []*adminin.RoleListModel, err error)
 		GetPermissions(ctx context.Context, reqInfo *role.GetPermissionsReq) (MenuIds []int64, err error)
@@ -61,14 +56,13 @@ type (
 		DataScopeEdit(ctx context.Context, in *adminin.DataScopeEditInp) (err error)
 	}
 	IAdminDept interface {
-		NameUnique(ctx context.Context, in adminin.DeptNameUniqueInp) (*adminin.DeptNameUniqueModel, error)
+		NameUnique(ctx context.Context, in adminin.DeptNameUniqueInp) (res *adminin.DeptNameUniqueModel, err error)
 		Delete(ctx context.Context, in adminin.DeptDeleteInp) (err error)
 		Edit(ctx context.Context, in adminin.DeptEditInp) (err error)
 		Status(ctx context.Context, in adminin.DeptStatusInp) (err error)
-		MaxSort(ctx context.Context, in adminin.DeptMaxSortInp) (*adminin.DeptMaxSortModel, error)
+		MaxSort(ctx context.Context, in adminin.DeptMaxSortInp) (res *adminin.DeptMaxSortModel, err error)
 		View(ctx context.Context, in adminin.DeptViewInp) (res *adminin.DeptViewModel, err error)
-		List(ctx context.Context, in adminin.DeptListInp) (list adminin.DeptListModel, err error)
-		ListTree(ctx context.Context, in adminin.DeptListTreeInp) (list []*adminin.DeptListTreeModel, err error)
+		List(ctx context.Context, in adminin.DeptListInp) (res *adminin.DeptListModel, err error)
 		GetName(ctx context.Context, id int64) (name string, err error)
 	}
 	IAdminMember interface {
@@ -97,8 +91,8 @@ type (
 		MemberLoginStat(ctx context.Context, in adminin.MemberLoginStatInp) (res *adminin.MemberLoginStatModel, err error)
 	}
 	IAdminMemberPost interface {
-		UpdatePostIds(ctx context.Context, member_id int64, post_ids []int64) (err error)
-		GetMemberByIds(ctx context.Context, member_id int64) (post_ids []int64, err error)
+		UpdatePostIds(ctx context.Context, memberId int64, postIds []int64) (err error)
+		GetMemberByIds(ctx context.Context, memberId int64) (postIds []int64, err error)
 	}
 	IAdminMenu interface {
 		RoleList(ctx context.Context, in adminin.MenuRoleListInp) (*adminin.MenuRoleListModel, error)
@@ -113,9 +107,14 @@ type (
 		GetMenuList(ctx context.Context, memberId int64) (lists role.DynamicRes, err error)
 		LoginPermissions(ctx context.Context, memberId int64) (lists adminin.MemberLoginPermissions, err error)
 	}
+	IAdminMonitor interface {
+		StartMonitor(ctx context.Context)
+		GetMeta(ctx context.Context) *model.MonitorData
+	}
 )
 
 var (
+	localAdminPost       IAdminPost
 	localAdminRole       IAdminRole
 	localAdminDept       IAdminDept
 	localAdminMember     IAdminMember
@@ -123,7 +122,6 @@ var (
 	localAdminMenu       IAdminMenu
 	localAdminMonitor    IAdminMonitor
 	localAdminNotice     IAdminNotice
-	localAdminPost       IAdminPost
 )
 
 func AdminDept() IAdminDept {

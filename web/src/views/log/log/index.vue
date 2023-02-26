@@ -186,7 +186,7 @@
     width: 220,
     title: '操作',
     key: 'action',
-    fixed: 'right',
+    // fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',

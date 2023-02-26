@@ -100,11 +100,12 @@ func (c *cCronGroup) Status(ctx context.Context, req *cron.GroupStatusReq) (res 
 
 // Select 选项
 func (c *cCronGroup) Select(ctx context.Context, req *cron.GroupSelectReq) (res *cron.GroupSelectRes, err error) {
-	list, err := service.SysCronGroup().Select(ctx, sysin.CronGroupSelectInp{})
+	data, err := service.SysCronGroup().Select(ctx, sysin.CronGroupSelectInp{})
 	if err != nil {
 		return
 	}
 
-	res = (*cron.GroupSelectRes)(&list)
+	res = new(cron.GroupSelectRes)
+	res.CronGroupSelectModel = data
 	return
 }

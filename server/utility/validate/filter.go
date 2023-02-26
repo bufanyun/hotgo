@@ -10,6 +10,10 @@ import (
 	"context"
 )
 
+// Filter 通用过滤器
+
+// Filter 预处理和数据过滤接口，目前主要用于input层的输入过滤和内部效验。
+// 你可以在任意地方使用它，只要实现了Filter接口即可
 type Filter interface {
 	// Filter gf效验规则 https://goframe.org/pages/viewpage.action?pageId=1114367
 	Filter(ctx context.Context) error

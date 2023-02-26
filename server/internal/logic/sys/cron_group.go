@@ -9,14 +9,12 @@ package sys
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/tree"
 	"hotgo/utility/validate"
 )
 
@@ -157,31 +155,39 @@ func (s *sSysCronGroup) List(ctx context.Context, in sysin.CronGroupListInp) (li
 }
 
 // Select 选项
-func (s *sSysCronGroup) Select(ctx context.Context, in sysin.CronGroupSelectInp) (list sysin.CronGroupSelectModel, err error) {
+func (s *sSysCronGroup) Select(ctx context.Context, in sysin.CronGroupSelectInp) (res *sysin.CronGroupSelectModel, err error) {
 	var (
-		mod      = dao.SysCronGroup.Ctx(ctx)
-		models   []*entity.SysCronGroup
-		typeList []g.Map
+		mod    = dao.SysCronGroup.Ctx(ctx)
+		models []*entity.SysCronGroup
 	)
 
 	if err = mod.Order("pid asc,sort asc").Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, err
+		return
 	}
 
-	for i := 0; i < len(models); i++ {
-		typeList = append(typeList, g.Map{
-			"index":      models[i].Id,
-			"key":        models[i].Id,
-			"label":      models[i].Name,
-			"id":         models[i].Id,
-			"pid":        models[i].Pid,
-			"name":       models[i].Name,
-			"sort":       models[i].Sort,
-			"created_at": models[i].CreatedAt,
-			"status":     models[i].Status,
-		})
-	}
+	res = new(sysin.CronGroupSelectModel)
+	res.List = s.treeList(0, models)
+	return
+}
 
-	return tree.GenTree(typeList), nil
+// treeList 树状列表
+func (s *sSysCronGroup) treeList(pid int64, nodes []*entity.SysCronGroup) (list []*sysin.CronGroupTree) {
+	list = make([]*sysin.CronGroupTree, 0)
+	for _, v := range nodes {
+		if v.Pid == pid {
+			item := new(sysin.CronGroupTree)
+			item.SysCronGroup = *v
+			item.Label = v.Name
+			item.Value = v.Id
+			item.Key = v.Id
+
+			child := s.treeList(v.Id, nodes)
+			if len(child) > 0 {
+				item.Children = child
+			}
+			list = append(list, item)
+		}
+	}
+	return
 }

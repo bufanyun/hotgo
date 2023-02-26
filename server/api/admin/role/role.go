@@ -38,21 +38,11 @@ type MemberListRes struct {
 // ListReq 查询列表
 type ListReq struct {
 	g.Meta `path:"/role/list" method:"get" tags:"角色" summary:"获取角色列表"`
-	form.PageReq
-	form.RangeDateReq
-	form.StatusReq
-	DeptId    int    `json:"deptId"   description:"部门ID"`
-	Mobile    int    `json:"mobile"   description:"手机号"`
-	Username  string `json:"username"   description:"用户名"`
-	Realname  string `json:"realname"   description:"真实姓名"`
-	StartTime string `json:"start_time"   description:"开始时间"`
-	EndTime   string `json:"end_time"   description:"结束时间"`
-	Name      string `json:"name"   description:"岗位名称"`
-	Code      string `json:"code"   description:"岗位编码"`
+	adminin.RoleListInp
 }
 
 type ListRes struct {
-	List []g.Map `json:"list"   description:"数据列表"`
+	*adminin.RoleListModel
 	form.PageRes
 }
 

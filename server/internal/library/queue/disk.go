@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+// Disk 磁盘队列
+
 type DiskProducerMq struct {
 	config    *disk.Config
 	producers map[string]*disk.Queue

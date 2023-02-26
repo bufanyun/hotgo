@@ -52,11 +52,11 @@ func FilterAuthWithField(filterField string) func(m *gdb.Model) *gdb.Model {
 
 		err := g.Model("admin_role").Where("id", co.User.RoleId).Scan(&role)
 		if err != nil {
-			g.Log().Fatalf(ctx, "failed to role information err:%+v", err)
+			g.Log().Panicf(ctx, "failed to role information err:%+v", err)
 		}
 
 		if role == nil {
-			g.Log().Fatalf(ctx, "failed to role information roleModel == nil")
+			g.Log().Panicf(ctx, "failed to role information roleModel == nil")
 		}
 
 		sq := g.Model("admin_member").Fields("id")
@@ -77,7 +77,7 @@ func FilterAuthWithField(filterField string) func(m *gdb.Model) *gdb.Model {
 		case consts.RoleDataSelfAndAllSub: // 自己和全部下级
 			m = m.WhereIn(filterField, GetSelfAndAllSub(co.User.Id))
 		default:
-			g.Log().Fatalf(ctx, "dataScope is not registered")
+			g.Log().Panicf(ctx, "dataScope is not registered")
 		}
 
 		return m

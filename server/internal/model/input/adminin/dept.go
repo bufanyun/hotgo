@@ -7,7 +7,6 @@
 package adminin
 
 import (
-	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/model/entity"
 )
 
@@ -57,33 +56,17 @@ type DeptListInp struct {
 	Code string
 }
 
-// DeptTreeDept 树
-type DeptTreeDept struct {
+// DeptTree 树
+type DeptTree struct {
 	entity.AdminDept
-	Children []*DeptTreeDept `json:"children"`
+	Label    string      `json:"label"     dc:"标签"`
+	Value    int64       `json:"value"     dc:"键值"`
+	Children []*DeptTree `json:"children"`
 }
 
-type DeptListModel []g.Map
-
-// DeptListTreeInp 获取列表树
-type DeptListTreeInp struct {
-	Name string
-	Code string
+type DeptListModel struct {
+	List []*DeptTree `json:"list"`
 }
-
-// DeptListTreeDept 树
-type DeptListTreeDept struct {
-	Id       int64               `json:"id" `
-	Key      int64               `json:"key" `
-	Pid      int64               `json:"pid"  `
-	Label    string              `json:"label"`
-	Title    string              `json:"title"`
-	Name     string              `json:"name"`
-	Type     string              `json:"type"`
-	Children []*DeptListTreeDept `json:"children"`
-}
-
-type DeptListTreeModel DeptListTreeDept
 
 // DeptStatusInp 更新部门状态
 type DeptStatusInp struct {

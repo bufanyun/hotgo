@@ -17,7 +17,7 @@ type TypeTreeReq struct {
 	g.Meta `path:"/dictType/tree" tags:"字典类型" method:"get" summary:"字典类型树列表"`
 }
 type TypeTreeRes struct {
-	List []map[string]interface{} `json:"list"   dc:"数据列表"`
+	List []*sysin.DictTypeTree `json:"list"   dc:"数据列表"`
 }
 
 // TypeEditReq 修改/新增字典数据
@@ -34,10 +34,3 @@ type TypeDeleteReq struct {
 	g.Meta `path:"/dictType/delete" method:"post" tags:"字典类型" summary:"删除字典类型"`
 }
 type TypeDeleteRes struct{}
-
-// TypeSelectReq 修改/新增字典数据
-type TypeSelectReq struct {
-	g.Meta `path:"/dictType/select" method:"get" tags:"字典类型" summary:"字典类型选项"`
-}
-
-type TypeSelectRes sysin.DictTypeSelectModel

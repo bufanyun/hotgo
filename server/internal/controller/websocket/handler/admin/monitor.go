@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package admin
 
 import (
@@ -71,7 +70,7 @@ func (c *cMonitor) RunInfo(client *websocket.Client, req *websocket.WRequest) {
 		"goName":    "Golang",
 		"version":   runtime.Version(),
 		"startTime": meta.STartTime,
-		"runTime":   gtime.Now().Timestamp() - meta.STartTime.Timestamp(),
+		"runTime":   gtime.Now().Timestamp() - meta.STartTime,
 		"rootPath":  runtime.GOROOT(),
 		"pwd":       pwd,
 		"goroutine": runtime.NumGoroutine(),
@@ -108,7 +107,7 @@ func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
 		mMemUsed     float64
 		mDisk, _     = disk.Usage("/")
 		mProcess, _  = process.Pids()
-		mLoadAvg     *model.LoadAvgStats
+		mLoadAvg     = new(model.LoadAvgStats)
 		data         = g.Map{}
 		monitorHeads []MonitorHead
 		nets         []NetC

@@ -23,14 +23,17 @@ type DictTypeDeleteInp struct {
 }
 type DictTypeDeleteModel struct{}
 
-// DictTypeSelectInp 获取类型选项
-type DictTypeSelectInp struct {
-}
-
-type DictTypeSelectModel []g.Map
-
 // DictTreeSelectInp 获取类型关系树选项
 type DictTreeSelectInp struct {
 }
 
 type DictTreeSelectModel []g.Map
+
+type DictTypeTree struct {
+	entity.SysDictType
+	Disabled bool            `json:"disabled"  dc:"是否禁用"`
+	Label    string          `json:"label"     dc:"标签"`
+	Value    int64           `json:"value"     dc:"键值"`
+	Key      int64           `json:"key"       dc:"键名"`
+	Children []*DictTypeTree `json:"children"  dc:"子级"`
+}

@@ -29,7 +29,7 @@ var (
 	defaultRowStyle = `{"font":{"color":"#666666","size":13,"family":"arial"},"alignment":{"vertical":"center","horizontal":"center"}}`
 )
 
-// ExportByStructs 导出切片结构体
+// ExportByStructs 导出切片结构体到excel表格
 func ExportByStructs(ctx context.Context, tags []string, list interface{}, fileName string, sheetName string) (err error) {
 	f := excelize.NewFile()
 	f.SetSheetName("Sheet1", sheetName)

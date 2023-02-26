@@ -13,20 +13,24 @@ import (
 
 // Build 构建新插件
 func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err error) {
-	buildPath := "./" + consts.AddonsDir + "/" + sk.Name
-	modulesPath := "./" + consts.AddonsDir + "/modules/" + sk.Name + ".go"
-	templatePath := gstr.Replace(conf.TemplatePath, "{$name}", sk.Name)
-	replaces := map[string]string{
-		"@{.label}":       sk.Label,
-		"@{.name}":        sk.Name,
-		"@{.group}":       strconv.Itoa(sk.Group),
-		"@{.brief}":       sk.Brief,
-		"@{.description}": sk.Description,
-		"@{.author}":      sk.Author,
-		"@{.version}":     sk.Version,
-	}
+	var (
+		buildPath    = "./" + consts.AddonsDir + "/" + sk.Name
+		modulesPath  = "./" + consts.AddonsDir + "/modules/" + sk.Name + ".go"
+		templatePath = gstr.Replace(conf.TemplatePath, "{$name}", sk.Name)
+		webApiPath   = gstr.Replace(conf.WebApiPath, "{$name}", sk.Name)
+		webViewsPath = gstr.Replace(conf.WebViewsPath, "{$name}", sk.Name)
+		replaces     = map[string]string{
+			"@{.label}":       sk.Label,
+			"@{.name}":        sk.Name,
+			"@{.group}":       strconv.Itoa(sk.Group),
+			"@{.brief}":       sk.Brief,
+			"@{.description}": sk.Description,
+			"@{.author}":      sk.Author,
+			"@{.version}":     sk.Version,
+		}
+	)
 
-	if err = checkBuildDir(buildPath, modulesPath, templatePath); err != nil {
+	if err = checkBuildDir(buildPath, modulesPath, templatePath, webApiPath, webViewsPath); err != nil {
 		return
 	}
 
@@ -49,7 +53,6 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 			gfile.RealPath(conf.SrcPath): "",
 			".template":                  "",
 		})
-
 		flowFile = buildPath + "/" + flowFile
 
 		content := gstr.ReplaceByMap(gfile.GetContents(path), replaces)
@@ -59,11 +62,31 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 		}
 	}
 
-	if err = gfile.PutContents(templatePath+"/home/index.html", homeLayout); err != nil {
+	// 隐式注入插件
+	if err = gfile.PutContents(modulesPath, gstr.ReplaceByMap(importModules, replaces)); err != nil {
 		return
 	}
-	
-	err = gfile.PutContents(modulesPath, gstr.ReplaceByMap(importModules, replaces))
+
+	// home默认页面
+	if err = gfile.PutContents(templatePath+"/home/index.html", gstr.ReplaceByMap(homeLayout, replaces)); err != nil {
+		return
+	}
+
+	// webApi
+	if err = gfile.PutContents(webApiPath+"/config/index.ts", gstr.ReplaceByMap(webApiLayout, replaces)); err != nil {
+		return
+	}
+
+	// web插件配置主页面
+	if err = gfile.PutContents(webViewsPath+"/config/BasicSetting.vue", gstr.ReplaceByMap(webConfigBasicSetting, replaces)); err != nil {
+		return
+	}
+
+	// web插件基础配置页面
+	if err = gfile.PutContents(webViewsPath+"/config/system.vue", gstr.ReplaceByMap(webConfigSystem, replaces)); err != nil {
+		return
+	}
+
 	return
 }
 
@@ -79,48 +102,3 @@ func checkBuildDir(paths ...string) error {
 	}
 	return nil
 }
-
-const (
-	importModules = `// Package modules
-// @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2023 HotGo CLI
-// @Author  Ms <133814250@qq.com>
-// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-package modules
-
-import _ "hotgo/addons/@{.name}"
-`
-
-	homeLayout = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-    <meta name="keywords" content="@{.Keywords}"/>
-    <meta name="description" content="@{.Description}"/>
-    <title>@{.Title}</title>
-    <script type="text/javascript" src="/resource/home/js/jquery-3.6.0.min.js"></script>
-    <style>
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #f6f6f6;
-        }
-    </style>
-</head>
-<body>
-<div style="padding-top: 100px;text-align:center;">
-    <h1><p>Hello，@{.Data.name}!!</p></h1>
-    <h2><p>@{.Data.module}</p></h2>
-    <h2><p>服务器时间：@{.Data.time}</p></h2>
-</div>
-
-</body>
-<script>
-
-</script>
-</html>`
-)

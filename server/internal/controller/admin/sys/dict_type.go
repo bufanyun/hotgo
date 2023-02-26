@@ -48,14 +48,3 @@ func (c *cDictType) Edit(ctx context.Context, req *dict.TypeEditReq) (res *dict.
 	err = service.SysDictType().Edit(ctx, in)
 	return
 }
-
-// Select 选项
-func (c *cDictType) Select(ctx context.Context, req *dict.TypeSelectReq) (res *dict.TypeSelectRes, err error) {
-	list, err := service.SysDictType().Select(ctx, sysin.DictTypeSelectInp{})
-	if err != nil {
-		return
-	}
-
-	res = (*dict.TypeSelectRes)(&list)
-	return
-}

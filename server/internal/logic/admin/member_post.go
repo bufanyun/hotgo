@@ -25,18 +25,18 @@ func init() {
 	service.RegisterAdminMemberPost(NewAdminMemberPost())
 }
 
-func (s *sAdminMemberPost) UpdatePostIds(ctx context.Context, member_id int64, post_ids []int64) (err error) {
-	_, err = dao.AdminMemberPost.Ctx(ctx).Where("member_id", member_id).Delete()
+func (s *sAdminMemberPost) UpdatePostIds(ctx context.Context, memberId int64, postIds []int64) (err error) {
+	_, err = dao.AdminMemberPost.Ctx(ctx).Where("member_id", memberId).Delete()
 	if err != nil {
 		err = gerror.Wrap(err, "删除失败")
 		return err
 	}
 
-	for i := 0; i < len(post_ids); i++ {
+	for i := 0; i < len(postIds); i++ {
 		_, err = dao.AdminMemberPost.Ctx(ctx).
 			Insert(entity.AdminMemberPost{
-				MemberId: member_id,
-				PostId:   post_ids[i],
+				MemberId: memberId,
+				PostId:   postIds[i],
 			})
 		if err != nil {
 			err = gerror.Wrap(err, "插入用户岗位失败")
@@ -48,20 +48,20 @@ func (s *sAdminMemberPost) UpdatePostIds(ctx context.Context, member_id int64, p
 }
 
 // GetMemberByIds 获取指定用户的岗位ids
-func (s *sAdminMemberPost) GetMemberByIds(ctx context.Context, member_id int64) (post_ids []int64, err error) {
+func (s *sAdminMemberPost) GetMemberByIds(ctx context.Context, memberId int64) (postIds []int64, err error) {
 	var list []*entity.AdminMemberPost
 	err = dao.AdminMemberPost.Ctx(ctx).
 		Fields("post_id").
-		Where("member_id", member_id).
+		Where("member_id", memberId).
 		Scan(&list)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return post_ids, err
+		return postIds, err
 	}
 
 	for i := 0; i < len(list); i++ {
-		post_ids = append(post_ids, list[i].PostId)
+		postIds = append(postIds, list[i].PostId)
 	}
 
-	return post_ids, nil
+	return postIds, nil
 }

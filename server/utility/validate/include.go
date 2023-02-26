@@ -9,22 +9,9 @@ package validate
 import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
-	"time"
 )
 
-// InSameDay 是否为同一天
-func InSameDay(t1, t2 int64) bool {
-	y1, m1, d1 := time.Unix(t1, 0).Date()
-	y2, m2, d2 := time.Unix(t2, 0).Date()
-	return y1 == y2 && m1 == m2 && d1 == d2
-}
-
-// InSameMinute 是否为同一分钟
-func InSameMinute(t1, t2 int64) bool {
-	d1 := time.Unix(t1, 0).Format("2006-01-02 15:04")
-	d2 := time.Unix(t2, 0).Format("2006-01-02 15:04")
-	return d1 == d2
-}
+// 是否包含判断
 
 // InSliceExistStr 判断字符或切片字符是否存在指定字符
 func InSliceExistStr(elems interface{}, search string) bool {

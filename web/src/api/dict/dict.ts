@@ -44,7 +44,7 @@ export function DeleteDict(params?) {
  */
 export function getDictSelect(params?) {
   return http.request({
-    url: '/dictType/select',
+    url: '/dictType/tree',
     method: 'GET',
     params,
   });

@@ -7,6 +7,8 @@
 package adminin
 
 import (
+	"context"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
@@ -44,13 +46,13 @@ type MemberProfileInp struct {
 	Id int64
 }
 type MemberProfileModel struct {
-	PostGroup string           `json:"postGroup" description:"岗位名称"`
-	RoleGroup string           `json:"roleGroup" description:"角色名称"`
-	User      *MemberViewModel `json:"member" description:"用户基本信息"`
-	SysDept   *DeptViewModel   `json:"sysDept" description:"部门信息"`
-	SysRoles  []*RoleListModel `json:"sysRoles" description:"角色列表"`
-	PostIds   int64            `json:"postIds" description:"当前岗位"`
-	RoleIds   int64            `json:"roleIds" description:"当前角色"`
+	PostGroup string           `json:"postGroup" dc:"岗位名称"`
+	RoleGroup string           `json:"roleGroup" dc:"角色名称"`
+	User      *MemberViewModel `json:"member"    dc:"用户基本信息"`
+	SysDept   *DeptViewModel   `json:"sysDept"   dc:"部门信息"`
+	SysRoles  []*RoleListModel `json:"sysRoles"  dc:"角色列表"`
+	PostIds   int64            `json:"postIds"   dc:"当前岗位"`
+	RoleIds   int64            `json:"roleIds"   dc:"当前角色"`
 }
 
 // MemberUpdateProfileInp 更新用户资料
@@ -118,36 +120,48 @@ type MemberMaxSortModel struct {
 
 // MemberEditInp 修改/新增管理员
 type MemberEditInp struct {
-	Id         int64       `json:"id"                   description:""`
-	RoleId     int         `json:"roleId"            v:"required#角色不能为空"         description:"角色ID"`
-	PostIds    []int64     `json:"postIds"       v:"required#岗位不能为空"           description:"岗位ID"`
-	DeptId     int64       `json:"deptId"       v:"required#部门不能为空"           description:"部门ID"`
-	Username   string      `json:"username"   v:"required#账号不能为空"           description:"帐号"`
-	Password   string      `json:"password"            description:"密码"`
-	RealName   string      `json:"realName"             description:"真实姓名"`
-	Avatar     string      `json:"avatar"               description:"头像"`
-	Sex        string      `json:"sex"                  description:"性别"`
-	Qq         string      `json:"qq"                   description:"qq"`
-	Email      string      `json:"email"                description:"邮箱"`
-	Birthday   *gtime.Time `json:"birthday"             description:"生日"`
-	ProvinceId int         `json:"provinceId"          description:"省"`
-	CityId     int         `json:"cityId"              description:"城市"`
-	AreaId     int         `json:"areaId"              description:"地区"`
-	Address    string      `json:"address"              description:"默认地址"`
-	Mobile     string      `json:"mobile"               description:"手机号码"`
-	Remark     string      `json:"remark"               description:"备注"`
-	Status     string      `json:"status"               description:"状态"`
-	CreatedAt  *gtime.Time `json:"createdAt"           description:"创建时间"`
-	UpdatedAt  *gtime.Time `json:"updatedAt"           description:"修改时间"`
+	Id           int64       `json:"id"                                            dc:""`
+	RoleId       int         `json:"roleId"    v:"required#角色不能为空"            dc:"角色ID"`
+	PostIds      []int64     `json:"postIds"   v:"required#岗位不能为空"            dc:"岗位ID"`
+	DeptId       int64       `json:"deptId"    v:"required#部门不能为空"            dc:"部门ID"`
+	Username     string      `json:"username"   v:"required#账号不能为空"           dc:"帐号"`
+	PasswordHash string      `json:"passwordHash"                                  dc:"密码hash"`
+	Password     string      `json:"password"                                      dc:"密码"`
+	RealName     string      `json:"realName"                                      dc:"真实姓名"`
+	Avatar       string      `json:"avatar"                                        dc:"头像"`
+	Sex          string      `json:"sex"                                           dc:"性别"`
+	Qq           string      `json:"qq"                                            dc:"qq"`
+	Email        string      `json:"email"                                         dc:"邮箱"`
+	Birthday     *gtime.Time `json:"birthday"                                      dc:"生日"`
+	ProvinceId   int         `json:"provinceId"                                    dc:"省"`
+	CityId       int         `json:"cityId"                                        dc:"城市"`
+	AreaId       int         `json:"areaId"                                        dc:"地区"`
+	Address      string      `json:"address"                                       dc:"默认地址"`
+	Mobile       string      `json:"mobile"                                        dc:"手机号码"`
+	Remark       string      `json:"remark"                                        dc:"备注"`
+	Status       string      `json:"status"                                        dc:"状态"`
+	CreatedAt    *gtime.Time `json:"createdAt"                                     dc:"创建时间"`
+	UpdatedAt    *gtime.Time `json:"updatedAt"                                     dc:"修改时间"`
 }
 
 type MemberAddInp struct {
 	MemberEditInp
-	PasswordHash string `json:"passwordHash"       description:"密码hash"`
-	Salt         string `json:"salt"               description:"密码盐"`
-	Pid          int64  `json:"pid"                description:"上级ID"`
-	Level        int    `json:"level"              description:"等级"`
-	Tree         string `json:"tree"               description:"关系树"`
+	Salt  string `json:"salt"               dc:"密码盐"`
+	Pid   int64  `json:"pid"                dc:"上级ID"`
+	Level int    `json:"level"              dc:"等级"`
+	Tree  string `json:"tree"               dc:"关系树"`
+}
+
+func (in *MemberEditInp) Filter(ctx context.Context) (err error) {
+	if in.Password != "" {
+		if err := g.Validator().
+			Rules("length:6,16").
+			Messages("#新密码不能为空#新密码需在6~16之间").
+			Data(in.Password).Run(ctx); err != nil {
+			return err.Current()
+		}
+	}
+	return
 }
 
 type MemberEditModel struct{}
@@ -165,8 +179,8 @@ type MemberViewInp struct {
 
 type MemberViewModel struct {
 	entity.AdminMember
-	DeptName string `json:"deptName"    description:"所属部门"`
-	RoleName string `json:"roleName"    description:"所属角色"`
+	DeptName string `json:"deptName"    dc:"所属部门"`
+	RoleName string `json:"roleName"    dc:"所属角色"`
 }
 
 // MemberListInp 获取列表
@@ -174,21 +188,21 @@ type MemberListInp struct {
 	form.PageReq
 	form.RangeDateReq
 	form.StatusReq
-	DeptId    int     `json:"deptId"   dc:"部门ID"`
-	Mobile    int     `json:"mobile"   dc:"手机号"`
+	DeptId    int     `json:"deptId"     dc:"部门ID"`
+	Mobile    int     `json:"mobile"     dc:"手机号"`
 	Username  string  `json:"username"   dc:"用户名"`
 	RealName  string  `json:"realName"   dc:"真实姓名"`
-	Name      string  `json:"name"   dc:"岗位名称"`
-	Code      string  `json:"code"   dc:"岗位编码"`
-	CreatedAt []int64 `json:"createdAt"   dc:"创建时间"`
+	Name      string  `json:"name"       dc:"岗位名称"`
+	Code      string  `json:"code"       dc:"岗位编码"`
+	CreatedAt []int64 `json:"createdAt"  dc:"创建时间"`
 }
 
 type MemberListModel struct {
 	entity.AdminMember
-	DeptName string  `json:"deptName"    description:"所属部门"`
-	RoleName string  `json:"roleName"    description:"所属角色"`
-	PostIds  []int64 `json:"postIds"     description:"岗位"`
-	DeptId   int64   `json:"deptId"      description:"部门ID"`
+	DeptName string  `json:"deptName"    dc:"所属部门"`
+	RoleName string  `json:"roleName"    dc:"所属角色"`
+	PostIds  []int64 `json:"postIds"     dc:"岗位"`
+	DeptId   int64   `json:"deptId"      dc:"部门ID"`
 }
 
 // MemberLoginInp 登录
@@ -197,31 +211,31 @@ type MemberLoginInp struct {
 	Password string
 }
 type MemberLoginModel struct {
-	Id      int64  `json:"id"              description:"用户ID"`
-	Token   string `json:"token"           description:"登录token"`
-	Expires int64  `json:"expires"         description:"登录有效期"`
+	Id      int64  `json:"id"              dc:"用户ID"`
+	Token   string `json:"token"           dc:"登录token"`
+	Expires int64  `json:"expires"         dc:"登录有效期"`
 }
 
 type LoginMemberInfoModel struct {
-	Id          int64       `json:"id"                 description:"用户ID"`
-	DeptName    string      `json:"deptName"           description:"所属部门"`
-	RoleName    string      `json:"roleName"           description:"所属角色"`
-	Permissions []string    `json:"permissions"        description:"角色信息"`
-	DeptId      int64       `json:"-"                  description:"部门ID"`
-	RoleId      int64       `json:"-"                  description:"角色ID"`
-	Username    string      `json:"username"           description:"用户名"`
-	RealName    string      `json:"realName"           description:"姓名"`
-	Avatar      string      `json:"avatar"             description:"头像"`
-	Balance     float64     `json:"balance"            description:"余额"`
-	Sex         int         `json:"sex"                description:"性别"`
-	Qq          string      `json:"qq"                 description:"qq"`
-	Email       string      `json:"email"              description:"邮箱"`
-	Mobile      string      `json:"mobile"             description:"手机号码"`
-	Birthday    *gtime.Time `json:"birthday"           description:"生日"`
-	CityId      int64       `json:"cityId"             description:"城市编码"`
-	Address     string      `json:"address"            description:"联系地址"`
-	Cash        *MemberCash `json:"cash"               description:"收款信息"`
-	CreatedAt   *gtime.Time `json:"createdAt"          description:"创建时间"`
+	Id          int64       `json:"id"                 dc:"用户ID"`
+	DeptName    string      `json:"deptName"           dc:"所属部门"`
+	RoleName    string      `json:"roleName"           dc:"所属角色"`
+	Permissions []string    `json:"permissions"        dc:"角色信息"`
+	DeptId      int64       `json:"-"                  dc:"部门ID"`
+	RoleId      int64       `json:"-"                  dc:"角色ID"`
+	Username    string      `json:"username"           dc:"用户名"`
+	RealName    string      `json:"realName"           dc:"姓名"`
+	Avatar      string      `json:"avatar"             dc:"头像"`
+	Balance     float64     `json:"balance"            dc:"余额"`
+	Sex         int         `json:"sex"                dc:"性别"`
+	Qq          string      `json:"qq"                 dc:"qq"`
+	Email       string      `json:"email"              dc:"邮箱"`
+	Mobile      string      `json:"mobile"             dc:"手机号码"`
+	Birthday    *gtime.Time `json:"birthday"           dc:"生日"`
+	CityId      int64       `json:"cityId"             dc:"城市编码"`
+	Address     string      `json:"address"            dc:"联系地址"`
+	Cash        *MemberCash `json:"cash"               dc:"收款信息"`
+	CreatedAt   *gtime.Time `json:"createdAt"          dc:"创建时间"`
 	*MemberLoginStatModel
 }
 
@@ -246,10 +260,10 @@ type MemberSelectInp struct {
 }
 
 type MemberSelectModel struct {
-	Value    int64  `json:"value" dc:"用户ID"`
-	Label    string `json:"label" dc:"真实姓名"`
+	Value    int64  `json:"value"    dc:"用户ID"`
+	Label    string `json:"label"    dc:"真实姓名"`
 	Username string `json:"username" dc:"用户名"`
-	Avatar   string `json:"avatar" dc:"头像"`
+	Avatar   string `json:"avatar"   dc:"头像"`
 }
 
 // MemberLoginStatInp 用户登录统计

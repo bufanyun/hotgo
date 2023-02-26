@@ -19,9 +19,9 @@ func handlerMsg(client *Client, message []byte) {
 			g.Log().Warningf(ctxManager, "handlerMsg recover, err:%+v, stack:%+v", r, string(debug.Stack()))
 		}
 	}()
-	request := &WRequest{}
-	err := gconv.Struct(message, request)
-	if err != nil {
+
+	var request *WRequest
+	if err := gconv.Struct(message, &request); err != nil {
 		g.Log().Warningf(ctxManager, "handlerMsg 数据解析失败,err:%+v, message:%+v", err, string(message))
 		return
 	}
@@ -30,8 +30,6 @@ func handlerMsg(client *Client, message []byte) {
 		g.Log().Warning(ctxManager, "handlerMsg request.Event is null")
 		return
 	}
-
-	//g.Log().Infof(ctxManager, "websocket handlerMsg:%+v", request)
 
 	fun, ok := routers[request.Event]
 	if !ok {

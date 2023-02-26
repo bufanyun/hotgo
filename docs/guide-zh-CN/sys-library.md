@@ -3,7 +3,7 @@
 目录
 
 - 缓存驱动
-- 上下文（待写）
+- 请求上下文（待写）
 - JWT（待写）
 - 地理定位（待写）
 - 通知（待写）
@@ -48,9 +48,42 @@ func  test() {
 
 ```
 
-### 上下文
+### 请求上下文
+
+- 主要用于在处理HTTP和websocket请求时通过中间件将用户、应用、插件等信息绑定到上下文中，方便在做业务处理时用到这些信息
+
 ```go
-// 待写
+package admin
+
+import (
+	"fmt"
+	"context"
+	"hotgo/internal/library/contexts"
+	"hotgo/internal/library/addons"
+)
+
+
+func test(ctx context.Context) {
+	// 获取当前请求的所有上下文变量
+	var ctxModel = contexts.Get(ctx)
+	fmt.Printf("当前请求的所有上下文变量：%+v\n", ctxModel)
+
+	// 获取当前请求的应用模块
+	var module = contexts.GetModule(ctx)
+	fmt.Printf("当前请求的应用：%+v\n", module)
+	
+	// 获取当前请求的用户信息
+	var member = contexts.GetUser(ctx)
+	fmt.Printf("当前访问用户信息：%+v\n", member)
+	
+	// 获取当前请求的插件模块
+	fmt.Printf("当前是否为插件请求：%v", contexts.IsAddonRequest(ctx))
+	if contexts.IsAddonRequest(ctx) {
+		fmt.Printf("当前插件名称：%v", contexts.GetAddonName(ctx))
+		fmt.Printf("当前插件信息：%v", addons.GetModule(contexts.GetAddonName(ctx)))
+	}
+}
+
 ```
 
 ### JWT

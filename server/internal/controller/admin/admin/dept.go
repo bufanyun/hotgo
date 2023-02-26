@@ -90,23 +90,8 @@ func (c *cDept) List(ctx context.Context, req *dept.ListReq) (res *dept.ListRes,
 		return
 	}
 
-	res = (*dept.ListRes)(&data)
-	return
-}
-
-// ListTree 查看列表树
-func (c *cDept) ListTree(ctx context.Context, req *dept.ListTreeReq) (res *dept.ListTreeRes, err error) {
-	var in adminin.DeptListTreeInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	data, err := service.AdminDept().ListTree(ctx, in)
-	if err != nil {
-		return
-	}
-
-	res = (*dept.ListTreeRes)(&data)
+	res = new(dept.ListRes)
+	res.List = data.List
 	return
 }
 

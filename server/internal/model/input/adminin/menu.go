@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package adminin
 
 import (
@@ -123,9 +122,7 @@ type MenuRouteMeta struct {
 	FrameSrc    string `json:"frameSrc,omitempty" `   // 内联外部地址
 	Permissions string `json:"permissions,omitempty"` // 菜单包含权限集合，满足其中一个就会显示
 	Affix       bool   `json:"affix,omitempty"`       // 是否固定 设置为 true 之后 多页签不可删除
-
-	// 自定义
-	Type int `json:"type"` // 菜单类型
+	Type        int    `json:"type"`                  // 菜单类型
 }
 
 type MenuRoute struct {

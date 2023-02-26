@@ -2,7 +2,7 @@
 <div align="center">
 	<img width="140px" src="https://bufanyun.cn-bj.ufileos.com/hotgo/logo.sig.png">
     <p>
-        <h1>HotGo V2.1</h1>
+        <h1>HotGo V2</h1>
     </p>
     <p align="center">
         <a href="https://goframe.org/pages/viewpage.action?pageId=1114119" target="_blank">
@@ -29,7 +29,15 @@
 
 ## 平台简介
 * 基于全新Go Frame 2+Vue3+Naive UI+UinApp开发的全栖框架，为二次开发而生，适合中小型完整应用开发。
-* 前端采用naive-ui-admin 、Vue、Naive UI、UinApp。
+* 前端采用Naive-Ui-Admin、Vue、Naive UI、UinApp。
+
+## 演示地址
+-  [https://hotgo.facms.cn/admin](https://hotgo.facms.cn/admin)
+>  账号：admin  密码：123456
+
+### 使用文档
+
+[安装文档](docs/guide-zh-CN/start-installation.md) · [本地文档](docs/guide-zh-CN/README.md) · [更新历史](docs/guide-zh-CN/start-update-log.md) · [常见问题](docs/guide-zh-CN/start-issue.md)
 
 
 ## 特征
@@ -43,7 +51,6 @@
 
 
 ## 后台内置功能
-
 1. 用户管理：用户是系统操作者，该功能主要完成系统用户配置。
 2. 部门管理：配置系统组织机构（公司、部门、岗位），树结构展现支持数据权限。
 3. 岗位管理：配置系统用户所属担任职务。
@@ -68,13 +75,6 @@
 
 > HotGo开源以来得到了大家的很多支持，本项目初衷只为互相学习交流，没有任何盈利性目的！欢迎为HotGo贡献代码或提供建议！
 
-## 演示地址
--  [https://hotgo.facms.cn/admin](https://hotgo.facms.cn/admin)
->  账号：admin  密码：123456
-
-### 使用文档
-
-[安装文档](docs/guide-zh-CN/start-installation.md) · [本地文档](docs/guide-zh-CN/README.md) · [更新历史](docs/guide-zh-CN/start-update-log.md) · [常见问题](docs/guide-zh-CN/start-issue.md)
 
 ## 演示图
 

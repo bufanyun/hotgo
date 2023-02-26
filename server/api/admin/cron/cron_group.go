@@ -72,4 +72,6 @@ type GroupSelectReq struct {
 	g.Meta `path:"/cronGroup/select" method:"get" tags:"定时任务分组" summary:"定时任务分组选项"`
 }
 
-type GroupSelectRes sysin.DictTypeSelectModel
+type GroupSelectRes struct {
+	*sysin.CronGroupSelectModel
+}

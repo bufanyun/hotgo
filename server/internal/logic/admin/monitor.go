@@ -34,7 +34,7 @@ func init() {
 // StartMonitor 启动服务监控
 func (s *sAdminMonitor) StartMonitor(ctx context.Context) {
 	simple.SafeGo(ctx, func(ctx context.Context) {
-		s.data.STartTime = gtime.Now()
+		s.data.STartTime = gtime.Now().Timestamp()
 		intranetIP, err := location.GetLocalIP()
 		if err != nil {
 			g.Log().Infof(ctx, "parse intranetIP err:%+v", err)

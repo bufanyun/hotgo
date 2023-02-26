@@ -41,7 +41,7 @@ var (
 		---------------------------------------------------------------------------------
 		更多
        	github地址：https://github.com/bufanyun/hotgo
-		文档地址：https://github.com/bufanyun/hotgo/tree/v2.0/docs	
+		文档地址：https://github.com/bufanyun/hotgo/tree/v2.0/docs/guide-zh-CN	
 		HotGo框架交流1群：190966648
     `,
 	}

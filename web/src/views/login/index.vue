@@ -44,7 +44,7 @@
               </template>
             </n-input>
           </n-form-item>
-          <n-form-item path="code">
+          <n-form-item path="code" v-show="codeBase64 !== ''">
             <n-input-group>
               <n-input
                 :style="{ width: '100%' }"

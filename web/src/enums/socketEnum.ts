@@ -1,8 +1,8 @@
 export enum SocketEnum {
   EventPing = 'ping',
   EventConnected = 'connected',
-  EventAdminMonitorTrends = 'adminMonitorTrends',
-  EventAdminMonitorRunInfo = 'adminMonitorRunInfo',
+  EventAdminMonitorTrends = 'admin/monitor/trends',
+  EventAdminMonitorRunInfo = 'admin/monitor/runInfo',
   TypeQueryUser = 2,
   TypeBoardCastMsg = 3,
   TypeQuerySwitcher = 4,

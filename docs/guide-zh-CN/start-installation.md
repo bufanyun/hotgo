@@ -46,11 +46,6 @@ database:
 * /hotgo/web/.env.production
 * /hotgo/web/.env
 
-其中必改配置
-```
-VITE_PROXY=[["/admin","http://你的IP:8000/admin"]]
-```
-
 
 三、 启动服务
 

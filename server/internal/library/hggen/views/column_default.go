@@ -256,11 +256,6 @@ func setDefaultQuery(field *sysin.GenCodesColumnListModel) {
 		return
 	}
 
-	if field.Index == consts.GenCodesIndexPK {
-		field.IsQuery = true
-		return
-	}
-
 	if gstr.HasSuffix(field.GoName, "Status") && IsNumberType(field.GoType) {
 		field.IsQuery = true
 		return

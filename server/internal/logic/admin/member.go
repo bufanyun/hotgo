@@ -256,6 +256,7 @@ func (s *sAdminMember) ResetPwd(ctx context.Context, in adminin.MemberResetPwdIn
 		memberInfo *entity.AdminMember
 		memberId   = contexts.GetUserId(ctx)
 	)
+
 	if err = s.FilterAuthModel(ctx, memberId).Where("id", in.Id).Scan(&memberInfo); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
@@ -400,10 +401,18 @@ func (s *sAdminMember) Edit(ctx context.Context, in adminin.MemberEditInp) (err 
 			return gerror.New("超管账号禁止编辑！")
 		}
 
-		// 权限验证
-		var mm = s.FilterAuthModel(ctx, opMemberId).Where("id", in.Id)
-		_, err = mm.Data(in).Update()
-		if err != nil {
+		mod := s.FilterAuthModel(ctx, opMemberId)
+		if in.Password != "" {
+			salt, err := s.FilterAuthModel(ctx, contexts.GetUserId(ctx)).Fields(dao.AdminMember.Columns().Salt).Where("id", in.Id).Value()
+			if err != nil {
+				return err
+			}
+			in.PasswordHash = gmd5.MustEncryptString(in.Password + salt.String())
+		} else {
+			mod = mod.FieldsEx(dao.AdminMember.Columns().PasswordHash)
+		}
+
+		if _, err = mod.Where("id", in.Id).Data(in).Update(); err != nil {
 			return gerror.Wrap(err, consts.ErrorORM)
 		}
 

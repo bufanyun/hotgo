@@ -107,6 +107,15 @@ func GetRoleKey(ctx context.Context) string {
 	return user.RoleKey
 }
 
+// GetModule 获取应用模块
+func GetModule(ctx context.Context) string {
+	c := Get(ctx)
+	if c == nil {
+		return ""
+	}
+	return c.Module
+}
+
 // SetAddonName 设置插件信息
 func SetAddonName(ctx context.Context, name string) {
 	c := Get(ctx)

@@ -166,6 +166,8 @@ type GenerateConfig struct {
 type BuildAddonConfig struct {
 	SrcPath      string `json:"srcPath"`
 	TemplatePath string `json:"templatePath"`
+	WebApiPath   string `json:"webApiPath"`
+	WebViewsPath string `json:"webViewsPath"`
 }
 
 // CacheConfig 缓存配置

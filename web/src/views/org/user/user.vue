@@ -82,16 +82,18 @@
             <n-gi>
               <n-form-item label="绑定角色" path="roleId">
                 <n-tree-select
-                  :default-value="formParams.roleId.toString()"
+                  key-field="id"
                   :options="roleList"
-                  @update:value="handleUpdateRoleValue"
+                  :default-value="formParams.roleId"
                   :default-expand-all="true"
+                  @update:value="handleUpdateRoleValue"
                 />
               </n-form-item>
             </n-gi>
             <n-gi>
               <n-form-item label="所属部门" path="deptId">
                 <n-tree-select
+                  key-field="id"
                   :options="deptList"
                   :default-value="formParams.deptId"
                   :default-expand-all="true"
@@ -325,7 +327,7 @@
     width: 220,
     title: '操作',
     key: 'action',
-    fixed: 'right',
+    // fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',
@@ -378,7 +380,8 @@
 
   const loadDataTable = async (res) => {
     adaModalWidth(dialogWidth);
-    deptList.value = await getDeptList({});
+    const deptLists = await getDeptList({});
+    deptList.value = deptLists.list;
     if (deptList.value === undefined || deptList.value === null) {
       deptList.value = [];
     }

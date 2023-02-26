@@ -12,7 +12,6 @@ import (
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/role"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
@@ -25,9 +24,7 @@ import (
 	"hotgo/internal/service"
 	"hotgo/utility/auth"
 	"hotgo/utility/convert"
-	"hotgo/utility/tree"
 	"sort"
-	"strconv"
 )
 
 type sAdminRole struct{}
@@ -69,31 +66,26 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 }
 
 // List 获取列表
-func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (list []g.Map, totalCount int, err error) {
+func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (res *adminin.RoleListModel, totalCount int, err error) {
 	var (
 		mod    = dao.AdminRole.Ctx(ctx)
-		models []*adminin.RoleListModel
+		models []*entity.AdminRole
 	)
 
 	totalCount, err = mod.Count()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
-	err = mod.Page(in.Page, in.PerPage).Order("id asc").Scan(&models)
-	if err != nil {
+	if err = mod.Page(in.Page, in.PerPage).Order("sort asc,id asc").Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
-	for _, v := range models {
-		v.Label = v.Name
-		v.Value = v.Id
-		v.Key = strconv.FormatInt(v.Id, 10)
-	}
-
-	return tree.GenTree(gconv.SliceMap(models)), totalCount, err
+	res = new(adminin.RoleListModel)
+	res.List = s.treeList(0, models)
+	return
 }
 
 // GetName 获取指定角色的名称
@@ -134,6 +126,7 @@ func (s *sAdminRole) GetPermissions(ctx context.Context, reqInfo *role.GetPermis
 	if err != nil {
 		return nil, err
 	}
+
 	if len(values) == 0 {
 		return
 	}
@@ -156,6 +149,10 @@ func (s *sAdminRole) UpdatePermissions(ctx context.Context, reqInfo *role.Update
 		if len(reqInfo.MenuIds) == 0 {
 			return nil
 		}
+
+		// 去重
+		reqInfo.MenuIds = convert.UniqueSliceInt64(reqInfo.MenuIds)
+
 		addMap := make(g.List, 0, len(reqInfo.MenuIds))
 		for _, v := range reqInfo.MenuIds {
 			addMap = append(addMap, g.Map{
@@ -163,8 +160,8 @@ func (s *sAdminRole) UpdatePermissions(ctx context.Context, reqInfo *role.Update
 				"menu_id": v,
 			})
 		}
-		_, err = dao.AdminRoleMenu.Ctx(ctx).Data(addMap).Insert()
-		if err != nil {
+
+		if _, err = dao.AdminRoleMenu.Ctx(ctx).Data(addMap).Insert(); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
 			return err
 		}
@@ -176,56 +173,47 @@ func (s *sAdminRole) UpdatePermissions(ctx context.Context, reqInfo *role.Update
 func (s *sAdminRole) Edit(ctx context.Context, in *role.EditReq) (err error) {
 	if in.Name == "" {
 		err = gerror.New("名称不能为空")
-		return err
+		return
 	}
+
 	if in.Key == "" {
 		err = gerror.New("编码不能为空")
-		return err
+		return
 	}
 
 	uniqueName, err := dao.AdminRole.IsUniqueName(ctx, in.Id, in.Name)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
+		return
 	}
 	if !uniqueName {
 		err = gerror.New("名称已存在")
-		return err
+		return
 	}
 
 	uniqueCode, err := dao.AdminRole.IsUniqueCode(ctx, in.Id, in.Key)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
+		return
 	}
 	if !uniqueCode {
 		err = gerror.New("编码已存在")
-		return err
+		return
 	}
 
-	in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, dao.AdminRole, in.Pid)
-	if err != nil {
-		return err
+	if in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, dao.AdminRole, in.Pid); err != nil {
+		return
 	}
 
 	// 修改
 	if in.Id > 0 {
 		_, err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Data(in).Update()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
-
-		return nil
+		return
 	}
 
 	// 新增
 	_, err = dao.AdminRole.Ctx(ctx).Data(in).Insert()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-	return nil
+	return
 }
 
 func (s *sAdminRole) Delete(ctx context.Context, in *role.DeleteReq) (err error) {
@@ -233,12 +221,9 @@ func (s *sAdminRole) Delete(ctx context.Context, in *role.DeleteReq) (err error)
 		return gerror.New("ID不正确！")
 	}
 
-	var (
-		models *entity.AdminRole
-	)
-	err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Scan(&models)
-	if err != nil {
-		return err
+	var models *entity.AdminRole
+	if err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
+		return
 	}
 
 	if models == nil {
@@ -255,12 +240,7 @@ func (s *sAdminRole) Delete(ctx context.Context, in *role.DeleteReq) (err error)
 	}
 
 	_, err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 func (s *sAdminRole) DataScopeSelect(ctx context.Context) (res form.Selects) {
@@ -285,8 +265,7 @@ func (s *sAdminRole) DataScopeEdit(ctx context.Context, in *adminin.DataScopeEdi
 		superRoleKey = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
 	)
 
-	err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Scan(&models)
-	if err != nil {
+	if err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
 		return
 	}
 
@@ -310,10 +289,26 @@ func (s *sAdminRole) DataScopeEdit(ctx context.Context, in *adminin.DataScopeEdi
 		Where("id", in.Id).
 		Data(models).
 		Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
 
-	return nil
+	return
+}
+
+// treeList 树状列表
+func (s *sAdminRole) treeList(pid int64, nodes []*entity.AdminRole) (list []*adminin.RoleTree) {
+	list = make([]*adminin.RoleTree, 0)
+	for _, v := range nodes {
+		if v.Pid == pid {
+			item := new(adminin.RoleTree)
+			item.AdminRole = *v
+			item.Label = v.Name
+			item.Value = v.Id
+
+			child := s.treeList(v.Id, nodes)
+			if len(child) > 0 {
+				item.Children = child
+			}
+			list = append(list, item)
+		}
+	}
+	return
 }

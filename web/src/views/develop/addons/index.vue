@@ -49,7 +49,7 @@
         }"
       >
         <n-alert :show-icon="false" type="info">
-          注意：插件创建成功后会在服务端对应的项目目录中创建插件模块，并自动注册到当前项目中。
+          注意：插件创建成功后会在服务端对应的项目目录中生成插件模块文件，并自动注册到当前项目中。
         </n-alert>
         <n-form
           :model="formParams"
@@ -427,10 +427,21 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        console.log('formParams:' + JSON.stringify(formParams.value));
-        Build(formParams.value).then((_res) => {
-          showModal.value = false;
-          buildSuccessNotify();
+        dialog.info({
+          title: '提示',
+          content:
+            '你确定要提交生成吗？热编译生成后如果列表自动刷新没有出现新插件请等几秒刷新即可。否则请手动重启服务后刷新页面！',
+          positiveText: '确定',
+          negativeText: '取消',
+          onPositiveClick: () => {
+            Build(formParams.value).then((_res) => {
+              showModal.value = false;
+              buildSuccessNotify();
+            });
+          },
+          onNegativeClick: () => {
+            // message.error('取消');
+          },
         });
       } else {
         message.error('请填写完整信息');

@@ -83,11 +83,11 @@ type GenCodesSelectsModel struct {
 	LinkMode  form.Selects   `json:"linkMode" dc:"关联表方式"`
 	BuildMeth form.Selects   `json:"buildMeth" dc:"生成方式"`
 	// 字段表格选项
-	FormMode  form.Selects        `json:"formMode"  dc:"表单组件"`
-	FormRole  form.Selects        `json:"formRole"  dc:"表单验证"`
-	DictMode  DictTreeSelectModel `json:"dictMode"  dc:"字典类型"`
-	WhereMode form.Selects        `json:"whereMode" dc:"查询条件"`
-	Addons    form.Selects        `json:"addons"    dc:"插件选项"`
+	FormMode  form.Selects    `json:"formMode"  dc:"表单组件"`
+	FormRole  form.Selects    `json:"formRole"  dc:"表单验证"`
+	DictMode  []*DictTypeTree `json:"dictMode"  dc:"字典类型"`
+	WhereMode form.Selects    `json:"whereMode" dc:"查询条件"`
+	Addons    form.Selects    `json:"addons"    dc:"插件选项"`
 }
 
 type GenTypeSelects []*GenTypeSelect

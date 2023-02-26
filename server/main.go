@@ -15,6 +15,7 @@ import (
 	"hotgo/internal/cmd"
 	"hotgo/internal/global"
 	_ "hotgo/internal/logic"
+	_ "hotgo/internal/queues"
 )
 
 func main() {

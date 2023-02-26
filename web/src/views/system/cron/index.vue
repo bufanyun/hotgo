@@ -292,7 +292,7 @@
     width: 320,
     title: '操作',
     key: 'action',
-    fixed: 'right',
+    // fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',
@@ -434,7 +434,6 @@
   function updateStatus(id, status) {
     Status({ id: id, status: status })
       .then((_res) => {
-        console.log('_res:' + JSON.stringify(_res));
         message.success('操作成功');
         setTimeout(() => {
           reloadTable();
@@ -453,7 +452,8 @@
   }
 
   async function setDictSelect() {
-    optionTreeData.value = await getSelect({});
+    const tmp = await getSelect({});
+    optionTreeData.value = tmp.list;
     if (optionTreeData.value === undefined || optionTreeData.value === null) {
       optionTreeData.value = [];
     }

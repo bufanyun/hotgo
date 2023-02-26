@@ -7,7 +7,6 @@
 package sysin
 
 import (
-	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 )
@@ -64,4 +63,15 @@ type CronGroupStatusModel struct{}
 type CronGroupSelectInp struct {
 }
 
-type CronGroupSelectModel []g.Map
+type CronGroupSelectModel struct {
+	List []*CronGroupTree `json:"list"`
+}
+
+type CronGroupTree struct {
+	entity.SysCronGroup
+	Disabled bool             `json:"disabled"  dc:"是否禁用"`
+	Label    string           `json:"label"     dc:"标签"`
+	Value    int64            `json:"value"     dc:"键值"`
+	Key      int64            `json:"key"       dc:"键名"`
+	Children []*CronGroupTree `json:"children"  dc:"子级"`
+}

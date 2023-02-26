@@ -14,14 +14,19 @@ import (
 	"net"
 	"net/url"
 	"regexp"
+	"time"
 )
 
+// 是否判断
+
+// IsDNSName 是否是域名地址
 func IsDNSName(s string) bool {
 	DNSName := `^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[\._]?$`
 	rxDNSName := regexp.MustCompile(DNSName)
 	return s != "" && rxDNSName.MatchString(s)
 }
 
+// IsHTTPS 是否是https请求
 func IsHTTPS(ctx context.Context) bool {
 	r := ghttp.RequestFromCtx(ctx)
 	if r == nil {
@@ -129,4 +134,18 @@ func IsIDCard(idCard string) bool {
 	}
 	m := sum % 11
 	return validate[m] == idCard[sz-1]
+}
+
+// IsSameDay 是否为同一天
+func IsSameDay(t1, t2 int64) bool {
+	y1, m1, d1 := time.Unix(t1, 0).Date()
+	y2, m2, d2 := time.Unix(t2, 0).Date()
+	return y1 == y2 && m1 == m2 && d1 == d2
+}
+
+// IsSameMinute 是否为同一分钟
+func IsSameMinute(t1, t2 int64) bool {
+	d1 := time.Unix(t1, 0).Format("2006-01-02 15:04")
+	d2 := time.Unix(t2, 0).Format("2006-01-02 15:04")
+	return d1 == d2
 }

@@ -14,10 +14,21 @@
 
 1、HotGo 后台进入 开发工具->插件管理->找到创建新插件，根据引导进行创建即可。
 
-> 创建成功后会在 根目录的 addons 目录下生成插件文件
+```
+创建成功后默认情况下会在以下目录中生成插件文件，假设新生成的插件名为：hgexample
+
+1. /server/addons/hgexample/                   # 插件模块目录
+2. /server/addons/modules/hgexample.go         # 隐式注册插件文件
+3. /server/resource/template/addons/hgexample  # pc模板目录
+4. /web/src/api/addons/hgexample               # webApi目录
+5. /web/src/views/addons/hgexample             # web页面目录
+
+# 默认情况下没有为web页面生成菜单权限，因为在实际场景中插件不一定需要用到web页面，所以如有需要请手动到后台 权限管理 -> 菜单权限->自行添加菜单和配置权限
+```
+
 
 2、创建插件完毕重启服务端后，插件管理中会出现你新创建的插件信息。操作栏有几个按钮，在此进行说明
-- 安装：会自动执行 server/xxx插件/main.go 文件中的Install方法，方法中的具体逻辑默认为空，可以根据实际情况自行配置。如生成后台菜单、生成插件配置表初始化数据、迁移home页面、web项目文件等。
+- 安装：会自动执行 server/hgexample/main.go 文件中的Install方法，方法中的具体逻辑默认为空，可以根据实际情况自行配置。如生成后台菜单、生成插件配置表初始化数据、迁移home页面、web项目文件等。
 ```
 // Install 安装模块
 func (m *module) Install(ctx context.Context) (err error) {
@@ -26,7 +37,7 @@ func (m *module) Install(ctx context.Context) (err error) {
 }
 ```
 
-- 更新：会自动执行 server/xxx插件/main.go 文件中的Upgrade方法，方法中的具体逻辑默认为空，可以根据实际情况自行配置。
+- 更新：会自动执行 server/hgexample/main.go 文件中的Upgrade方法，方法中的具体逻辑默认为空，可以根据实际情况自行配置。
 ```
 // Upgrade 更新模块
 func (m *module) Upgrade(ctx context.Context) (err error) {
@@ -35,7 +46,7 @@ func (m *module) Upgrade(ctx context.Context) (err error) {
 }
 ```
 
-- 卸载：会自动执行 server/xxx插件/main.go 文件中的UnInstall方法，方法中的具体逻辑默认为空，可以根据实际情况自行配置。如会清除所有的数据表和已安装的信息等。
+- 卸载：会自动执行 server/hgexample/main.go 文件中的UnInstall方法，方法中的具体逻辑默认为空，可以根据实际情况自行配置。如会清除所有的数据表和已安装的信息等。
 ```
 // UnInstall 卸载模块
 func (m *module) UnInstall(ctx context.Context) (err error) {
@@ -57,7 +68,7 @@ func (m *module) UnInstall(ctx context.Context) (err error) {
 一个简单的例子：
 > 假设hgexample插件模块要通过主模块的服务接口更新插件配置
 
-文件：\server\addons\hgexample\model\input\sysin\config.go
+插件模块input：\server\addons\hgexample\model\input\sysin\config.go
 ```go
 package sysin
 

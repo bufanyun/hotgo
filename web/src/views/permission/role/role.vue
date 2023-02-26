@@ -221,7 +221,7 @@
     width: 320,
     title: '操作',
     key: 'action',
-    fixed: 'right',
+    // fixed: 'right',
     render(record) {
       return h(TableAction, {
         style: 'primary',
@@ -340,6 +340,8 @@
 
   async function handleMenuAuth(record: Recordable) {
     editRoleTitle.value = `分配 ${record.name} 的菜单权限`;
+    checkedKeys.value = [];
+    checkedAll.value = false;
     const data = await GetPermissions({ ...{ id: record.id } });
     checkedKeys.value = data.menuIds;
     updatePermissionsParams.value.id = record.id;

@@ -126,7 +126,7 @@ func (l *gCurd) generateWebEditScript(ctx context.Context, in *CurdPreviewInput)
 		}
 		setupBuffer.WriteString("  function loadForm(value) {\n    loading.value = true;\n\n    // 新增\n    if (value.id < 1) {\n      params.value = newState(value);\n      MaxSort()\n        .then((res) => {\n          params.value.sort = res.sort;\n        })\n        .finally(() => {\n          loading.value = false;\n        });\n      return;\n    }\n\n    // 编辑\n    View({ id: value.id })\n      .then((res) => {\n        params.value = res;\n      })\n      .finally(() => {\n        loading.value = false;\n      });\n  }\n\n  watch(\n    () => props.formParams,\n    (value) => {\n      loadForm(value);\n    }\n  );")
 	} else {
-		importBuffer.WriteString("  import { onMounted, ref, computed } from 'vue';\n")
+		importBuffer.WriteString("  import { onMounted, ref, computed, watch } from 'vue';\n")
 		if in.Config.Application.Crud.Templates[in.In.GenTemplate].IsAddon {
 			importBuffer.WriteString("  import { Edit, View } from '@/api/addons/" + in.In.AddonName + "/" + gstr.LcFirst(in.In.VarName) + "';\n")
 		} else {

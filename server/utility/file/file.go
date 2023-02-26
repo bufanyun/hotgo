@@ -10,7 +10,6 @@ import (
 	"github.com/gogf/gf/v2/os/gfile"
 	"hotgo/utility/format"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 )
 
@@ -23,53 +22,6 @@ const ( //文件大小单位
 type fileInfo struct { //文件信息
 	name string
 	size int64
-}
-
-func PathExists(path string) (bool, error) {
-	info, err := os.Stat(path)
-	if err == nil {
-		return info.IsDir(), nil
-	}
-
-	return false, err
-}
-
-func FileExists(path string) (bool, error) {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true, nil
-	}
-	if os.IsNotExist(err) {
-		return false, nil
-	}
-	return false, err
-}
-
-// HasDir 判断文件夹是否存在
-func HasDir(path string) (bool, error) {
-	_, _err := os.Stat(path)
-	if _err == nil {
-		return true, nil
-	}
-	if os.IsNotExist(_err) {
-		return false, nil
-	}
-	return false, _err
-}
-
-// CreateDir 创建文件夹
-func CreateDir(path string) (err error) {
-	_exist, err := HasDir(path)
-	if err != nil {
-		return
-	}
-	if !_exist {
-		err = os.Mkdir(path, os.ModePerm)
-		if err != nil {
-			return
-		}
-	}
-	return
 }
 
 // WalkDir 递归获取目录下文件的名称和大小

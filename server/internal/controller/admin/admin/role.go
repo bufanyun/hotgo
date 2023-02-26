@@ -55,7 +55,7 @@ func (c *cRole) List(ctx context.Context, req *role.ListReq) (res *role.ListRes,
 	}
 
 	res = new(role.ListRes)
-	res.List = list
+	res.RoleListModel = list
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
