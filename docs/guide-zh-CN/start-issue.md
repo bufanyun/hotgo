@@ -29,6 +29,7 @@
 
 > 报错信息：panic: possible config files "config" or "config.toml/yaml/yml/json/ini/xml/properties" not found in resource manager or following system searching paths:
 
-这是因为系统没有找到配置文件，修改配置 `manifest/config/config.yaml.bak` 复制改为`manifest/config/config.yaml`
+这是因为系统没有找到配置文件，将配置文件 `manifest/config/config.yaml.bak` 复制后改为`manifest/config/config.yaml`
+
 
 详细请参考 - [系统安装](start-installation.md)

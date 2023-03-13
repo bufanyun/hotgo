@@ -14,10 +14,11 @@ require (
 	github.com/casbin/casbin/v2 v2.55.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/forgoer/openssl v1.4.0
+	github.com/fwhezfwhez/errorx v1.1.0
 	github.com/go-resty/resty/v2 v2.7.0
-	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.3.2
-	github.com/gogf/gf/contrib/nosql/redis/v2 v2.3.2
-	github.com/gogf/gf/v2 v2.3.2
+	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.3.3
+	github.com/gogf/gf/contrib/nosql/redis/v2 v2.3.3
+	github.com/gogf/gf/v2 v2.3.3
 	github.com/gomodule/redigo v1.8.8
 	github.com/gorilla/websocket v1.5.0
 	github.com/kayon/iploc v0.0.0-20200312105652-bda3e968a794
@@ -26,8 +27,9 @@ require (
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/shopspring/decimal v1.3.1
 	github.com/ufilesdk-dev/ufile-gosdk v1.0.3
+	github.com/xtaci/kcp-go v5.4.20+incompatible
 	github.com/xuri/excelize/v2 v2.6.0
-	golang.org/x/tools v0.1.12
+	golang.org/x/tools v0.6.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -56,6 +58,7 @@ require (
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	github.com/gofrs/uuid v4.0.0+incompatible // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
@@ -71,6 +74,8 @@ require (
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.15.6 // indirect
+	github.com/klauspost/cpuid/v2 v2.1.1 // indirect
+	github.com/klauspost/reedsolomon v1.11.7 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
@@ -83,27 +88,30 @@ require (
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect
 	github.com/richardlehane/msoleps v1.0.1 // indirect
-	github.com/rivo/uniseg v0.4.3 // indirect
+	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/templexxx/cpufeat v0.0.0-20180724012125-cef66df7f161 // indirect
+	github.com/templexxx/xor v0.0.0-20191217153810-f85b25db303b // indirect
 	github.com/tidwall/gjson v1.2.1 // indirect
 	github.com/tidwall/match v1.0.1 // indirect
 	github.com/tidwall/pretty v0.0.0-20190325153808-1166b9ac2b65 // indirect
 	github.com/tjfoc/gmsm v1.3.2 // indirect
 	github.com/tklauser/go-sysconf v0.3.10 // indirect
 	github.com/tklauser/numcpus v0.4.0 // indirect
+	github.com/xtaci/lossyconn v0.0.0-20200209145036-adba10fffc37 // indirect
 	github.com/xuri/efp v0.0.0-20220407160117-ad0f7a785be8 // indirect
 	github.com/xuri/nfp v0.0.0-20220409054826-5e722a1d9e22 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	go.opentelemetry.io/otel v1.13.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.13.0 // indirect
-	go.opentelemetry.io/otel/trace v1.13.0 // indirect
+	go.opentelemetry.io/otel v1.14.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.14.0 // indirect
+	go.opentelemetry.io/otel/trace v1.14.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
 	golang.org/x/image v0.0.0-20211028202545-6944b10bf410 // indirect
-	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/sys v0.5.0 // indirect
-	golang.org/x/text v0.7.0 // indirect
+	golang.org/x/mod v0.8.0 // indirect
+	golang.org/x/net v0.8.0 // indirect
+	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/text v0.8.0 // indirect
 	gopkg.in/ini.v1 v1.56.0 // indirect
 	stathat.com/c/consistent v1.0.0 // indirect
 )

@@ -16,6 +16,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/model/entity"
+	"hotgo/utility/simple"
 	"strings"
 	"sync"
 )
@@ -161,7 +162,9 @@ func Stop(sysCron *entity.SysCron) (err error) {
 func Once(ctx context.Context, sysCron *entity.SysCron) error {
 	for _, v := range cronList {
 		if v.GetName() == sysCron.Name {
-			go v.Execute(ctx)
+			simple.SafeGo(ctx, func(ctx context.Context) {
+				v.Execute(ctx)
+			})
 			return nil
 		}
 	}

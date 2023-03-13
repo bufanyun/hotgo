@@ -51,6 +51,10 @@ server:
   pprofPattern: "/pprof"                      # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
 
 
+tcpServe:
+  address: ":8099"                                                           # tcp服务监听地址
+
+
 # Global logging.
 logger:
   level: "all"

@@ -27,7 +27,7 @@ git clone https://github.com/bufanyun/hotgo.git && cd hotgo
 
 1、服务端：
 - 项目数据库文件 `storage/data/db.sql` 创建数据库并导入
-- 修改配置 `manifest/config/config.yaml.bak` 复制改为`manifest/config/config.yaml`
+- 将配置文件 `manifest/config/config.yaml.bak` 复制后改为`manifest/config/config.yaml`
 - 将`manifest/config/config.yaml`中的数据库配置改为你自己的：
 ```yaml
 database:

@@ -13,20 +13,18 @@ gfcli:
     output: "./temp/hotgo"                 # 可执行文件生成路径
     extra: ""
 
-# gf生成代码，如果你想调整hotgo中代码生成的相关dao、service代码，同样也受用于此配置
   gen:
     dao:
       - link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
-        group: "default"          # 分组。使用hotgo代码生成功能时必须填
-        #        path: "./app"
-        #        tables:          "" #指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
-        tablesEx:        "hg_sys_addons_install" #指定当前数据库中需要排除代码生成的数据表。
+        group: "default"                                                # 分组 使用hotgo代码生成功能时必须填
+        #        tables:          ""                                    # 指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
+        tablesEx:        "hg_sys_addons_install"                        # 指定当前数据库中需要排除代码生成的数据表。
         removePrefix: "hg_"
         descriptionTag: true
         noModelComment: true
         jsonCase: "CamelLower"
         gJsonSupport: true
-        clear: true
+        clear: false
 
 #    service: # 生成业务配置
 #      srcFolder: "internal/logic"

@@ -17,6 +17,18 @@ build:
 all:
 	gf run main.go --args "all"
 
+.PHONY: http
+http:
+	gf run main.go --args "http"
+
+.PHONY: queue
+queue:
+	gf run main.go --args "queue"
+
+.PHONY: auth
+auth:
+	gf run main.go --args "auth"
+
 # 启动web服务
 .PHONY: web
 web:

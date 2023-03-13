@@ -114,7 +114,6 @@ type (
 )
 
 var (
-	localAdminPost       IAdminPost
 	localAdminRole       IAdminRole
 	localAdminDept       IAdminDept
 	localAdminMember     IAdminMember
@@ -122,40 +121,8 @@ var (
 	localAdminMenu       IAdminMenu
 	localAdminMonitor    IAdminMonitor
 	localAdminNotice     IAdminNotice
+	localAdminPost       IAdminPost
 )
-
-func AdminDept() IAdminDept {
-	if localAdminDept == nil {
-		panic("implement not found for interface IAdminDept, forgot register?")
-	}
-	return localAdminDept
-}
-
-func RegisterAdminDept(i IAdminDept) {
-	localAdminDept = i
-}
-
-func AdminMember() IAdminMember {
-	if localAdminMember == nil {
-		panic("implement not found for interface IAdminMember, forgot register?")
-	}
-	return localAdminMember
-}
-
-func RegisterAdminMember(i IAdminMember) {
-	localAdminMember = i
-}
-
-func AdminMemberPost() IAdminMemberPost {
-	if localAdminMemberPost == nil {
-		panic("implement not found for interface IAdminMemberPost, forgot register?")
-	}
-	return localAdminMemberPost
-}
-
-func RegisterAdminMemberPost(i IAdminMemberPost) {
-	localAdminMemberPost = i
-}
 
 func AdminMenu() IAdminMenu {
 	if localAdminMenu == nil {
@@ -210,4 +177,37 @@ func AdminRole() IAdminRole {
 
 func RegisterAdminRole(i IAdminRole) {
 	localAdminRole = i
+}
+
+func AdminDept() IAdminDept {
+	if localAdminDept == nil {
+		panic("implement not found for interface IAdminDept, forgot register?")
+	}
+	return localAdminDept
+}
+
+func RegisterAdminDept(i IAdminDept) {
+	localAdminDept = i
+}
+
+func AdminMember() IAdminMember {
+	if localAdminMember == nil {
+		panic("implement not found for interface IAdminMember, forgot register?")
+	}
+	return localAdminMember
+}
+
+func RegisterAdminMember(i IAdminMember) {
+	localAdminMember = i
+}
+
+func AdminMemberPost() IAdminMemberPost {
+	if localAdminMemberPost == nil {
+		panic("implement not found for interface IAdminMemberPost, forgot register?")
+	}
+	return localAdminMemberPost
+}
+
+func RegisterAdminMemberPost(i IAdminMemberPost) {
+	localAdminMemberPost = i
 }

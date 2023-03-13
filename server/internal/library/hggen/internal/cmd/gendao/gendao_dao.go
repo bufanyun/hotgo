@@ -24,7 +24,7 @@ func generateDao(ctx context.Context, in CGenDaoInternalInput) {
 		dirPathDaoInternal = gfile.Join(dirPathDao, "internal")
 	)
 	if in.Clear {
-		doClear(ctx, dirPathDao)
+		doClear(ctx, dirPathDao, true)
 	}
 	for i := 0; i < len(in.TableNames); i++ {
 		generateDaoSingle(ctx, generateDaoSingleInput{

@@ -10,10 +10,13 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
+	"hotgo/internal/crons"
 	"hotgo/internal/library/addons"
 	"hotgo/internal/library/casbin"
 	"hotgo/internal/router"
 	"hotgo/internal/service"
+	"hotgo/internal/websocket"
+	"os"
 )
 
 var (
@@ -68,11 +71,19 @@ var (
 			// 启动定时任务
 			service.SysCron().StartCron(ctx)
 
-			// 信号监听
-			signalListen(ctx, signalHandlerForCron, signalHandlerForWebSocket)
+			//// 启动TCP服务
+			//service.TCPServer().Start(ctx)
 
 			// https
 			setSSL(ctx, s)
+
+			// 退出信号监听
+			signalListen(ctx, func(sig os.Signal) {
+				s.Shutdown()
+				crons.StopALL()
+				websocket.Stop()
+				//service.TCPServer().Stop(ctx)
+			})
 
 			// Just run the server.
 			s.Run()

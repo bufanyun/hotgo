@@ -26,9 +26,11 @@
 - 表自增长字段为 `id`
 
 
-### 生成配置
+### 生成模板配置
 
 - 注意：线上环境务必将allowedIPs参数设为空，考虑到项目安全问题请勿线上生成使用！
+
+- 默认配置路径：server/manifest/config/config.yaml
 
 ```yaml
 hggen:
@@ -88,6 +90,46 @@ hggen:
           templatePath: "./resource/generate/default/cron"
 ```
 
+### 生成dao、service配置
+
+
+- hotgo在生成dao、service配置时，默认了和gf官方一致的配置方式和代码生成规则。所以无论你是通过hotgo亦或gf命令生成，最终代码格式完全一致，遵循一致的代码规范。
+
+- 默认配置路径：server/hack/config.yaml
+
+```yaml
+gfcli:
+  build:
+    name: "hotgo"                          # 编译后的可执行文件名称
+    #    arch: "all"                           #不填默认当前系统架构，可选：386,amd64,arm,all
+    #    system: "all"                         #不填默认当前系统平台，可选：linux,darwin,windows,all
+    mod: "none"
+    cgo: 0
+    packSrc: "resource"                    # 将resource目录打包进可执行文件，静态资源无需单独部署
+    packDst: "internal/packed/packed.go"   # 打包后生成的Go文件路径，一般使用相对路径指定到本项目目录中
+    version: ""
+    output: "./temp/hotgo"                 # 可执行文件生成路径
+    extra: ""
+
+  gen:
+    dao:
+      - link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
+        group: "default"                                                # 分组 使用hotgo代码生成功能时必须填
+        #        tables:          ""                                    # 指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
+        tablesEx:        "hg_sys_addons_install"                        # 指定当前数据库中需要排除代码生成的数据表。
+        removePrefix: "hg_"
+        descriptionTag: true
+        noModelComment: true
+        jsonCase: "CamelLower"
+        gJsonSupport: true
+        clear: true
+
+    service: # 生成业务配置
+      srcFolder: "internal/logic"
+      dstFolder: "internal/service"
+      dstFileNameCase: "CamelLower"
+      clear: true
+```
 
 ### 一个生成增删改查列表例子
 
@@ -222,8 +264,6 @@ INSERT INTO `hg_test_table` (`id`, `category_id`, `title`, `description`, `conte
 ### 内置gf-cli
 
 > 由于gf版本更新较常出现向下不兼容的情况，所以我们为了保证生成代码的依赖稳定性，我们将gf-cli工具内置到了系统中并做了一些在线执行的调整。
-
-- 我们会定期更新和gf最新版本生成功能保持一致，这样不论是你通过gf命令还是通过后台生成的代码格式都是一样的，遵循相同的代码规范和开发方式
 
 - 后续我们也将开放在线运行`gf gen dao`、`gf gen service`功能。在做插件开发时也会支持到在线生成插件下的service接口，这将会使得插件开发更加方便
 

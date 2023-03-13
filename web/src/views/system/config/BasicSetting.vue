@@ -7,15 +7,8 @@
         </n-form-item>
 
         <n-form-item label="网站logo" path="basicLogo">
-          <BasicUpload
-            :action="`${uploadUrl}/admin/upload/image`"
-            :headers="uploadHeaders"
-            :data="{ type: 0 }"
-            name="file"
-            :width="100"
-            :height="100"
+          <UploadImage
             :maxNumber="1"
-            @uploadChange="uploadChange"
             v-model:value="formValue.basicLogo"
             :helpText="
               '网站logo适用于客户端使用，图片大小不超过' + componentSetting.upload.maxSize + 'MB'
@@ -90,36 +83,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref, unref, onMounted } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { useDialog, useMessage } from 'naive-ui';
-  import { BasicUpload } from '@/components/Upload';
-  import { useGlobSetting } from '@/hooks/setting';
-  import { useUserStoreWidthOut } from '@/store/modules/user';
   import componentSetting from '@/settings/componentSetting';
   import { getConfig, updateConfig } from '@/api/sys/config';
 
   const group = ref('basic');
-
   const show = ref(false);
-
-  const useUserStore = useUserStoreWidthOut();
-
-  const globSetting = useGlobSetting();
-
-  const { uploadUrl } = globSetting;
-
-  const uploadHeaders = reactive({
-    Authorization: useUserStore.token,
-  });
-
-  const rules = {
-    basicName: {
-      required: true,
-      message: '请输入网站名称',
-      trigger: 'blur',
-    },
-  };
-
   const formRef: any = ref(null);
   const message = useMessage();
   const dialog = useDialog();
@@ -138,6 +108,14 @@
       '网站维护中，暂时无法访问！本网站正在进行系统维护和技术升级，网站暂时无法访问，敬请谅解！',
     basicSystemOpen: true,
   });
+
+  const rules = {
+    basicName: {
+      required: true,
+      message: '请输入网站名称',
+      trigger: 'blur',
+    },
+  };
 
   function systemOpenChange(value) {
     if (!value) {
@@ -167,15 +145,6 @@
         message.error('验证失败，请填写完整信息');
       }
     });
-  }
-
-  function uploadChange(list: string[]) {
-    // 单图模式，只需要第一个索引
-    if (list.length > 0) {
-      formValue.value.basicLogo = unref(list[0]);
-    } else {
-      formValue.value.basicLogo = unref('');
-    }
   }
 
   onMounted(() => {

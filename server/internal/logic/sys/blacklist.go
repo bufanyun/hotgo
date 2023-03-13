@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -11,13 +10,12 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
-	"github.com/gogf/gf/v2/text/gstr"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/global"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
+	"hotgo/utility/convert"
 	"hotgo/utility/validate"
 )
 
@@ -176,91 +174,12 @@ func (s *sSysBlacklist) Load(ctx context.Context) {
 		return
 	}
 
-	matchStrategy := func(originIp string) {
-		// 多个IP
-		if gstr.Contains(originIp, ",") {
-			ips := gstr.Explode(",", originIp)
-			if len(ips) > 0 {
-				for _, ip := range ips {
-					if !validate.IsIp(ip) {
-						continue
-					}
-					global.Blacklists[ip] = struct{}{}
-				}
-			}
-
-			return
-		}
-
-		// IP段
-		if gstr.Contains(originIp, "/24") {
-			segment := gstr.Replace(originIp, "/24", "")
-			if !validate.IsIp(segment) {
-				return
-			}
-
-			var (
-				start  = gstr.Explode(".", segment)
-				prefix = gstr.Implode(".", start[:len(start)-1]) + "."
-				index  = gconv.Int(start[len(start)-1])
-			)
-
-			if index < 1 {
-				index = 1
-			}
-
-			for i := index; i <= 254; i++ {
-				global.Blacklists[prefix+gconv.String(i)] = struct{}{}
-			}
-
-			return
-		}
-
-		// IP范围
-		if gstr.Contains(originIp, "-") {
-			originIps := gstr.Explode("-", originIp)
-			if len(originIps) != 2 {
-				return
-			}
-
-			if !validate.IsIp(originIps[0]) || !validate.IsIp(originIps[1]) {
-				return
-			}
-
-			var (
-				start      = gstr.Explode(".", originIps[0])
-				prefix     = gstr.Implode(".", start[:len(start)-1]) + "."
-				startIndex = gconv.Int(gstr.SubStrFromREx(originIps[0], "."))
-				endIndex   = gconv.Int(gstr.SubStrFromREx(originIps[1], "."))
-			)
-
-			if startIndex >= endIndex {
-				global.Blacklists[originIps[0]] = struct{}{}
-				return
-			}
-
-			if startIndex < 1 {
-				startIndex = 1
-			}
-
-			if endIndex > 254 {
-				endIndex = 254
-			}
-
-			for i := startIndex; i <= endIndex; i++ {
-				global.Blacklists[prefix+gconv.String(i)] = struct{}{}
-			}
-			return
-		}
-
-		// 指定IP
-		if validate.IsIp(originIp) {
-			global.Blacklists[originIp] = struct{}{}
-			return
-		}
-	}
-
 	for _, v := range array {
-		matchStrategy(v.String())
+		list := convert.IpFilterStrategy(v.String())
+		if len(list) > 0 {
+			for k, _ := range list {
+				global.Blacklists[k] = struct{}{}
+			}
+		}
 	}
 }

@@ -9,19 +9,9 @@ package cmd
 import (
 	"context"
 	"github.com/gogf/gf/v2/os/gproc"
-	"hotgo/internal/crons"
-	"hotgo/internal/websocket"
 	"hotgo/utility/simple"
 	"os"
 )
-
-func signalHandlerForCron(sig os.Signal) {
-	crons.StopALL()
-}
-
-func signalHandlerForWebSocket(sig os.Signal) {
-	websocket.Stop()
-}
 
 func signalHandlerForOverall(sig os.Signal) {
 	serverCloseSignal <- struct{}{}

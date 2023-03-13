@@ -49,8 +49,8 @@
 |--------------|----------------------|----------------------|
 | status	      | 状态字段（任意int类型）	       | Select (单选下拉框)       |
 | created_at	  | 创建时间字段	              | TimeRange (时间范围选择)   |
-| province_id	 | 省份字段（任意int类型）	       | CitySelector (省市区选择) |
-| city_id	     | 省份字段（任意int类型）	       | CitySelector (省市区选择) |
+| province_id	 | 省份ID字段（任意int类型）	     | CitySelector (省市区选择) |
+| city_id	     | 城市ID字段（任意int类型）	     | CitySelector (省市区选择) |
 | 任意字串符字段	     | 长度>= 200 and <= 500	 | InputTextarea (文本域)  |
 | 任意字串符字段	     | 长度> 500	             | InputEditor (富文本)    |
 

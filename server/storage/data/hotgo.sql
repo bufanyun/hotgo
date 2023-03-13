@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
--- 主机： localhost
--- 生成日期： 2023-02-26 06:04:12
--- 服务器版本： 5.7.41
--- PHP 版本： 7.3.33
+-- 主机： localhost:3306
+-- 生成日期： 2023-03-13 16:58:42
+-- 服务器版本： 5.7.38-log
+-- PHP 版本： 5.6.40
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -72,8 +73,8 @@ CREATE TABLE `hg_addon_hgexample_table` (
 --
 
 INSERT INTO `hg_addon_hgexample_table` (`id`, `category_id`, `flag`, `title`, `description`, `content`, `image`, `images`, `attachfile`, `attachfiles`, `map`, `star`, `price`, `views`, `activity_at`, `start_at`, `end_at`, `switch`, `sort`, `avatar`, `sex`, `qq`, `email`, `mobile`, `hobby`, `channel`, `city_id`, `pid`, `level`, `tree`, `remark`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, '[1, 2]', '测试标题', '描述', '<p>这是内容............</p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '[{\"key\": \"qwe\", \"value\": \"123\"}, {\"key\": \"asd\", \"value\": \"456\"}]', 3.0, 88.00, 10, '2022-12-23', '2022-12-01 00:00:00', '2022-12-31 23:59:59', 1, 20, '', 15, '133814250', '133814250@qq.com', '15303830571', '[3, 2, 1]', 1, 140406, 0, 1, '', '备注！', 1, 1, 1, '2022-12-15 19:30:14', '2023-02-23 13:59:00', NULL),
-(2, 0, '[1]', '测试2', '描述', '<h2><strong>不知道写点啥！</strong></h2><p><br></p><p><img src=\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png\"></p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '{}', 2.5, 10.00, 0, '2023-02-18', NULL, NULL, 2, 30, '', 0, '', '1561561@qq.com', '15303830571', '[2, 1]', 3, 140214, 0, 1, '', '', 1, 1, 1, '2023-02-06 14:17:11', '2023-02-23 13:59:01', NULL);
+(1, 1, '[1, 2]', '测试标题', '描述', '<p>这是内容............</p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '[{\"key\": \"qwe\", \"value\": \"123\"}, {\"key\": \"asd\", \"value\": \"456\"}]', '3.0', '88.00', 10, '2022-12-23', '2022-12-01 00:00:00', '2022-12-31 23:59:59', 1, 20, '', 15, '133814250', '133814250@qq.com', '15303830571', '[3, 2, 1]', 1, 140406, 0, 1, '', '备注！', 1, 1, 1, '2022-12-15 19:30:14', '2023-02-23 15:08:14', NULL),
+(2, 0, '[1]', '测试2', '描述', '<h2><strong>不知道写点啥！</strong></h2><p><br></p><p><img src=\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png\"></p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '{}', '2.5', '10.00', 0, '2023-02-18', NULL, NULL, 2, 30, '', 0, '', '1561561@qq.com', '15303830571', '[2, 1]', 3, 140214, 0, 1, '', '', 1, 1, 1, '2023-02-06 14:17:11', '2023-02-23 13:59:01', NULL);
 
 -- --------------------------------------------------------
 
@@ -111,7 +112,7 @@ INSERT INTO `hg_admin_dept` (`id`, `pid`, `name`, `code`, `type`, `leader`, `pho
 (106, 101, '财务部门', 'finance', 'dept', 'hotgo', '15888888888', 'hotgo@qq.com', 3, 'tr_100 tr_101 ', 4, 1, '2022-01-04 17:54:52', '2023-01-24 21:17:49'),
 (107, 101, '运维部门', 'maintain', '', 'hotgo', '15888888888', 'hotgo@qq.com', 3, 'tr_100 tr_101 ', 5, 1, '2022-01-04 09:54:52', '2023-01-24 21:17:34'),
 (108, 102, '市场部门', 'market', 'dept', 'hotgo', '15888888888', 'hotgo@qq.com', 3, 'tr_100 tr_102 ', 1, 1, '2022-01-04 17:54:52', '2023-01-24 21:18:04'),
-(112, 0, '测试', '测试', '', '', '', '', 1, NULL, 0, 1, '2022-08-14 19:38:54', '2022-08-14 19:38:54');
+(112, 0, '测试', '测试', '', '', '', '', 1, NULL, 0, 1, '2022-08-14 19:38:54', '2023-02-26 00:26:35');
 
 -- --------------------------------------------------------
 
@@ -154,9 +155,9 @@ CREATE TABLE `hg_admin_member` (
 --
 
 INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `username`, `password_hash`, `salt`, `auth_key`, `password_reset_token`, `balance`, `avatar`, `sex`, `qq`, `email`, `mobile`, `birthday`, `city_id`, `address`, `pid`, `level`, `tree`, `cash`, `last_active_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '9faedb6ee1154e382ac85ce6a7d48e74', '', 0.00, 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-02-23 23:19:12', NULL, 1, '2021-02-12 17:59:45', '2023-02-23 23:19:11'),
-(3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '2c7db9eca4ed02a718e794ba4c904f56', '', 0.00, 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', NULL, NULL, '', 1, '2022-02-11 17:59:45', '2023-01-10 16:47:00'),
-(8, 105, 206, 'ameng', 'ameng', '382df3b083a27886edb94e669a857c33', 'hfuUEb', '936cbef93c8b9e879122604cea5ba5e6', '', 0.00, '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', NULL, '2023-02-06 16:44:22', '', 1, '2023-02-03 17:34:31', '2023-02-09 14:11:02');
+(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '58d8b63af5f7fccd87b052539c0a090e', '', '0.00', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-03-11 16:55:34', NULL, 1, '2021-02-12 17:59:45', '2023-03-11 16:55:33'),
+(3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '2c7db9eca4ed02a718e794ba4c904f56', '', '0.00', 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', NULL, NULL, '', 1, '2022-02-11 17:59:45', '2023-01-10 16:47:00'),
+(8, 105, 206, 'ameng', 'ameng', '4501790a9b89f4e66f4417c899836511', 'hfuUEb', '0d796b377f77f1e1d42278eedbab6110', '', '0.00', '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', NULL, '2023-03-05 15:25:49', '', 1, '2023-02-03 17:34:31', '2023-02-26 00:31:13');
 
 -- --------------------------------------------------------
 
@@ -178,7 +179,8 @@ INSERT INTO `hg_admin_member_post` (`member_id`, `post_id`) VALUES
 (3, 4),
 (7, 3),
 (7, 4),
-(8, 2);
+(8, 2),
+(9, 3);
 
 -- --------------------------------------------------------
 
@@ -278,7 +280,7 @@ INSERT INTO `hg_admin_menu` (`id`, `pid`, `title`, `name`, `path`, `icon`, `type
 (2097, 0, '开发工具', 'Develops', '/develop', 'CodeOutlined', 1, '/develop/code', '', '', 'LAYOUT', 1, '', 0, 0, '', 0, 0, 0, 1, '', 120, '', 1, '2022-09-18 21:32:27', '2023-01-10 17:23:25'),
 (2098, 2097, '代码生成', 'develop_code', 'code', '', 2, '', '', '', '/develop/code/index', 1, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-18 21:32:46', '2022-09-18 21:32:46'),
 (2099, 2120, 'API文档', 'https://hotgo.facms.cn/swagger', '/docs', '', 1, '', '', '', 'LAYOUT', 1, '', 0, 1, 'https://hotgo.facms.cn/swagger', 0, 0, 0, 2, '', 1000, '', 1, '2022-09-18 21:34:09', '2023-02-22 18:55:13'),
-(2100, 2120, '使用文档', 'https://github.com/bufanyun/hotgo/tree/v2.0/docs', '/hotgo', '', 1, '', '', '', 'LAYOUT', 1, '', 0, 0, '', 0, 0, 0, 2, '', 1100, '', 1, '2022-09-18 21:35:17', '2023-02-22 18:53:21'),
+(2100, 2120, '使用文档', 'https://github.com/bufanyun/hotgo/tree/v2.0/docs/guide-zh-CN', '/hotgo', '', 1, '', '', '', 'LAYOUT', 1, '', 0, 0, '', 0, 0, 0, 2, '', 1100, '', 1, '2022-09-18 21:35:17', '2023-02-22 18:53:21'),
 (2102, 0, '关于', 'about', '/about', 'ProjectOutlined', 1, '/about/index', '', '', 'LAYOUT', 1, 'about_index', 1, 0, '', 0, 0, 0, 1, '', 9000, '', 1, '2022-09-18 13:37:04', '2022-11-24 00:09:05'),
 (2103, 2102, '关于详情', 'about_index', 'index', '', 2, '', '', '', '/about/index', 1, 'about_index', 0, 0, '', 0, 1, 0, 2, '', 10, '', 1, '2022-09-18 13:38:00', '2022-09-18 21:38:25'),
 (2109, 2062, '编辑用户', 'org_user_edit', '', '', 3, '', '/member/edit', '', '/', 1, '', 0, 0, '', 0, 1, 0, 3, '', 10, '', 1, '2022-11-22 23:49:17', '2023-01-10 17:42:01'),
@@ -385,7 +387,8 @@ CREATE TABLE `hg_admin_notice_read` (
 INSERT INTO `hg_admin_notice_read` (`id`, `notice_id`, `member_id`, `clicks`, `updated_at`, `created_at`) VALUES
 (17, 31, 1, 7, '2023-02-19 23:24:24', '2023-02-09 14:06:04'),
 (18, 32, 1, 8, '2023-02-19 15:46:16', '2023-02-19 15:45:56'),
-(19, 30, 1, 9, '2023-02-22 18:55:36', '2023-02-19 15:46:01');
+(19, 30, 1, 11, '2023-02-24 10:29:07', '2023-02-19 15:46:01'),
+(20, 29, 1, 0, '2023-02-24 10:29:08', '2023-02-24 10:29:08');
 
 -- --------------------------------------------------------
 
@@ -411,7 +414,7 @@ CREATE TABLE `hg_admin_post` (
 INSERT INTO `hg_admin_post` (`id`, `code`, `name`, `remark`, `sort`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'ceo', '董事长', '', 1, 1, '2022-01-04 17:54:52', '2023-01-18 00:00:00'),
 (2, 'se', '项目经理', '', 2, 1, '2022-01-04 17:54:52', '2023-01-18 00:00:00'),
-(3, 'hr', '人力资源', '', 3, 1, '2022-01-04 17:54:52', '2023-01-18 00:00:00'),
+(3, 'hr', '人力资源', '', 3, 1, '2022-01-04 17:54:52', '2023-02-26 00:32:40'),
 (4, 'user', '普通员工', '', 4, 1, '2022-01-04 17:54:52', '2022-05-15 22:33:09'),
 (6, 'test', '测试', '测试..', 5, 1, '2022-08-14 11:41:22', '2023-01-24 21:21:42');
 
@@ -474,113 +477,110 @@ CREATE TABLE `hg_admin_role_casbin` (
 --
 
 INSERT INTO `hg_admin_role_casbin` (`id`, `p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES
-(6084, 'p', 'norm', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6085, 'p', 'norm', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6086, 'p', 'norm', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6087, 'p', 'norm', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6088, 'p', 'norm', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6089, 'p', 'norm', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6090, 'p', 'norm', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6091, 'p', 'norm', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6092, 'p', 'norm', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6093, 'p', 'norm', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6094, 'p', 'norm', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6095, 'p', 'norm', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6096, 'p', 'norm', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6097, 'p', 'norm', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6098, 'p', 'norm', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6099, 'p', 'norm', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6100, 'p', 'norm', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6101, 'p', 'norm', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6102, 'p', 'norm', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6103, 'p', 'norm', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6104, 'p', 'norm', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6105, 'p', 'norm', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6106, 'p', 'norm', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6107, 'p', 'norm', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6108, 'p', 'norm', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6109, 'p', 'norm', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6110, 'p', 'norm', '/hgexample/test/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6111, 'p', 'norm', '/hgexample/test/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6112, 'p', 'test', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6113, 'p', 'test', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6114, 'p', 'test', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6115, 'p', 'test', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6116, 'p', 'test', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6117, 'p', 'test', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6118, 'p', 'test', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6119, 'p', 'test', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6120, 'p', 'test', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6121, 'p', 'test', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6122, 'p', 'test', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6123, 'p', 'test', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6124, 'p', 'test', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6125, 'p', 'test', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6126, 'p', 'test', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6127, 'p', 'test', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6128, 'p', 'test', '/hgexample/test/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6129, 'p', 'test', '/hgexample/test/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6130, 'p', 'gold_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6131, 'p', 'gold_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6132, 'p', 'gold_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6133, 'p', 'silver_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6134, 'p', 'silver_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6135, 'p', 'silver_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6136, 'p', 'copper_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6137, 'p', 'copper_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6138, 'p', 'copper_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6139, 'p', 'finance', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6140, 'p', 'finance', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6141, 'p', 'finance', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6142, 'p', 'finance', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6143, 'p', 'finance', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6144, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6145, 'p', 'finance', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6146, 'p', 'finance', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6147, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6148, 'p', 'finance', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6149, 'p', 'finance', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6150, 'p', 'finance', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6151, 'p', 'finance', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6152, 'p', 'finance', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6153, 'p', 'finance', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6154, 'p', 'finance', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6155, 'p', 'finance', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6156, 'p', 'finance', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6157, 'p', 'finance', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6158, 'p', 'finance', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6159, 'p', 'finance', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6160, 'p', 'finance', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6161, 'p', 'finance', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6162, 'p', 'finance', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6163, 'p', 'finance', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6164, 'p', 'finance', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6165, 'p', 'finance', '/hgexample/test/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6166, 'p', 'finance', '/hgexample/test/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6167, 'p', 'finance', '/loginLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6168, 'p', 'finance', '/loginLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6169, 'p', 'finance', '/serveLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6170, 'p', 'finance', '/serveLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6171, 'p', 'finance', '/notice/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6172, 'p', 'finance', '/notice/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6173, 'p', 'finance', '/notice/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6174, 'p', 'finance', '/notice/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6175, 'p', 'finance', '/notice/editNotify', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6176, 'p', 'finance', '/notice/editNotice', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6177, 'p', 'finance', '/notice/editLetter', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6178, 'p', 'finance', '/notice/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6179, 'p', 'finance', '/test/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6180, 'p', 'finance', '/test/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6181, 'p', 'finance', '/test/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6182, 'p', 'finance', '/test/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6183, 'p', 'finance', '/test/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6184, 'p', 'finance', '/test/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6185, 'p', 'business', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6186, 'p', 'business', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6187, 'p', 'business', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6188, 'p', 'science', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6189, 'p', 'science', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(6190, 'p', 'science', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', '');
+(8238, 'p', 'norm', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8239, 'p', 'norm', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8240, 'p', 'norm', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8241, 'p', 'norm', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8242, 'p', 'norm', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8243, 'p', 'norm', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8244, 'p', 'norm', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8245, 'p', 'norm', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8246, 'p', 'norm', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8247, 'p', 'norm', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8248, 'p', 'norm', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8249, 'p', 'norm', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8250, 'p', 'norm', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8251, 'p', 'norm', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8252, 'p', 'norm', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8253, 'p', 'norm', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8254, 'p', 'norm', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8255, 'p', 'norm', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8256, 'p', 'norm', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8257, 'p', 'norm', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8258, 'p', 'norm', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8259, 'p', 'norm', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8260, 'p', 'norm', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8261, 'p', 'norm', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8262, 'p', 'norm', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8263, 'p', 'norm', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8264, 'p', 'norm', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8265, 'p', 'norm', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8266, 'p', 'test', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8267, 'p', 'test', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8268, 'p', 'test', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8269, 'p', 'test', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8270, 'p', 'test', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8271, 'p', 'test', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8272, 'p', 'test', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8273, 'p', 'test', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8274, 'p', 'test', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8275, 'p', 'test', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8276, 'p', 'test', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8277, 'p', 'test', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8278, 'p', 'test', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8279, 'p', 'test', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8280, 'p', 'test', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8281, 'p', 'test', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8282, 'p', 'test', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8283, 'p', 'test', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8284, 'p', 'gold_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8285, 'p', 'gold_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8286, 'p', 'gold_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8287, 'p', 'silver_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8288, 'p', 'silver_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8289, 'p', 'silver_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8290, 'p', 'finance', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8291, 'p', 'finance', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8292, 'p', 'finance', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8293, 'p', 'finance', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8294, 'p', 'finance', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8295, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8296, 'p', 'finance', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8297, 'p', 'finance', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8298, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8299, 'p', 'finance', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8300, 'p', 'finance', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8301, 'p', 'finance', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8302, 'p', 'finance', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8303, 'p', 'finance', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8304, 'p', 'finance', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8305, 'p', 'finance', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8306, 'p', 'finance', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8307, 'p', 'finance', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8308, 'p', 'finance', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8309, 'p', 'finance', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8310, 'p', 'finance', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8311, 'p', 'finance', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8312, 'p', 'finance', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8313, 'p', 'finance', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8314, 'p', 'finance', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8315, 'p', 'finance', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8316, 'p', 'finance', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8317, 'p', 'finance', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8318, 'p', 'finance', '/loginLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8319, 'p', 'finance', '/loginLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8320, 'p', 'finance', '/serveLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8321, 'p', 'finance', '/serveLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8322, 'p', 'finance', '/notice/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8323, 'p', 'finance', '/notice/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8324, 'p', 'finance', '/notice/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8325, 'p', 'finance', '/notice/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8326, 'p', 'finance', '/notice/editNotify', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8327, 'p', 'finance', '/notice/editNotice', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8328, 'p', 'finance', '/notice/editLetter', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8329, 'p', 'finance', '/notice/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8330, 'p', 'finance', '/test/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8331, 'p', 'finance', '/test/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8332, 'p', 'finance', '/test/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8333, 'p', 'finance', '/test/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8334, 'p', 'finance', '/test/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8335, 'p', 'finance', '/test/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8336, 'p', 'business', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8337, 'p', 'business', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8338, 'p', 'business', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8339, 'p', 'science', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8340, 'p', 'science', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(8341, 'p', 'science', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -821,7 +821,7 @@ CREATE TABLE `hg_sys_addons_install` (
 --
 
 INSERT INTO `hg_sys_addons_install` (`id`, `name`, `version`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'hgexample', 'v1.0.0', 1, '2023-02-02 00:00:00', '2023-02-23 21:59:22');
+(1, 'hgexample', 'v1.0.0', 1, '2023-02-02 00:00:00', '2023-02-24 11:00:08');
 
 -- --------------------------------------------------------
 
@@ -857,13 +857,13 @@ INSERT INTO `hg_sys_attachment` (`id`, `app_id`, `member_id`, `cate_id`, `drive`
 (38, 'admin', 1, 0, 'ucloud', 'logo.png', 'images', 'image/png', '', 'hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 'hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 38601, 'png', '492c0e0f0eb8e7e6c7b6901d32854d19', 1, '2023-02-09 11:54:12', '2023-02-09 11:54:12'),
 (39, 'admin', 1, 0, 'ucloud', '8dfb227d9fd9e99caa884b1f450bcc1.jpg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg', 'hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg', 433261, 'jpg', '9c9d1077c59b7be96473b68226c2d875', 1, '2023-02-09 11:54:30', '2023-02-09 11:54:30'),
 (40, 'admin', 1, 0, 'ucloud', 'image.png', 'images', 'image/png', '', 'hotgo/attachment/2023-02-09/cqdq9iuv0phsg8patk.png', 'hotgo/attachment/2023-02-09/cqdq9iuv0phsg8patk.png', 34850, 'png', '340f4c2f7a2d92c1d982bbecd58d01a9', 1, '2023-02-09 11:55:40', '2023-02-09 11:55:40'),
-(41, 'admin', 1, 0, 'ucloud', 'p8.itc.webp', 'images', 'image/webp', '', 'hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', 'hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', 78100, 'webp', 'f38a6aefccaa6c6aff6a8d73bce108e2', 1, '2023-02-09 11:57:07', '2023-02-09 11:57:07'),
+(41, 'admin', 1, 0, 'ucloud', 'p8.itc.webp', 'images', 'image/webp', '', 'hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', 'hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', 78100, 'webp', 'f38a6aefccaa6c6aff6a8d73bce108e2', 1, '2023-02-09 11:57:07', '2023-03-11 10:03:35'),
 (42, 'admin', 1, 0, 'ucloud', 'pic4.zhimg.jpg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg', 'hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg', 59608, 'jpg', '4f7b441436d8f18d848c83df3d5fd77c', 1, '2023-02-09 11:57:12', '2023-02-09 11:57:12'),
 (43, 'admin', 1, 0, 'ucloud', 'u=366042725,4290979312&fm=224&app=112&f=JPEG.jpg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg', 'hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg', 44488, 'jpg', '5a70496e61671cb9bea61c04144ed26a', 1, '2023-02-09 11:57:15', '2023-02-09 11:57:15'),
 (44, 'admin', 1, 0, 'ucloud', '测试1.doc', 'document', 'application/msword', 'text/plain', 'hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', 'hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', 9216, 'doc', '7b82c3bdd93f2bd53dbb6bdb8220428a', 1, '2023-02-09 11:57:24', '2023-02-09 11:58:37'),
 (45, 'admin', 1, 0, 'ucloud', '测试2.xlsx', 'document', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/plain', 'hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', 'hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', 9800, 'xlsx', 'df3457614fd455a6486a0c1dcf6e0603', 1, '2023-02-09 11:57:28', '2023-02-09 11:58:33'),
 (46, 'admin', 1, 0, 'ucloud', 'image.png', 'images', 'image/png', '', 'hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png', 'hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png', 34427, 'png', '7aeffef602e92d4c51e1860be0e08321', 1, '2023-02-09 11:58:20', '2023-02-09 11:58:20'),
-(47, 'admin', 1, 0, 'ucloud', 'f9dcd100baa1cd11d3d39ced8c66dcf4c2ce2d16.jpeg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', 'hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', 64239, 'jpeg', 'd5f74ac9e8e96cbf12401f8e254d2652', 1, '2023-02-09 11:58:25', '2023-02-09 11:58:25'),
+(47, 'admin', 1, 0, 'ucloud', 'f9dcd100baa1cd11d3d39ced8c66dcf4c2ce2d16.jpeg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', 'hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', 64239, 'jpeg', 'd5f74ac9e8e96cbf12401f8e254d2652', 1, '2023-02-09 11:58:25', '2023-03-11 10:06:05'),
 (48, 'admin', 1, 0, 'ucloud', '91ef76c6a7efce1bb8209a0a26e18bd9b58f651a.jpeg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg', 'hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg', 24114, 'jpeg', '1a863f439969021a89783b55a68c8756', 1, '2023-02-09 11:58:29', '2023-02-09 11:58:29'),
 (49, 'admin', 1, 0, 'ucloud', 'image.png', 'images', 'image/png', '', 'hotgo/attachment/2023-02-09/cqdr8ebbk6x4t9kdnc.png', 'hotgo/attachment/2023-02-09/cqdr8ebbk6x4t9kdnc.png', 51172, 'png', '1eff6a983d2758c23549ccc0fd530346', 1, '2023-02-09 12:41:13', '2023-02-09 12:41:13'),
 (50, 'admin', 1, 0, 'ucloud', 'image.png', 'images', 'image/png', '', 'hotgo/attachment/2023-02-09/cqdr8lj1mpl0eu0jpn.png', 'hotgo/attachment/2023-02-09/cqdr8lj1mpl0eu0jpn.png', 34759, 'png', '0c17d9daec3550d5ecbf17ba9872f0a4', 1, '2023-02-09 12:41:28', '2023-02-09 12:41:28');
@@ -1150,25 +1150,25 @@ CREATE TABLE `hg_sys_dict_type` (
 
 INSERT INTO `hg_sys_dict_type` (`id`, `pid`, `name`, `type`, `sort`, `remark`, `status`, `created_at`, `updated_at`) VALUES
 (1, 27, '用户性别', 'sys_user_sex', 0, '用户性别列表', 1, '2021-01-30 13:27:43', '2021-03-24 11:38:47'),
-(2, 28, '菜单状态', 'sys_show_hide', 0, '菜单状态列表', 1, '2021-01-30 13:27:43', NULL),
+(2, 28, '菜单状态', 'sys_show_hide', 0, '', 1, '2021-01-30 13:27:43', '2023-02-26 00:46:18'),
 (3, 28, '系统状态', 'sys_normal_disable', 0, '系统状态列表', 1, '2021-01-30 13:27:43', NULL),
 (4, 26, '任务状态', 'sys_job_status', 0, '任务状态列表', 1, '2021-01-30 13:27:43', NULL),
 (5, 26, '任务分组', 'sys_job_group', 0, '任务分组列表', 1, '2021-01-30 13:27:43', NULL),
 (7, 29, '通知类型', 'sys_notice_type', 0, '通知类型列表', 1, '2021-01-30 13:27:43', NULL),
-(9, 28, '操作类型', 'sys_oper_type', 0, '操作类型列表', 1, '2021-01-30 13:27:43', NULL),
+(9, 28, '操作类型', 'sys_oper_type', 0, '', 1, '2021-01-30 13:27:43', '2023-02-26 00:48:01'),
 (22, 25, '请求方式', 'sys_oper_method', 0, '', 1, '2022-01-24 11:33:16', '2022-01-24 11:33:16'),
 (23, 25, '请求状态码', 'req_code', 0, '', 1, '2022-01-25 10:22:40', '2022-01-25 10:22:40'),
 (24, 25, '请求耗时', 'req_take_up_time', 0, '', 1, '2022-01-25 15:51:19', '2022-01-25 15:51:19'),
 (25, 0, '请求枚举', 'req', 40, '', 1, '2022-01-24 11:33:16', '2022-01-24 11:33:16'),
 (26, 0, '任务枚举', 'job', 30, '', 1, '2022-01-24 11:33:16', '2022-01-24 11:33:16'),
 (27, 0, '组织枚举', 'org', 20, '', 1, '2022-01-24 11:33:16', '2022-01-24 11:33:16'),
-(28, 0, '系统枚举', 'sys', 10, '', 1, '2022-01-24 11:33:16', '2022-01-24 11:33:16'),
+(28, 0, '系统枚举', 'sys', 10, '', 1, '2022-01-24 11:33:16', '2023-02-26 00:33:13'),
 (29, 0, '通知枚举', 'notice', 50, '', 1, '2022-01-24 11:33:16', '2022-01-24 11:33:16'),
 (30, 27, '用户爱好', 'sys_user_hobby', 0, NULL, 1, '2021-03-01 11:41:07', '2021-03-01 11:41:07'),
 (31, 27, '用户渠道', 'sys_user_channel', 0, NULL, 1, '2021-03-01 11:41:07', '2021-03-01 11:41:07'),
 (32, 0, '配置枚举', 'config', 60, '', 1, '2022-12-30 17:55:42', '2022-12-30 17:55:53'),
 (33, 32, '上传驱动', 'config_upload_drive', 10, '', 1, '2022-12-30 17:57:18', '2022-12-30 17:57:18'),
-(34, 28, '日志类型', 'sys_log_type', 50, '', 1, '2023-01-20 16:39:52', '2023-01-20 16:39:52'),
+(34, 28, '日志类型', 'sys_log_type', 50, '', 1, '2023-01-20 16:39:52', '2023-02-24 17:40:45'),
 (35, 32, '短信驱动', 'config_sms_drive', 20, '', 1, '2023-01-21 10:27:01', '2023-01-21 10:27:01'),
 (36, 32, '短信模板', 'config_sms_template', 30, '', 1, '2023-01-21 10:27:41', '2023-01-21 10:27:41'),
 (37, 29, '通知标签', 'sys_notice_tag', 20, '', 1, '2023-01-26 12:09:46', '2023-01-26 12:09:46'),
@@ -1228,7 +1228,7 @@ CREATE TABLE `hg_sys_gen_codes` (
 --
 
 INSERT INTO `hg_sys_gen_codes` (`id`, `gen_type`, `gen_template`, `var_name`, `options`, `db_name`, `table_name`, `table_comment`, `dao_name`, `master_columns`, `addon_name`, `status`, `created_at`, `updated_at`) VALUES
-(1, 10, 0, 'CurdDemo', '{\"join\": [{\"uuid\": \"pgJsFoqfaGjqgKjy\", \"alias\": \"testCategory\", \"field\": \"id\", \"columns\": [{\"dc\": \"分类ID\", \"id\": 1, \"name\": \"id\", \"extra\": \"auto_increment\", \"index\": \"PRI\", \"goName\": \"TestCategoryId\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"分类名称\", \"id\": 2, \"name\": \"name\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryName\", \"goType\": \"string\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryName\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"描述\", \"id\": 3, \"name\": \"description\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryDescription\", \"goType\": \"string\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryDescription\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"排序\", \"id\": 4, \"name\": \"sort\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategorySort\", \"goType\": \"int\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategorySort\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"备注\", \"id\": 5, \"name\": \"remark\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryRemark\", \"goType\": \"string\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryRemark\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"状态\", \"id\": 6, \"name\": \"status\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryStatus\", \"goType\": \"int\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryStatus\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"tinyint(1)\", \"dataType\": \"tinyint\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"创建时间\", \"id\": 7, \"name\": \"created_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryCreatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryCreatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"修改时间\", \"id\": 8, \"name\": \"updated_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryUpdatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryUpdatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"删除时间\", \"id\": 9, \"name\": \"deleted_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryDeletedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryDeletedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}], \"daoName\": \"TestCategory\", \"linkMode\": 1, \"linkTable\": \"hg_test_category\", \"masterField\": \"category_id\"}], \"menu\": {\"pid\": 2097, \"icon\": \"MenuOutlined\", \"sort\": 200}, \"autoOps\": [\"genMenuPermissions\", \"runDao\", \"runService\", \"forcedCover\"], \"headOps\": [\"add\", \"batchDel\", \"export\"], \"columnOps\": [\"edit\", \"del\", \"view\", \"status\", \"switch\", \"check\"]}', 'default', 'hg_sys_gen_curd_demo', '生成演示', 'SysGenCurdDemo', '[{\"dc\": \"ID\", \"id\": 1, \"name\": \"id\", \"extra\": \"auto_increment\", \"index\": \"PRI\", \"goName\": \"Id\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": true, \"isSort\": true, \"length\": 0, \"tsName\": \"id\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"分类ID\", \"id\": 2, \"name\": \"category_id\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CategoryId\", \"goType\": \"int64\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"categoryId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"标题\", \"id\": 3, \"name\": \"title\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Title\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 64, \"tsName\": \"title\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(64)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"Input\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"描述\", \"id\": 4, \"name\": \"description\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Description\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"description\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"InputTextarea\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"内容\", \"id\": 5, \"name\": \"content\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Content\", \"goType\": \"string\", \"isEdit\": true, \"isList\": false, \"isSort\": false, \"length\": 65535, \"tsName\": \"content\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"text\", \"dataType\": \"text\", \"dictType\": 0, \"formMode\": \"InputEditor\", \"formRole\": \"none\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE %...%\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"单图\", \"id\": 6, \"name\": \"image\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Image\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"image\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"UploadImage\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"附件\", \"id\": 7, \"name\": \"attachfile\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Attachfile\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"attachfile\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"UploadFile\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"所在城市\", \"id\": 8, \"name\": \"city_id\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CityId\", \"goType\": \"int64\", \"isEdit\": true, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"cityId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"CitySelector\", \"formRole\": \"none\", \"isExport\": false, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"显示开关\", \"id\": 9, \"name\": \"switch\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Switch\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"switch\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"Switch\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"排序\", \"id\": 10, \"name\": \"sort\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Sort\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": true, \"length\": 0, \"tsName\": \"sort\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"状态\", \"id\": 11, \"name\": \"status\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Status\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"status\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"tinyint(1)\", \"dataType\": \"tinyint\", \"dictType\": 3, \"formMode\": \"Select\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"创建者\", \"id\": 12, \"name\": \"created_by\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CreatedBy\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"createdBy\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"更新者\", \"id\": 13, \"name\": \"updated_by\", \"extra\": \"\", \"index\": \"\", \"goName\": \"UpdatedBy\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"updatedBy\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"创建时间\", \"id\": 14, \"name\": \"created_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CreatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"createdAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"TimeRange\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"BETWEEN\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"修改时间\", \"id\": 15, \"name\": \"updated_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"UpdatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"updatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"Time\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"删除时间\", \"id\": 16, \"name\": \"deleted_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"DeletedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"deletedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"Time\", \"formRole\": \"none\", \"isExport\": false, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}]', '', 1, '2023-01-18 11:51:22', '2023-02-23 23:13:52');
+(1, 10, 0, 'CurdDemo', '{\"join\": [{\"uuid\": \"pgJsFoqfaGjqgKjy\", \"alias\": \"testCategory\", \"field\": \"id\", \"columns\": [{\"dc\": \"分类ID\", \"id\": 1, \"name\": \"id\", \"extra\": \"auto_increment\", \"index\": \"PRI\", \"goName\": \"TestCategoryId\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"分类名称\", \"id\": 2, \"name\": \"name\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryName\", \"goType\": \"string\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryName\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"描述\", \"id\": 3, \"name\": \"description\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryDescription\", \"goType\": \"string\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryDescription\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"排序\", \"id\": 4, \"name\": \"sort\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategorySort\", \"goType\": \"int\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategorySort\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"备注\", \"id\": 5, \"name\": \"remark\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryRemark\", \"goType\": \"string\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryRemark\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"状态\", \"id\": 6, \"name\": \"status\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryStatus\", \"goType\": \"int\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryStatus\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"tinyint(1)\", \"dataType\": \"tinyint\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"创建时间\", \"id\": 7, \"name\": \"created_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryCreatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryCreatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"修改时间\", \"id\": 8, \"name\": \"updated_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryUpdatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryUpdatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"删除时间\", \"id\": 9, \"name\": \"deleted_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryDeletedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryDeletedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}], \"daoName\": \"TestCategory\", \"linkMode\": 1, \"linkTable\": \"hg_test_category\", \"masterField\": \"category_id\"}], \"menu\": {\"pid\": 2097, \"icon\": \"MenuOutlined\", \"sort\": 200}, \"autoOps\": [\"genMenuPermissions\", \"runDao\", \"runService\", \"forcedCover\"], \"headOps\": [\"add\", \"batchDel\", \"export\"], \"columnOps\": [\"edit\", \"del\", \"view\", \"status\", \"switch\", \"check\"]}', 'default', 'hg_sys_gen_curd_demo', '生成演示', 'SysGenCurdDemo', '[{\"dc\": \"ID\", \"id\": 1, \"name\": \"id\", \"extra\": \"auto_increment\", \"index\": \"PRI\", \"goName\": \"Id\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": true, \"isSort\": true, \"length\": 0, \"tsName\": \"id\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"分类ID\", \"id\": 2, \"name\": \"category_id\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CategoryId\", \"goType\": \"int64\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"categoryId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"标题\", \"id\": 3, \"name\": \"title\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Title\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 64, \"tsName\": \"title\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(64)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"Input\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"描述\", \"id\": 4, \"name\": \"description\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Description\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"description\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"InputTextarea\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"内容\", \"id\": 5, \"name\": \"content\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Content\", \"goType\": \"string\", \"isEdit\": true, \"isList\": false, \"isSort\": false, \"length\": 65535, \"tsName\": \"content\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"text\", \"dataType\": \"text\", \"dictType\": 0, \"formMode\": \"InputEditor\", \"formRole\": \"none\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE %...%\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"单图\", \"id\": 6, \"name\": \"image\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Image\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"image\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"UploadImage\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"附件\", \"id\": 7, \"name\": \"attachfile\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Attachfile\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"attachfile\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"UploadFile\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"所在城市\", \"id\": 8, \"name\": \"city_id\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CityId\", \"goType\": \"int64\", \"isEdit\": true, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"cityId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"CitySelector\", \"formRole\": \"none\", \"isExport\": false, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"显示开关\", \"id\": 9, \"name\": \"switch\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Switch\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"switch\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"Switch\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"排序\", \"id\": 10, \"name\": \"sort\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Sort\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": true, \"length\": 0, \"tsName\": \"sort\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"状态\", \"id\": 11, \"name\": \"status\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Status\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"status\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"tinyint(1)\", \"dataType\": \"tinyint\", \"dictType\": 3, \"formMode\": \"Select\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"创建者\", \"id\": 12, \"name\": \"created_by\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CreatedBy\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"createdBy\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"更新者\", \"id\": 13, \"name\": \"updated_by\", \"extra\": \"\", \"index\": \"\", \"goName\": \"UpdatedBy\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"updatedBy\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"创建时间\", \"id\": 14, \"name\": \"created_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CreatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"createdAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"TimeRange\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"BETWEEN\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"修改时间\", \"id\": 15, \"name\": \"updated_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"UpdatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"updatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"Time\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"删除时间\", \"id\": 16, \"name\": \"deleted_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"DeletedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"deletedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"Time\", \"formRole\": \"none\", \"isExport\": false, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}]', '', 1, '2023-01-18 11:51:22', '2023-02-20 16:41:58');
 
 -- --------------------------------------------------------
 
@@ -1313,18 +1313,6 @@ CREATE TABLE `hg_sys_login_log` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统_登录日志';
-
---
--- 转存表中的数据 `hg_sys_login_log`
---
-
-INSERT INTO `hg_sys_login_log` (`id`, `req_id`, `member_id`, `username`, `response`, `login_at`, `login_ip`, `err_msg`, `status`, `created_at`, `updated_at`) VALUES
-(25, 'e01359e1b9b54517d74c624f18f6de6c', 1, 'admin', '{\"id\": 1, \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHAiOiJhZG1pbiIsImF2YXRhciI6Imh0dHA6Ly9idWZhbnl1bi5jbi1iai51ZmlsZW9zLmNvbS9ob3Rnby9hdHRhY2htZW50LzIwMjMtMDItMDkvY3FkcThlcjluZmtjaGRvcGF2LnBuZyIsImRlcHRJZCI6MTAwLCJlbWFpbCI6IjEzMzgxNDI1MEBxcS5jb20iLCJleHAiOjE2Nzc4MTAyNDYsImV4cGlyZXMiOjg2NDAwMCwiaWQiOjEsImlzUmVmcmVzaCI6ZmFsc2UsImp3dFZlcnNpb24iOiIxLjAiLCJtb2JpbGUiOiIxNTMwMzgzMDU3MSIsInBpZCI6MCwicmVhbE5hbWUiOiLlrZ_luIUiLCJyb2xlSWQiOjEsInJvbGVLZXkiOiJzdXBlciIsInVzZXJuYW1lIjoiYWRtaW4ifQ.qEFHTDWIPP6c_haRB09nA12rmg9cv0-RW0FX0EHuT3g\", \"expires\": 864000}', '2023-02-21 10:24:06', '127.0.0.1', '', 1, '2023-02-21 10:24:06', '2023-02-21 10:24:06'),
-(26, '7ce85da64c244617a149930f0a4f2c09', 0, 'admin', '{}', '2023-02-22 20:10:22', '127.0.0.1', '验证码错误', 2, '2023-02-22 20:10:24', '2023-02-22 20:10:24'),
-(27, '100cac034e244617a749930f920cc4d0', 1, 'admin', '{\"id\": 1, \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHAiOiJhZG1pbiIsImF2YXRhciI6Imh0dHA6Ly9idWZhbnl1bi5jbi1iai51ZmlsZW9zLmNvbS9ob3Rnby9hdHRhY2htZW50LzIwMjMtMDItMDkvY3FkcThlcjluZmtjaGRvcGF2LnBuZyIsImRlcHRJZCI6MTAwLCJlbWFpbCI6IjEzMzgxNDI1MEBxcS5jb20iLCJleHAiOjE2Nzc5MzE4MjgsImV4cGlyZXMiOjg2NDAwMCwiaWQiOjEsImlzUmVmcmVzaCI6ZmFsc2UsImp3dFZlcnNpb24iOiIxLjAiLCJtb2JpbGUiOiIxNTMwMzgzMDU3MSIsInBpZCI6MCwicmVhbE5hbWUiOiLlrZ_luIUiLCJyb2xlSWQiOjEsInJvbGVLZXkiOiJzdXBlciIsInVzZXJuYW1lIjoiYWRtaW4ifQ.I_CI7YenI0Ny-AglAXDU4J9H-6XBL0SNF7TQjvHn0Gc\", \"expires\": 864000}', '2023-02-22 20:10:28', '127.0.0.1', '', 1, '2023-02-22 20:10:29', '2023-02-22 20:10:29'),
-(28, '3045d835c9784617bf79ad5a98246c49', 0, 'admin', '{}', '2023-02-23 21:58:36', '::1', '验证码错误', 2, '2023-02-23 21:58:38', '2023-02-23 21:58:38'),
-(29, 'b84a86c7c9784617c179ad5ae28237a6', 1, 'admin', '{\"id\": 1, \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHAiOiJhZG1pbiIsImF2YXRhciI6Imh0dHA6Ly9idWZhbnl1bi5jbi1iai51ZmlsZW9zLmNvbS9ob3Rnby9hdHRhY2htZW50LzIwMjMtMDItMDkvY3FkcThlcjluZmtjaGRvcGF2LnBuZyIsImRlcHRJZCI6MTAwLCJlbWFpbCI6IjEzMzgxNDI1MEBxcS5jb20iLCJleHAiOjE2NzgwMjQ3MTksImV4cGlyZXMiOjg2NDAwMCwiaWQiOjEsImlzUmVmcmVzaCI6ZmFsc2UsImp3dFZlcnNpb24iOiIxLjAiLCJtb2JpbGUiOiIxNTMwMzgzMDU3MSIsInBpZCI6MCwicmVhbE5hbWUiOiLlrZ_luIUiLCJyb2xlSWQiOjEsInJvbGVLZXkiOiJzdXBlciIsInVzZXJuYW1lIjoiYWRtaW4ifQ.z7VypWafEvrKoCGw6bwEF3IpXuv8_mRHgOifGQL3QIg\", \"expires\": 864000}', '2023-02-23 21:58:39', '::1', '', 1, '2023-02-23 21:58:40', '2023-02-23 21:58:40'),
-(30, '08c0bf62197b4617d0482e3751e81a20', 1, 'admin', '{\"id\": 1, \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHAiOiJhZG1pbiIsImF2YXRhciI6Imh0dHA6Ly9idWZhbnl1bi5jbi1iai51ZmlsZW9zLmNvbS9ob3Rnby9hdHRhY2htZW50LzIwMjMtMDItMDkvY3FkcThlcjluZmtjaGRvcGF2LnBuZyIsImRlcHRJZCI6MTAwLCJlbWFpbCI6IjEzMzgxNDI1MEBxcS5jb20iLCJleHAiOjE2NzgwMjcyNjAsImV4cGlyZXMiOjg2NDAwMCwiaWQiOjEsImlzUmVmcmVzaCI6ZmFsc2UsImp3dFZlcnNpb24iOiIxLjAiLCJtb2JpbGUiOiIxNTMwMzgzMDU3MSIsInBpZCI6MCwicmVhbE5hbWUiOiLlrZ_luIUiLCJyb2xlSWQiOjEsInJvbGVLZXkiOiJzdXBlciIsInVzZXJuYW1lIjoiYWRtaW4ifQ.bgopyMH57XY_AOgdAGOH0gt7ZReYmlGfkKGOHaFHRmk\", \"expires\": 864000}', '2023-02-23 22:41:00', '::1', '', 1, '2023-02-23 22:41:01', '2023-02-23 22:41:01');
 
 -- --------------------------------------------------------
 
@@ -5043,6 +5031,42 @@ INSERT INTO `hg_sys_provinces` (`id`, `title`, `pinyin`, `lng`, `lat`, `pid`, `l
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `hg_sys_serve_license`
+--
+
+CREATE TABLE `hg_sys_serve_license` (
+  `id` bigint(20) NOT NULL COMMENT '许可ID',
+  `group` varchar(50) NOT NULL COMMENT '分组',
+  `name` varchar(128) NOT NULL COMMENT '许可名称',
+  `appid` varchar(64) NOT NULL COMMENT '应用ID',
+  `secret_key` varchar(255) DEFAULT NULL COMMENT '应用秘钥',
+  `desc` text COMMENT '授权说明',
+  `remote_addr` varchar(64) DEFAULT NULL COMMENT '连接地址',
+  `online` tinyint(4) DEFAULT '0' COMMENT '是否在线',
+  `login_times` bigint(20) DEFAULT NULL COMMENT '登录次数',
+  `last_login_at` datetime DEFAULT NULL COMMENT '最后登录时间',
+  `last_active_at` datetime DEFAULT NULL COMMENT '最后活跃时间',
+  `routes` json DEFAULT NULL COMMENT '路由表，空使用默认分组路由',
+  `allowed_ips` varchar(512) DEFAULT NULL COMMENT '白名单，*代表所有，只有允许的IP才能连接到tcp服务',
+  `end_at` datetime NOT NULL COMMENT '授权结束时间',
+  `remark` varchar(512) DEFAULT NULL COMMENT '备注',
+  `status` tinyint(1) DEFAULT '1' COMMENT '状态',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统_服务许可';
+
+--
+-- 转存表中的数据 `hg_sys_serve_license`
+--
+
+INSERT INTO `hg_sys_serve_license` (`id`, `group`, `name`, `appid`, `secret_key`, `desc`, `remote_addr`, `online`, `login_times`, `last_login_at`, `last_active_at`, `routes`, `allowed_ips`, `end_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'queue', '默认的消息队列', '1001', 'hotgo', '这是默认的消息队列TCP客户端授权凭证。', NULL, 0, 1, '2023-03-23 00:00:00', NULL, NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-05 00:00:00'),
+(2, 'cron', '默认的定时任务', '1002', 'hotgo', '这是默认的定时任务TCP客户端授权凭证。', NULL, 0, 1, '2023-03-23 00:00:00', NULL, NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-05 00:00:00'),
+(3, 'auth', '测试授权', 'mengshuai', '123456', '这是一个测试的授权服务，可以为第三方平台提供授权支持。', '127.0.0.1:54182', 1, 20, '2023-03-13 16:01:02', '2023-03-13 16:57:04', NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-13 16:57:03');
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `hg_sys_serve_log`
 --
 
@@ -5058,6 +5082,13 @@ CREATE TABLE `hg_sys_serve_log` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统_服务日志';
+
+--
+-- 转存表中的数据 `hg_sys_serve_log`
+--
+
+INSERT INTO `hg_sys_serve_log` (`id`, `trace_id`, `level_format`, `content`, `stack`, `line`, `trigger_ns`, `status`, `created_at`, `updated_at`) VALUES
+(3, 'ec3bc5835ce14d170412f80c95578ba6', 'ERRO', 'SafeGo failed err:[net.DialTimeout failed with network \"tcp\", address \"127.0.0.1:18999\", timeout \"30s\": dial tcp 127.0.0.1:18999: connectex: No connection could be made because the target machine actively refused it.\n1. net.DialTimeout failed with network \"tcp\", address \"127.0.0.1:18999\", timeout \"30s\"\n   1).  github.com/gogf/gf/v2/net/gtcp.NewNetConn\n        E:/gopath/pkg/mod/github.com/gogf/gf/v2@v2.3.2/net/gtcp/gtcp_func.go:42\n   2).  github.com/gogf/gf/v2/net/gtcp.NewConn\n        E:/gopath/pkg/mod/github.com/gogf/gf/v2@v2.3.2/net/gtcp/gtcp_conn.go:36\n   3).  hotgo/internal/cmd.glob..func4\n        E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/internal/cmd/queue.go:29\n   4).  hotgo/internal/cmd.glob..func2.1\n        E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/internal/cmd/cmd.go:57\n   5).  hotgo/utility/simple.SafeGo.func1\n        E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/utility/simple/simple.go:54\n2. dial tcp 127.0.0.1:18999: connectex: No connection could be made because the target machine actively refused it.\n]', '[\"1.  hotgo/utility/simple.Logf\", \"    E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/utility/simple/simple.go:69\", \"2.  hotgo/utility/simple.SafeGo.func1.1\", \"    E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/utility/simple/simple.go:50\", \"3.  hotgo/internal/cmd.glob..func4\", \"    E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/internal/cmd/queue.go:31\", \"4.  hotgo/internal/cmd.glob..func2.1\", \"    E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/internal/cmd/cmd.go:57\", \"5.  hotgo/utility/simple.SafeGo.func1\", \"    E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/utility/simple/simple.go:54\", \"\"]', 'simple.go:69', 1679246100245609100, 1, '2023-03-20 01:15:02', '2023-03-20 01:15:02');
 
 -- --------------------------------------------------------
 
@@ -5309,6 +5340,13 @@ ALTER TABLE `hg_sys_provinces`
   ADD KEY `pid` (`pid`);
 
 --
+-- 表的索引 `hg_sys_serve_license`
+--
+ALTER TABLE `hg_sys_serve_license`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `appid` (`appid`);
+
+--
 -- 表的索引 `hg_sys_serve_log`
 --
 ALTER TABLE `hg_sys_serve_log`
@@ -5355,7 +5393,7 @@ ALTER TABLE `hg_admin_member`
 -- 使用表AUTO_INCREMENT `hg_admin_menu`
 --
 ALTER TABLE `hg_admin_menu`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '菜单ID', AUTO_INCREMENT=2260;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '菜单ID', AUTO_INCREMENT=2232;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_notice`
@@ -5367,7 +5405,7 @@ ALTER TABLE `hg_admin_notice`
 -- 使用表AUTO_INCREMENT `hg_admin_notice_read`
 --
 ALTER TABLE `hg_admin_notice_read`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '记录ID', AUTO_INCREMENT=20;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '记录ID', AUTO_INCREMENT=21;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_post`
@@ -5385,7 +5423,7 @@ ALTER TABLE `hg_admin_role`
 -- 使用表AUTO_INCREMENT `hg_admin_role_casbin`
 --
 ALTER TABLE `hg_admin_role_casbin`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6191;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8342;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_addons_config`
@@ -5397,7 +5435,7 @@ ALTER TABLE `hg_sys_addons_config`
 -- 使用表AUTO_INCREMENT `hg_sys_addons_install`
 --
 ALTER TABLE `hg_sys_addons_install`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=2;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_attachment`
@@ -5421,7 +5459,7 @@ ALTER TABLE `hg_sys_config`
 -- 使用表AUTO_INCREMENT `hg_sys_cron`
 --
 ALTER TABLE `hg_sys_cron`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务ID', AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务ID', AUTO_INCREMENT=3;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_cron_group`
@@ -5451,7 +5489,7 @@ ALTER TABLE `hg_sys_ems_log`
 -- 使用表AUTO_INCREMENT `hg_sys_gen_codes`
 --
 ALTER TABLE `hg_sys_gen_codes`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '生成ID', AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '生成ID', AUTO_INCREMENT=5;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_gen_curd_demo`
@@ -5469,13 +5507,19 @@ ALTER TABLE `hg_sys_log`
 -- 使用表AUTO_INCREMENT `hg_sys_login_log`
 --
 ALTER TABLE `hg_sys_login_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=31;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID';
+
+--
+-- 使用表AUTO_INCREMENT `hg_sys_serve_license`
+--
+ALTER TABLE `hg_sys_serve_license`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '许可ID', AUTO_INCREMENT=4;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_serve_log`
 --
 ALTER TABLE `hg_sys_serve_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID';
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=4;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_sms_log`

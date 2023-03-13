@@ -112,7 +112,7 @@
   }
 
   const props = withDefaults(defineProps<Props>(), { checkedId: 0 });
-  const typeList = ref([]);
+  const typeList = ref<any>([]);
   const rules = {
     label: {
       required: true,
@@ -304,15 +304,16 @@
     reloadTable();
   }
 
-  watch(props, (_newVal, _oldVal) => {
-    params.value.typeId = _newVal.checkedId;
-    formParams.value.typeId = _newVal.checkedId;
+  watch(props, (newVal, _oldVal) => {
+    params.value.typeId = newVal.checkedId;
+    formParams.value.typeId = newVal.checkedId;
     actionRef.value.reload();
     setDictSelect();
   });
 
   async function setDictSelect() {
-    typeList.value = await getDictSelect({});
+    const tmp = await getDictSelect({});
+    typeList.value = tmp.list;
     if (typeList.value === undefined || typeList.value === null) {
       typeList.value = [];
     }

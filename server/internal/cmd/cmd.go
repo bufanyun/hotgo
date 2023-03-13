@@ -80,7 +80,7 @@ var (
 )
 
 func init() {
-	if err := Main.AddCommand(Http, Queue, Tools, All, Help); err != nil {
+	if err := Main.AddCommand(Http, Queue, Tools, Auth, All, Help); err != nil {
 		panic(err)
 	}
 	serverCloseSignal = make(chan struct{}, 1)
