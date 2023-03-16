@@ -114,37 +114,15 @@ type (
 )
 
 var (
+	localAdminMonitor    IAdminMonitor
+	localAdminNotice     IAdminNotice
+	localAdminPost       IAdminPost
 	localAdminRole       IAdminRole
 	localAdminDept       IAdminDept
 	localAdminMember     IAdminMember
 	localAdminMemberPost IAdminMemberPost
 	localAdminMenu       IAdminMenu
-	localAdminMonitor    IAdminMonitor
-	localAdminNotice     IAdminNotice
-	localAdminPost       IAdminPost
 )
-
-func AdminMenu() IAdminMenu {
-	if localAdminMenu == nil {
-		panic("implement not found for interface IAdminMenu, forgot register?")
-	}
-	return localAdminMenu
-}
-
-func RegisterAdminMenu(i IAdminMenu) {
-	localAdminMenu = i
-}
-
-func AdminMonitor() IAdminMonitor {
-	if localAdminMonitor == nil {
-		panic("implement not found for interface IAdminMonitor, forgot register?")
-	}
-	return localAdminMonitor
-}
-
-func RegisterAdminMonitor(i IAdminMonitor) {
-	localAdminMonitor = i
-}
 
 func AdminNotice() IAdminNotice {
 	if localAdminNotice == nil {
@@ -210,4 +188,26 @@ func AdminMemberPost() IAdminMemberPost {
 
 func RegisterAdminMemberPost(i IAdminMemberPost) {
 	localAdminMemberPost = i
+}
+
+func AdminMenu() IAdminMenu {
+	if localAdminMenu == nil {
+		panic("implement not found for interface IAdminMenu, forgot register?")
+	}
+	return localAdminMenu
+}
+
+func RegisterAdminMenu(i IAdminMenu) {
+	localAdminMenu = i
+}
+
+func AdminMonitor() IAdminMonitor {
+	if localAdminMonitor == nil {
+		panic("implement not found for interface IAdminMonitor, forgot register?")
+	}
+	return localAdminMonitor
+}
+
+func RegisterAdminMonitor(i IAdminMonitor) {
+	localAdminMonitor = i
 }
