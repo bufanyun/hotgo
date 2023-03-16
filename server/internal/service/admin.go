@@ -18,6 +18,23 @@ import (
 )
 
 type (
+	IAdminMenu interface {
+		RoleList(ctx context.Context, in adminin.MenuRoleListInp) (*adminin.MenuRoleListModel, error)
+		SearchList(ctx context.Context, req *menu.SearchListReq) (*menu.SearchListRes, error)
+		MaxSort(ctx context.Context, req *menu.MaxSortReq) (*menu.MaxSortRes, error)
+		NameUnique(ctx context.Context, req *menu.NameUniqueReq) (*menu.NameUniqueRes, error)
+		CodeUnique(ctx context.Context, req *menu.CodeUniqueReq) (*menu.CodeUniqueRes, error)
+		Delete(ctx context.Context, req *menu.DeleteReq) error
+		Edit(ctx context.Context, req *menu.EditReq) (err error)
+		View(ctx context.Context, req *menu.ViewReq) (res *menu.ViewRes, err error)
+		List(ctx context.Context, req *menu.ListReq) (lists []map[string]interface{}, err error)
+		GetMenuList(ctx context.Context, memberId int64) (lists role.DynamicRes, err error)
+		LoginPermissions(ctx context.Context, memberId int64) (lists adminin.MemberLoginPermissions, err error)
+	}
+	IAdminMonitor interface {
+		StartMonitor(ctx context.Context)
+		GetMeta(ctx context.Context) *model.MonitorData
+	}
 	IAdminNotice interface {
 		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
 		Delete(ctx context.Context, in adminin.NoticeDeleteInp) error
@@ -93,23 +110,6 @@ type (
 	IAdminMemberPost interface {
 		UpdatePostIds(ctx context.Context, memberId int64, postIds []int64) (err error)
 		GetMemberByIds(ctx context.Context, memberId int64) (postIds []int64, err error)
-	}
-	IAdminMenu interface {
-		RoleList(ctx context.Context, in adminin.MenuRoleListInp) (*adminin.MenuRoleListModel, error)
-		SearchList(ctx context.Context, req *menu.SearchListReq) (*menu.SearchListRes, error)
-		MaxSort(ctx context.Context, req *menu.MaxSortReq) (*menu.MaxSortRes, error)
-		NameUnique(ctx context.Context, req *menu.NameUniqueReq) (*menu.NameUniqueRes, error)
-		CodeUnique(ctx context.Context, req *menu.CodeUniqueReq) (*menu.CodeUniqueRes, error)
-		Delete(ctx context.Context, req *menu.DeleteReq) error
-		Edit(ctx context.Context, req *menu.EditReq) (err error)
-		View(ctx context.Context, req *menu.ViewReq) (res *menu.ViewRes, err error)
-		List(ctx context.Context, req *menu.ListReq) (lists []map[string]interface{}, err error)
-		GetMenuList(ctx context.Context, memberId int64) (lists role.DynamicRes, err error)
-		LoginPermissions(ctx context.Context, memberId int64) (lists adminin.MemberLoginPermissions, err error)
-	}
-	IAdminMonitor interface {
-		StartMonitor(ctx context.Context)
-		GetMeta(ctx context.Context) *model.MonitorData
 	}
 )
 

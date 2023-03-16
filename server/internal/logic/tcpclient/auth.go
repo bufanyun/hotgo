@@ -2,12 +2,8 @@ package tcpclient
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/gcron"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/library/network/tcp"
-	"hotgo/internal/model/input/msgin"
 	"hotgo/internal/service"
 	"hotgo/utility/simple"
 )
@@ -37,8 +33,8 @@ func (s *sTCPAuth) Start(ctx context.Context) {
 				AppId:     "mengshuai",
 				SecretKey: "123456",
 			},
-			LoginEvent: s.loginEvent,
-			CloseEvent: s.closeEvent,
+			LoginEvent: s.onLoginEvent,
+			CloseEvent: s.onCloseEvent,
 		})
 		if err != nil {
 			g.Log().Infof(ctx, "TCPAuth NewClient fail：%+v", err)
@@ -48,7 +44,7 @@ func (s *sTCPAuth) Start(ctx context.Context) {
 		s.client = client
 
 		err = s.client.RegisterRouter(map[string]tcp.RouterHandler{
-			"ResponseAuthSummary": s.onResponseAuthSummary, // 获取授权信息
+			// ...
 		})
 
 		if err != nil {
@@ -63,7 +59,7 @@ func (s *sTCPAuth) Start(ctx context.Context) {
 	})
 }
 
-// Stop 关闭服务
+// Stop 停止服务
 func (s *sTCPAuth) Stop(ctx context.Context) {
 	if s.client != nil {
 		s.client.Stop()
@@ -71,40 +67,17 @@ func (s *sTCPAuth) Stop(ctx context.Context) {
 	}
 }
 
-func (s *sTCPAuth) loginEvent() {
-	// 登录成功后立即请求一次授权信息
-	s.client.Write(&msgin.AuthSummary{})
-
-	// 定时检查授权
-	gcron.Add(s.client.Ctx, "@every 1200s", func(ctx context.Context) {
-		if !s.client.IsLogin {
-			g.Log().Infof(ctx, "TCPAuthVerify client is not logged in, skipped")
-			return
-		}
-		s.client.Write(&msgin.AuthSummary{})
-	}, "TCPAuthVerify")
+// IsLogin 是否已登录认证
+func (s *sTCPAuth) IsLogin() bool {
+	return s.client.IsLogin
 }
 
-func (s *sTCPAuth) closeEvent() {
-	// 关闭连接后，删除定时检查授权
-	gcron.Remove("TCPAuthVerify")
+// onLoginEvent 登录认证成功事件
+func (s *sTCPAuth) onLoginEvent() {
+	// ...
 }
 
-func (s *sTCPAuth) onResponseAuthSummary(args ...interface{}) {
-	var in *msgin.ResponseAuthSummary
-	if err := gconv.Scan(args[0], &in); err != nil {
-		s.client.Logger.Infof(s.client.Ctx, "ResponseAuthSummary message Scan failed:%+v, args:%+v", err, args[0])
-		return
-	}
-	s.client.Logger.Infof(s.client.Ctx, "onResponseAuthSummary in:%+v", *in)
-
-	// 授权异常
-	if in.Code != gcode.CodeOK.Code() {
-		s.client.Logger.Infof(s.client.Ctx, "onResponseAuthSummary authorization verification failed:%+v", in.Message)
-		s.client.Destroy()
-		return
-	}
-
-	// 授权通过
-	// 后续可以做一些操作...
+// onCloseEvent 连接关闭回调事件
+func (s *sTCPAuth) onCloseEvent() {
+	// ...
 }

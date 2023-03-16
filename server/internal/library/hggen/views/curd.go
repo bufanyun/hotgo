@@ -116,7 +116,7 @@ func (l *gCurd) initInput(ctx context.Context, in *CurdPreviewInput) (err error)
 		return err
 	}
 
-	initStep(ctx, in)
+	initStep(in)
 	in.options.dictMap = make(g.Map)
 
 	if len(in.Config.Application.Crud.Templates)-1 < in.In.GenTemplate {
@@ -138,7 +138,7 @@ func (l *gCurd) initInput(ctx context.Context, in *CurdPreviewInput) (err error)
 	return
 }
 
-func initStep(ctx context.Context, in *CurdPreviewInput) {
+func initStep(in *CurdPreviewInput) {
 	in.options.Step = new(CurdStep)
 	in.options.Step.HasMaxSort = HasMaxSort(in.masterFields)
 	in.options.Step.HasAdd = gstr.InArray(in.options.HeadOps, "add")
@@ -642,7 +642,7 @@ func (l *gCurd) generateWebViewContent(ctx context.Context, in *CurdPreviewInput
 func (l *gCurd) generateSqlContent(ctx context.Context, in *CurdPreviewInput) (err error) {
 	var (
 		name    = "source.sql"
-		config  = g.DB(in.In.DbName).GetConfig()
+		config  = g.DB("default").GetConfig()
 		tplData = g.Map{
 			"dbName":        config.Name,
 			"menuTable":     config.Prefix + "admin_menu",
@@ -652,7 +652,7 @@ func (l *gCurd) generateSqlContent(ctx context.Context, in *CurdPreviewInput) (e
 	)
 
 	if in.options.Menu.Pid > 0 {
-		tplData["mainComponent"] = "ParentLayout" //gstr.LcFirst(in.In.VarName)
+		tplData["mainComponent"] = "ParentLayout"
 	}
 
 	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].SqlPath, convert.CamelCaseToUnderline(in.In.VarName)+"_menu.sql")

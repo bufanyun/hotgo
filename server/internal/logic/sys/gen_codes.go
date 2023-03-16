@@ -240,22 +240,31 @@ func (s *sSysGenCodes) TableSelect(ctx context.Context, in sysin.GenCodesTableSe
 			continue
 		}
 
+		newValue := v.Value
+		if config.Prefix != "" {
+			newValue = gstr.SubStrFromEx(v.Value, config.Prefix)
+		}
+		if newValue == "" {
+			err = gerror.Newf("表名[%v]前缀必须和配置中的前缀设置[%v] 保持一致", v.Value, config.Prefix)
+			return
+		}
+
 		// 如果是插件模块，则移除掉插件表前缀
-		defVarName := gstr.SubStrFromEx(v.Value, config.Prefix)
-		bt, err := gregex.Replace(patternStr, []byte(repStr), []byte(defVarName))
+		bt, err := gregex.Replace(patternStr, []byte(repStr), []byte(newValue))
 		if err != nil {
+			err = gerror.Newf("表名[%v] gregex.Replace err:%v", v.Value, err.Error())
 			break
 		}
-		defVarName = gstr.CaseCamel(string(bt))
 
 		row := new(sysin.GenCodesTableSelectModel)
 		row = v
 		row.DefTableComment = v.Label
-		row.DaoName = gstr.CaseCamel(gstr.SubStrFromEx(v.Value, config.Prefix))
-		row.DefVarName = defVarName
-		row.DefAlias = gstr.CaseCamelLower(gstr.SubStrFromEx(v.Value, config.Prefix))
+		row.DaoName = gstr.CaseCamel(newValue)
+		row.DefVarName = gstr.CaseCamel(string(bt))
+		row.DefAlias = gstr.CaseCamelLower(newValue)
 		row.Name = fmt.Sprintf("%s (%s)", v.Value, v.Label)
 		row.Label = row.Name
+
 		res = append(res, row)
 	}
 	return res, nil

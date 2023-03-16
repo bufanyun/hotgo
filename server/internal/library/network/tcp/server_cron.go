@@ -27,9 +27,24 @@ func (server *Server) startCron() {
 			for _, client := range server.clients {
 				if client.heartbeat < gtime.Timestamp()-300 {
 					client.Conn.Close()
-					server.Logger.Debugf(server.Ctx, "client heartbeat timeout, about to reconnect.. auth:%+v", client.Auth)
+					server.Logger.Debugf(server.Ctx, "client heartbeat timeout, close conn. auth:%+v", client.Auth)
 				}
 			}
 		}, server.getCronKey(cronHeartbeatVerify))
+	}
+
+	// 认证检查
+	if gcron.Search(server.getCronKey(cronAuthVerify)) == nil {
+		gcron.AddSingleton(server.Ctx, "@every 300s", func(ctx context.Context) {
+			if server.clients == nil {
+				return
+			}
+			for _, client := range server.clients {
+				if client.Auth.EndAt.Before(gtime.Now()) {
+					client.Conn.Close()
+					server.Logger.Debugf(server.Ctx, "client auth expired, close conn. auth:%+v", client.Auth)
+				}
+			}
+		}, server.getCronKey(cronAuthVerify))
 	}
 }

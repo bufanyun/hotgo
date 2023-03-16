@@ -54,10 +54,6 @@ type WhoisRegionData struct {
 
 // WhoisLocation 通过Whois接口查询IP归属地
 func WhoisLocation(ctx context.Context, ip string) (*IpLocationData, error) {
-	if !validate.IsIp(ip) {
-		return nil, fmt.Errorf("invalid input ip:%v", ip)
-	}
-
 	response, err := g.Client().Timeout(10*time.Second).Get(ctx, whoisApi+ip)
 	if err != nil {
 		return nil, err
@@ -90,10 +86,6 @@ func WhoisLocation(ctx context.Context, ip string) (*IpLocationData, error) {
 
 // Cz88Find 通过Cz88的IP库查询IP归属地
 func Cz88Find(ctx context.Context, ip string) (*IpLocationData, error) {
-	if !validate.IsIp(ip) {
-		return nil, fmt.Errorf("invalid input ip:%v", ip)
-	}
-
 	loc, err := iploc.OpenWithoutIndexes("./resource/ip/qqwry-utf8.dat")
 	if err != nil {
 		return nil, fmt.Errorf("%v for help, please go to: https://github.com/kayon/iploc", err.Error())
@@ -129,6 +121,13 @@ func IsJurisByIpTitle(title string) bool {
 
 // GetLocation 获取IP归属地信息
 func GetLocation(ctx context.Context, ip string) (*IpLocationData, error) {
+	if !validate.IsIp(ip) {
+		return nil, fmt.Errorf("invalid input ip:%v", ip)
+	}
+
+	if validate.IsLocalIPAddr(ip) {
+		return nil, fmt.Errorf("must be a public ip:%v", ip)
+	}
 	method := g.Cfg().MustGet(ctx, "hotgo.ipMethod", "cz88")
 	if method.String() == "whois" {
 		return WhoisLocation(ctx, ip)

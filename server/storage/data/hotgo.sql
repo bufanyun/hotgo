@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost:3306
--- 生成日期： 2023-03-13 16:58:42
+-- 生成日期： 2023-03-16 15:25:23
 -- 服务器版本： 5.7.38-log
 -- PHP 版本： 5.6.40
 
@@ -155,7 +155,7 @@ CREATE TABLE `hg_admin_member` (
 --
 
 INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `username`, `password_hash`, `salt`, `auth_key`, `password_reset_token`, `balance`, `avatar`, `sex`, `qq`, `email`, `mobile`, `birthday`, `city_id`, `address`, `pid`, `level`, `tree`, `cash`, `last_active_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '58d8b63af5f7fccd87b052539c0a090e', '', '0.00', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-03-11 16:55:34', NULL, 1, '2021-02-12 17:59:45', '2023-03-11 16:55:33'),
+(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '799923d21be374d4fa9a0775eb24ca86', '', '0.00', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-03-16 15:21:02', NULL, 1, '2021-02-12 17:59:45', '2023-03-16 15:21:01'),
 (3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '2c7db9eca4ed02a718e794ba4c904f56', '', '0.00', 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', NULL, NULL, '', 1, '2022-02-11 17:59:45', '2023-01-10 16:47:00'),
 (8, 105, 206, 'ameng', 'ameng', '4501790a9b89f4e66f4417c899836511', 'hfuUEb', '0d796b377f77f1e1d42278eedbab6110', '', '0.00', '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', NULL, '2023-03-05 15:25:49', '', 1, '2023-02-03 17:34:31', '2023-02-26 00:31:13');
 
@@ -177,10 +177,7 @@ CREATE TABLE `hg_admin_member_post` (
 INSERT INTO `hg_admin_member_post` (`member_id`, `post_id`) VALUES
 (1, 1),
 (3, 4),
-(7, 3),
-(7, 4),
-(8, 2),
-(9, 3);
+(8, 2);
 
 -- --------------------------------------------------------
 
@@ -5041,8 +5038,9 @@ CREATE TABLE `hg_sys_serve_license` (
   `appid` varchar(64) NOT NULL COMMENT '应用ID',
   `secret_key` varchar(255) DEFAULT NULL COMMENT '应用秘钥',
   `desc` text COMMENT '授权说明',
-  `remote_addr` varchar(64) DEFAULT NULL COMMENT '连接地址',
-  `online` tinyint(4) DEFAULT '0' COMMENT '是否在线',
+  `remote_addr` varchar(64) DEFAULT NULL COMMENT '最后连接地址',
+  `online` tinyint(4) DEFAULT '0' COMMENT '在线数量',
+  `online_limit` int(11) DEFAULT '1' COMMENT '在线数量限制，默认1',
   `login_times` bigint(20) DEFAULT NULL COMMENT '登录次数',
   `last_login_at` datetime DEFAULT NULL COMMENT '最后登录时间',
   `last_active_at` datetime DEFAULT NULL COMMENT '最后活跃时间',
@@ -5059,10 +5057,10 @@ CREATE TABLE `hg_sys_serve_license` (
 -- 转存表中的数据 `hg_sys_serve_license`
 --
 
-INSERT INTO `hg_sys_serve_license` (`id`, `group`, `name`, `appid`, `secret_key`, `desc`, `remote_addr`, `online`, `login_times`, `last_login_at`, `last_active_at`, `routes`, `allowed_ips`, `end_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'queue', '默认的消息队列', '1001', 'hotgo', '这是默认的消息队列TCP客户端授权凭证。', NULL, 0, 1, '2023-03-23 00:00:00', NULL, NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-05 00:00:00'),
-(2, 'cron', '默认的定时任务', '1002', 'hotgo', '这是默认的定时任务TCP客户端授权凭证。', NULL, 0, 1, '2023-03-23 00:00:00', NULL, NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-05 00:00:00'),
-(3, 'auth', '测试授权', 'mengshuai', '123456', '这是一个测试的授权服务，可以为第三方平台提供授权支持。', '127.0.0.1:54182', 1, 20, '2023-03-13 16:01:02', '2023-03-13 16:57:04', NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-13 16:57:03');
+INSERT INTO `hg_sys_serve_license` (`id`, `group`, `name`, `appid`, `secret_key`, `desc`, `remote_addr`, `online`, `online_limit`, `login_times`, `last_login_at`, `last_active_at`, `routes`, `allowed_ips`, `end_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'queue', '默认的消息队列', '1001', 'hotgo', '这是默认的消息队列TCP客户端授权凭证。', NULL, 0, 1, 1, '2023-03-23 00:00:00', NULL, NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-05 00:00:00'),
+(2, 'cron', '默认的定时任务', '1002', 'hotgo', '这是默认的定时任务TCP客户端授权凭证。', NULL, 0, 1, 1, '2023-03-23 00:00:00', NULL, NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-05 00:00:00'),
+(3, 'auth', '测试授权', 'mengshuai', '123456', '这是一个测试的授权服务，可以为第三方平台提供授权支持。', '127.0.0.1:54182', 1, 1, 20, '2023-03-13 16:01:02', '2023-03-13 17:15:04', NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-13 17:15:03');
 
 -- --------------------------------------------------------
 
@@ -5387,13 +5385,13 @@ ALTER TABLE `hg_admin_dept`
 -- 使用表AUTO_INCREMENT `hg_admin_member`
 --
 ALTER TABLE `hg_admin_member`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '管理员ID', AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '管理员ID', AUTO_INCREMENT=10;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_menu`
 --
 ALTER TABLE `hg_admin_menu`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '菜单ID', AUTO_INCREMENT=2232;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '菜单ID', AUTO_INCREMENT=2253;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_notice`
@@ -5489,7 +5487,7 @@ ALTER TABLE `hg_sys_ems_log`
 -- 使用表AUTO_INCREMENT `hg_sys_gen_codes`
 --
 ALTER TABLE `hg_sys_gen_codes`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '生成ID', AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '生成ID', AUTO_INCREMENT=8;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_gen_curd_demo`

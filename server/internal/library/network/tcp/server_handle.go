@@ -107,6 +107,7 @@ func (server *Server) onServerLogin(args ...interface{}) {
 			Name:      in.Name,
 			AppId:     in.AppId,
 			SecretKey: models.SecretKey,
+			EndAt:     models.EndAt,
 		},
 		heartbeat: gtime.Timestamp(),
 	}

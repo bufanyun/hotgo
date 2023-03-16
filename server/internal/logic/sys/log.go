@@ -198,7 +198,7 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 
 	ipData, err := location.GetLocation(ctx, clientIp)
 	if err != nil {
-		g.Log().Errorf(ctx, "location.GetLocation err:%+v", err)
+		g.Log().Infof(ctx, "location.GetLocation clientIp:%v, err:%+v", clientIp, err)
 	}
 	if ipData == nil {
 		ipData = new(location.IpLocationData)

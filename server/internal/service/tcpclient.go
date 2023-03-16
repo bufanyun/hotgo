@@ -13,6 +13,7 @@ type (
 	ITCPAuth interface {
 		Start(ctx context.Context)
 		Stop(ctx context.Context)
+		IsLogin() bool
 	}
 )
 
