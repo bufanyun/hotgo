@@ -18,10 +18,7 @@ import (
 
 // ApiAuth API鉴权中间件
 func (s *sMiddleware) ApiAuth(r *ghttp.Request) {
-
-	var (
-		ctx = r.Context()
-	)
+	var ctx = r.Context()
 
 	// 替换掉模块前缀
 	routerPrefix := g.Cfg().MustGet(ctx, "router.api.prefix", "/api")

@@ -10,11 +10,11 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
-	"github.com/shirou/gopsutil/cpu"
-	"github.com/shirou/gopsutil/disk"
-	"github.com/shirou/gopsutil/host"
-	"github.com/shirou/gopsutil/mem"
-	"github.com/shirou/gopsutil/process"
+	"github.com/shirou/gopsutil/v3/cpu"
+	"github.com/shirou/gopsutil/v3/disk"
+	"github.com/shirou/gopsutil/v3/host"
+	"github.com/shirou/gopsutil/v3/mem"
+	"github.com/shirou/gopsutil/v3/process"
 	"hotgo/internal/consts"
 	"hotgo/internal/model"
 	"hotgo/internal/service"
@@ -69,7 +69,7 @@ func (c *cMonitor) RunInfo(client *websocket.Client, req *websocket.WRequest) {
 		// GO运行信息
 		"goName":    "Golang",
 		"version":   runtime.Version(),
-		"startTime": meta.STartTime,
+		"startTime": gtime.New(meta.STartTime),
 		"runTime":   gtime.Now().Timestamp() - meta.STartTime,
 		"rootPath":  runtime.GOROOT(),
 		"pwd":       pwd,
@@ -91,7 +91,6 @@ func (c *cMonitor) RunInfo(client *websocket.Client, req *websocket.WRequest) {
 
 // Trends 实时数据
 func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
-
 	type NetC struct {
 		Time      *gtime.Time `json:"time"`
 		BytesSent string      `json:"bytesSent"` // number of bytes sent
@@ -101,18 +100,37 @@ func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
 	}
 
 	var (
-		mCpu, _      = cpu.Info()
-		mCpuUsed     float64
-		mMem, _      = mem.VirtualMemory()
-		mMemUsed     float64
-		mDisk, _     = disk.Usage("/")
-		mProcess, _  = process.Pids()
-		mLoadAvg     = new(model.LoadAvgStats)
-		data         = g.Map{}
-		monitorHeads []MonitorHead
-		nets         []NetC
-		meta         = service.AdminMonitor().GetMeta(client.Context())
+		mCpu, cpuErr         = cpu.Info()
+		mCpuUsed             float64
+		mMem, memErr         = mem.VirtualMemory()
+		mMemUsed             float64
+		mDisk, diskErr       = disk.Usage("/")
+		mProcess, ProcessErr = process.Pids()
+		mLoadAvg             = new(model.LoadAvgStats)
+		data                 = g.Map{}
+		monitorHeads         []MonitorHead
+		nets                 []NetC
+		meta                 = service.AdminMonitor().GetMeta(client.Context())
 	)
+
+	if cpuErr != nil {
+		g.Log().Infof(client.Context(), "read CPU info fail:%+v", cpuErr)
+		mCpu = []cpu.InfoStat{{VendorID: "", ModelName: ""}}
+	}
+
+	if memErr != nil {
+		g.Log().Infof(client.Context(), "read mem info fail:%+v", memErr)
+		mMem = new(mem.VirtualMemoryStat)
+	}
+
+	if diskErr != nil {
+		g.Log().Infof(client.Context(), "read disk info fail:%+v", diskErr)
+		mDisk = new(disk.UsageStat)
+	}
+
+	if ProcessErr != nil {
+		g.Log().Infof(client.Context(), "read process.Pids fail:%+v", ProcessErr)
+	}
 
 	// cpu使用率
 	cu, err := cpu.Percent(time.Second, false)

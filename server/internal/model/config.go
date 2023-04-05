@@ -46,8 +46,8 @@ type CashConfig struct {
 
 // UploadConfig 上传配置
 type UploadConfig struct {
-	Drive string `json:"uploadDrive"`
-	// 基本配置
+	// 通用配置
+	Drive     string `json:"uploadDrive"`
 	FileSize  int64  `json:"uploadFileSize"`
 	FileType  string `json:"uploadFileType"`
 	ImageSize int64  `json:"uploadImageSize"`
@@ -62,6 +62,24 @@ type UploadConfig struct {
 	UCloudPath       string `json:"uploadUCloudPath"`
 	UCloudPrivateKey string `json:"uploadUCloudPrivateKey"`
 	UCloudPublicKey  string `json:"uploadUCloudPublicKey"`
+	// 腾讯云cos配置
+	CosSecretId  string `json:"uploadCosSecretId"`
+	CosSecretKey string `json:"uploadCosSecretKey"`
+	CosBucketURL string `json:"uploadCosBucketURL"`
+	CosPath      string `json:"uploadCosPath"`
+	// 阿里云oss配置
+	OssSecretId  string `json:"uploadOssSecretId"`
+	OssSecretKey string `json:"uploadOssSecretKey"`
+	OssEndpoint  string `json:"uploadOssEndpoint"`
+	OssBucketURL string `json:"uploadOssBucketURL"`
+	OssPath      string `json:"uploadOssPath"`
+	OssBucket    string `json:"uploadOssBucket"`
+	// 七牛云对象存储配置
+	QiNiuAccessKey string `json:"uploadQiNiuAccessKey"`
+	QiNiuSecretKey string `json:"uploadQiNiuSecretKey"`
+	QiNiuDomain    string `json:"uploadQiNiuDomain"`
+	QiNiuPath      string `json:"uploadQiNiuPath"`
+	QiNiuBucket    string `json:"uploadQiNiuBucket"`
 }
 
 // GeoConfig 地理配置

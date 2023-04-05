@@ -85,18 +85,23 @@ func (server *Server) onServerLogin(args ...interface{}) {
 		}
 	}
 
-	// 检查是否存在多地登录,如果连接超出上限，直接将所有已连接断开，然后在吧新的连接加入进来
+	// 检查是否存在多地登录，如果连接超出上限，直接将所有已连接断开
 	clients := server.getAppIdClients(models.Appid)
 	online := len(clients) + 1
 	if online > models.OnlineLimit {
-		online = 1
+		online = 0
 		res2 := new(msgin.ResponseServerLogin)
 		res2.Code = 8
-		res2.Message = "授权登录端超出上限，请联系管理员"
+		res2.Message = "授权登录端超出上限已进行记录。请立即终止操作。如有疑问请联系管理员"
 		for _, client := range clients {
 			server.Write(client.Conn, res2)
 			client.Conn.Close()
 		}
+
+		// 当前连接也踢掉
+		server.Write(conn, res2)
+		conn.Close()
+		return
 	}
 
 	server.mutexConns.Lock()

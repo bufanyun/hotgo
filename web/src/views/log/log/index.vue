@@ -70,7 +70,7 @@
       component: 'NInput',
       label: '访问路径',
       componentProps: {
-        placeholder: '请输入手机访问路径',
+        placeholder: '请输入访问路径',
         onInput: (e: any) => {
           console.log(e);
         },

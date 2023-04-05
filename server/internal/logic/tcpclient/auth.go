@@ -69,6 +69,9 @@ func (s *sTCPAuth) Stop(ctx context.Context) {
 
 // IsLogin 是否已登录认证
 func (s *sTCPAuth) IsLogin() bool {
+	if s.client == nil {
+		return false
+	}
 	return s.client.IsLogin
 }
 

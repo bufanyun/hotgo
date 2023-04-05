@@ -11,7 +11,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 )
 
-// 是否包含判断
+// 包含判断
 
 // InSliceExistStr 判断字符或切片字符是否存在指定字符
 func InSliceExistStr(elems interface{}, search string) bool {
@@ -26,6 +26,7 @@ func InSliceExistStr(elems interface{}, search string) bool {
 	default:
 		return gconv.String(elems) == search
 	}
+
 	return false
 }
 

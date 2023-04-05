@@ -97,9 +97,7 @@ func (s *sMiddleware) DemoLimit(r *ghttp.Request) {
 
 // Addon 插件中间件
 func (s *sMiddleware) Addon(r *ghttp.Request) {
-	var (
-		ctx = r.Context()
-	)
+	var ctx = r.Context()
 
 	if contexts.Get(ctx).Module == "" {
 		g.Log().Warning(ctx, "application module is not initialized.")

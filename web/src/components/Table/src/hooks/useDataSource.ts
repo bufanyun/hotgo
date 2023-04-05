@@ -90,7 +90,21 @@ export function useDataSource(
         // can modify the data returned by the interface for processing
         resultInfo = (await afterRequest(resultInfo)) || resultInfo;
       }
-      dataSourceRef.value = resultInfo;
+
+      // 表数据加载
+      setTimeout(function () {
+        const once = 20;
+        if (resultInfo.length < once) {
+          // once = resultInfo.length;
+          // 直接加载
+          dataSourceRef.value = resultInfo;
+        } else {
+          // 分次加载
+          dataSourceRef.value = [];
+          insert(resultInfo, once, resultInfo.length, 0);
+        }
+      }, 0);
+
       setPagination({
         [pageField]: currentPage,
         [totalField]: resultTotal,
@@ -121,6 +135,21 @@ export function useDataSource(
       fetch();
     }, 16);
   });
+
+  function insert(resultInfo, once, curTotal, curIndex) {
+    if (curTotal <= 0) {
+      return;
+    }
+    if (once > curTotal) {
+      once = curTotal;
+    }
+    window.requestAnimationFrame(() => {
+      for (let i = 0; i < once; i++) {
+        dataSourceRef.value.push(resultInfo[curIndex + i]);
+      }
+      insert(resultInfo, once, curTotal - once, curIndex + once);
+    });
+  }
 
   function setTableData(values) {
     dataSourceRef.value = values;

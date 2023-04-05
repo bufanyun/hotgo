@@ -255,7 +255,7 @@ func (s *sSysLog) Delete(ctx context.Context, in sysin.LogDeleteInp) (err error)
 
 // List 列表
 func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.LogListModel, totalCount int, err error) {
-	mod := dao.SysLog.Ctx(ctx)
+	mod := dao.SysLog.Ctx(ctx).FieldsEx("get_data", "header_data", "post_data")
 
 	// 访问路径
 	if in.Url != "" {

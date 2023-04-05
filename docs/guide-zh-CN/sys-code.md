@@ -6,6 +6,7 @@
 - 生成配置
 - 一个生成增删改查列表例子
 - 内置gf-cli
+- 多数据库生成配置
 - 自定义生成模板
 
 
@@ -261,11 +262,76 @@ INSERT INTO `hg_test_table` (`id`, `category_id`, `title`, `description`, `conte
 - 至此生成增删改查列表示例结束！
 
 
+
 ### 内置gf-cli
 
 > 由于gf版本更新较常出现向下不兼容的情况，所以我们为了保证生成代码的依赖稳定性，我们将gf-cli工具内置到了系统中并做了一些在线执行的调整。
 
 - 后续我们也将开放在线运行`gf gen dao`、`gf gen service`功能。在做插件开发时也会支持到在线生成插件下的service接口，这将会使得插件开发更加方便
+
+
+## 多数据库生成配置
+
+#### 假设我们要增加一个库名为`hotgo2`、分组为`default2`的数据库，并要为其生成代码
+
+1. 配置`server/hack/config.yaml`,如下：
+```yaml
+  gen:
+    dao:
+      - link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
+        group: "default"                                                # 分组 使用hotgo代码生成功能时必须填
+        #        tables:          ""                                    # 指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
+        tablesEx:        "hg_sys_addons_install"                        # 指定当前数据库中需要排除代码生成的数据表。
+        removePrefix: "hg_"
+        descriptionTag: true
+        noModelComment: true
+        jsonCase: "CamelLower"
+        gJsonSupport: true
+        clear: false
+      - link: "mysql:hotgo2:hg123456.@tcp(127.0.0.1:3306)/hotgo2?loc=Local&parseTime=true"
+        group: "default2"                                                # 分组 使用hotgo代码生成功能时必须填
+        #        tables:          ""                                    # 指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
+        tablesEx:        "hg_sys_addons_install"                        # 指定当前数据库中需要排除代码生成的数据表。
+        removePrefix: ""
+        descriptionTag: true
+        noModelComment: true
+        jsonCase: "CamelLower"
+        gJsonSupport: true
+        clear: false
+```
+
+2. 配置`server/manifest/config/config.yaml`,
+
+
+`database`配置如下：
+```yaml
+database:
+  logger:
+    level: "all"
+    stdout: true
+  default:
+    link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
+    debug: true
+    Prefix: "hg_"
+  default2:
+    link: "mysql:hotgo2:hg123456.@tcp(127.0.0.1:3306)/hotgo2?loc=Local&parseTime=true"
+    debug: true
+    Prefix: ""
+```
+
+`hggen`配置如下：
+```yaml
+hggen:
+  allowedIPs: ["127.0.0.1", "*"]                                      # 白名单，*代表所有，只有允许的IP后台才能使用生成代码功能
+  selectDbs: [ "default", "default2" ]                                            # 可选生成表的数据库配置名称，支持多库
+  disableTables : ["hg_sys_gen_codes","hg_admin_role_casbin"]         # 禁用的表，禁用以后将不会在选择表中看到
+  delimiters: ["@{", "}"]                                             # 模板引擎变量分隔符号
+```
+
+3. 登录HotGo后台 -> 开发工具 -> 代码生成 -> 找到立即生成按钮并打开，就会发现`数据库`选项增加了一个`default2`，后续生成步骤和生成例子完全一样
+
+
+> 注意：上述的配置中所有的`default2`名称必须保持一致
 
 ### 自定义生成模板
 
