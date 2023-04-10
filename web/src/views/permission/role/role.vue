@@ -131,8 +131,9 @@
         <n-form-item label="自定义权限" path="customDept" v-if="dataForm.dataScope === 4">
           <n-tree-select
             multiple
+            key-field="id"
             :options="deptList"
-            :default-value="dataForm.customDept"
+            v-model:value="dataForm.customDept"
             :default-expand-all="true"
             @update:value="handleUpdateDeptValue"
           />
@@ -221,7 +222,7 @@
     width: 320,
     title: '操作',
     key: 'action',
-    // fixed: 'right',
+    fixed: 'right',
     render(record) {
       return h(TableAction, {
         style: 'primary',
@@ -439,7 +440,8 @@
   }
 
   async function loadDeptList() {
-    deptList.value = await getDeptList({});
+    const tmp = await getDeptList({});
+    deptList.value = tmp?.list;
     if (deptList.value === undefined || deptList.value === null) {
       deptList.value = [];
     }

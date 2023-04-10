@@ -60,7 +60,7 @@ echo "y" | gf build                                   # 编译hotgo服务端
 
 
 ### 启动服务
-> 这里推可以接使用gf官方推荐的启动方式，请参考：https://goframe.org/pages/viewpage.action?pageId=1114403
+> 这里可以接使用gf官方推荐的启动方式，请参考：https://goframe.org/pages/viewpage.action?pageId=1114403
 
 
 ### Nginx配置

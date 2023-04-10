@@ -118,7 +118,7 @@ export const columns = [
   {
     title: '创建时间',
     key: 'createdAt',
-    width: 150,
+    width: 180,
     render: (rows, _) => {
       return rows.createdAt;
     },

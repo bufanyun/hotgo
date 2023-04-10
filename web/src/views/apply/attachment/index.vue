@@ -21,7 +21,8 @@
         ref="actionRef"
         :actionColumn="actionColumn"
         @update:checked-row-keys="onCheckedRow"
-        :scroll-x="1090"
+        :scroll-x="1800"
+        :resizeHeightOffset="-20000"
       >
         <template #tableTitle>
           <n-button type="primary" @click="addTable">
@@ -157,10 +158,10 @@
   const checkedIds = ref([]);
 
   const actionColumn = reactive({
-    width: 220,
+    width: 150,
     title: '操作',
     key: 'action',
-    // fixed: 'right',
+    fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',

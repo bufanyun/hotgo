@@ -12,7 +12,7 @@
       :row-key="(row) => row.id"
       ref="actionRef"
       :actionColumn="actionColumn"
-      :scroll-x="1090"
+      :scroll-x="1800"
     />
   </n-card>
 </template>
@@ -58,10 +58,10 @@
   const formParams = ref({});
 
   const actionColumn = reactive({
-    width: 220,
+    width: 120,
     title: '操作',
     key: 'action',
-    // fixed: 'right',
+    fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',

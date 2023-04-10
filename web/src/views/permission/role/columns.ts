@@ -37,12 +37,12 @@ export const columns = [
         }
       );
     },
-    width: 150,
+    width: 200,
   },
   {
     title: '角色编码',
     key: 'key',
-    width: 150,
+    // width: 150,
   },
   // {
   //   title: '上级角色',
@@ -62,22 +62,22 @@ export const columns = [
         }
       );
     },
-    width: 80,
+    // width: 80,
   },
   {
     title: '排序',
     key: 'sort',
-    width: 100,
+    // width: 100,
   },
   {
     title: '备注',
     key: 'remark',
-    width: 300,
+    // width: 300,
   },
   {
     title: '状态',
     key: 'status',
-    width: 80,
+    // width: 80,
     render(row) {
       return h(
         NTag,

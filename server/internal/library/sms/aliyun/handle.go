@@ -7,13 +7,20 @@ import (
 	dysmsapi20170525 "github.com/alibabacloud-go/dysmsapi-20170525/v3/client"
 	util "github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
+	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/model"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 )
 
+var (
+	Handle = aliYun{}
+)
+
+type aliYun struct{}
+
 // SendCode 发送验证码
-func SendCode(ctx context.Context, in sysin.SendCodeInp, config *model.SmsConfig) (err error) {
+func (d *aliYun) SendCode(ctx context.Context, in sysin.SendCodeInp, config *model.SmsConfig) (err error) {
 	if config == nil {
 		config, err = service.SysConfig().GetSms(ctx)
 		if err != nil {
@@ -21,14 +28,14 @@ func SendCode(ctx context.Context, in sysin.SendCodeInp, config *model.SmsConfig
 		}
 	}
 
-	client, err := CreateClient(tea.String(config.SmsAliyunAccessKeyID), tea.String(config.SmsAliyunAccessKeySecret))
+	client, err := CreateClient(tea.String(config.AliYunAccessKeyID), tea.String(config.AliYunAccessKeySecret))
 	if err != nil {
 		return err
 	}
 
 	sendSmsRequest := &dysmsapi20170525.SendSmsRequest{
 		PhoneNumbers:  tea.String(in.Mobile),
-		SignName:      tea.String(config.SmsAliyunSign),
+		SignName:      tea.String(config.AliYunSign),
 		TemplateCode:  tea.String(in.Template),
 		TemplateParam: tea.String(fmt.Sprintf("{\"code\":\"%v\"}", in.Code)),
 	}
@@ -41,10 +48,12 @@ func SendCode(ctx context.Context, in sysin.SendCodeInp, config *model.SmsConfig
 		}()
 
 		// 复制代码运行请自行打印 API 的返回值
-		_, err = client.SendSmsWithOptions(sendSmsRequest, &util.RuntimeOptions{})
+		response, err := client.SendSmsWithOptions(sendSmsRequest, &util.RuntimeOptions{})
 		if err != nil {
 			return err
 		}
+
+		g.Log().Debugf(ctx, "aliyun.sendCode response:%+v", response.GoString())
 
 		return nil
 	}()

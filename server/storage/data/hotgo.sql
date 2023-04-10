@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
--- 主机： localhost
--- 生成日期： 2023-04-05 04:14:35
--- 服务器版本： 5.7.41
--- PHP 版本： 7.3.33
+-- 主机： localhost:3306
+-- 生成日期： 2023-04-10 15:26:54
+-- 服务器版本： 5.7.38-log
+-- PHP 版本： 5.6.40
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -72,8 +73,8 @@ CREATE TABLE `hg_addon_hgexample_table` (
 --
 
 INSERT INTO `hg_addon_hgexample_table` (`id`, `category_id`, `flag`, `title`, `description`, `content`, `image`, `images`, `attachfile`, `attachfiles`, `map`, `star`, `price`, `views`, `activity_at`, `start_at`, `end_at`, `switch`, `sort`, `avatar`, `sex`, `qq`, `email`, `mobile`, `hobby`, `channel`, `city_id`, `pid`, `level`, `tree`, `remark`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, '[1, 2]', '测试标题', '描述', '<p>这是内容............</p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '[{\"key\": \"qwe\", \"value\": \"123\"}, {\"key\": \"asd\", \"value\": \"456\"}]', 3.0, 88.00, 10, '2022-12-23', '2022-12-01 00:00:00', '2022-12-31 23:59:59', 1, 20, '', 15, '133814250', '133814250@qq.com', '15303830571', '[3, 2, 1]', 1, 140406, 0, 1, '', '备注！', 1, 1, 1, '2022-12-15 19:30:14', '2023-02-23 15:08:14', NULL),
-(2, 0, '[1]', '测试2', '描述', '<h2><strong>不知道写点啥！</strong></h2><p><br></p><p><img src=\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png\"></p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '{}', 2.5, 10.00, 0, '2023-02-18', NULL, NULL, 2, 30, '', 0, '', '1561561@qq.com', '15303830571', '[2, 1]', 3, 140214, 0, 1, '', '', 1, 1, 1, '2023-02-06 14:17:11', '2023-02-23 13:59:01', NULL);
+(1, 1, '[1, 2]', '测试标题', '描述', '<p>这是内容............</p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '[{\"key\": \"qwe\", \"value\": \"123\"}, {\"key\": \"asd\", \"value\": \"456\"}]', '3.0', '88.00', 10, '2022-12-23', '2022-12-01 00:00:00', '2022-12-31 23:59:59', 1, 20, '', 15, '133814250', '133814250@qq.com', '15303830571', '[3, 2, 1]', 1, 140406, 0, 1, '', '备注！', 1, 1, 1, '2022-12-15 19:30:14', '2023-02-23 15:08:14', NULL),
+(2, 0, '[1]', '测试2', '描述', '<h2><strong>不知道写点啥！</strong></h2><p><br></p><p><img src=\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png\"></p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '{}', '2.5', '10.00', 0, '2023-02-18', NULL, NULL, 2, 30, '', 0, '', '1561561@qq.com', '15303830571', '[2, 1]', 3, 140214, 0, 1, '', '', 1, 1, 1, '2023-02-06 14:17:11', '2023-02-23 13:59:01', NULL);
 
 -- --------------------------------------------------------
 
@@ -154,9 +155,9 @@ CREATE TABLE `hg_admin_member` (
 --
 
 INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `username`, `password_hash`, `salt`, `auth_key`, `password_reset_token`, `balance`, `avatar`, `sex`, `qq`, `email`, `mobile`, `birthday`, `city_id`, `address`, `pid`, `level`, `tree`, `cash`, `last_active_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', 'c3c972d9e4b7207107a0b27c65615cf2', '', 0.00, 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-04-05 12:09:30', NULL, 1, '2021-02-12 17:59:45', '2023-04-05 12:09:30'),
-(3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '2c7db9eca4ed02a718e794ba4c904f56', '', 0.00, 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', NULL, NULL, '', 1, '2022-02-11 17:59:45', '2023-01-10 16:47:00'),
-(8, 105, 206, 'ameng', 'ameng', '4501790a9b89f4e66f4417c899836511', 'hfuUEb', '0d796b377f77f1e1d42278eedbab6110', '', 0.00, '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', NULL, '2023-03-05 15:25:49', '', 1, '2023-02-03 17:34:31', '2023-02-26 00:31:13');
+(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '183ae270128a324ba1d8726601f0ae12', '', '0.00', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-04-10 15:23:12', NULL, 1, '2021-02-12 17:59:45', '2023-04-10 15:23:12'),
+(3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '2c7db9eca4ed02a718e794ba4c904f56', '', '0.00', 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', NULL, NULL, '', 1, '2022-02-11 17:59:45', '2023-01-10 16:47:00'),
+(8, 105, 206, 'ameng', 'ameng', '4501790a9b89f4e66f4417c899836511', 'hfuUEb', '0d796b377f77f1e1d42278eedbab6110', '', '0.00', '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', NULL, '2023-03-05 15:25:49', '', 1, '2023-02-03 17:34:31', '2023-02-26 00:31:13');
 
 -- --------------------------------------------------------
 
@@ -940,14 +941,14 @@ INSERT INTO `hg_sys_config` (`id`, `group`, `name`, `type`, `key`, `value`, `def
 (39, 'upload', 'UCloud存储桶地域host', 'string', 'uploadUCloudFileHost', 'cn-bj.ufileos.com', 'cn-bj.ufileos.com', 410, '', 1, 1, '2021-01-30 13:27:43', '2023-03-20 17:41:17'),
 (40, 'upload', 'UCloud访问域名', 'string', 'uploadUCloudEndpoint', 'http://bufanyun.cn-bj.ufileos.com', '', 420, '格式，http://abc.com 或  https://abc.com，不可为空', 1, 1, '2021-01-30 13:27:43', '2023-03-20 17:41:17'),
 (41, 'geo', '高德Web服务key', 'string', 'geoAmapWebKey', '', '', 500, '申请地址：https://console.amap.com/dev/key/app', 1, 1, '2021-01-30 13:27:43', '2022-12-07 15:48:43'),
-(42, 'sms', '短信驱动,aliyun：阿里云;tencent：腾讯云', 'string', 'smsDrive', 'aliyun', '', 600, '', 1, 1, '2021-01-30 13:27:43', '2023-01-21 21:30:05'),
-(43, 'sms', '阿里云AccessKeyID', 'string', 'smsAliyunAccessKeyID', '', '', 610, '应用key和密钥你可以通过 https://ram.console.aliyun.com/manage/ak 获取', 1, 1, '2021-01-30 13:27:43', '2023-01-21 21:30:05'),
-(44, 'sms', '阿里云AccessKeySecret', 'string', 'smsAliyunAccessKeySecret', '', '', 620, '', 1, 1, '2021-01-30 13:27:43', '2023-01-21 21:30:05'),
-(45, 'sms', '阿里云短信签名', 'string', 'smsAliyunSign', '', '', 630, '申请地址：https://dysms.console.aliyun.com/domestic/text/sign', 1, 1, '2021-01-30 13:27:43', '2023-01-21 21:30:05'),
-(46, 'sms', '阿里云短信模板', 'string', 'smsAliyunTemplate', '[{\"key\":\"login\",\"value\":\"SMS_198921686\"},{\"key\":\"register\",\"value\":\"SMS_198921686\"},{\"key\":\"code\",\"value\":\"SMS_198921686\"},{\"key\":\"resetPwd\",\"value\":\"SMS_198921686\"},{\"key\":\"bind\",\"value\":\"SMS_198921686\"},{\"key\":\"cash\",\"value\":\"SMS_198921686\"}]', '', 640, '', 1, 1, '2021-01-30 13:27:43', '2023-01-21 21:30:05'),
-(47, 'sms', '最小发送间隔', 'int', 'smsMinInterval', '60', '', 600, '同号码', 1, 1, '2021-01-30 13:27:43', '2023-01-21 21:30:05'),
-(48, 'sms', 'IP最大发送次数', 'int', 'smsMaxIpLimit', '10', '', 610, '同IP每天最大允许发送次数', 1, 1, '2021-01-30 13:27:43', '2023-01-21 21:30:05'),
-(49, 'sms', '验证码有效期', 'int', 'smsCodeExpire', '600', '', 610, '单位：秒', 1, 1, '2021-01-30 13:27:43', '2023-01-21 21:30:05'),
+(42, 'sms', '短信驱动,aliyun：阿里云;tencent：腾讯云', 'string', 'smsDrive', 'tencent', '', 600, '', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(43, 'sms', '阿里云AccessKeyID', 'string', 'smsAliYunAccessKeyID', '', '', 610, '应用key和密钥你可以通过 https://ram.console.aliyun.com/manage/ak 获取', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(44, 'sms', '阿里云AccessKeySecret', 'string', 'smsAliYunAccessKeySecret', '', '', 620, '', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(45, 'sms', '阿里云短信签名', 'string', 'smsAliYunSign', '', '', 630, '申请地址：https://dysms.console.aliyun.com/domestic/text/sign', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(46, 'sms', '阿里云短信模板', 'string', 'smsAliYunTemplate', '[{\"key\":\"login\",\"value\":\"SMS_198921686\"},{\"key\":\"register\",\"value\":\"SMS_198921686\"},{\"key\":\"code\",\"value\":\"SMS_198921686\"},{\"key\":\"resetPwd\",\"value\":\"SMS_198921686\"},{\"key\":\"bind\",\"value\":\"SMS_198921686\"},{\"key\":\"cash\",\"value\":\"SMS_198921686\"}]', '', 640, '', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(47, 'sms', '最小发送间隔', 'int', 'smsMinInterval', '60', '', 600, '同号码', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(48, 'sms', 'IP最大发送次数', 'int', 'smsMaxIpLimit', '10', '', 610, '同IP每天最大允许发送次数', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(49, 'sms', '验证码有效期', 'int', 'smsCodeExpire', '600', '', 610, '单位：秒', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
 (50, 'smtp', '邮件模板', 'string', 'smtpTemplate', '[{\"key\":\"text\",\"value\":\"./resource/template/email/text.html\"},{\"key\":\"login\",\"value\":\"./resource/template/email/code.html\"},{\"key\":\"register\",\"value\":\"./resource/template/email/code.html\"},{\"key\":\"code\",\"value\":\"./resource/template/email/code.html\"},{\"key\":\"resetPwd\",\"value\":\"./resource/template/email/resetPwd.html\"},{\"key\":\"bind\",\"value\":\"./resource/template/email/code.html\"},{\"key\":\"cash\",\"value\":\"./resource/template/email/code.html\"}]', '', 190, '', 1, 1, '2021-01-30 13:27:43', '2023-02-04 16:59:13'),
 (51, 'smtp', '最小发送间隔', 'int', 'smtpMinInterval', '60', '', 150, '同地址', 1, 1, '2021-01-30 13:27:43', '2023-02-04 16:59:13'),
 (52, 'smtp', 'IP最大发送次数', 'int', 'smtpMaxIpLimit', '10', '', 160, '同IP每天最大允许发送次数', 1, 1, '2021-01-30 13:27:43', '2023-02-04 16:59:13'),
@@ -968,7 +969,14 @@ INSERT INTO `hg_sys_config` (`id`, `group`, `name`, `type`, `key`, `value`, `def
 (67, 'upload', '七牛云SecretKey', 'string', 'uploadQiNiuSecretKey', '', '', 610, '', 1, 1, '2021-01-30 13:27:43', '2023-04-01 14:00:14'),
 (68, 'upload', '七牛云储存路径', 'string', 'uploadQiNiuPath', 'hotgo/attachment/', 'hotgo/attachment/', 620, '', 1, 1, '2021-01-30 13:27:43', '2023-04-01 14:00:14'),
 (69, 'upload', '七牛云存储空间名称', 'string', 'uploadQiNiuBucket', '', 'bufanyun', 630, '', 1, 1, '2021-01-30 13:27:43', '2023-04-01 14:00:14'),
-(70, 'upload', '七牛云访问域名', 'string', 'uploadQiNiuDomain', '', '', 640, '', 1, 1, '2021-01-30 13:27:43', '2023-04-01 14:00:14');
+(70, 'upload', '七牛云访问域名', 'string', 'uploadQiNiuDomain', '', '', 640, '', 1, 1, '2021-01-30 13:27:43', '2023-04-01 14:00:14'),
+(78, 'sms', '腾讯云SecretId', 'string', 'smsTencentSecretId', '', '', 650, '获取地址：https://console.cloud.tencent.com/cam/capi', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(79, 'sms', '腾讯云SecretKey', 'string', 'smsTencentSecretKey', '', '', 660, '', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(80, 'sms', '腾讯云短信应用ID', 'string', 'smsTencentAppId', '', '', 670, '查看地址：https://console.cloud.tencent.com/smsv2/app-manage', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(81, 'sms', '腾讯云短信签名', 'string', 'smsTencentSign', '', '', 680, '查看地址：https://console.cloud.tencent.com/smsv2/csms-sign', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(82, 'sms', '腾讯云接入地域域名', 'string', 'smsTencentEndpoint', 'sms.tencentcloudapi.com', 'sms.tencentcloudapi.com', 690, '默认就近地域接入域名为 sms.tencentcloudapi.com ，也支持指定地域域名访问，例如广州地域的域名为 sms.ap-guangzhou.tencentcloudapi.com', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(83, 'sms', '腾讯云地域信息', 'string', 'smsTencentRegion', 'ap-guangzhou', 'ap-guangzhou', 695, '支持的地域列表参考 https://cloud.tencent.com/document/api/382/52071#.E5.9C.B0.E5.9F.9F.E5.88.97.E8.A1.A8', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(84, 'sms', '腾讯云短信模板', 'string', 'smsTencentTemplate', '[{\"key\":\"login\",\"value\":\"1758990\"},{\"key\":\"register\",\"value\":\"1758990\"},{\"key\":\"code\",\"value\":\"1758990\"},{\"key\":\"resetPwd\",\"value\":\"1758990\"},{\"key\":\"bind\",\"value\":\"1758990\"},{\"key\":\"cash\",\"value\":\"1758990\"}]', '', 698, '', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32');
 
 -- --------------------------------------------------------
 
@@ -1099,7 +1107,7 @@ INSERT INTO `hg_sys_dict_data` (`id`, `label`, `value`, `value_type`, `type`, `l
 (123, '读书', '2', 'int', 'sys_user_hobby', 'info', 0, 80, '爱好类型', 1, '2021-01-30 13:27:43', '2023-01-06 09:45:08'),
 (124, '游泳', '3', 'int', 'sys_user_hobby', 'warning', 0, 80, '爱好类型', 1, '2021-01-30 13:27:43', '2023-01-06 09:45:05'),
 (125, '本地存储', 'local', 'string', 'config_upload_drive', 'info', 1, 10, '', 1, '2022-12-30 17:57:50', '2023-01-06 10:02:31'),
-(126, 'ucloud', 'ucloud', 'string', 'config_upload_drive', 'success', 1, 20, '', 1, '2022-12-30 17:58:26', '2023-04-05 11:22:46'),
+(126, 'ucloud', 'ucloud', 'string', 'config_upload_drive', 'success', 1, 20, '', 1, '2022-12-30 17:58:26', '2022-12-30 17:58:26'),
 (127, 'DEBU', 'DEBU', 'string', 'sys_log_type', 'default', 0, 10, '', 1, '2023-01-20 16:56:23', '2023-01-20 16:56:23'),
 (128, 'INFO', 'INFO', 'string', 'sys_log_type', 'info', 0, 20, '', 1, '2023-01-20 16:56:34', '2023-01-20 16:56:34'),
 (129, 'WARN', 'WARN', 'string', 'sys_log_type', 'warning', 0, 30, '', 1, '2023-01-20 16:56:47', '2023-01-20 16:56:47'),
@@ -1129,7 +1137,7 @@ INSERT INTO `hg_sys_dict_data` (`id`, `label`, `value`, `value_type`, `type`, `l
 (153, '富文本', 'text', 'string', 'config_ems_template', 'default', 0, 0, '自定义编辑邮件内容时使用', 1, '2023-01-21 10:29:36', '2023-02-04 12:55:19'),
 (154, '腾讯云', 'cos', 'string', 'config_upload_drive', 'info', 1, 30, '', 1, '2022-12-30 17:58:26', '2022-12-30 17:58:26'),
 (155, '阿里云', 'oss', 'string', 'config_upload_drive', 'info', 1, 40, '', 1, '2022-12-30 17:58:26', '2022-12-30 17:58:26'),
-(156, '七牛云', 'qiniu', 'string', 'config_upload_drive', 'success', 1, 50, '', 1, '2023-04-05 11:23:32', '2023-04-05 11:23:32');
+(156, '七牛云', 'qiniu', 'string', 'config_upload_drive', 'success', 1, 50, '', 1, '2022-12-30 17:58:26', '2022-12-30 17:58:26');
 
 -- --------------------------------------------------------
 
@@ -5126,7 +5134,8 @@ CREATE TABLE `hg_sys_sms_log` (
 --
 
 INSERT INTO `hg_sys_sms_log` (`id`, `event`, `mobile`, `code`, `times`, `ip`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'login', '1530380571', '1234', 1, '39.165.245.100', 1, '2022-12-16 16:01:30', '2022-01-24 11:33:16');
+(1, 'code', '1530380571', '1234', 1, '39.165.245.100', 1, '2022-12-16 16:01:30', '2022-01-24 11:33:16'),
+(2, 'login', '15303830571', '1234', 0, '127.0.0.1', 1, '2023-04-10 13:53:33', '2023-04-10 13:53:33');
 
 -- --------------------------------------------------------
 
@@ -5466,7 +5475,7 @@ ALTER TABLE `hg_sys_blacklist`
 -- 使用表AUTO_INCREMENT `hg_sys_config`
 --
 ALTER TABLE `hg_sys_config`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '配置ID', AUTO_INCREMENT=71;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '配置ID', AUTO_INCREMENT=73;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_cron`
@@ -5514,13 +5523,13 @@ ALTER TABLE `hg_sys_gen_curd_demo`
 -- 使用表AUTO_INCREMENT `hg_sys_log`
 --
 ALTER TABLE `hg_sys_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=141;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=22;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_login_log`
 --
 ALTER TABLE `hg_sys_login_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=3;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_serve_license`
@@ -5538,7 +5547,7 @@ ALTER TABLE `hg_sys_serve_log`
 -- 使用表AUTO_INCREMENT `hg_sys_sms_log`
 --
 ALTER TABLE `hg_sys_sms_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=3;
 
 --
 -- 使用表AUTO_INCREMENT `hg_test_category`

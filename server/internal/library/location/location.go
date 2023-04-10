@@ -3,13 +3,13 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package location
 
 import (
 	"context"
 	"fmt"
 	"github.com/axgle/mahonia"
+	"github.com/gogf/gf/v2/container/gmap"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/text/gstr"
@@ -50,6 +50,12 @@ type WhoisRegionData struct {
 	RegionCode string `json:"regionCode"`
 	Addr       string `json:"addr"`
 	Err        string `json:"err"`
+}
+
+var cacheMap *gmap.Map
+
+func init() {
+	cacheMap = gmap.New(true)
 }
 
 // WhoisLocation 通过Whois接口查询IP归属地
@@ -120,7 +126,7 @@ func IsJurisByIpTitle(title string) bool {
 }
 
 // GetLocation 获取IP归属地信息
-func GetLocation(ctx context.Context, ip string) (*IpLocationData, error) {
+func GetLocation(ctx context.Context, ip string) (data *IpLocationData, err error) {
 	if !validate.IsIp(ip) {
 		return nil, fmt.Errorf("invalid input ip:%v", ip)
 	}
@@ -128,11 +134,34 @@ func GetLocation(ctx context.Context, ip string) (*IpLocationData, error) {
 	if validate.IsLocalIPAddr(ip) {
 		return nil, fmt.Errorf("must be a public ip:%v", ip)
 	}
-	method := g.Cfg().MustGet(ctx, "hotgo.ipMethod", "cz88")
-	if method.String() == "whois" {
-		return WhoisLocation(ctx, ip)
+
+	if cacheMap.Contains(ip) {
+		value := cacheMap.Get(ip)
+		data1, ok := value.(*IpLocationData)
+		if !ok {
+			cacheMap.Remove(ip)
+			err = fmt.Errorf("data assertion failed in the cache ip:%v", ip)
+			return
+		}
+		return data1, nil
 	}
-	return Cz88Find(ctx, ip)
+
+	mode := g.Cfg().MustGet(ctx, "hotgo.ipMethod", "cz88").String()
+	switch mode {
+	case "whois":
+		data, err = WhoisLocation(ctx, ip)
+	default:
+		data, err = Cz88Find(ctx, ip)
+	}
+
+	if err == nil && data != nil {
+		if cacheMap.Size() > 20000 {
+			cacheMap.Clear()
+		}
+		cacheMap.Set(ip, data)
+	}
+
+	return
 }
 
 // GetPublicIP 获取公网IP
@@ -195,7 +224,7 @@ func GetClientIp(r *ghttp.Request) string {
 		ip = r.GetClientIp()
 	}
 
-	// 如果存在多个，默认取第一个
+	// 兼容部分云厂商CDN，如果存在多个，默认取第一个
 	if gstr.Contains(ip, ",") {
 		ip = gstr.StrTillEx(ip, ",")
 	}

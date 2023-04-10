@@ -83,6 +83,6 @@ export const columns = [
   {
     title: '访问时间',
     key: 'createdAt',
-    width: 150,
+    width: 180,
   },
 ];

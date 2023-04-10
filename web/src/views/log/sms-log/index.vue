@@ -23,7 +23,7 @@
         ref="actionRef"
         :actionColumn="actionColumn"
         @update:checked-row-keys="onCheckedRow"
-        :scroll-x="1090"
+        :scroll-x="1800"
       >
         <template #tableTitle>
           <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
@@ -205,10 +205,10 @@
   const actionRef = ref();
 
   const actionColumn = reactive({
-    width: 220,
+    width: 120,
     title: '操作',
     key: 'action',
-    // fixed: 'right',
+    fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',
@@ -229,13 +229,7 @@
   });
 
   function onCheckedRow(rowKeys) {
-    console.log(rowKeys);
-    if (rowKeys.length > 0) {
-      batchDeleteDisabled.value = false;
-    } else {
-      batchDeleteDisabled.value = true;
-    }
-
+    batchDeleteDisabled.value = rowKeys.length <= 0;
     checkedIds.value = rowKeys;
   }
 

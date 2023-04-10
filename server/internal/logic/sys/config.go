@@ -23,10 +23,21 @@ import (
 )
 
 var MaskDemoField = []string{
-	"smtpUser", "smtpPass", // 邮箱
-	"uploadUCloudPublicKey", "uploadUCloudPrivateKey", // 云存储
-	"geoAmapWebKey",                                    // 地图
-	"smsAliyunAccessKeyID", "smsAliyunAccessKeySecret", // 短信
+	// 邮箱
+	"smtpUser", "smtpPass",
+
+	// 云存储
+	"uploadUCloudPublicKey", "uploadUCloudPrivateKey",
+	"uploadCosSecretId", "uploadCosSecretKey",
+	"uploadOssSecretId", "uploadOssSecretKey",
+	"uploadQiNiuAccessKey", "uploadQiNiuSecretKey",
+
+	// 地图
+	"geoAmapWebKey",
+	
+	// 短信
+	"smsAliYunAccessKeyID", "smsAliYunAccessKeySecret",
+	"smsTencentSecretId", "smsTencentSecretKey",
 }
 
 type sSysConfig struct{}

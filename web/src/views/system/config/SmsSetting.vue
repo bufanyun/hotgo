@@ -36,17 +36,17 @@
         </n-form-item>
 
         <n-divider title-placement="left">阿里云</n-divider>
-        <n-form-item label="AccessKeyID" path="smsAliyunAccessKeyID">
-          <n-input v-model:value="formValue.smsAliyunAccessKeyID" placeholder="" />
+        <n-form-item label="AccessKeyID" path="smsAliYunAccessKeyID">
+          <n-input v-model:value="formValue.smsAliYunAccessKeyID" placeholder="" />
           <template #feedback
             >应用key和密钥你可以通过 https://ram.console.aliyun.com/manage/ak 获取</template
           >
         </n-form-item>
 
-        <n-form-item label="AccessKeySecret" path="smsAliyunAccessKeySecret">
+        <n-form-item label="AccessKeySecret" path="smsAliYunAccessKeySecret">
           <n-input
             type="password"
-            v-model:value="formValue.smsAliyunAccessKeySecret"
+            v-model:value="formValue.smsAliYunAccessKeySecret"
             show-password-on="click"
           >
             <template #password-visible-icon>
@@ -58,19 +58,80 @@
           </n-input>
         </n-form-item>
 
-        <n-form-item label="签名" path="smsAliyunSign">
-          <n-input v-model:value="formValue.smsAliyunSign" placeholder="" />
+        <n-form-item label="签名" path="smsAliYunSign">
+          <n-input v-model:value="formValue.smsAliYunSign" placeholder="" />
           <template #feedback
             >申请地址：https://dysms.console.aliyun.com/domestic/text/sign</template
           >
         </n-form-item>
 
-        <n-form-item label="短信模板" path="smsAliyunTemplate">
+        <n-form-item label="短信模板" path="smsAliYunTemplate">
           <n-dynamic-input
-            v-model:value="formValue.smsAliyunTemplate"
+            v-model:value="formValue.smsAliYunTemplate"
             preset="pair"
             key-placeholder="事件KEY"
             value-placeholder="模板CODE"
+          />
+        </n-form-item>
+
+        <n-divider title-placement="left">腾讯云</n-divider>
+        <n-form-item label="SecretId" path="smsTencentSecretId">
+          <n-input v-model:value="formValue.smsTencentSecretId" placeholder="" />
+          <template #feedback
+            >应用key和密钥你可以通过 https://ram.console.aliyun.com/manage/ak 获取</template
+          >
+        </n-form-item>
+
+        <n-form-item label="SecretKey" path="smsTencentSecretKey">
+          <n-input
+            type="password"
+            v-model:value="formValue.smsTencentSecretKey"
+            show-password-on="click"
+          >
+            <template #password-visible-icon>
+              <n-icon :size="16" :component="GlassesOutline" />
+            </template>
+            <template #password-invisible-icon>
+              <n-icon :size="16" :component="Glasses" />
+            </template>
+          </n-input>
+        </n-form-item>
+
+        <n-form-item label="接入地域域名" path="smsTencentEndpoint">
+          <n-input v-model:value="formValue.smsTencentEndpoint" placeholder="" />
+          <template #feedback
+            >默认就近地域接入域名为 sms.tencentcloudapi.com
+            ，也支持指定地域域名访问，例如广州地域的域名为
+            sms.ap-guangzhou.tencentcloudapi.com</template
+          >
+        </n-form-item>
+
+        <n-form-item label="地域信息" path="smsTencentRegion">
+          <n-input v-model:value="formValue.smsTencentRegion" placeholder="" />
+          <template #feedback
+            >支持的地域列表参考
+            https://cloud.tencent.com/document/api/382/52071#.E5.9C.B0.E5.9F.9F.E5.88.97.E8.A1.A8</template
+          >
+        </n-form-item>
+
+        <n-form-item label="短信应用ID" path="smsTencentAppId">
+          <n-input v-model:value="formValue.smsTencentAppId" placeholder="" />
+          <template #feedback
+            >查看地址：https://console.cloud.tencent.com/smsv2/app-manage</template
+          >
+        </n-form-item>
+
+        <n-form-item label="签名" path="smsTencentSign">
+          <n-input v-model:value="formValue.smsTencentSign" placeholder="" />
+          <template #feedback>查看地址：https://console.cloud.tencent.com/smsv2/csms-sign</template>
+        </n-form-item>
+
+        <n-form-item label="短信模板" path="smsTencentTemplate">
+          <n-dynamic-input
+            v-model:value="formValue.smsTencentTemplate"
+            preset="pair"
+            key-placeholder="事件KEY"
+            value-placeholder="模板ID"
           />
         </n-form-item>
 
@@ -163,13 +224,20 @@
 
   const formValue = ref({
     smsDrive: 'aliyun',
-    smsAliyunAccessKeyID: '',
-    smsAliyunAccessKeySecret: '',
-    smsAliyunSign: '',
-    smsAliyunTemplate: null,
     smsMinInterval: 60,
     smsMaxIpLimit: 10,
     smsCodeExpire: 600,
+    smsAliYunAccessKeyID: '',
+    smsAliYunAccessKeySecret: '',
+    smsAliYunSign: '',
+    smsAliYunTemplate: null,
+    smsTencentSecretId: '',
+    smsTencentSecretKey: '',
+    smsTencentEndpoint: 'sms.tencentcloudapi.com',
+    smsTencentRegion: 'ap-guangzhou',
+    smsTencentAppId: '',
+    smsTencentSign: '',
+    smsTencentTemplate: null,
   });
 
   function sendTest() {
@@ -200,7 +268,8 @@
     new Promise((_resolve, _reject) => {
       getConfig({ group: group.value })
         .then((res) => {
-          res.list.smsAliyunTemplate = JSON.parse(res.list.smsAliyunTemplate);
+          res.list.smsAliYunTemplate = JSON.parse(res.list.smsAliYunTemplate);
+          res.list.smsTencentTemplate = JSON.parse(res.list.smsTencentTemplate);
           formValue.value = res.list;
         })
         .finally(() => {

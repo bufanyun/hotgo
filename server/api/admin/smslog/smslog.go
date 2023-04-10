@@ -9,12 +9,8 @@ import (
 
 // ListReq 查询列表
 type ListReq struct {
-	form.PageReq
-	form.RangeDateReq
-	form.StatusReq
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	g.Meta  `path:"/smsLog/list" method:"get" tags:"短信记录" summary:"获取短信记录列表"`
+	g.Meta `path:"/smsLog/list" method:"get" tags:"短信记录" summary:"获取短信记录列表"`
+	sysin.SmsLogListInp
 }
 
 type ListRes struct {

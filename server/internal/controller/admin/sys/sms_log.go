@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -13,6 +12,7 @@ import (
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
+	"hotgo/utility/validate"
 )
 
 var (
@@ -71,6 +71,10 @@ func (c *cSmsLog) View(ctx context.Context, req *smslog.ViewReq) (res *smslog.Vi
 func (c *cSmsLog) List(ctx context.Context, req *smslog.ListReq) (res *smslog.ListRes, err error) {
 	var in sysin.SmsLogListInp
 	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
 		return
 	}
 

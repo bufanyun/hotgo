@@ -26,8 +26,8 @@
         ref="actionRef"
         :actionColumn="actionColumn"
         @update:checked-row-keys="onCheckedRow"
-        :scroll-x="1090"
-        :resizeHeightOffset="-10000"
+        :scroll-x="1800"
+        :resizeHeightOffset="-20000"
       >
         <template #tableTitle>
           <n-button
@@ -312,10 +312,10 @@
   let formParams = ref<any>(cloneDeep(resetFormParams));
 
   const actionColumn = reactive({
-    width: 220,
+    width: 180,
     title: '操作',
     key: 'action',
-    // fixed: 'right',
+    fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',

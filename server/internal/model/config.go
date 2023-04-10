@@ -101,10 +101,18 @@ type SmsConfig struct {
 	SmsMaxIpLimit  int    `json:"smsMaxIpLimit"`
 	SmsCodeExpire  int    `json:"smsCodeExpire"`
 	// 阿里云
-	SmsAliyunAccessKeyID     string         `json:"smsAliyunAccessKeyID"`
-	SmsAliyunAccessKeySecret string         `json:"smsAliyunAccessKeySecret"`
-	SmsAliyunSign            string         `json:"smsAliyunSign"`
-	SmsAliyunTemplate        []*SmsTemplate `json:"smsAliyunTemplate"`
+	AliYunAccessKeyID     string         `json:"smsAliYunAccessKeyID"`
+	AliYunAccessKeySecret string         `json:"smsAliYunAccessKeySecret"`
+	AliYunSign            string         `json:"smsAliYunSign"`
+	AliYunTemplate        []*SmsTemplate `json:"smsAliYunTemplate"`
+	// 腾讯云
+	TencentSecretId  string         `json:"smsTencentSecretId"`
+	TencentSecretKey string         `json:"smsTencentSecretKey"`
+	TencentEndpoint  string         `json:"smsTencentEndpoint"`
+	TencentRegion    string         `json:"smsTencentRegion"`
+	TencentAppId     string         `json:"smsTencentAppId"`
+	TencentSign      string         `json:"smsTencentSign"`
+	TencentTemplate  []*SmsTemplate `json:"smsTencentTemplate"`
 }
 
 ///////////// 以下是本地配置

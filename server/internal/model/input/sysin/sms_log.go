@@ -3,10 +3,12 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sysin
 
 import (
+	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"hotgo/internal/consts"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 )
@@ -46,8 +48,20 @@ type SmsLogListInp struct {
 	form.PageReq
 	form.RangeDateReq
 	form.StatusReq
-	Title   string
-	Content string
+	Mobile string
+	Ip     string
+	Event  string
+}
+
+func (in *SmsLogListInp) Filter(ctx context.Context) (err error) {
+	if in.Event != "" {
+		_, ok := consts.SmsTemplateEventMap[in.Event]
+		if !ok {
+			err = gerror.Newf("无效的事件类型:%v", in.Event)
+			return
+		}
+	}
+	return
 }
 
 type SmsLogListModel struct {

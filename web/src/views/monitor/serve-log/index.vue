@@ -26,7 +26,7 @@
         ref="actionRef"
         :actionColumn="actionColumn"
         @update:checked-row-keys="onCheckedRow"
-        :scroll-x="1090"
+        :scroll-x="1800"
         :resizeHeightOffset="-10000"
         size="small"
       >
@@ -122,10 +122,10 @@
   const showModal = ref(false);
 
   const actionColumn = reactive({
-    width: 300,
+    width: 120,
     title: '操作',
     key: 'action',
-    // fixed: 'right',
+    fixed: 'right',
     render(record) {
       return h(TableAction as any, {
         style: 'button',

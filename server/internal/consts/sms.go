@@ -17,6 +17,17 @@ const (
 	SmsTemplateCash     = "cash"     // 申请提现
 )
 
+var (
+	SmsTemplateEventMap = map[string]string{
+		SmsTemplateCode:     "通用验证码",
+		SmsTemplateLogin:    "登录",
+		SmsTemplateRegister: "注册",
+		SmsTemplateResetPwd: "重置密码",
+		SmsTemplateBind:     "绑定手机号",
+		SmsTemplateCash:     "申请提现",
+	}
+)
+
 // 验证码状态
 const (
 	SmsStatusNotUsed = 1 // 未使用

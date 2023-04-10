@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -16,7 +15,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/location"
-	"hotgo/internal/library/sms/aliyun"
+	"hotgo/internal/library/sms"
 	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/sysin"
@@ -129,6 +128,18 @@ func (s *sSysSmsLog) View(ctx context.Context, in sysin.SmsLogViewInp) (res *sys
 func (s *sSysSmsLog) List(ctx context.Context, in sysin.SmsLogListInp) (list []*sysin.SmsLogListModel, totalCount int, err error) {
 	mod := dao.SysSmsLog.Ctx(ctx)
 
+	if in.Mobile != "" {
+		mod = mod.WhereLike("mobile", "%"+in.Mobile+"%")
+	}
+
+	if in.Ip != "" {
+		mod = mod.Where("ip", in.Ip)
+	}
+
+	if in.Event != "" {
+		mod = mod.Where("event", in.Event)
+	}
+
 	if in.Status > 0 {
 		mod = mod.Where("status", in.Status)
 	}
@@ -160,9 +171,7 @@ func (s *sSysSmsLog) SendCode(ctx context.Context, in sysin.SendCodeInp) (err er
 		return gerror.New("手机号不能为空")
 	}
 
-	var (
-		models *entity.SysSmsLog
-	)
+	var models *entity.SysSmsLog
 	if err = dao.SysSmsLog.Ctx(ctx).Where("event", in.Event).Where("mobile", in.Mobile).Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
@@ -187,16 +196,8 @@ func (s *sSysSmsLog) SendCode(ctx context.Context, in sysin.SendCodeInp) (err er
 		in.Code = grand.Digits(4)
 	}
 
-	switch config.SmsDrive {
-	case consts.SmsDriveAliYun:
-		err = aliyun.SendCode(ctx, in, config)
-		if err != nil {
-			return err
-		}
-	case consts.SmsDriveTencent:
-		return gerror.Newf("暂不支持短信驱动:%v", config.SmsDrive)
-	default:
-		return gerror.Newf("暂不支持短信驱动:%v", config.SmsDrive)
+	if err = sms.New(config.SmsDrive).SendCode(ctx, in, config); err != nil {
+		return err
 	}
 
 	var data = new(entity.SysSmsLog)
@@ -230,18 +231,26 @@ func (s *sSysSmsLog) GetTemplate(ctx context.Context, template string, config *m
 
 	switch config.SmsDrive {
 	case consts.SmsDriveAliYun:
-		if len(config.SmsAliyunTemplate) == 0 {
-			return "", gerror.New("管理员还没有配置任何模板！")
+		if len(config.AliYunTemplate) == 0 {
+			return "", gerror.New("管理员还没有配置任何阿里云短信模板！")
 		}
 
-		for _, v := range config.SmsAliyunTemplate {
+		for _, v := range config.AliYunTemplate {
 			if v.Key == template {
 				return v.Value, nil
 			}
 		}
 
 	case consts.SmsDriveTencent:
-		return "", gerror.Newf("暂不支持短信驱动:%v", config.SmsDrive)
+		if len(config.TencentTemplate) == 0 {
+			return "", gerror.New("管理员还没有配置任何腾讯云短信模板！")
+		}
+
+		for _, v := range config.TencentTemplate {
+			if v.Key == template {
+				return v.Value, nil
+			}
+		}
 	default:
 		return "", gerror.Newf("暂不支持短信驱动:%v", config.SmsDrive)
 	}
@@ -294,9 +303,7 @@ func (s *sSysSmsLog) VerifyCode(ctx context.Context, in sysin.VerifyCodeInp) (er
 		return err
 	}
 
-	var (
-		models *entity.SysSmsLog
-	)
+	var models *entity.SysSmsLog
 	if err = dao.SysSmsLog.Ctx(ctx).Where("event", in.Event).Where("mobile", in.Mobile).Order("id desc").Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
@@ -334,10 +341,6 @@ func (s *sSysSmsLog) VerifyCode(ctx context.Context, in sysin.VerifyCodeInp) (er
 		"status":     consts.SmsStatusUsed,
 		"updated_at": gtime.Now(),
 	}).Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
 
 	return
 }
