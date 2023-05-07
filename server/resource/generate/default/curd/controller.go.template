@@ -92,7 +92,7 @@ func (c *c@{.varName}) MaxSort(ctx context.Context, req *@{.varName | ToLower}.M
 	return
 }
 @{end}
-@{ if eq .options.Step.HasView true }
+@{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }
 // View 获取指定@{.tableComment}信息
 func (c *c@{.varName}) View(ctx context.Context, req *@{.varName | ToLower}.ViewReq) (res *@{.varName | ToLower}.ViewRes, err error) {
 	var in @{.templateGroup}in.@{.varName}ViewInp

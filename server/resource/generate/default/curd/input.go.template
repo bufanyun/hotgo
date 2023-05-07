@@ -44,7 +44,7 @@ func (in *@{.varName}DeleteInp) Filter(ctx context.Context) (err error) {
 
 type @{.varName}DeleteModel struct{}
 @{end}
-@{ if eq .options.Step.HasView true }
+@{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }
 // @{.varName}ViewInp 获取指定@{.tableComment}信息
 type @{.varName}ViewInp struct {
 	@{.pk.GoName} @{.pk.GoType} `json:"@{.pk.TsName}" v:"required#@{.pk.Dc}不能为空" dc:"@{.pk.Dc}"`

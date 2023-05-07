@@ -125,7 +125,7 @@ func (s *s@{.servFunName}) MaxSort(ctx context.Context, in @{.templateGroup}in.@
 	return
 }
 @{end}
-@{ if eq .options.Step.HasView true }
+@{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }
 // View 获取@{.tableComment}指定信息
 func (s *s@{.servFunName}) View(ctx context.Context, in @{.templateGroup}in.@{.varName}ViewInp) (res *@{.templateGroup}in.@{.varName}ViewModel, err error) {
     err = s.Model(ctx).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Scan(&res)
