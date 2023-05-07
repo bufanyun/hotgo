@@ -34,7 +34,7 @@ func Get(ctx context.Context) *model.Context {
 func SetUser(ctx context.Context, user *model.Identity) {
 	c := Get(ctx)
 	if c == nil {
-		g.Log().Warningf(ctx, "contexts.SetUser,  c == nil ")
+		g.Log().Warning(ctx, "contexts.SetUser,  c == nil ")
 		return
 	}
 	c.User = user
@@ -44,7 +44,7 @@ func SetUser(ctx context.Context, user *model.Identity) {
 func SetResponse(ctx context.Context, response *model.Response) {
 	c := Get(ctx)
 	if c == nil {
-		g.Log().Warningf(ctx, "contexts.SetResponse,  c == nil ")
+		g.Log().Warning(ctx, "contexts.SetResponse,  c == nil ")
 		return
 	}
 	c.Response = response
@@ -54,7 +54,7 @@ func SetResponse(ctx context.Context, response *model.Response) {
 func SetModule(ctx context.Context, module string) {
 	c := Get(ctx)
 	if c == nil {
-		g.Log().Warningf(ctx, "contexts.SetModule,  c == nil ")
+		g.Log().Warning(ctx, "contexts.SetModule,  c == nil ")
 		return
 	}
 	c.Module = module
@@ -64,7 +64,7 @@ func SetModule(ctx context.Context, module string) {
 func SetTakeUpTime(ctx context.Context, takeUpTime int64) {
 	c := Get(ctx)
 	if c == nil {
-		g.Log().Warningf(ctx, "contexts.SetTakeUpTime,  c == nil ")
+		g.Log().Warning(ctx, "contexts.SetTakeUpTime,  c == nil ")
 		return
 	}
 	c.TakeUpTime = takeUpTime
@@ -120,7 +120,7 @@ func GetModule(ctx context.Context) string {
 func SetAddonName(ctx context.Context, name string) {
 	c := Get(ctx)
 	if c == nil {
-		g.Log().Warningf(ctx, "contexts.SetAddonName,  c == nil ")
+		g.Log().Warning(ctx, "contexts.SetAddonName,  c == nil ")
 		return
 	}
 	Get(ctx).AddonName = name

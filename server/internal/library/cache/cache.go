@@ -37,7 +37,7 @@ func SetAdapter(ctx context.Context) {
 
 	if conf == nil {
 		conf = new(model.CacheConfig)
-		g.Log().Infof(ctx, "no cache driver is configured. default memory cache is used.")
+		g.Log().Info(ctx, "no cache driver is configured. default memory cache is used.")
 	}
 
 	switch conf.Adapter {
@@ -45,7 +45,7 @@ func SetAdapter(ctx context.Context) {
 		adapter = gcache.NewAdapterRedis(g.Redis())
 	case "file":
 		if conf.FileDir == "" {
-			g.Log().Fatalf(ctx, "file path must be configured for file caching.")
+			g.Log().Fatal(ctx, "file path must be configured for file caching.")
 			return
 		}
 

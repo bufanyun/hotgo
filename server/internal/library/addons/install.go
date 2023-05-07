@@ -35,7 +35,7 @@ func ScanInstall(m Module) (record *InstallRecord, err error) {
 func IsInstall(m Module) bool {
 	record, err := ScanInstall(m)
 	if err != nil {
-		g.Log().Debugf(m.Ctx(), err.Error())
+		g.Log().Debug(m.Ctx(), err.Error())
 		return false
 	}
 	if record == nil {
