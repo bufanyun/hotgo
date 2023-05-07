@@ -109,7 +109,7 @@ func setDefault(field *sysin.GenCodesColumnListModel) {
 
 	setDefaultValue(field)
 
-	if field.IsAllowNull == "YES" {
+	if field.IsAllowNull == "NO" {
 		field.Required = true
 	}
 

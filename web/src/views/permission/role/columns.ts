@@ -15,7 +15,6 @@ export const columns = [
           {
             ghost: true,
             strong: true,
-            tertiary: true,
             size: 'small',
             text: true,
             iconPlacement: 'right',

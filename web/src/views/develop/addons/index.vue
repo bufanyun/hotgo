@@ -120,6 +120,7 @@
     NIcon,
     NTag,
     NIconWrapper,
+    NAvatar,
     useMessage,
     NImage,
     useDialog,
@@ -159,25 +160,13 @@
           });
         } else {
           return h(
-            NIconWrapper,
+            NAvatar,
             {
               size: 48,
-              borderRadius: 8,
+              color: '#2D8CF0',
             },
             {
-              default: () =>
-                h(
-                  NIcon,
-                  {
-                    size: 36,
-                    style: {
-                      marginTop: '-8px',
-                    },
-                  },
-                  {
-                    default: () => h(getIconComponent(row.logo)),
-                  }
-                ),
+              default: () => h(getIconComponent(row.logo)),
             }
           );
         }

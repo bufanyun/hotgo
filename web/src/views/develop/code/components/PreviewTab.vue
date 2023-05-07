@@ -10,7 +10,7 @@
           {{ view.path }}
         </n-tag>
         <n-scrollbar class="code-scrollbar" trigger="none">
-          <n-code :code="view.content" />
+          <n-code :code="view.content" :hljs="hljs" language="goLang" show-line-numbers />
         </n-scrollbar>
       </n-tab-pane>
     </n-tabs>
@@ -19,6 +19,8 @@
 
 <script lang="ts" setup>
   import { computed } from 'vue';
+  import hljs from 'highlight.js/lib/core';
+  import goLang from 'highlight.js/lib/languages/go';
   import { cloneDeep } from 'lodash-es';
   import {
     CheckmarkCircle,
@@ -27,6 +29,7 @@
     HelpCircleOutline,
     RemoveCircleOutline,
   } from '@vicons/ionicons5';
+  hljs.registerLanguage('goLang', goLang);
 
   interface Props {
     previewModel: any;

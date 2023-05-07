@@ -99,7 +99,7 @@ func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list
 	}
 
 	for _, v := range list {
-		g.DumpWithType(v)
+		//g.DumpWithType(v)
 		//// 获取省市编码对应的地区名称
 		//region, err := location.ParseRegion(ctx, v.SysLogProvinceId, v.SysLogCityId, 0)
 		//if err != nil {
@@ -191,6 +191,6 @@ func (s *sSysLoginLog) Push(ctx context.Context, in sysin.LoginLogPushInp) {
 
 // RealWrite 真实写入
 func (s *sSysLoginLog) RealWrite(ctx context.Context, models entity.SysLoginLog) (err error) {
-	_, err = dao.SysLoginLog.Ctx(ctx).Data(models).Insert()
+	_, err = dao.SysLoginLog.Ctx(ctx).Data(models).FieldsEx(dao.SysLoginLog.Columns().Id).Insert()
 	return
 }
