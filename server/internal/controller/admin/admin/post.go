@@ -28,7 +28,7 @@ func (c *cPost) Delete(ctx context.Context, req *post.DeleteReq) (res *post.Dele
 	}
 
 	err = service.AdminPost().Delete(ctx, in)
-	return res, nil
+	return
 }
 
 // Edit 修改/新增
