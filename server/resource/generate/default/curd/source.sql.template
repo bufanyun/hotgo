@@ -35,7 +35,7 @@ INSERT INTO `@{.menuTable}` (`id`, `pid`, `title`, `name`, `path`, `icon`, `type
 
 
 SET @listId = LAST_INSERT_ID();
-@{ if eq .options.Step.HasView true }
+@{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }
 -- 详情
 INSERT INTO `@{.menuTable}` (`id`, `pid`, `title`, `name`, `path`, `icon`, `type`, `redirect`, `permissions`, `permission_name`, `component`, `always_show`, `active_menu`, `is_root`, `is_frame`, `frame_src`, `keep_alive`, `hidden`, `affix`, `level`, `tree`, `sort`, `remark`, `status`, `created_at`, `updated_at`) VALUES (NULL, @dirId, '@{.tableComment}详情', '@{.varName | LcFirst}View', 'view/:id?', '', '2', '', '/@{.apiPrefix}/view', '', '/@{.componentPrefix}/view', '0', '@{.varName | LcFirst}Index', '0', '0', '', '0', '1', '0', '2', '', '20', '', '1', @now, @now);
 @{end}

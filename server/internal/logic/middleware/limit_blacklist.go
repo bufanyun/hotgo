@@ -16,7 +16,7 @@ func (s *sMiddleware) Blacklist(r *ghttp.Request) {
 			response.JsonExit(r, gcode.CodeServerBusy.Code(), "请求异常，已被封禁，如有疑问请联系管理员！")
 		}
 	} else {
-		g.Log().Infof(r.Context(), "blacklists uninitialized")
+		g.Log().Info(r.Context(), "blacklists uninitialized")
 	}
 
 	r.Middleware.Next()

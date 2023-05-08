@@ -92,11 +92,11 @@
 @{.apiImport}
   import { State, columns, schemas, options, newState } from './model';
 @{.iconsImport}
-@{ if eq .options.Step.HasView true }  import { useRouter } from 'vue-router';@{end}
+@{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }  import { useRouter } from 'vue-router';@{end}
   import { getOptionLabel } from '@/utils/hotgo';
 @{ if eq .options.Step.HasEdit true }  import Edit from './edit.vue';@{end}
   const { hasPermission } = usePermission();
-@{ if eq .options.Step.HasView true }  const router = useRouter();@{end}
+@{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }  const router = useRouter();@{end}
   const actionRef = ref();
   const dialog = useDialog();
   const message = useMessage();

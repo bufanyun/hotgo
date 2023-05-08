@@ -48,7 +48,7 @@ export function Switch(params) {
   });
 }
 @{end}
-@{ if eq .options.Step.HasView true }
+@{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }
 // 获取@{.tableComment}指定详情
 export function View(params) {
   return http.request({

@@ -346,6 +346,15 @@ func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (lists rol
 		if err != nil {
 			return role.DynamicRes{}, err
 		}
+		if len(array) > 0 {
+			pidList, err := dao.AdminMenu.Ctx(ctx).Fields("pid").WhereIn("id", array).Group("pid").Array()
+			if err != nil {
+				return role.DynamicRes{}, err
+			}
+			if len(pidList) > 0 {
+				array = append(pidList, array...)
+			}
+		}
 		mod = mod.Where("id", array)
 	}
 

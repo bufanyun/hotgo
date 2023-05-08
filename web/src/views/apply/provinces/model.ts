@@ -99,3 +99,11 @@ export function newState(state: State | null): State {
 export const options = ref<Options>({
   sys_normal_disable: [],
 });
+
+async function loadOptions() {
+  options.value = await Dicts({
+    types: ['sys_normal_disable'],
+  });
+}
+
+await loadOptions();

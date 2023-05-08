@@ -38,6 +38,7 @@
     "date-fns": "^2.28.0",
     "echarts": "^5.3.2",
     "element-resize-detector": "^1.2.4",
+    "highlight.js": "^11.8.0",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
     "mitt": "^2.1.0",

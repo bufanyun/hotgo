@@ -81,7 +81,7 @@ func init() {
 	mqProducerInstanceMap = make(map[string]MqProducer)
 	mqConsumerInstanceMap = make(map[string]MqConsumer)
 	if err := g.Cfg().MustGet(ctx, "queue").Scan(&config); err != nil {
-		g.Log().Warning(ctx, "queue init err:%+v", err)
+		g.Log().Warningf(ctx, "queue init err:%+v", err)
 	}
 }
 

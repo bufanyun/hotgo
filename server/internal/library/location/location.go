@@ -174,7 +174,7 @@ func GetPublicIP(ctx context.Context) (ip string, err error) {
 	}
 
 	if data == nil {
-		g.Log().Infof(ctx, "publicIP address Parsing failure, check the network and firewall blocking.")
+		g.Log().Info(ctx, "publicIP address Parsing failure, check the network and firewall blocking.")
 		return "0.0.0.0", nil
 	}
 	return data.Ip, nil
