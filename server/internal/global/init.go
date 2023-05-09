@@ -27,6 +27,9 @@ import (
 )
 
 func Init(ctx context.Context) {
+	// 设置服务日志处理
+	g.Log().SetHandlers(LoggingServeLogHandler)
+
 	_, err := g.Cfg().Get(ctx, "hotgo.debug")
 	if err != nil {
 		g.Log().Fatal(ctx, "配置读取异常:", err, "\r\n你确定 config/config.yaml 文件存在且格式正确吗？\r\n")
@@ -45,9 +48,6 @@ func Init(ctx context.Context) {
 
 	// 设置缓存适配器
 	cache.SetAdapter(ctx)
-
-	// 设置服务日志处理
-	g.Log().SetHandlers(LoggingServeLogHandler)
 
 	// 启动服务监控
 	service.AdminMonitor().StartMonitor(ctx)
