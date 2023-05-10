@@ -47,7 +47,7 @@ func (s *s@{.servFunName}) Model(ctx context.Context, option ...*handler.Option)
 
 // List 获取@{.tableComment}列表
 func (s *s@{.servFunName}) List(ctx context.Context, in @{.templateGroup}in.@{.varName}ListInp) (list []*@{.templateGroup}in.@{.varName}ListModel, totalCount int, err error) {
-	mod := s.Model(ctx)
+	mod := s.Model(ctx@{ if eq .options.Step.HasNotFilterAuth true } ,&handler.Option{FilterAuth: false}@{end})
 @{.listWhere}
 @{.listJoin.link}
 	totalCount, err = mod.Clone().Count(1)
@@ -94,6 +94,7 @@ func (s *s@{.servFunName}) Export(ctx context.Context, in @{.templateGroup}in.@{
 @{ if eq .options.Step.HasEdit true }
 // Edit 修改/新增@{.tableComment}
 func (s *s@{.servFunName}) Edit(ctx context.Context, in @{.templateGroup}in.@{.varName}EditInp) (err error) {
+@{.edit.unique}
 	// 修改
 	if in.@{.pk.GoName} > 0 {
 @{.edit.update}
@@ -107,7 +108,7 @@ func (s *s@{.servFunName}) Edit(ctx context.Context, in @{.templateGroup}in.@{.v
 @{ if eq .options.Step.HasDel true }
 // Delete 删除@{.tableComment}
 func (s *s@{.servFunName}) Delete(ctx context.Context, in @{.templateGroup}in.@{.varName}DeleteInp) (err error) {
-	_, err = s.Model(ctx).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Delete()
+	_, err = s.Model(ctx@{ if eq .options.Step.HasNotFilterAuth true } ,&handler.Option{FilterAuth: false}@{end}).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Delete()
 	return
 }@{end}
 @{ if and (eq .options.Step.HasEdit true) (eq .options.Step.HasMaxSort true) }
@@ -128,7 +129,7 @@ func (s *s@{.servFunName}) MaxSort(ctx context.Context, in @{.templateGroup}in.@
 @{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }
 // View 获取@{.tableComment}指定信息
 func (s *s@{.servFunName}) View(ctx context.Context, in @{.templateGroup}in.@{.varName}ViewInp) (res *@{.templateGroup}in.@{.varName}ViewModel, err error) {
-    err = s.Model(ctx).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Scan(&res)
+    err = s.Model(ctx@{ if eq .options.Step.HasNotFilterAuth true } ,&handler.Option{FilterAuth: false}@{end}).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Scan(&res)
 	return
 }@{end}
 @{ if eq .options.Step.HasStatus true }
@@ -149,7 +150,7 @@ func (s *s@{.servFunName}) Status(ctx context.Context, in @{.templateGroup}in.@{
 		return
 	}
 
-	_, err = s.Model(ctx).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Data(@{.statusUpdate}).Update()
+	_, err = s.Model(ctx@{ if eq .options.Step.HasNotFilterAuth true } ,&handler.Option{FilterAuth: false}@{end}).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Data(@{.statusUpdate}).Update()
 	return
 }
 @{end}
@@ -166,7 +167,7 @@ func (s *s@{.servFunName}) Switch(ctx context.Context, in @{.templateGroup}in.@{
 		return
 	}
 
-	_, err = s.Model(ctx).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Data(@{.switchUpdate}).Update()
+	_, err = s.Model(ctx@{ if eq .options.Step.HasNotFilterAuth true } ,&handler.Option{FilterAuth: false}@{end}).Where(dao.@{.daoName}.Columns().@{.pk.GoName}, in.@{.pk.GoName}).Data(@{.switchUpdate}).Update()
 	return
 }
 @{end}

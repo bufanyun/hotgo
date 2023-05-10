@@ -132,11 +132,15 @@ func (l *gCurd) generateWebModelRules(ctx context.Context, in *CurdPreviewInput)
 	buffer := bytes.NewBuffer(nil)
 	buffer.WriteString("export const rules = {\n")
 	for _, field := range in.masterFields {
-		if field.FormRole == "" || field.FormRole == FormRoleNone {
+		if !field.IsEdit || (!field.Required && (field.FormRole == "" || field.FormRole == FormRoleNone)) {
 			continue
 		}
 
-		buffer.WriteString(fmt.Sprintf("  %s: {\n    required: %v,\n    trigger: ['blur', 'input'],\n    message: '请输入%s',\n    validator: validate.%v,\n  },\n", field.TsName, field.Required, field.Dc, field.FormRole))
+		if field.FormRole == "" || field.FormRole == FormRoleNone {
+			buffer.WriteString(fmt.Sprintf("  %s: {\n    required: %v,\n    trigger: ['blur', 'input'],\n    message: '请输入%s',\n  },\n", field.TsName, field.Required, field.Dc))
+		} else {
+			buffer.WriteString(fmt.Sprintf("  %s: {\n    required: %v,\n    trigger: ['blur', 'input'],\n    message: '请输入%s',\n    validator: validate.%v,\n  },\n", field.TsName, field.Required, field.Dc, field.FormRole))
+		}
 	}
 	buffer.WriteString("};\n")
 	return buffer.String()
