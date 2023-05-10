@@ -22,8 +22,11 @@
           <RevealSetting v-if="type === 3" />
           <EmailSetting v-if="type === 4" />
           <SmsSetting v-if="type === 5" />
+          <CashSetting v-if="type === 7" />
           <UploadSetting v-if="type === 8" />
           <GeoSetting v-if="type === 9" />
+          <PaySetting v-if="type === 10" />
+          <WechatSetting v-if="type === 11" />
         </n-card>
       </n-grid-item>
     </n-grid>
@@ -35,20 +38,23 @@
   import RevealSetting from './RevealSetting.vue';
   import EmailSetting from './EmailSetting.vue';
   import ThemeSetting from './ThemeSetting.vue';
+  import CashSetting from './CashSetting.vue';
   import UploadSetting from './UploadSetting.vue';
   import GeoSetting from './GeoSetting.vue';
   import SmsSetting from './SmsSetting.vue';
+  import PaySetting from './PaySetting.vue';
+  import WechatSetting from './WechatSetting.vue';
   const typeTabList = [
     {
       name: '基本设置',
       desc: '系统常规设置',
       key: 1,
     },
-    {
-      name: '主题设置',
-      desc: '系统主题设置',
-      key: 2,
-    },
+    // {
+    //   name: '主题设置',
+    //   desc: '系统主题设置',
+    //   key: 2,
+    // },
     // {
     //   name: '显示设置',
     //   desc: '系统显示设置',
@@ -65,15 +71,15 @@
       key: 5,
     },
     // {
-    //   name: '下游配置',
+    //   name: '管理员配置',
     //   desc: '默认设置和权限屏蔽',
     //   key: 6,
     // },
-    // {
-    //   name: '提现配置',
-    //   desc: '提现规则配置',
-    //   key: 7,
-    // },
+    {
+      name: '提现配置',
+      desc: '管理员提现规则配置',
+      key: 7,
+    },
     {
       name: '云存储',
       desc: '配置上传文件驱动',
@@ -84,6 +90,16 @@
       desc: '配置地理位置工具',
       key: 9,
     },
+    {
+      name: '支付配置',
+      desc: '支付宝/微信/QQ支付配置等',
+      key: 10,
+    },
+    {
+      name: '微信配置',
+      desc: '公众号/开放平台/小程序配置等',
+      key: 11,
+    },
   ];
   export default defineComponent({
     components: {
@@ -91,9 +107,12 @@
       RevealSetting,
       EmailSetting,
       ThemeSetting,
+      CashSetting,
       UploadSetting,
       GeoSetting,
       SmsSetting,
+      PaySetting,
+      WechatSetting,
     },
     setup() {
       const state = reactive({

@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package simple
 
 import (
@@ -13,6 +12,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/glog"
+	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
 	"hotgo/utility/encrypt"
@@ -40,19 +40,21 @@ func CheckPassword(input, salt, hash string) (err error) {
 
 // SafeGo 安全的调用协程，遇到错误时输出错误日志而不是抛出panic
 func SafeGo(ctx context.Context, f func(ctx context.Context), level ...interface{}) {
-	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				var newLevel = glog.LEVEL_ERRO
-				if len(level) > 0 {
-					newLevel = gconv.Int(level[0])
-				}
-				Logf(newLevel, ctx, "SafeGo failed err:%+v", err)
-			}
-		}()
+	var newLevel = glog.LEVEL_ERRO
+	if len(level) > 0 {
+		newLevel = gconv.Int(level[0])
+	}
 
+	err := grpool.AddWithRecover(ctx, func(ctx context.Context) {
 		f(ctx)
-	}()
+	}, func(ctx context.Context, err error) {
+		Logf(newLevel, ctx, "SafeGo exec failed:%+v", err)
+	})
+
+	if err != nil {
+		Logf(newLevel, ctx, "SafeGo AddWithRecover err:%+v", err)
+		return
+	}
 }
 
 func Logf(level int, ctx context.Context, format string, v ...interface{}) {

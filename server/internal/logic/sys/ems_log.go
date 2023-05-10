@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -42,77 +41,55 @@ func init() {
 }
 
 // Delete 删除
-func (s *sSysEmsLog) Delete(ctx context.Context, in sysin.EmsLogDeleteInp) error {
-	_, err := dao.SysEmsLog.Ctx(ctx).Where("id", in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+func (s *sSysEmsLog) Delete(ctx context.Context, in sysin.EmsLogDeleteInp) (err error) {
+	_, err = dao.SysEmsLog.Ctx(ctx).Where("id", in.Id).Delete()
+	return
 }
 
 // Edit 修改/新增
 func (s *sSysEmsLog) Edit(ctx context.Context, in sysin.EmsLogEditInp) (err error) {
 	if in.Ip == "" {
 		err = gerror.New("ip不能为空")
-		return err
+		return
 	}
 
 	// 修改
 	if in.Id > 0 {
 		_, err = dao.SysEmsLog.Ctx(ctx).Where("id", in.Id).Data(in).Update()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
-
-		return nil
+		return
 	}
 
 	// 新增
 	_, err = dao.SysEmsLog.Ctx(ctx).Data(in).Insert()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-	return nil
+	return
 }
 
 // Status 更新部门状态
 func (s *sSysEmsLog) Status(ctx context.Context, in sysin.EmsLogStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
-		return err
+		return
 	}
 
 	if in.Status <= 0 {
 		err = gerror.New("状态不能为空")
-		return err
+		return
 	}
 
 	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
-		return err
+		return
 	}
 
 	// 修改
 	_, err = dao.SysEmsLog.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // View 获取指定字典类型信息
 func (s *sSysEmsLog) View(ctx context.Context, in sysin.EmsLogViewInp) (res *sysin.EmsLogViewModel, err error) {
-	if err = dao.SysEmsLog.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-	return res, nil
+	err = dao.SysEmsLog.Ctx(ctx).Where("id", in.Id).Scan(&res)
+	return
 }
 
 // List 获取列表
@@ -126,19 +103,15 @@ func (s *sSysEmsLog) List(ctx context.Context, in sysin.EmsLogListInp) (list []*
 	totalCount, err = mod.Count()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
 	if totalCount == 0 {
-		return list, totalCount, nil
+		return
 	}
 
-	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
-	}
-
-	return list, totalCount, err
+	err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list)
+	return
 }
 
 // Send 发送邮件
@@ -146,22 +119,21 @@ func (s *sSysEmsLog) Send(ctx context.Context, in sysin.SendEmsInp) (err error) 
 	var models *entity.SysEmsLog
 	if err = dao.SysEmsLog.Ctx(ctx).Where("event", in.Event).Where("email", in.Email).Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
+		return
 	}
 
 	config, err := service.SysConfig().GetSmtp(ctx)
 	if err != nil {
-		return err
+		return
 	}
 
 	in.Template, err = s.GetTemplate(ctx, in.Event, config)
 	if err != nil {
-		return err
+		return
 	}
 
-	err = s.AllowSend(ctx, models, config)
-	if err != nil {
-		return err
+	if err = s.AllowSend(ctx, models, config); err != nil {
+		return
 	}
 
 	if consts.IsCodeEmsTemplate(in.Event) && in.Code == "" {
@@ -170,7 +142,7 @@ func (s *sSysEmsLog) Send(ctx context.Context, in sysin.SendEmsInp) (err error) 
 
 	view, err := s.newView(ctx, in, config)
 	if err != nil {
-		return err
+		return
 	}
 
 	if in.TplData == nil {
@@ -204,7 +176,7 @@ func (s *sSysEmsLog) Send(ctx context.Context, in sysin.SendEmsInp) (err error) 
 
 	err = ems.Send(config, in.Email, subject, in.Content)
 	if err != nil {
-		return err
+		return
 	}
 
 	var data = new(entity.SysEmsLog)
@@ -218,11 +190,7 @@ func (s *sSysEmsLog) Send(ctx context.Context, in sysin.SendEmsInp) (err error) 
 	data.UpdatedAt = gtime.Now()
 
 	_, err = dao.SysEmsLog.Ctx(ctx).Data(data).Insert()
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return
 }
 
 func (s *sSysEmsLog) newView(ctx context.Context, in sysin.SendEmsInp, config *model.EmailConfig) (view *gview.View, err error) {
@@ -238,6 +206,7 @@ func (s *sSysEmsLog) newView(ctx context.Context, in sysin.SendEmsInp, config *m
 	if in.Event == consts.EmsTemplateText {
 		return
 	}
+
 	var (
 		username string
 		user     = contexts.GetUser(ctx)
@@ -319,17 +288,19 @@ func (s *sSysEmsLog) newView(ctx context.Context, in sysin.SendEmsInp, config *m
 // GetTemplate 获取指定邮件模板
 func (s *sSysEmsLog) GetTemplate(ctx context.Context, template string, config *model.EmailConfig) (val string, err error) {
 	if template == "" {
-		return "", gerror.New("模板不能为空")
+		err = gerror.New("模板不能为空")
+		return
 	}
 	if config == nil {
 		config, err = service.SysConfig().GetSmtp(ctx)
 		if err != nil {
-			return "", err
+			return
 		}
 	}
 
 	if len(config.Template) == 0 {
-		return "", gerror.New("管理员还没有配置任何模板！")
+		err = gerror.New("管理员还没有配置任何模板！")
+		return
 	}
 
 	for _, v := range config.Template {
@@ -344,23 +315,24 @@ func (s *sSysEmsLog) GetTemplate(ctx context.Context, template string, config *m
 // AllowSend 是否允许发送
 func (s *sSysEmsLog) AllowSend(ctx context.Context, models *entity.SysEmsLog, config *model.EmailConfig) (err error) {
 	if models == nil {
-		return nil
+		return
 	}
 
 	// 富文本事件不限制
 	if models.Event == consts.EmsTemplateText {
-		return nil
+		return
 	}
 
 	if config == nil {
 		config, err = service.SysConfig().GetSmtp(ctx)
 		if err != nil {
-			return err
+			return
 		}
 	}
 
 	if gtime.Now().Before(models.CreatedAt.Add(time.Second * time.Duration(config.MinInterval))) {
-		return gerror.New("发送频繁，请稍后再试！")
+		err = gerror.New("发送频繁，请稍后再试！")
+		return
 	}
 
 	if config.MaxIpLimit > 0 {
@@ -370,7 +342,8 @@ func (s *sSysEmsLog) AllowSend(ctx context.Context, models *entity.SysEmsLog, co
 		}
 
 		if count >= config.MaxIpLimit {
-			return gerror.New("今天发送短信过多，请次日后再试！")
+			err = gerror.New("今天发送短信过多，请次日后再试！")
+			return err
 		}
 	}
 
@@ -380,53 +353,56 @@ func (s *sSysEmsLog) AllowSend(ctx context.Context, models *entity.SysEmsLog, co
 // VerifyCode 效验验证码
 func (s *sSysEmsLog) VerifyCode(ctx context.Context, in sysin.VerifyEmsCodeInp) (err error) {
 	if in.Event == "" {
-		return gerror.New("事件不能为空")
+		err = gerror.New("事件不能为空")
+		return
 	}
 	if in.Email == "" {
-		return gerror.New("邮箱不能为空")
+		err = gerror.New("邮箱不能为空")
+		return
 	}
+
 	if in.Event == consts.EmsTemplateResetPwd || in.Event == consts.EmsTemplateText {
-		return gerror.Newf("事件类型无需验证:%v", in.Event)
+		err = gerror.Newf("事件类型无需验证:%v", in.Event)
+		return
 	}
 
 	config, err := service.SysConfig().GetSmtp(ctx)
 	if err != nil {
-		return err
+		return
 	}
 
-	var (
-		models *entity.SysEmsLog
-	)
+	var models *entity.SysEmsLog
 	if err = dao.SysEmsLog.Ctx(ctx).Where("event", in.Event).Where("email", in.Email).Order("id desc").Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
 
 	if models == nil {
-		return gerror.New("验证码错误")
+		err = gerror.New("验证码错误")
+		return
 	}
 
 	if models.Times >= 10 {
-		return gerror.New("验证码错误次数过多，请重新发送！")
+		err = gerror.New("验证码错误次数过多，请重新发送！")
+		return
 	}
 
 	if in.Event != consts.EmsTemplateCode {
 		if models.Status == consts.EmsStatusUsed {
-			return gerror.New("验证码已使用，请重新发送！")
+			err = gerror.New("验证码已使用，请重新发送！")
+			return
 		}
 	}
 
 	if gtime.Now().After(models.CreatedAt.Add(time.Second * time.Duration(config.CodeExpire))) {
-		return gerror.New("验证码已过期，请重新发送")
+		err = gerror.New("验证码已过期，请重新发送")
+		return
 	}
 
 	if models.Code != in.Code {
-		_, err = dao.SysEmsLog.Ctx(ctx).Where("id", models.Id).Increment("times", 1)
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
-		return gerror.New("验证码错误！")
+		dao.SysEmsLog.Ctx(ctx).Where("id", models.Id).Increment("times", 1)
+		err = gerror.New("验证码错误！")
+		return
 	}
 
 	_, err = dao.SysEmsLog.Ctx(ctx).Where("id", models.Id).Data(g.Map{
@@ -434,10 +410,5 @@ func (s *sSysEmsLog) VerifyCode(ctx context.Context, in sysin.VerifyEmsCodeInp) 
 		"status":     consts.EmsStatusUsed,
 		"updated_at": gtime.Now(),
 	}).Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
 	return
 }

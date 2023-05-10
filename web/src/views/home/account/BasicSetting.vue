@@ -23,8 +23,14 @@
                 column="2"
                 content-style="padding-right: 20px;"
               >
-                <n-descriptions-item label="用户ID">{{ formValue.id }}</n-descriptions-item>
+                <n-descriptions-item label="管理员ID">{{ formValue.id }}</n-descriptions-item>
                 <n-descriptions-item label="用户名"> {{ formValue.username }} </n-descriptions-item>
+                <n-descriptions-item label="余额">{{
+                  Number(formValue.balance).toFixed(2)
+                }}</n-descriptions-item>
+                <n-descriptions-item label="积分">
+                  {{ Number(formValue.integral).toFixed(2) }}
+                </n-descriptions-item>
                 <n-descriptions-item label="登录IP">{{
                   formValue.lastLoginIp
                 }}</n-descriptions-item>

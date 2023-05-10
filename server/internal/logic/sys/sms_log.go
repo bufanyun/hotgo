@@ -18,6 +18,7 @@ import (
 	"hotgo/internal/library/sms"
 	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
+	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/validate"
@@ -35,93 +36,75 @@ func init() {
 }
 
 // Delete 删除
-func (s *sSysSmsLog) Delete(ctx context.Context, in sysin.SmsLogDeleteInp) error {
-	_, err := dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+func (s *sSysSmsLog) Delete(ctx context.Context, in sysin.SmsLogDeleteInp) (err error) {
+	_, err = dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Delete()
+	return
 }
 
 // Edit 修改/新增
 func (s *sSysSmsLog) Edit(ctx context.Context, in sysin.SmsLogEditInp) (err error) {
 	if in.Ip == "" {
 		err = gerror.New("ip不能为空")
-		return err
+		return
 	}
 
 	// 修改
-	in.UpdatedAt = gtime.Now()
 	if in.Id > 0 {
 		_, err = dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Data(in).Update()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
-
-		return nil
+		return
 	}
 
 	// 新增
-	in.CreatedAt = gtime.Now()
 	_, err = dao.SysSmsLog.Ctx(ctx).Data(in).Insert()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-	return nil
+	return
 }
 
 // Status 更新部门状态
 func (s *sSysSmsLog) Status(ctx context.Context, in sysin.SmsLogStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
-		return err
+		return
 	}
 
 	if in.Status <= 0 {
 		err = gerror.New("状态不能为空")
-		return err
+		return
 	}
 
 	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
-		return err
+		return
 	}
 
 	// 修改
-	in.UpdatedAt = gtime.Now()
 	_, err = dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // MaxSort 最大排序
-func (s *sSysSmsLog) MaxSort(ctx context.Context, in sysin.SmsLogMaxSortInp) (*sysin.SmsLogMaxSortModel, error) {
-	var res sysin.SmsLogMaxSortModel
+func (s *sSysSmsLog) MaxSort(ctx context.Context, in sysin.SmsLogMaxSortInp) (res *sysin.SmsLogMaxSortModel, err error) {
 	if in.Id > 0 {
-		if err := dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
+		if err = dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
-			return nil, err
+			return
 		}
 	}
-	res.Sort = res.Sort + 10
-	return &res, nil
+
+	if res == nil {
+		res = new(sysin.SmsLogMaxSortModel)
+	}
+
+	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	return
 }
 
 // View 获取指定字典类型信息
 func (s *sSysSmsLog) View(ctx context.Context, in sysin.SmsLogViewInp) (res *sysin.SmsLogViewModel, err error) {
 	if err = dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
+		return
 	}
-	return res, nil
+	return
 }
 
 // List 获取列表
@@ -165,31 +148,32 @@ func (s *sSysSmsLog) List(ctx context.Context, in sysin.SmsLogListInp) (list []*
 // SendCode 发送验证码
 func (s *sSysSmsLog) SendCode(ctx context.Context, in sysin.SendCodeInp) (err error) {
 	if in.Event == "" {
-		return gerror.New("事件不能为空")
+		err = gerror.New("事件不能为空")
+		return
 	}
+
 	if in.Mobile == "" {
-		return gerror.New("手机号不能为空")
+		err = gerror.New("手机号不能为空")
+		return
 	}
 
 	var models *entity.SysSmsLog
 	if err = dao.SysSmsLog.Ctx(ctx).Where("event", in.Event).Where("mobile", in.Mobile).Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
+		return
 	}
 
 	config, err := service.SysConfig().GetSms(ctx)
 	if err != nil {
-		return err
+		return
 	}
 
-	in.Template, err = s.GetTemplate(ctx, in.Event, config)
-	if err != nil {
-		return err
+	if in.Template, err = s.GetTemplate(ctx, in.Event, config); err != nil {
+		return
 	}
 
-	err = s.AllowSend(ctx, models, config)
-	if err != nil {
-		return err
+	if err = s.AllowSend(ctx, models, config); err != nil {
+		return
 	}
 
 	if in.Code == "" {
@@ -197,7 +181,7 @@ func (s *sSysSmsLog) SendCode(ctx context.Context, in sysin.SendCodeInp) (err er
 	}
 
 	if err = sms.New(config.SmsDrive).SendCode(ctx, in, config); err != nil {
-		return err
+		return
 	}
 
 	var data = new(entity.SysSmsLog)
@@ -210,29 +194,27 @@ func (s *sSysSmsLog) SendCode(ctx context.Context, in sysin.SendCodeInp) (err er
 	data.UpdatedAt = gtime.Now()
 
 	_, err = dao.SysSmsLog.Ctx(ctx).Data(data).Insert()
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return
 }
 
 // GetTemplate 获取指定短信模板
 func (s *sSysSmsLog) GetTemplate(ctx context.Context, template string, config *model.SmsConfig) (val string, err error) {
 	if template == "" {
-		return "", gerror.New("模板不能为空")
+		err = gerror.New("模板不能为空")
+		return
 	}
 	if config == nil {
 		config, err = service.SysConfig().GetSms(ctx)
 		if err != nil {
-			return "", err
+			return
 		}
 	}
 
 	switch config.SmsDrive {
 	case consts.SmsDriveAliYun:
 		if len(config.AliYunTemplate) == 0 {
-			return "", gerror.New("管理员还没有配置任何阿里云短信模板！")
+			err = gerror.New("管理员还没有配置任何阿里云短信模板！")
+			return
 		}
 
 		for _, v := range config.AliYunTemplate {
@@ -243,7 +225,8 @@ func (s *sSysSmsLog) GetTemplate(ctx context.Context, template string, config *m
 
 	case consts.SmsDriveTencent:
 		if len(config.TencentTemplate) == 0 {
-			return "", gerror.New("管理员还没有配置任何腾讯云短信模板！")
+			err = gerror.New("管理员还没有配置任何腾讯云短信模板！")
+			return
 		}
 
 		for _, v := range config.TencentTemplate {
@@ -252,7 +235,8 @@ func (s *sSysSmsLog) GetTemplate(ctx context.Context, template string, config *m
 			}
 		}
 	default:
-		return "", gerror.Newf("暂不支持短信驱动:%v", config.SmsDrive)
+		err = gerror.Newf("暂不支持短信驱动:%v", config.SmsDrive)
+		return
 	}
 
 	return
@@ -261,18 +245,18 @@ func (s *sSysSmsLog) GetTemplate(ctx context.Context, template string, config *m
 // AllowSend 是否允许发送
 func (s *sSysSmsLog) AllowSend(ctx context.Context, models *entity.SysSmsLog, config *model.SmsConfig) (err error) {
 	if models == nil {
-		return nil
+		return
 	}
 
 	if config == nil {
-		config, err = service.SysConfig().GetSms(ctx)
-		if err != nil {
-			return err
+		if config, err = service.SysConfig().GetSms(ctx); err != nil {
+			return
 		}
 	}
 
 	if gtime.Now().Before(models.CreatedAt.Add(time.Second * time.Duration(config.SmsMinInterval))) {
-		return gerror.New("发送频繁，请稍后再试！")
+		err = gerror.New("发送频繁，请稍后再试！")
+		return
 	}
 
 	if config.SmsMaxIpLimit > 0 {
@@ -282,7 +266,8 @@ func (s *sSysSmsLog) AllowSend(ctx context.Context, models *entity.SysSmsLog, co
 		}
 
 		if count >= config.SmsMaxIpLimit {
-			return gerror.New("今天发送短信过多，请次日后再试！")
+			err = gerror.New("今天发送短信过多，请次日后再试！")
+			return err
 		}
 	}
 
@@ -292,48 +277,52 @@ func (s *sSysSmsLog) AllowSend(ctx context.Context, models *entity.SysSmsLog, co
 // VerifyCode 效验验证码
 func (s *sSysSmsLog) VerifyCode(ctx context.Context, in sysin.VerifyCodeInp) (err error) {
 	if in.Event == "" {
-		return gerror.New("事件不能为空")
+		err = gerror.New("事件不能为空")
+		return
 	}
+
 	if in.Mobile == "" {
-		return gerror.New("手机号不能为空")
+		err = gerror.New("手机号不能为空")
+		return
 	}
 
 	config, err := service.SysConfig().GetSms(ctx)
 	if err != nil {
-		return err
+		return
 	}
 
 	var models *entity.SysSmsLog
 	if err = dao.SysSmsLog.Ctx(ctx).Where("event", in.Event).Where("mobile", in.Mobile).Order("id desc").Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
+		return
 	}
 
 	if models == nil {
-		return gerror.New("验证码错误")
+		err = gerror.New("验证码错误")
+		return
 	}
 
 	if models.Times >= 10 {
-		return gerror.New("验证码错误次数过多，请重新发送！")
+		err = gerror.New("验证码错误次数过多，请重新发送！")
+		return
 	}
 
 	if in.Event != consts.SmsTemplateCode {
 		if models.Status == consts.SmsStatusUsed {
-			return gerror.New("验证码已使用，请重新发送！")
+			err = gerror.New("验证码已使用，请重新发送！")
+			return
 		}
 	}
 
 	if gtime.Now().After(models.CreatedAt.Add(time.Second * time.Duration(config.SmsCodeExpire))) {
-		return gerror.New("验证码已过期，请重新发送")
+		err = gerror.New("验证码已过期，请重新发送")
+		return
 	}
 
 	if models.Code != in.Code {
-		_, err = dao.SysSmsLog.Ctx(ctx).Where("id", models.Id).Increment("times", 1)
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
-		return gerror.New("验证码错误！")
+		dao.SysSmsLog.Ctx(ctx).Where("id", models.Id).Increment("times", 1)
+		err = gerror.New("验证码错误！")
+		return
 	}
 
 	_, err = dao.SysSmsLog.Ctx(ctx).Where("id", models.Id).Data(g.Map{

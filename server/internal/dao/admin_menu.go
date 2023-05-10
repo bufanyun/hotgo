@@ -9,7 +9,6 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao/internal"
-	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
 )
 
@@ -69,69 +68,4 @@ func (dao *adminMenuDao) IsUniqueName(ctx context.Context, id int64, name string
 	}
 
 	return false, nil
-}
-
-func (dao *adminMenuDao) GenLabelTreeList(ctx context.Context, pid int64) ([]*model.LabelTreeMenu, error) {
-
-	var (
-		newLst []*model.LabelTreeMenu
-	)
-	if err := dao.Ctx(ctx).Where("pid", pid).Order("sort asc,id desc").Scan(&newLst); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	for i := 0; i < len(newLst); i++ {
-		newLst[i].Key = newLst[i].Id
-		newLst[i].Label = newLst[i].Name
-		err := dao.Ctx(ctx).Where("pid", newLst[i].Id).Order("sort asc,id desc").Scan(&newLst[i].Children)
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return nil, err
-		}
-
-		for i2 := 0; i2 < len(newLst[i].Children); i2++ {
-			newLst[i].Children[i2].Key = newLst[i].Children[i2].Id
-			newLst[i].Children[i2].Label = newLst[i].Children[i2].Name
-		}
-	}
-
-	return newLst, nil
-}
-
-// GenTreeList 生成树列表
-func (dao *adminMenuDao) GenTreeList(ctx context.Context, pid int64, ids []int64) ([]*model.TreeMenu, error) {
-
-	var (
-		newLst []*model.TreeMenu
-	)
-	if err := dao.Ctx(ctx).Where("id", ids).Where("pid", pid).Order("sort asc,id desc").Scan(&newLst); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	for i := 0; i < len(newLst); i++ {
-		err := dao.Ctx(ctx).Where("pid", newLst[i].Id).Order("sort asc,id desc").Scan(&newLst[i].Children)
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return nil, err
-		}
-	}
-
-	return newLst, nil
-}
-
-// TopPid 获取最上级pid
-func (dao *adminMenuDao) TopPid(ctx context.Context, data *entity.AdminMenu) (int64, error) {
-	var pidData *entity.AdminMenu
-	if data.Pid == 0 {
-		return data.Id, nil
-	}
-	err := dao.Ctx(ctx).Where("id", data.Pid).Scan(&pidData)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return 0, err
-	}
-
-	return dao.TopPid(ctx, pidData)
 }

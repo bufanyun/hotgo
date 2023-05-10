@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package cmd
 
 import (
@@ -32,6 +31,7 @@ var (
 		>> 所有服务  [go run main.go]   热编译  [gf run main.go]
 		>> HTTP服务  [go run main.go http]
 		>> 消息队列  [go run main.go queue]
+		>> 定时任务  [go run main.go cron]
 		>> 查看帮助  [go run main.go help]
 
 		---------------------------------------------------------------------------------
@@ -60,6 +60,12 @@ var (
 			})
 
 			simple.SafeGo(ctx, func(ctx context.Context) {
+				if err := Cron.Func(ctx, parser); err != nil {
+					g.Log().Fatal(ctx, "cron start fail:", err)
+				}
+			})
+
+			simple.SafeGo(ctx, func(ctx context.Context) {
 				if err := Http.Func(ctx, parser); err != nil {
 					g.Log().Fatal(ctx, "http server start fail:", err)
 				}
@@ -73,14 +79,14 @@ var (
 				// ...
 			}
 
-			g.Log().Info(ctx, "service successfully closed ..")
+			g.Log().Debug(ctx, "service successfully closed ..")
 			return
 		},
 	}
 )
 
 func init() {
-	if err := Main.AddCommand(Http, Queue, Tools, Auth, All, Help); err != nil {
+	if err := Main.AddCommand(All, Http, Queue, Cron, Auth, Tools, Help); err != nil {
 		panic(err)
 	}
 	serverCloseSignal = make(chan struct{}, 1)

@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package crons
 
 import (
@@ -177,12 +176,13 @@ func Delete(sysCron *entity.SysCron) (err error) {
 	if sysCron == nil {
 		return
 	}
+
 	for _, v := range gcron.Entries() {
 		if v.Name == sysCron.Name {
 			gcron.Remove(v.Name)
 		}
-
 	}
+
 	return
 }
 

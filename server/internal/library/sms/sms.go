@@ -10,15 +10,15 @@ import (
 	"hotgo/internal/model/input/sysin"
 )
 
-// SmsDrive 短信驱动
-type SmsDrive interface {
+// Drive 短信驱动
+type Drive interface {
 	SendCode(ctx context.Context, in sysin.SendCodeInp, config *model.SmsConfig) (err error)
 }
 
-func New(name ...string) SmsDrive {
+func New(name ...string) Drive {
 	var (
 		instanceName = consts.SmsDriveAliYun
-		drive        SmsDrive
+		drive        Drive
 	)
 
 	if len(name) > 0 && name[0] != "" {

@@ -21,8 +21,10 @@ resource/public/admin/
 resource/public/attachment/
 storage/cache/
 storage/diskqueue/
-storage/ssl/server.crt
-storage/ssl/server.key
+storage/cert/ssl/server.crt
+storage/cert/ssl/server.key
+storage/cert/pay/alipay/
+storage/cert/pay/wxpay/
 temp/
 main.exe
 main.exe~

@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package views
 
 import (
@@ -21,7 +20,7 @@ const (
 	LogicWhereNoSupport     = "\t// TODO 暂不支持生成[ %s ]查询方式，请自行补充此处代码！"
 	LogicListSimpleSelect   = "\tfields, err := hgorm.GenSelect(ctx, sysin.%sListModel{}, dao.%s)\n\tif err != nil {\n\t\treturn\n\t}"
 	LogicListJoinSelect     = "\t//关联表select\n\tfields, err := hgorm.GenJoinSelect(ctx, %sin.%sListModel{}, dao.%s, []*hgorm.Join{\n%v\t})"
-	LogicListJoinOnRelation = "\t// 关联表%s\n\tmod = mod.%s(hgorm.GenJoinOnRelation(\n\t\tdao.%s.Table(), dao.%s.Columns().%s, // 主表表名,关联条件\n\t\tdao.%s.Table(), \"%s\", dao.%s.Columns().%s, // 关联表表名,别名,关联条件\n\t)...)\n\n"
+	LogicListJoinOnRelation = "\t// 关联表%s\n\tmod = mod.%s(hgorm.GenJoinOnRelation(\n\t\tdao.%s.Table(), dao.%s.Columns().%s, // 主表表名,关联字段\n\t\tdao.%s.Table(), \"%s\", dao.%s.Columns().%s, // 关联表表名,别名,关联字段\n\t)...)\n\n"
 	LogicEditUpdate         = "\t\t_, err = s.Model(ctx).\n\t\t\tFieldsEx(\n%s\t\t\t).\n\t\t\tWhere(dao.%s.Columns().%s, in.%s).Data(in).Update()\n\t\treturn "
 	LogicEditInsert         = "\t_, err = s.Model(ctx, &handler.Option{FilterAuth: false}).\n\t\tFieldsEx(\n%s\t\t).\n\t\tData(in).Insert()"
 	LogicSwitchUpdate       = "g.Map{\n\t\tin.Key:                       in.Value,\n%s}"
@@ -136,10 +135,11 @@ func (l *gCurd) generateLogicListJoin(ctx context.Context, in *CurdPreviewInput)
 		selectBuffer.WriteString(fmt.Sprintf(LogicListJoinSelect, in.options.TemplateGroup, in.In.VarName, in.In.DaoName, joinSelectRows))
 
 		data["select"] = selectBuffer.String()
+		data["fields"] = "fields"
 		data["link"] = linkBuffer.String()
 
 	} else {
-		data["select"] = fmt.Sprintf(LogicListSimpleSelect, in.In.VarName, in.In.DaoName)
+		data["fields"] = fmt.Sprintf("%sin.%sListModel{}", in.options.TemplateGroup, in.In.VarName)
 	}
 
 	return data

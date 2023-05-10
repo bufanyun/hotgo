@@ -4,7 +4,7 @@ import "github.com/gogf/gf/v2/os/gtime"
 
 // AuthSummary 授权摘要
 type AuthSummary struct {
-	Request
+	RpcMsg
 }
 
 // ResponseAuthSummary 响应授权摘要

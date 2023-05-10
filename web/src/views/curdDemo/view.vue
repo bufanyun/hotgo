@@ -60,14 +60,12 @@
         </n-descriptions-item>
 
         <n-descriptions-item label="状态">
-          <template v-for="(item, key) in formValue?.status" :key="key">
-            <n-tag
-              :type="getOptionTag(options.sys_normal_disable, item)"
-              size="small"
-              class="min-left-space"
-              >{{ getOptionLabel(options.sys_normal_disable, item) }}</n-tag
-            >
-          </template>
+          <n-tag
+            :type="getOptionTag(options.sys_normal_disable, formValue?.status)"
+            size="small"
+            class="min-left-space"
+            >{{ getOptionLabel(options.sys_normal_disable, formValue?.status) }}</n-tag
+          >
         </n-descriptions-item>
 
 

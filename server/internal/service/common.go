@@ -8,6 +8,7 @@ package service
 import (
 	"context"
 	"hotgo/internal/model"
+	"hotgo/internal/model/input/commonin"
 	"hotgo/internal/model/input/sysin"
 
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -19,12 +20,24 @@ type (
 		UploadImage(ctx context.Context, file *ghttp.UploadFile) (result *sysin.AttachmentListModel, err error)
 		UploadLocal(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
 		UploadUCloud(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
+		UploadCOS(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
+		UploadOSS(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
+		UploadQiNiu(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
 		LastUrl(ctx context.Context, conf *model.UploadConfig, fullPath, drive string) string
+		HasFile(ctx context.Context, md5 string) (res *sysin.AttachmentListModel, err error)
+	}
+	ICommonWechat interface {
+		Authorize(ctx context.Context, in commonin.WechatAuthorizeInp) (res *commonin.WechatAuthorizeModel, err error)
+		AuthorizeCall(ctx context.Context, in commonin.WechatAuthorizeCallInp) (res *commonin.WechatAuthorizeCallModel, err error)
+		GetOpenId(ctx context.Context) (openId string, err error)
+		GetCacheKey(typ, ak string) string
+		CleanTempMap(ctx context.Context)
 	}
 )
 
 var (
 	localCommonUpload ICommonUpload
+	localCommonWechat ICommonWechat
 )
 
 func CommonUpload() ICommonUpload {
@@ -36,4 +49,15 @@ func CommonUpload() ICommonUpload {
 
 func RegisterCommonUpload(i ICommonUpload) {
 	localCommonUpload = i
+}
+
+func CommonWechat() ICommonWechat {
+	if localCommonWechat == nil {
+		panic("implement not found for interface ICommonWechat, forgot register?")
+	}
+	return localCommonWechat
+}
+
+func RegisterCommonWechat(i ICommonWechat) {
+	localCommonWechat = i
 }

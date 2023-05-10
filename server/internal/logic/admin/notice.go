@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package admin
 
 import (
@@ -42,14 +41,9 @@ func (s *sAdminNotice) Model(ctx context.Context, option ...*handler.Option) *gd
 }
 
 // Delete 删除
-func (s *sAdminNotice) Delete(ctx context.Context, in adminin.NoticeDeleteInp) error {
-	_, err := s.Model(ctx).Where("id", in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+func (s *sAdminNotice) Delete(ctx context.Context, in adminin.NoticeDeleteInp) (err error) {
+	_, err = s.Model(ctx).Where("id", in.Id).Delete()
+	return
 }
 
 // Edit 修改/新增
@@ -115,34 +109,29 @@ func (s *sAdminNotice) Edit(ctx context.Context, in adminin.NoticeEditInp) (err 
 		}
 	})
 
-	return nil
+	return
 }
 
 // Status 更新部门状态
 func (s *sAdminNotice) Status(ctx context.Context, in adminin.NoticeStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
-		return err
+		return
 	}
 
 	if in.Status <= 0 {
 		err = gerror.New("状态不能为空")
-		return err
+		return
 	}
 
 	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
-		return err
+		return
 	}
 
 	// 修改
 	_, err = s.Model(ctx).Where("id", in.Id).Data("status", in.Status).Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // MaxSort 最大排序

@@ -22,6 +22,7 @@
         :actionColumn="actionColumn"
         @update:checked-row-keys="onCheckedRow"
         :scroll-x="1090"
+        :resizeHeightOffset="-10000"
       >
         <template #tableTitle>
           <n-button type="primary" @click="addTable">

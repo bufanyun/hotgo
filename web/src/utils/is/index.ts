@@ -142,3 +142,8 @@ export function isLetterBegin(str) {
 export function isUrl(url: string): boolean {
   return /(^http|https:\/\/)/g.test(url);
 }
+
+// 判断是否为微信浏览器
+export function isWechatBrowser(): boolean {
+  return /micromessenger/.test(navigator.userAgent.toLowerCase()) ? true : false;
+}

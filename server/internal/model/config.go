@@ -115,6 +115,48 @@ type SmsConfig struct {
 	TencentTemplate  []*SmsTemplate `json:"smsTencentTemplate"`
 }
 
+type PayConfig struct {
+	Debug bool `json:"payDebug"`
+	// 支付宝
+	AliPayAppId             string `json:"payAliPayAppId"`
+	AliPayPrivateKey        string `json:"payAliPayPrivateKey"`
+	AliPayAppCertPublicKey  string `json:"payAliPayAppCertPublicKey"`
+	AliPayRootCert          string `json:"payAliPayRootCert"`
+	AliPayCertPublicKeyRSA2 string `json:"payAliPayCertPublicKeyRSA2"`
+	// 微信支付
+	WxPayAppId      string `json:"payWxPayAppId"`
+	WxPayMchId      string `json:"payWxPayMchId"`
+	WxPaySerialNo   string `json:"payWxPaySerialNo"`
+	WxPayAPIv3Key   string `json:"payWxPayAPIv3Key"`
+	WxPayPrivateKey string `json:"payWxPayPrivateKey"`
+	// QQ支付
+	QQPayAppId  string `json:"payQQPayAppId"`
+	QQPayMchId  string `json:"payQQPayMchId"`
+	QQPayApiKey string `json:"payQQPayApiKey"`
+}
+
+// WechatOfficialAccountConfig 微信公众号配置
+type WechatOfficialAccountConfig struct {
+	OfficialAppID          string `json:"officialAccountAppId"`          // appid
+	OfficialAppSecret      string `json:"officialAccountAppSecret"`      // app secret
+	OfficialToken          string `json:"officialAccountToken"`          // token
+	OfficialEncodingAESKey string `json:"officialAccountEncodingAESKey"` // EncodingAESKey
+}
+
+// WechatOpenPlatformConfig 微信开放平台配置
+type WechatOpenPlatformConfig struct {
+	OpenAppID          string `json:"openPlatformAppId"`          // appid
+	OpenAppSecret      string `json:"openPlatformAppSecret"`      // app secret
+	OpenToken          string `json:"openPlatformToken"`          // token
+	OpenEncodingAESKey string `json:"openPlatformEncodingAESKey"` // EncodingAESKey
+}
+
+// WechatConfig 微信配置
+type WechatConfig struct {
+	*WechatOfficialAccountConfig
+	*WechatOpenPlatformConfig
+}
+
 ///////////// 以下是本地配置
 
 // SSLConfig https配置
@@ -200,4 +242,26 @@ type BuildAddonConfig struct {
 type CacheConfig struct {
 	Adapter string `json:"adapter"`
 	FileDir string `json:"fileDir"`
+}
+
+type TCPServerConfig struct {
+	Address string `json:"address"`
+}
+
+type TCPClientConfig struct {
+	Cron *TCPClientConnConfig `json:"cron"`
+	Auth *TCPClientConnConfig `json:"auth"`
+}
+
+type TCPClientConnConfig struct {
+	Group     string `json:"group"`
+	Name      string `json:"name"`
+	Address   string `json:"address"`
+	AppId     string `json:"appId"`
+	SecretKey string `json:"secretKey"`
+}
+
+type TCPConfig struct {
+	Server *TCPServerConfig `json:"server"`
+	Client *TCPClientConfig `json:"client"`
 }

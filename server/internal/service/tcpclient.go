@@ -10,24 +10,46 @@ import (
 )
 
 type (
-	ITCPAuth interface {
+	IAuthClient interface {
 		Start(ctx context.Context)
 		Stop(ctx context.Context)
 		IsLogin() bool
+		OnResponseAuthSummary(ctx context.Context, args ...interface{})
+	}
+	ICronClient interface {
+		Start(ctx context.Context)
+		Stop(ctx context.Context)
+		IsLogin() bool
+		OnCronDelete(ctx context.Context, args ...interface{})
+		OnCronEdit(ctx context.Context, args ...interface{})
+		OnCronStatus(ctx context.Context, args ...interface{})
+		OnCronOnlineExec(ctx context.Context, args ...interface{})
 	}
 )
 
 var (
-	localTCPAuth ITCPAuth
+	localAuthClient IAuthClient
+	localCronClient ICronClient
 )
 
-func TCPAuth() ITCPAuth {
-	if localTCPAuth == nil {
-		panic("implement not found for interface ITCPAuth, forgot register?")
+func AuthClient() IAuthClient {
+	if localAuthClient == nil {
+		panic("implement not found for interface IAuthClient, forgot register?")
 	}
-	return localTCPAuth
+	return localAuthClient
 }
 
-func RegisterTCPAuth(i ITCPAuth) {
-	localTCPAuth = i
+func RegisterAuthClient(i IAuthClient) {
+	localAuthClient = i
+}
+
+func CronClient() ICronClient {
+	if localCronClient == nil {
+		panic("implement not found for interface ICronClient, forgot register?")
+	}
+	return localCronClient
+}
+
+func RegisterCronClient(i ICronClient) {
+	localCronClient = i
 }

@@ -178,11 +178,15 @@ export function defShortcuts() {
 
 export function defRangeShortcuts() {
   const nowDate = new Date();
+  const dayBase = 86400 * 1000;
   return {
     今天: [startOfToday().getTime(), endOfToday().getTime()] as const,
     昨天: () => {
       return [startOfYesterday().getTime(), endOfYesterday().getTime()] as const;
     },
+    近7天: [startOfToday().getTime() - dayBase * 6, endOfToday().getTime()] as const,
+    近30天: [startOfToday().getTime() - dayBase * 29, endOfToday().getTime()] as const,
+    近90天: [startOfToday().getTime() - dayBase * 89, endOfToday().getTime()] as const,
     本周: () => {
       return [
         startOfWeek(nowDate, { weekStartsOn: 1 }).getTime(),
@@ -192,7 +196,7 @@ export function defRangeShortcuts() {
     本月: () => {
       return [startOfMonth(nowDate).getTime(), endOfMonth(nowDate).getTime()] as const;
     },
-    上个月: () => {
+    上月: () => {
       return [
         startOfMonth(subMonths(nowDate, 1)).getTime(),
         endOfMonth(subMonths(nowDate, 1)).getTime(),

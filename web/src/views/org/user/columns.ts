@@ -4,9 +4,9 @@ import { formatBefore } from '@/utils/dateUtil';
 
 export const columns = [
   {
-    title: 'ID',
+    title: '管理员ID',
     key: 'id',
-    width: 60,
+    width: 100,
   },
   {
     title: '用户名',
@@ -21,7 +21,7 @@ export const columns = [
   {
     title: '头像',
     key: 'avatar',
-    width: 50,
+    width: 70,
     render(row) {
       if (row.avatar !== '') {
         return h(NAvatar, {
@@ -82,6 +82,22 @@ export const columns = [
           default: () => row.deptName,
         }
       );
+    },
+  },
+  {
+    title: '余额',
+    key: 'balance',
+    width: 120,
+    render(row) {
+      return '￥' + Number(row.balance).toFixed(2);
+    },
+  },
+  {
+    title: '积分',
+    key: 'integral',
+    width: 120,
+    render(row) {
+      return Number(row.integral).toFixed(2);
     },
   },
   {

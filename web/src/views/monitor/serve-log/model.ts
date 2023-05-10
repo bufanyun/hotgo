@@ -1,14 +1,13 @@
 import { h, ref } from 'vue';
-import { NAvatar, NImage, NTag, NSwitch, NRate, NButton } from 'naive-ui';
+import { NTag, NButton } from 'naive-ui';
 import { cloneDeep } from 'lodash-es';
 import { FormSchema } from '@/components/Form';
 import { Dicts } from '@/api/dict/dict';
 
-import { isArray, isNullObject } from '@/utils/is';
-import { getFileExt } from '@/utils/urlUtils';
-import { defRangeShortcuts, defShortcuts, formatToDate } from '@/utils/dateUtil';
+import { isNullObject } from '@/utils/is';
+import { defRangeShortcuts } from '@/utils/dateUtil';
 import { format } from 'date-fns';
-import { getOptionLabel, getOptionTag, Options, errorImg } from '@/utils/hotgo';
+import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
 import { renderIcon, renderTooltip } from '@/utils';
 import { HelpCircleOutline } from '@vicons/ionicons5';
 

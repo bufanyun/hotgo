@@ -29,6 +29,7 @@
     HelpCircleOutline,
     RemoveCircleOutline,
   } from '@vicons/ionicons5';
+
   hljs.registerLanguage('goLang', goLang);
 
   interface Props {

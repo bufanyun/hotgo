@@ -3,10 +3,11 @@ package feishu
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gctx"
 	"strconv"
 	"time"
 
-	"github.com/go-resty/resty/v2"
 	"hotgo/internal/library/notify/feishu/internal/security"
 )
 
@@ -59,23 +60,18 @@ func (d *Client) Send(message Message) (string, *Response, error) {
 	if err != nil {
 		return "", res, err
 	}
-	reqString := string(reqBytes)
 
-	client := resty.New()
-	URL := fmt.Sprintf("%v%v", feishuAPI, d.AccessToken)
-	resp, err := client.SetRetryCount(3).R().
-		SetBody(body).
+	var (
+		result    *Response
+		URL       = fmt.Sprintf("%v%v", feishuAPI, d.AccessToken)
+		reqString = string(reqBytes)
+	)
+
+	g.Client().
+		Retry(3, time.Second).
 		SetHeader("Accept", "application/json").
 		SetHeader("Content-Type", "application/json").
-		SetResult(&Response{}).
-		ForceContentType("application/json").
-		Post(URL)
-
-	if err != nil {
-		return reqString, nil, err
-	}
-
-	result := resp.Result().(*Response)
+		PostVar(gctx.New(), URL, &result)
 	if result.Code != 0 {
 		return reqString, result, fmt.Errorf("send message to feishu error = %s", result.Msg)
 	}

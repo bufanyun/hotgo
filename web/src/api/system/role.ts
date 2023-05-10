@@ -11,6 +11,11 @@ export function getRoleList(params) {
   });
 }
 
+export function getRoleOption() {
+  const params = { pageSize: 100 };
+  return getRoleList(params);
+}
+
 export function Edit(params) {
   return http.request({
     url: '/role/edit',

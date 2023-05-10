@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package form
 
 import (
@@ -22,8 +21,7 @@ func DefaultPageSize(ctx context.Context) int {
 	if pageSize > 0 {
 		return pageSize
 	}
-	defaultPageSize := g.Cfg().MustGet(ctx, "hotgo.admin.defaultPageSize", 10)
-	pageSize = defaultPageSize.Int()
+	pageSize = g.Cfg().MustGet(ctx, "hotgo.admin.defaultPageSize", 10).Int()
 	if pageSize <= 0 {
 		pageSize = 10
 	}
@@ -35,8 +33,7 @@ func DefaultPage(ctx context.Context) int {
 	if page > 0 {
 		return page
 	}
-	defaultPage := g.Cfg().MustGet(ctx, "hotgo.admin.defaultPage", 1)
-	page = defaultPage.Int()
+	page = g.Cfg().MustGet(ctx, "hotgo.admin.defaultPage", 1).Int()
 	if page <= 0 {
 		page = 1
 	}
@@ -46,20 +43,20 @@ func DefaultPage(ctx context.Context) int {
 // PageReq 分页
 type PageReq struct {
 	Page    int `json:"page" example:"10" d:"1" v:"min:1#页码最小值不能低于1"  dc:"当前页码"`
-	PerPage int `json:"pageSize" example:"1" d:"10" v:"min:1|max:200#|每页数量最小值不能低于1|最大值不能大于200" dc:"每页数量"`
+	PerPage int `json:"pageSize" example:"1" d:"10" v:"min:1|max:200#每页数量最小值不能低于1|最大值不能大于200" dc:"每页数量"`
 }
 type PageRes struct {
 	PageReq
 	PageCount int `json:"pageCount" example:"0" dc:"全部数据量"`
 }
 
-// RangeDateReq 时间查询
+// RangeDateReq 时间范围查询
 type RangeDateReq struct {
 	StartTime string `json:"start_time" v:"date#开始日期格式不正确"  dc:"开始日期"`
 	EndTime   string `json:"end_time" v:"date#结束日期格式不正确" dc:"结束日期"`
 }
 
-// StatusReq 状态查询
+// StatusReq 通用状态查询
 type StatusReq struct {
 	Status int `json:"status"  v:"in:-1,0,1,2,3#输入的状态是无效的" dc:"状态"`
 }
@@ -93,6 +90,7 @@ func CalPageCount(totalCount int, perPage int) int {
 
 // Selects 选项
 type Selects []*Select
+
 type Select struct {
 	Value interface{} `json:"value"`
 	Label string      `json:"label"`
@@ -102,9 +100,11 @@ type Select struct {
 func (p Selects) Len() int {
 	return len(p)
 }
+
 func (p Selects) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
+
 func (p Selects) Less(i, j int) bool {
 	return gconv.Int64(p[j].Value) > gconv.Int64(p[i].Value)
 }

@@ -3,13 +3,13 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package dept
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
+	"hotgo/internal/model/input/form"
 )
 
 // NameUniqueReq 名称是否唯一
@@ -71,3 +71,14 @@ type StatusReq struct {
 	g.Meta `path:"/dept/status" method:"post" tags:"部门" summary:"更新部门状态"`
 }
 type StatusRes struct{}
+
+// OptionReq 获取部门选项树
+type OptionReq struct {
+	g.Meta `path:"/dept/option" method:"get" tags:"部门" summary:"获取部门选项树"`
+	adminin.DeptOptionInp
+}
+
+type OptionRes struct {
+	*adminin.DeptOptionModel
+	form.PageRes
+}

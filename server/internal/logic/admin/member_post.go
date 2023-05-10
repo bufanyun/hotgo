@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package admin
 
 import (
@@ -29,7 +28,7 @@ func (s *sAdminMemberPost) UpdatePostIds(ctx context.Context, memberId int64, po
 	_, err = dao.AdminMemberPost.Ctx(ctx).Where("member_id", memberId).Delete()
 	if err != nil {
 		err = gerror.Wrap(err, "删除失败")
-		return err
+		return
 	}
 
 	for i := 0; i < len(postIds); i++ {
@@ -44,24 +43,21 @@ func (s *sAdminMemberPost) UpdatePostIds(ctx context.Context, memberId int64, po
 		}
 	}
 
-	return nil
+	return
 }
 
 // GetMemberByIds 获取指定用户的岗位ids
 func (s *sAdminMemberPost) GetMemberByIds(ctx context.Context, memberId int64) (postIds []int64, err error) {
 	var list []*entity.AdminMemberPost
-	err = dao.AdminMemberPost.Ctx(ctx).
-		Fields("post_id").
-		Where("member_id", memberId).
-		Scan(&list)
+	err = dao.AdminMemberPost.Ctx(ctx).Fields("post_id").Where("member_id", memberId).Scan(&list)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return postIds, err
+		return
 	}
 
 	for i := 0; i < len(list); i++ {
 		postIds = append(postIds, list[i].PostId)
 	}
 
-	return postIds, nil
+	return
 }

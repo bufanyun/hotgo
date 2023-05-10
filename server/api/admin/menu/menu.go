@@ -3,12 +3,10 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package menu
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
-	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 )
@@ -74,24 +72,4 @@ type ListReq struct {
 
 type ListRes struct {
 	List []map[string]interface{} `json:"list"   dc:"数据列表"`
-}
-
-// SearchListReq 查询菜单列表
-type SearchListReq struct {
-	g.Meta `path:"/menu/search_list" method:"get" tags:"菜单" summary:"获取菜单列表"`
-	Name   string `json:"name" dc:"菜单名称"`
-	form.StatusReq
-}
-
-type SearchListRes []*model.TreeMenu
-
-// RoleListReq 查询角色菜单列表
-type RoleListReq struct {
-	g.Meta `path:"/menu/role_list" method:"get" tags:"菜单" summary:"查询角色菜单列表"`
-	RoleId string `json:"role_id" dc:"角色ID"`
-}
-
-type RoleListRes struct {
-	Menus       []*model.LabelTreeMenu `json:"menus"   dc:"菜单列表"`
-	CheckedKeys []int64                `json:"checkedKeys"   dc:"选择的菜单ID"`
 }

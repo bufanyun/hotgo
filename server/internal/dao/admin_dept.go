@@ -48,18 +48,3 @@ func (dao *adminDeptDao) IsUniqueName(ctx context.Context, id int64, name string
 
 	return false, nil
 }
-
-// TopPid 获取最上级pid
-func (dao *adminDeptDao) TopPid(ctx context.Context, data *entity.AdminDept) (int64, error) {
-	var pidData *entity.AdminDept
-	if data.Pid == 0 {
-		return data.Id, nil
-	}
-	err := dao.Ctx(ctx).Where("id", data.Pid).Scan(&pidData)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return 0, err
-	}
-
-	return dao.TopPid(ctx, pidData)
-}

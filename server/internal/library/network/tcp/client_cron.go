@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gogf/gf/v2/os/gcron"
 	"github.com/gogf/gf/v2/os/gtime"
+	"hotgo/internal/consts"
 )
 
 func (client *Client) getCronKey(s string) string {
@@ -19,19 +20,19 @@ func (client *Client) stopCron() {
 
 func (client *Client) startCron() {
 	// 心跳超时检查
-	if gcron.Search(client.getCronKey(cronHeartbeatVerify)) == nil {
+	if gcron.Search(client.getCronKey(consts.TCPCronHeartbeatVerify)) == nil {
 		gcron.AddSingleton(client.Ctx, "@every 600s", func(ctx context.Context) {
 			if client.heartbeat < gtime.Timestamp()-600 {
-				client.Logger.Debugf(client.Ctx, "client  heartbeat timeout, about to reconnect..")
+				client.Logger.Debugf(client.Ctx, "client heartbeat timeout, about to reconnect..")
 				client.Destroy()
 			}
-		}, client.getCronKey(cronHeartbeatVerify))
+		}, client.getCronKey(consts.TCPCronHeartbeatVerify))
 	}
 
 	// 心跳
-	if gcron.Search(client.getCronKey(cronHeartbeat)) == nil {
+	if gcron.Search(client.getCronKey(consts.TCPCronHeartbeat)) == nil {
 		gcron.AddSingleton(client.Ctx, "@every 120s", func(ctx context.Context) {
 			client.serverHeartbeat()
-		}, client.getCronKey(cronHeartbeat))
+		}, client.getCronKey(consts.TCPCronHeartbeat))
 	}
 }

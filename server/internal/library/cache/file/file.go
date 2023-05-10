@@ -9,9 +9,11 @@ import (
 	"fmt"
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcache"
+	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/util/gconv"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -181,7 +183,12 @@ func (c *AdapterFile) createName(key string) string {
 }
 
 func (c *AdapterFile) read(key string) (*fileContent, error) {
-	value, err := ioutil.ReadFile(c.createName(key))
+	rp := gfile.RealPath(c.createName(key))
+	if rp == "" {
+		return nil, nil
+	}
+
+	value, err := os.ReadFile(rp)
 	if err != nil {
 		return nil, err
 	}
@@ -236,6 +243,10 @@ func (c *AdapterFile) Fetch(key string) (interface{}, error) {
 		return "", err
 	}
 
+	if content == nil {
+		return "", nil
+	}
+
 	return content.Data, nil
 }
 
@@ -286,5 +297,8 @@ func (c *AdapterFile) Save(key string, value string, lifeTime time.Duration) err
 		return err
 	}
 
-	return ioutil.WriteFile(c.createName(key), data, perm)
+	err = os.WriteFile(c.createName(key), data, perm)
+
+	g.Log().Warningf(gctx.New(), "Save err:%+v", err)
+	return err
 }

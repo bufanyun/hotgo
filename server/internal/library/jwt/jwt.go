@@ -107,3 +107,7 @@ func GetAuthorization(r *ghttp.Request) string {
 
 	return gstr.Replace(authorization, "Bearer ", "")
 }
+
+func GenAuthKey(token string) string {
+	return gmd5.MustEncryptString(token)
+}

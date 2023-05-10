@@ -10,7 +10,6 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
@@ -38,7 +37,7 @@ func (s *sSysProvinces) Tree(ctx context.Context) (list []g.Map, err error) {
 	var models []*entity.SysProvinces
 	if err = dao.SysProvinces.Ctx(ctx).Order("pid asc,id asc,sort asc").Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, err
+		return
 	}
 
 	list = gconv.SliceMap(models)
@@ -51,36 +50,30 @@ func (s *sSysProvinces) Tree(ctx context.Context) (list []g.Map, err error) {
 }
 
 // Delete 删除
-func (s *sSysProvinces) Delete(ctx context.Context, in sysin.ProvincesDeleteInp) error {
-
-	var (
-		models *entity.SysProvinces
-	)
-	err := dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Scan(&models)
-	if err != nil {
-		return err
+func (s *sSysProvinces) Delete(ctx context.Context, in sysin.ProvincesDeleteInp) (err error) {
+	var models *entity.SysProvinces
+	if err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
+		return
 	}
 
 	if models == nil {
-		return gerror.New("数据不存在或已删除！")
+		err = gerror.New("数据不存在或已删除！")
+		return
 	}
 
 	pidExist, err := dao.SysProvinces.Ctx(ctx).Where("pid", models.Id).One()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
+		return
 	}
+
 	if !pidExist.IsEmpty() {
-		return gerror.New("请先删除该地区下得所有子级！")
+		err = gerror.New("请先删除该地区下得所有子级！")
+		return
 	}
 
 	_, err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // Edit 修改/新增
@@ -98,7 +91,7 @@ func (s *sSysProvinces) Edit(ctx context.Context, in sysin.ProvincesEditInp) (er
 	// 关系树
 	in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, dao.SysProvinces, in.Pid)
 	if err != nil {
-		return err
+		return
 	}
 
 	isUpdate := false
@@ -114,70 +107,52 @@ func (s *sSysProvinces) Edit(ctx context.Context, in sysin.ProvincesEditInp) (er
 	// 修改
 	if isUpdate {
 		_, err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Data(in).Update()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
-
-		return nil
+		return
 	}
 
 	// 新增
 	_, err = dao.SysProvinces.Ctx(ctx).Data(in).Insert()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-	return nil
+	return
 }
 
 // Status 更新部门状态
 func (s *sSysProvinces) Status(ctx context.Context, in sysin.ProvincesStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
-		return err
+		return
 	}
 
 	if in.Status <= 0 {
 		err = gerror.New("状态不能为空")
-		return err
+		return
 	}
 
 	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
-		return err
+		return
 	}
 
-	// 修改
-	in.UpdatedAt = gtime.Now()
 	_, err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // MaxSort 最大排序
 func (s *sSysProvinces) MaxSort(ctx context.Context, in sysin.ProvincesMaxSortInp) (res *sysin.ProvincesMaxSortModel, err error) {
 	if err = dao.SysProvinces.Ctx(ctx).Fields(dao.SysProvinces.Columns().Sort).OrderDesc(dao.SysProvinces.Columns().Sort).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
+		return
 	}
 
+	if res == nil {
+		res = new(sysin.ProvincesMaxSortModel)
+	}
 	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
-	return res, nil
+	return
 }
 
 // View 获取指定字典类型信息
 func (s *sSysProvinces) View(ctx context.Context, in sysin.ProvincesViewInp) (res *sysin.ProvincesViewModel, err error) {
-	if err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	return res, nil
+	err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Scan(&res)
+	return
 }
 
 // List 获取列表
@@ -193,21 +168,12 @@ func (s *sSysProvinces) List(ctx context.Context, in sysin.ProvincesListInp) (li
 	}
 
 	totalCount, err = mod.Count()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+	if err != nil || totalCount == 0 {
+		return
 	}
 
-	if totalCount == 0 {
-		return list, totalCount, nil
-	}
-
-	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
-	}
-
-	return list, totalCount, err
+	err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list)
+	return
 }
 
 // ChildrenList 获取省市区下级列表
@@ -227,21 +193,12 @@ func (s *sSysProvinces) ChildrenList(ctx context.Context, in sysin.ProvincesChil
 	}
 
 	totalCount, err = mod.Count()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+	if err != nil || totalCount == 0 {
+		return
 	}
 
-	if totalCount == 0 {
-		return list, totalCount, nil
-	}
-
-	if err = mod.Page(in.Page, in.PerPage).Order("sort asc,id desc").Scan(&list); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
-	}
-
-	return list, totalCount, err
+	err = mod.Page(in.Page, in.PerPage).Order("sort asc,id desc").Scan(&list)
+	return
 }
 
 // UniqueId 获取省市区下级列表
@@ -254,10 +211,10 @@ func (s *sSysProvinces) UniqueId(ctx context.Context, in sysin.ProvincesUniqueId
 
 	if err = hgorm.IsUnique(ctx, dao.SysProvinces, g.Map{dao.SysProvinces.Columns().Id: in.NewId}, "", in.OldId); err != nil {
 		res.IsUnique = false
-		return res, nil
+		return
 	}
 
-	return res, nil
+	return
 }
 
 // Select 省市区选项

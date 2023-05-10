@@ -35,19 +35,10 @@ func init() {
 func (s *sAdminMonitor) StartMonitor(ctx context.Context) {
 	simple.SafeGo(ctx, func(ctx context.Context) {
 		s.data.STartTime = gtime.Now().Timestamp()
-		intranetIP, err := location.GetLocalIP()
-		if err != nil {
-			g.Log().Infof(ctx, "parse intranetIP err:%+v", err)
-		}
-		s.data.IntranetIP = intranetIP
+		s.data.IntranetIP, _ = location.GetLocalIP()
+		s.data.PublicIP, _ = location.GetPublicIP(ctx)
 
-		publicIP, err := location.GetPublicIP(ctx)
-		if err != nil {
-			g.Log().Infof(ctx, "parse publicIP err:%+v", err)
-		}
-		s.data.PublicIP = publicIP
-
-		_, err = gcron.Add(ctx, "@every 1s", func(ctx context.Context) {
+		_, err := gcron.Add(ctx, "@every 1s", func(ctx context.Context) {
 			s.Lock()
 			defer s.Unlock()
 			s.netIO()

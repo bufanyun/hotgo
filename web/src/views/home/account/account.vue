@@ -20,16 +20,23 @@
           <BasicSetting v-if="type === 1" />
           <SafetySetting v-if="type === 2" />
           <CashSetting v-if="type === 3" />
+          <ThirdBind v-if="type === 4" />
         </n-card>
       </n-grid-item>
     </n-grid>
   </div>
 </template>
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import BasicSetting from './BasicSetting.vue';
   import SafetySetting from './SafetySetting.vue';
   import CashSetting from './CashSetting.vue';
+  import ThirdBind from './ThirdBind.vue';
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+  const type = ref(1);
+  const typeTitle = ref('基本设置');
 
   const typeTabList = [
     {
@@ -47,10 +54,29 @@
       desc: '提现收款账号支付宝设置',
       key: 3,
     },
+    {
+      name: '第三方绑定',
+      desc: '第三方快捷登录、消息推送',
+      key: 4,
+    },
   ];
 
-  const type = ref(1);
-  const typeTitle = ref('基本设置');
+  onMounted(() => {
+    if (router.currentRoute.value.query?.type) {
+      setDefaultOption();
+    }
+  });
+
+  function setDefaultOption() {
+    const key = router.currentRoute.value.query.type as unknown as number;
+    if (key !== undefined && key > 0) {
+      for (const item of typeTabList) {
+        if (item.key == key) {
+          switchType(item);
+        }
+      }
+    }
+  }
 
   function switchType(e) {
     type.value = e.key;

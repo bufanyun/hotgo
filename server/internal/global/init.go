@@ -32,7 +32,6 @@ func Init(ctx context.Context) {
 		g.Log().Fatal(ctx, "配置读取异常:", err, "\r\n你确定 config/config.yaml 文件存在且格式正确吗？\r\n")
 		return
 	}
-	//g.SetDebug(debug.Bool())
 
 	// 默认上海时区
 	if err = gtime.SetTimeZone("Asia/Shanghai"); err != nil {
@@ -54,6 +53,12 @@ func Init(ctx context.Context) {
 
 	// 加载ip访问黑名单
 	service.SysBlacklist().Load(ctx)
+
+	// 初始化功能库配置
+	service.SysConfig().InitConfig(ctx)
+
+	// 注册支付成功回调方法
+	payNotifyCall()
 
 	// 初始化生成代码配置
 	hggen.InIt(ctx)

@@ -1,6 +1,6 @@
 {
   "name": "hotgo",
-  "version": "2.5.3",
+  "version": "2.6.7",
   "author": {
     "name": "MengShuai",
     "email": "133814250@qq.com",
@@ -56,7 +56,8 @@
     "vue-router": "^4.0.15",
     "vue-types": "^4.1.1",
     "vue3-json-viewer": "^2.2.2",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "weixin-js-sdk": "^1.6.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",

@@ -22,6 +22,7 @@ type AdminMember struct {
 	Salt               interface{} // 密码盐
 	AuthKey            interface{} // 授权令牌
 	PasswordResetToken interface{} // 密码重置令牌
+	Integral           interface{} // 积分
 	Balance            interface{} // 余额
 	Avatar             interface{} // 头像
 	Sex                interface{} // 性别
