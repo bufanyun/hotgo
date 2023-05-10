@@ -9,9 +9,7 @@ import (
 	"fmt"
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcache"
-	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/util/gconv"
 	"os"
@@ -298,7 +296,5 @@ func (c *AdapterFile) Save(key string, value string, lifeTime time.Duration) err
 	}
 
 	err = os.WriteFile(c.createName(key), data, perm)
-
-	g.Log().Warningf(gctx.New(), "Save err:%+v", err)
 	return err
 }
