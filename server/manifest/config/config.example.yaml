@@ -24,7 +24,7 @@ hotgo:
     levelFormat: ["WARN", "ERRO", "FATA", "PANI"]   # 需要记录的等级
   # admin
   admin:
-    superIds: [ 1,2,3 ]                             # 后台超管账号ID，通过ID验证超管
+    superIds: [ 1 ]                                 # 后台超管账号ID，通过ID验证超管
     superRoleKey: "super"                           # 超管角色唯一标识符，通过角色验证超管
     defaultPage: 10                                 # 列表分页默认加载数量
     defaultPageSize: 1                              # 列表分页默认加载页码
