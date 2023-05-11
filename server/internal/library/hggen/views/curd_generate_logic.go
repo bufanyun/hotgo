@@ -21,8 +21,9 @@ const (
 	LogicListSimpleSelect   = "\tfields, err := hgorm.GenSelect(ctx, sysin.%sListModel{}, dao.%s)\n\tif err != nil {\n\t\treturn\n\t}"
 	LogicListJoinSelect     = "\t//关联表select\n\tfields, err := hgorm.GenJoinSelect(ctx, %sin.%sListModel{}, dao.%s, []*hgorm.Join{\n%v\t})"
 	LogicListJoinOnRelation = "\t// 关联表%s\n\tmod = mod.%s(hgorm.GenJoinOnRelation(\n\t\tdao.%s.Table(), dao.%s.Columns().%s, // 主表表名,关联字段\n\t\tdao.%s.Table(), \"%s\", dao.%s.Columns().%s, // 关联表表名,别名,关联字段\n\t)...)\n\n"
-	LogicEditUpdate         = "\t\t_, err = s.Model(ctx).\n\t\t\tFieldsEx(\n%s\t\t\t).\n\t\t\tWhere(dao.%s.Columns().%s, in.%s).Data(in).Update()\n\t\treturn "
+	LogicEditUpdate         = "\t\t_, err = s.Model(ctx%s).\n\t\t\tFieldsEx(\n%s\t\t\t).\n\t\t\tWhere(dao.%s.Columns().%s, in.%s).Data(in).Update()\n\t\treturn "
 	LogicEditInsert         = "\t_, err = s.Model(ctx, &handler.Option{FilterAuth: false}).\n\t\tFieldsEx(\n%s\t\t).\n\t\tData(in).Insert()"
+	LogicEditUnique         = "\t// 验证'%s'唯一\n\tif err = hgorm.IsUnique(ctx, dao.%s, g.Map{dao.%s.Columns().%s: in.%s}, \"%s已存在\", in.Id); err != nil {\n\t\treturn\n\t}\n"
 	LogicSwitchUpdate       = "g.Map{\n\t\tin.Key:                       in.Value,\n%s}"
 	LogicStatusUpdate       = "g.Map{\n\t\tdao.%s.Columns().Status:    in.Status,\n%s}"
 )
@@ -78,6 +79,7 @@ func (l *gCurd) generateLogicEdit(ctx context.Context, in *CurdPreviewInput) g.M
 		updateBuffer   = bytes.NewBuffer(nil)
 		insertFieldsEx = ""
 		insertBuffer   = bytes.NewBuffer(nil)
+		uniqueBuffer   = bytes.NewBuffer(nil)
 	)
 
 	for _, field := range in.masterFields {
@@ -96,13 +98,23 @@ func (l *gCurd) generateLogicEdit(ctx context.Context, in *CurdPreviewInput) g.M
 		if field.Index == consts.GenCodesIndexPK || field.GoName == "UpdatedBy" || field.GoName == "DeletedAt" {
 			insertFieldsEx = insertFieldsEx + "\t\t\t\tdao." + in.In.DaoName + ".Columns()." + field.GoName + ",\n"
 		}
+
+		if field.Unique {
+			uniqueBuffer.WriteString(fmt.Sprintf(LogicEditUnique, field.GoName, in.In.DaoName, in.In.DaoName, field.GoName, field.GoName, field.Dc))
+		}
 	}
 
-	updateBuffer.WriteString(fmt.Sprintf(LogicEditUpdate, updateFieldsEx, in.In.DaoName, in.pk.GoName, in.pk.GoName))
+	notFilterAuth := ""
+	if gstr.InArray(in.options.ColumnOps, "notFilterAuth") {
+		notFilterAuth = ", &handler.Option{FilterAuth: false}"
+	}
+
+	updateBuffer.WriteString(fmt.Sprintf(LogicEditUpdate, notFilterAuth, updateFieldsEx, in.In.DaoName, in.pk.GoName, in.pk.GoName))
 	insertBuffer.WriteString(fmt.Sprintf(LogicEditInsert, insertFieldsEx))
 
 	data["update"] = updateBuffer.String()
 	data["insert"] = insertBuffer.String()
+	data["unique"] = uniqueBuffer.String()
 	return data
 }
 
