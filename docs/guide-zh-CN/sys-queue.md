@@ -110,6 +110,31 @@ func test()  {
 
 ```
 
+延迟队列，目前只有redis驱动支持:
+
+```go
+package main
+
+import (
+	"fmt"
+	"hotgo/internal/consts"
+	"hotgo/internal/library/queue"
+	"hotgo/internal/model/entity"
+)
+
+func test()  {
+	data := &entity.SysLog{
+		//...
+    }
+	
+	// 延迟10秒
+	if err := queue.SendDelayMsg(consts.QueueLogTopic, data, 10); err != nil {
+		fmt.Printf("queue.Push err:%+v", err)
+	}
+}
+
+```
+
 ### 控制台
 
 控制台用于处理队列消息，即消费者。

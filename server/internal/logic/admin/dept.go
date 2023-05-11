@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package admin
 
 import (
@@ -12,11 +11,14 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/hgorm"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
+	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
+	"hotgo/utility/tree"
 	"hotgo/utility/validate"
 )
 
@@ -123,7 +125,6 @@ func (s *sAdminDept) Status(ctx context.Context, in adminin.DeptStatusInp) (err 
 
 // MaxSort 最大排序
 func (s *sAdminDept) MaxSort(ctx context.Context, in adminin.DeptMaxSortInp) (res *adminin.DeptMaxSortModel, err error) {
-	res = new(adminin.DeptMaxSortModel)
 	if in.Id > 0 {
 		if err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
@@ -131,13 +132,46 @@ func (s *sAdminDept) MaxSort(ctx context.Context, in adminin.DeptMaxSortInp) (re
 		}
 	}
 
-	res.Sort = res.Sort + 10
+	if res == nil {
+		res = new(adminin.DeptMaxSortModel)
+	}
+	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
 	return
 }
 
 // View 获取指定字典类型信息
 func (s *sAdminDept) View(ctx context.Context, in adminin.DeptViewInp) (res *adminin.DeptViewModel, err error) {
 	err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Scan(&res)
+	return
+}
+
+// Option 选项
+func (s *sAdminDept) Option(ctx context.Context, in adminin.DeptOptionInp) (res *adminin.DeptOptionModel, totalCount int, err error) {
+	var (
+		mod    = dao.AdminDept.Ctx(ctx)
+		models []*entity.AdminDept
+		pid    int64 = 0
+	)
+
+	// 非超管只获取下级
+	if !service.AdminMember().VerifySuperId(ctx, contexts.GetUserId(ctx)) {
+		pid = contexts.GetUser(ctx).DeptId
+		mod = mod.WhereLike(dao.AdminDept.Columns().Tree, "%"+tree.GetIdLabel(pid)+"%")
+	}
+
+	totalCount, err = mod.Count()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return
+	}
+
+	if err = mod.Page(in.Page, in.PerPage).Order("sort asc,id asc").Scan(&models); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return
+	}
+
+	res = new(adminin.DeptOptionModel)
+	res.List = s.treeList(pid, models)
 	return
 }
 
@@ -168,7 +202,8 @@ func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (res *adm
 	}
 
 	if in.Code != "" {
-		values, err := dao.AdminDept.Ctx(ctx).Fields("pid").WhereLike("code", "%"+in.Code+"%").Array()
+		values, err := dao.AdminDept.Ctx(ctx).Fields("pid").
+			WhereLike("code", "%"+in.Code+"%").Array()
 		if err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
 			return nil, err
@@ -202,10 +237,7 @@ func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (res *adm
 // GetName 获取部门名称
 func (s *sAdminDept) GetName(ctx context.Context, id int64) (name string, err error) {
 	var data entity.AdminDept
-	err = dao.AdminDept.Ctx(ctx).
-		Where("id", id).
-		Fields("name").
-		Scan(&data)
+	err = dao.AdminDept.Ctx(ctx).Where("id", id).Fields("name").Scan(&data)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return name, err

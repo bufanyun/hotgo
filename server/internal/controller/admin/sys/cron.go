@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -12,6 +11,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/cron"
 	"hotgo/internal/model/input/form"
+	"hotgo/internal/model/input/msgin"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 )
@@ -24,23 +24,23 @@ type cCron struct{}
 
 // Delete 删除
 func (c *cCron) Delete(ctx context.Context, req *cron.DeleteReq) (res *cron.DeleteRes, err error) {
-	var in sysin.CronDeleteInp
-	if err = gconv.Scan(req, &in); err != nil {
+	var in = new(msgin.CronDelete)
+	if err = gconv.Scan(req, &in.CronDeleteInp); err != nil {
 		return
 	}
 
-	err = service.SysCron().Delete(ctx, in)
+	err = service.TCPServer().CronDelete(ctx, in)
 	return
 }
 
 // Edit 更新
 func (c *cCron) Edit(ctx context.Context, req *cron.EditReq) (res *cron.EditRes, err error) {
-	var in sysin.CronEditInp
-	if err = gconv.Scan(req, &in); err != nil {
+	var in = new(msgin.CronEdit)
+	if err = gconv.Scan(req, &in.CronEditInp); err != nil {
 		return
 	}
 
-	err = service.SysCron().Edit(ctx, in)
+	err = service.TCPServer().CronEdit(ctx, in)
 	return
 }
 
@@ -105,10 +105,11 @@ func (c *cCron) OnlineExec(ctx context.Context, req *cron.OnlineExecReq) (res *c
 		return nil, gerror.New("定时任务ID不能为空")
 	}
 
-	var in sysin.OnlineExecInp
-	if err = gconv.Scan(req, &in); err != nil {
+	var in = new(msgin.CronOnlineExec)
+	if err = gconv.Scan(req, &in.OnlineExecInp); err != nil {
 		return
 	}
 
-	return res, service.SysCron().OnlineExec(ctx, in)
+	err = service.TCPServer().CronOnlineExec(ctx, in)
+	return
 }

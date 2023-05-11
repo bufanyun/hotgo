@@ -7,6 +7,7 @@ package middleware
 
 import (
 	"github.com/gogf/gf/v2/crypto/gmd5"
+	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -26,8 +27,9 @@ import (
 )
 
 type sMiddleware struct {
-	LoginUrl      string // 登录路由地址
-	DemoWhiteList g.Map  // 演示模式放行的路由白名單
+	LoginUrl        string // 登录路由地址
+	DemoWhiteList   g.Map  // 演示模式放行的路由白名单
+	PayNotifyRoutes g.Map  // 支付异步通知路由
 }
 
 func init() {
@@ -41,6 +43,11 @@ func New() *sMiddleware {
 			"/admin/site/login":       struct{}{}, // 后台登录
 			"/admin/genCodes/preview": struct{}{}, // 预览代码
 		},
+		PayNotifyRoutes: g.Map{
+			"/api/pay/notify/alipay": struct{}{}, // 支付宝
+			"/api/pay/notify/wxpay":  struct{}{}, // 微信支付
+			"/api/pay/notify/qqpay":  struct{}{}, // QQ支付
+		},
 	}
 }
 
@@ -51,6 +58,7 @@ func (s *sMiddleware) Ctx(r *ghttp.Request) {
 		Module: getModule(r.URL.Path),
 	})
 
+	contexts.SetData(r.Context(), "request.body", gjson.New(r.GetBodyString()))
 	r.Middleware.Next()
 }
 
@@ -117,7 +125,7 @@ func (s *sMiddleware) Addon(r *ghttp.Request) {
 }
 
 // inspectAuth 检查并完成身份认证
-func inspectAuth(r *ghttp.Request, appName string) error {
+func inspectAuth(r *ghttp.Request, appName string) (err error) {
 	var (
 		ctx           = r.Context()
 		user          = new(model.Identity)
@@ -126,30 +134,35 @@ func inspectAuth(r *ghttp.Request, appName string) error {
 	)
 
 	if authorization == "" {
-		return gerror.New("请先登录！")
+		err = gerror.New("请先登录！")
+		return
 	}
 
 	// 获取jwtToken
 	jwtToken := consts.CacheJwtToken + gmd5.MustEncryptString(authorization)
 	jwtSign := g.Cfg().MustGet(ctx, "jwt.sign", "hotgo")
 
-	data, ParseErr := jwt.ParseToken(authorization, jwtSign.Bytes())
-	if ParseErr != nil {
-		return gerror.Newf("token不正确或已过期! err :%+v", ParseErr.Error())
+	data, parseErr := jwt.ParseToken(authorization, jwtSign.Bytes())
+	if parseErr != nil {
+		err = gerror.Newf("token不正确或已过期! err :%+v", parseErr.Error())
+		return
 	}
 
-	parseErr := gconv.Struct(data, &user)
-	if parseErr != nil {
-		return gerror.Newf("登录信息解析异常，请重新登录！ err :%+v", ParseErr.Error())
+	if parseErr = gconv.Struct(data, &user); parseErr != nil {
+		err = gerror.Newf("登录信息解析异常，请重新登录！ err :%+v", parseErr.Error())
+		return
 	}
 
 	// 判断token跟redis的缓存的token是否一样
 	isContains, containsErr := cache.Instance().Contains(ctx, jwtToken)
 	if containsErr != nil {
-		return gerror.Newf("token无效！ err :%+v", ParseErr.Error())
+		err = gerror.Newf("token无效！ err :%+v", containsErr.Error())
+		return
 	}
+
 	if !isContains {
-		return gerror.Newf("token已过期")
+		err = gerror.Newf("token已过期")
+		return
 	}
 
 	// 是否开启多端登录
@@ -157,15 +170,18 @@ func inspectAuth(r *ghttp.Request, appName string) error {
 		key := consts.CacheJwtUserBind + appName + ":" + gconv.String(user.Id)
 		originJwtToken, originErr := cache.Instance().Get(ctx, key)
 		if originErr != nil {
-			return gerror.Newf("信息异常，请重新登录！ err :%+v", originErr.Error())
+			err = gerror.Newf("信息异常，请重新登录！ err :%+v", originErr.Error())
+			return
 		}
 
 		if originJwtToken == nil || originJwtToken.IsEmpty() {
-			return gerror.New("token已过期！")
+			err = gerror.New("token已过期！")
+			return
 		}
 
 		if jwtToken != originJwtToken.String() {
-			return gerror.New("账号已在其他地方登录！")
+			err = gerror.New("账号已在其他地方登录！")
+			return
 		}
 	}
 
@@ -188,5 +204,5 @@ func inspectAuth(r *ghttp.Request, appName string) error {
 		}
 	}
 	contexts.SetUser(ctx, customCtx.User)
-	return nil
+	return
 }

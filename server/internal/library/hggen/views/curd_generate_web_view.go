@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package views
 
 import (
@@ -45,7 +44,10 @@ func (l *gCurd) generateWebViewItem(ctx context.Context, in *CurdPreviewInput) s
 		case FormModeTime:
 			component = defaultComponent
 
-		case FormModeRadio, FormModeCheckbox, FormModeSelect, FormModeSelectMultiple:
+		case FormModeRadio, FormModeSelect:
+			component = fmt.Sprintf("<n-descriptions-item label=\"%s\">\n          <n-tag\n            :type=\"getOptionTag(options.%s, formValue?.%s)\"\n            size=\"small\"\n            class=\"min-left-space\"\n            >{{ getOptionLabel(options.%s, formValue?.%s) }}</n-tag\n          >\n        </n-descriptions-item>", field.Dc, in.options.dictMap[field.TsName], field.TsName, in.options.dictMap[field.TsName], field.TsName)
+
+		case FormModeCheckbox, FormModeSelectMultiple:
 			component = fmt.Sprintf("<n-descriptions-item label=\"%s\">\n          <template v-for=\"(item, key) in formValue?.%s\" :key=\"key\">\n            <n-tag\n              :type=\"getOptionTag(options.%s, item)\"\n              size=\"small\"\n              class=\"min-left-space\"\n              >{{ getOptionLabel(options.%s, item) }}</n-tag\n            >\n          </template>\n        </n-descriptions-item>", field.Dc, field.TsName, in.options.dictMap[field.TsName], in.options.dictMap[field.TsName])
 
 		case FormModeUploadImage:

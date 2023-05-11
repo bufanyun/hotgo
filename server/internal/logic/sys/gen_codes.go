@@ -18,6 +18,7 @@ import (
 	"hotgo/internal/dao"
 	"hotgo/internal/library/hggen"
 	"hotgo/internal/model"
+	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/validate"
@@ -34,25 +35,20 @@ func init() {
 }
 
 // Delete 删除
-func (s *sSysGenCodes) Delete(ctx context.Context, in sysin.GenCodesDeleteInp) error {
-	_, err := dao.SysGenCodes.Ctx(ctx).Where("id", in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+func (s *sSysGenCodes) Delete(ctx context.Context, in sysin.GenCodesDeleteInp) (err error) {
+	_, err = dao.SysGenCodes.Ctx(ctx).Where("id", in.Id).Delete()
+	return
 }
 
 // Edit 修改/新增
 func (s *sSysGenCodes) Edit(ctx context.Context, in sysin.GenCodesEditInp) (res *sysin.GenCodesEditModel, err error) {
 	if in.GenType == 0 {
 		err = gerror.New("生成类型不能为空")
-		return nil, err
+		return
 	}
 	if in.VarName == "" {
 		err = gerror.New("实体名称不能为空")
-		return nil, err
+		return
 	}
 
 	if in.GenType == consts.GenCodesTypeCurd {
@@ -69,7 +65,7 @@ func (s *sSysGenCodes) Edit(ctx context.Context, in sysin.GenCodesEditInp) (res 
 
 		if temp.IsAddon && in.AddonName == "" {
 			err = gerror.New("插件模板必须选择一个有效的插件")
-			return nil, err
+			return
 		}
 	}
 
@@ -79,7 +75,7 @@ func (s *sSysGenCodes) Edit(ctx context.Context, in sysin.GenCodesEditInp) (res 
 		_, err = dao.SysGenCodes.Ctx(ctx).Where("id", in.Id).Data(in).Update()
 		if err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
-			return nil, err
+			return
 		}
 		return &sysin.GenCodesEditModel{SysGenCodes: in.SysGenCodes}, nil
 	}
@@ -95,7 +91,7 @@ func (s *sSysGenCodes) Edit(ctx context.Context, in sysin.GenCodesEditInp) (res 
 	id, err := dao.SysGenCodes.Ctx(ctx).Data(in).InsertAndGetId()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
+		return
 	}
 
 	in.Id = id
@@ -106,49 +102,44 @@ func (s *sSysGenCodes) Edit(ctx context.Context, in sysin.GenCodesEditInp) (res 
 func (s *sSysGenCodes) Status(ctx context.Context, in sysin.GenCodesStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
-		return err
+		return
 	}
 
 	if in.Status <= 0 {
 		err = gerror.New("状态不能为空")
-		return err
+		return
 	}
 
 	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
-		return err
+		return
 	}
 
-	// 修改
 	_, err = dao.SysGenCodes.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // MaxSort 最大排序
-func (s *sSysGenCodes) MaxSort(ctx context.Context, in sysin.GenCodesMaxSortInp) (*sysin.GenCodesMaxSortModel, error) {
-	var res sysin.GenCodesMaxSortModel
+func (s *sSysGenCodes) MaxSort(ctx context.Context, in sysin.GenCodesMaxSortInp) (res *sysin.GenCodesMaxSortModel, err error) {
 	if in.Id > 0 {
-		if err := dao.SysGenCodes.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
+		if err = dao.SysGenCodes.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
 			return nil, err
 		}
 	}
-	res.Sort = res.Sort + 10
-	return &res, nil
+
+	if res == nil {
+		res = new(sysin.GenCodesMaxSortModel)
+	}
+
+	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	return
 }
 
 // View 获取指定字典类型信息
 func (s *sSysGenCodes) View(ctx context.Context, in sysin.GenCodesViewInp) (res *sysin.GenCodesViewModel, err error) {
-	if err = dao.SysGenCodes.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-	return res, nil
+	err = dao.SysGenCodes.Ctx(ctx).Where("id", in.Id).Scan(&res)
+	return
 }
 
 // List 获取列表
@@ -168,18 +159,13 @@ func (s *sSysGenCodes) List(ctx context.Context, in sysin.GenCodesListInp) (list
 	}
 
 	totalCount, err = mod.Count()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
-	}
-
-	if totalCount == 0 {
-		return list, totalCount, nil
+	if err != nil || totalCount == 0 {
+		return
 	}
 
 	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
 	typeSelect, err := hggen.GenTypeSelect(ctx)
@@ -187,7 +173,7 @@ func (s *sSysGenCodes) List(ctx context.Context, in sysin.GenCodesListInp) (list
 		return
 	}
 
-	getTemplateGroup := func(row *sysin.GenCodesListModel) string {
+	getTpGroup := func(row *sysin.GenCodesListModel) string {
 		if row == nil {
 			return ""
 		}
@@ -206,11 +192,11 @@ func (s *sSysGenCodes) List(ctx context.Context, in sysin.GenCodesListInp) (list
 
 	if len(list) > 0 {
 		for _, v := range list {
-			v.GenTemplateGroup = getTemplateGroup(v)
+			v.GenTemplateGroup = getTpGroup(v)
 		}
 	}
 
-	return list, totalCount, err
+	return
 }
 
 // Selects 选项
@@ -227,9 +213,8 @@ func (s *sSysGenCodes) TableSelect(ctx context.Context, in sysin.GenCodesTableSe
 		lists         []*sysin.GenCodesTableSelectModel
 	)
 
-	err = g.DB(in.Name).Ctx(ctx).Raw(fmt.Sprintf(sql, config.Name)).Scan(&lists)
-	if err != nil {
-		return nil, err
+	if err = g.DB(in.Name).Ctx(ctx).Raw(fmt.Sprintf(sql, config.Name)).Scan(&lists); err != nil {
+		return
 	}
 
 	patternStr := `addon_(\w+)_`
@@ -267,7 +252,8 @@ func (s *sSysGenCodes) TableSelect(ctx context.Context, in sysin.GenCodesTableSe
 
 		res = append(res, row)
 	}
-	return res, nil
+
+	return
 }
 
 // ColumnSelect 表字段选项
@@ -277,20 +263,21 @@ func (s *sSysGenCodes) ColumnSelect(ctx context.Context, in sysin.GenCodesColumn
 		config = g.DB(in.Name).GetConfig()
 	)
 
-	err = g.DB(in.Name).Ctx(ctx).Raw(fmt.Sprintf(sql, config.Name, in.Table)).Scan(&res)
-	if err != nil {
-		return nil, err
+	if err = g.DB(in.Name).Ctx(ctx).Raw(fmt.Sprintf(sql, config.Name, in.Table)).Scan(&res); err != nil {
+		return
 	}
 
 	if len(res) == 0 {
-		return nil, gerror.Newf("table does not exist:%v", in.Table)
+		err = gerror.Newf("table does not exist:%v", in.Table)
+		return
 	}
 
 	for k, v := range res {
 		res[k].Name = fmt.Sprintf("%s (%s)", v.Value, v.Label)
 		res[k].Label = res[k].Name
 	}
-	return res, nil
+
+	return
 }
 
 // ColumnList 表字段列表
@@ -306,14 +293,12 @@ func (s *sSysGenCodes) Preview(ctx context.Context, in sysin.GenCodesPreviewInp)
 // Build 提交生成
 func (s *sSysGenCodes) Build(ctx context.Context, in sysin.GenCodesBuildInp) (err error) {
 	// 先保存配置
-	_, err = s.Edit(ctx, sysin.GenCodesEditInp{SysGenCodes: in.SysGenCodes})
-	if err != nil {
+	if _, err = s.Edit(ctx, sysin.GenCodesEditInp{SysGenCodes: in.SysGenCodes}); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
 
-	err = s.Status(ctx, sysin.GenCodesStatusInp{Id: in.Id, Status: consts.GenCodesStatusOk})
-	if err != nil {
+	if err = s.Status(ctx, sysin.GenCodesStatusInp{Id: in.Id, Status: consts.GenCodesStatusOk}); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}

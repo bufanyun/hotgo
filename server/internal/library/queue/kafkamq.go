@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package queue
 
 import (
@@ -74,6 +73,11 @@ func (r *KafkaMq) SendByteMsg(topic string, body []byte) (mqMsg MqMsg, err error
 	}
 
 	return mqMsg, nil
+}
+
+func (r *KafkaMq) SendDelayMsg(topic string, body string, delaySecond int64) (mqMsg MqMsg, err error) {
+	err = gerror.New("implement me")
+	return
 }
 
 // ListenReceiveMsgDo 消费数据

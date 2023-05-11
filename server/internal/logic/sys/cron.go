@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -64,15 +63,12 @@ func (s *sSysCron) Delete(ctx context.Context, in sysin.CronDeleteInp) (err erro
 	}
 
 	err = g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
-		_, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Delete()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
+		if _, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Delete(); err != nil {
+			return
 		}
-
 		return crons.Delete(models)
 	})
-	return nil
+	return
 }
 
 // Edit 修改/新增
@@ -84,17 +80,12 @@ func (s *sSysCron) Edit(ctx context.Context, in sysin.CronEditInp) (err error) {
 
 	// 修改
 	if in.Id > 0 {
-		err = g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
-			_, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Data(in).Update()
-			if err != nil {
-				err = gerror.Wrap(err, consts.ErrorORM)
-				return err
-			}
-
-			simple.SafeGo(ctx, func(ctx context.Context) {
-				crons.RefreshStatus(&in.SysCron)
-			})
+		if _, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Data(in).Update(); err != nil {
 			return
+		}
+
+		simple.SafeGo(ctx, func(ctx context.Context) {
+			crons.RefreshStatus(&in.SysCron)
 		})
 		return
 	}
@@ -104,26 +95,25 @@ func (s *sSysCron) Edit(ctx context.Context, in sysin.CronEditInp) (err error) {
 	return
 }
 
-// Status 更新部门状态
+// Status 更新状态
 func (s *sSysCron) Status(ctx context.Context, in sysin.CronStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
-		return err
+		return
 	}
 
 	if in.Status <= 0 {
 		err = gerror.New("状态不能为空")
-		return err
+		return
 	}
 
 	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
-		return err
+		return
 	}
 
 	var models *entity.SysCron
 	if err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
 
@@ -132,18 +122,13 @@ func (s *sSysCron) Status(ctx context.Context, in sysin.CronStatusInp) (err erro
 		return
 	}
 
-	err = g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
-		_, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
+	_, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
+	if err != nil {
+	}
 
-		models.Status = in.Status
-		simple.SafeGo(ctx, func(ctx context.Context) {
-			crons.RefreshStatus(models)
-		})
-		return
+	models.Status = in.Status
+	simple.SafeGo(ctx, func(ctx context.Context) {
+		crons.RefreshStatus(models)
 	})
 	return
 }
@@ -151,25 +136,24 @@ func (s *sSysCron) Status(ctx context.Context, in sysin.CronStatusInp) (err erro
 // MaxSort 最大排序
 func (s *sSysCron) MaxSort(ctx context.Context, in sysin.CronMaxSortInp) (res *sysin.CronMaxSortModel, err error) {
 	if err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
+		return
 	}
+
 	if res == nil {
 		res = new(sysin.CronMaxSortModel)
 	}
 
 	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
-	return res, nil
+	return
 }
 
-// View 获取指定字典类型信息
+// View 获取指定信息
 func (s *sSysCron) View(ctx context.Context, in sysin.CronViewInp) (res *sysin.CronViewModel, err error) {
 	if err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
+		return
 	}
 
-	return res, nil
+	return
 }
 
 // List 获取列表
@@ -187,34 +171,34 @@ func (s *sSysCron) List(ctx context.Context, in sysin.CronListInp) (list []*sysi
 	totalCount, err = mod.Count()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
 	if totalCount == 0 {
-		return list, totalCount, nil
+		return
 	}
 
 	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
 	for _, v := range list {
 		v.GroupName, _ = dao.SysCronGroup.GetName(ctx, v.GroupId)
 	}
-	return list, totalCount, err
+	return
 }
 
 // OnlineExec 在线执行
 func (s *sSysCron) OnlineExec(ctx context.Context, in sysin.OnlineExecInp) (err error) {
 	var data *entity.SysCron
-	err = dao.SysCron.Ctx(ctx).Where(dao.SysCron.Columns().Id, in.Id).Scan(&data)
-	if err != nil {
+	if err = dao.SysCron.Ctx(ctx).Where(dao.SysCron.Columns().Id, in.Id).Scan(&data); err != nil {
 		return
 	}
 
 	if data == nil {
-		return gerror.New("定时任务不存在")
+		err = gerror.New("定时任务不存在")
+		return
 	}
 
 	newCtx := context.WithValue(gctx.New(), consts.ContextKeyCronArgs, strings.Split(data.Params, consts.CronSplitStr))

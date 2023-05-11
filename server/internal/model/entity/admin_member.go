@@ -20,6 +20,7 @@ type AdminMember struct {
 	Salt               string      `json:"salt"               description:"密码盐"`
 	AuthKey            string      `json:"authKey"            description:"授权令牌"`
 	PasswordResetToken string      `json:"passwordResetToken" description:"密码重置令牌"`
+	Integral           float64     `json:"integral"           description:"积分"`
 	Balance            float64     `json:"balance"            description:"余额"`
 	Avatar             string      `json:"avatar"             description:"头像"`
 	Sex                int         `json:"sex"                description:"性别"`

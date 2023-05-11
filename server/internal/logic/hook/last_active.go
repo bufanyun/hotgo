@@ -66,7 +66,7 @@ func (s *sHook) lastAdminActive(r *ghttp.Request) {
 	}
 
 	var (
-		ctx    = r.Context()
+		ctx    = contexts.Detach(r.Context())
 		member = contexts.GetUser(ctx)
 	)
 
@@ -76,7 +76,8 @@ func (s *sHook) lastAdminActive(r *ghttp.Request) {
 
 	if allow(member.Id) {
 		simple.SafeGo(ctx, func(ctx context.Context) {
-			_, err := g.Model("admin_member").Ctx(ctx).
+			_, err := g.Model("admin_member").
+				Ctx(ctx).
 				Where("id", member.Id).
 				WhereLT("last_active_at", gtime.Now()).
 				Data(g.Map{"last_active_at": gtime.Now()}).

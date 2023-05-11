@@ -221,6 +221,7 @@
               <n-gi>
                 <n-form-item label="分配权限" path="permissions">
                   <n-input
+                    :type="formParams.permissions.length > 30 ? 'textarea' : ''"
                     placeholder="请输入分配权限，多个权限用,分割"
                     v-model:value="formParams.permissions"
                   />

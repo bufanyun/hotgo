@@ -122,7 +122,7 @@
   const showModal = ref(false);
 
   const actionColumn = reactive({
-    width: 120,
+    width: 180,
     title: '操作',
     key: 'action',
     fixed: 'right',

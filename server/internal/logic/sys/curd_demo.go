@@ -3,9 +3,8 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-// @AutoGenerate Version 2.1.4
-// @AutoGenerate Date 2023-02-20 16:41:58
-//
+// @AutoGenerate Version 2.5.3
+// @AutoGenerate Date 2023-04-28 15:28:40
 package sys
 
 import (
@@ -75,12 +74,8 @@ func (s *sSysCurdDemo) List(ctx context.Context, in sysin.CurdDemoListInp) (list
 		dao.TestCategory.Table(), "testCategory", dao.TestCategory.Columns().Id, // 关联表表名,别名,关联条件
 	)...)
 
-	totalCount, err = mod.Clone().Count(1)
-	if err != nil {
-		return
-	}
-
-	if totalCount == 0 {
+	totalCount, err = mod.Clone().Count()
+	if totalCount == 0 || err != nil {
 		return
 	}
 
@@ -88,7 +83,6 @@ func (s *sSysCurdDemo) List(ctx context.Context, in sysin.CurdDemoListInp) (list
 	fields, err := hgorm.GenJoinSelect(ctx, sysin.CurdDemoListModel{}, dao.SysGenCurdDemo, []*hgorm.Join{
 		{Dao: dao.TestCategory, Alias: "testCategory"},
 	})
-
 	err = mod.Fields(fields).Page(in.Page, in.PerPage).OrderAsc(dao.SysGenCurdDemo.Columns().Sort).OrderDesc(dao.SysGenCurdDemo.Columns().Id).Scan(&list)
 	return
 }

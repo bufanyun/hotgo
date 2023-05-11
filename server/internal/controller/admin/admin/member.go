@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package admin
 
 import (
@@ -175,19 +174,6 @@ func (c *cMember) Edit(ctx context.Context, req *member.EditReq) (res *member.Ed
 	return
 }
 
-// MaxSort 最大排序
-func (c *cMember) MaxSort(ctx context.Context, req *member.MaxSortReq) (res *member.MaxSortRes, err error) {
-	var in = adminin.MemberMaxSortInp{Id: req.Id}
-	data, err := service.AdminMember().MaxSort(ctx, in)
-	if err != nil {
-		return
-	}
-
-	res = new(member.MaxSortRes)
-	res.Sort = data.Sort
-	return
-}
-
 // View 获取指定信息
 func (c *cMember) View(ctx context.Context, req *member.ViewReq) (res *member.ViewRes, err error) {
 	data, err := service.AdminMember().View(ctx, adminin.MemberViewInp{Id: req.Id})
@@ -251,5 +237,35 @@ func (c *cMember) Select(ctx context.Context, req *member.SelectReq) (res *membe
 	}
 
 	res = (*member.SelectRes)(&data)
+	return
+}
+
+// AddBalance 增加余额
+func (c *cMember) AddBalance(ctx context.Context, req *member.AddBalanceReq) (res *member.AddBalanceRes, err error) {
+	var in adminin.MemberAddBalanceInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
+	err = service.AdminMember().AddBalance(ctx, in)
+	return
+}
+
+// AddIntegral 增加积分
+func (c *cMember) AddIntegral(ctx context.Context, req *member.AddIntegralReq) (res *member.AddIntegralRes, err error) {
+	var in adminin.MemberAddIntegralInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
+	err = service.AdminMember().AddIntegral(ctx, in)
 	return
 }

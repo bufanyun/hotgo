@@ -15,6 +15,7 @@ func (s *sMiddleware) Develop(r *ghttp.Request) {
 	ips := g.Cfg().MustGet(r.Context(), "hggen.allowedIPs").Strings()
 	if len(ips) == 0 {
 		response.JsonExit(r, gcode.CodeNotSupported.Code(), "请配置生成白名单！")
+		return
 	}
 
 	if !gstr.InArray(ips, "*") {
@@ -29,6 +30,7 @@ func (s *sMiddleware) Develop(r *ghttp.Request) {
 
 		if !ok {
 			response.JsonExit(r, gcode.CodeNotSupported.Code(), fmt.Sprintf("当前IP[%s]没有配置生成白名单！", cuIp))
+			return
 		}
 	}
 

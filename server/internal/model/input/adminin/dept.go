@@ -3,11 +3,11 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package adminin
 
 import (
 	"hotgo/internal/model/entity"
+	"hotgo/internal/model/input/form"
 )
 
 // DeptNameUniqueInp 名称是否唯一
@@ -73,3 +73,11 @@ type DeptStatusInp struct {
 	entity.AdminDept
 }
 type DeptStatusModel struct{}
+
+type DeptOptionInp struct {
+	form.PageReq
+}
+
+type DeptOptionModel struct {
+	List []*DeptTree `json:"list"`
+}

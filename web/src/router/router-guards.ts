@@ -1,11 +1,13 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { isNavigationFailure, Router } from 'vue-router';
-import { useUserStoreWidthOut } from '@/store/modules/user';
+import { UserInfoState, useUserStoreWidthOut } from '@/store/modules/user';
 import { useAsyncRouteStoreWidthOut } from '@/store/modules/asyncRoute';
 import { ACCESS_TOKEN } from '@/store/mutation-types';
 import { storage } from '@/utils/Storage';
 import { PageEnum } from '@/enums/pageEnum';
 import { ErrorPageRoute } from '@/router/base';
+import { isWechatBrowser } from '@/utils/is';
+import { jump } from '@/utils/http/axios';
 
 const LOGIN_PATH = PageEnum.BASE_LOGIN;
 const whitePathList = [LOGIN_PATH]; // no redirect whitelist
@@ -55,7 +57,24 @@ export function createRouterGuards(router: Router) {
       return;
     }
 
+    const redirectPath = (from.query.redirect || to.path) as string;
+    const redirect = decodeURIComponent(redirectPath);
+    const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect };
     const userInfo = await userStore.GetInfo();
+
+    // 如果是微信访问，则记录本次登录的openid
+    if (isWechatBrowser() && (userInfo as UserInfoState).openId === '') {
+      let path = nextData.path;
+      if (path === LOGIN_PATH) {
+        path = PageEnum.BASE_HOME_REDIRECT;
+      }
+
+      const w = window.location;
+      const URI = w.protocol + '//' + w.host + w.pathname + '#' + path;
+      jump('/wechat/authorize', { type: 'openId', syncRedirect: URI });
+      return;
+    }
+
     await userStore.GetConfig();
     const routes = await asyncRouteStore.generateRoutes(userInfo);
 
@@ -70,9 +89,6 @@ export function createRouterGuards(router: Router) {
       router.addRoute(ErrorPageRoute as unknown as RouteRecordRaw);
     }
 
-    const redirectPath = (from.query.redirect || to.path) as string;
-    const redirect = decodeURIComponent(redirectPath);
-    const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect };
     asyncRouteStore.setDynamicAddedRoute(true);
     next(nextData);
     Loading && Loading.finish();

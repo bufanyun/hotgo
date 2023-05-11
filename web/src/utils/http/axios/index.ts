@@ -19,6 +19,7 @@ import { useUserStoreWidthOut } from '@/store/modules/user';
 import router from '@/router';
 import { storage } from '@/utils/Storage';
 import { encodeParams } from '@/utils/urlUtils';
+import { delNullProperty } from '@/utils/array';
 
 const globSetting = useGlobSetting();
 const urlPrefix = globSetting.urlPrefix || '';
@@ -287,7 +288,22 @@ export const jumpExport = function (url, params) {
     urlPrefix +
     url +
     '?' +
-    encodeParams({ ...params, ...{ authorization: useUserStoreWidthOut().token } });
+    encodeParams({
+      ...delNullProperty(params),
+      ...{ authorization: useUserStoreWidthOut().token },
+    });
+};
+
+// 跳转
+export const jump = function (url, params) {
+  window.location.href =
+    urlPrefix +
+    url +
+    '?' +
+    encodeParams({
+      ...delNullProperty(params),
+      ...{ authorization: useUserStoreWidthOut().token },
+    });
 };
 
 // 项目，多个不同 api 地址，直接在这里导出多个

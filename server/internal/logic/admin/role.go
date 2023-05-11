@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package admin
 
 import (
@@ -24,6 +23,7 @@ import (
 	"hotgo/internal/service"
 	"hotgo/utility/auth"
 	"hotgo/utility/convert"
+	"hotgo/utility/tree"
 	"sort"
 )
 
@@ -42,6 +42,7 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 	if auth.IsExceptAuth(ctx, path) {
 		return true
 	}
+
 	var (
 		user         = contexts.Get(ctx).User
 		superRoleKey = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
@@ -49,7 +50,7 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 	)
 
 	if user == nil {
-		g.Log().Warning(ctx, "admin Verify user = nil")
+		g.Log().Info(ctx, "admin Verify user = nil")
 		return false
 	}
 
@@ -58,7 +59,7 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 	}
 	ok, err := casbin.Enforcer.Enforce(user.RoleKey, path, method)
 	if err != nil {
-		g.Log().Warningf(ctx, "admin Verify Enforce  err:%+v", err)
+		g.Log().Infof(ctx, "admin Verify Enforce  err:%+v", err)
 		return false
 	}
 
@@ -70,7 +71,14 @@ func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (res *adm
 	var (
 		mod    = dao.AdminRole.Ctx(ctx)
 		models []*entity.AdminRole
+		pid    int64 = 0
 	)
+
+	// 非超管只获取下级角色
+	if !service.AdminMember().VerifySuperId(ctx, contexts.GetUserId(ctx)) {
+		pid = contexts.GetRoleId(ctx)
+		mod = mod.WhereLike(dao.AdminRole.Columns().Tree, "%"+tree.GetIdLabel(pid)+"%")
+	}
 
 	totalCount, err = mod.Count()
 	if err != nil {
@@ -84,7 +92,7 @@ func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (res *adm
 	}
 
 	res = new(adminin.RoleListModel)
-	res.List = s.treeList(0, models)
+	res.List = s.treeList(pid, models)
 	return
 }
 
@@ -138,8 +146,8 @@ func (s *sAdminRole) GetPermissions(ctx context.Context, reqInfo *role.GetPermis
 }
 
 // UpdatePermissions 更改角色菜单权限
-func (s *sAdminRole) UpdatePermissions(ctx context.Context, reqInfo *role.UpdatePermissionsReq) error {
-	return dao.AdminRoleMenu.Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
+func (s *sAdminRole) UpdatePermissions(ctx context.Context, reqInfo *role.UpdatePermissionsReq) (err error) {
+	err = dao.AdminRoleMenu.Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
 		_, err = dao.AdminRoleMenu.Ctx(ctx).Where("role_id", reqInfo.RoleId).Delete()
 		if err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
@@ -166,8 +174,14 @@ func (s *sAdminRole) UpdatePermissions(ctx context.Context, reqInfo *role.Update
 			return err
 		}
 
-		return casbin.Refresh(ctx)
+		return
 	})
+
+	if err != nil {
+		return
+	}
+
+	return casbin.Refresh(ctx)
 }
 
 func (s *sAdminRole) Edit(ctx context.Context, in *role.EditReq) (err error) {

@@ -25,6 +25,10 @@ http:
 queue:
 	gf run main.go --args "queue"
 
+.PHONY: cron
+cron:
+	gf run main.go --args "cron"
+
 .PHONY: auth
 auth:
 	gf run main.go --args "auth"
@@ -33,6 +37,17 @@ auth:
 .PHONY: web
 web:
 	@cd ../web && yarn dev
+
+
+# 刷新casbin权限
+.PHONY: refresh
+refresh:
+	@go run main.go tools -m=casbin -a1=refresh
+
+# 清理casbin权限
+.PHONY: clear
+clear:
+	@go run main.go tools -m=casbin -a1=clear
 
 .PHONY: killmain
 killmain:

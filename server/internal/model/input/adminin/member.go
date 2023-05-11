@@ -3,13 +3,16 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package adminin
 
 import (
 	"context"
+	"fmt"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
+	"hotgo/internal/consts"
+	"hotgo/internal/library/contexts"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 )
@@ -109,15 +112,6 @@ type MemberNameUniqueModel struct {
 	IsUnique bool
 }
 
-// MemberMaxSortInp 最大排序
-type MemberMaxSortInp struct {
-	Id int64 `json:"id" dc:"用户ID"`
-}
-
-type MemberMaxSortModel struct {
-	Sort int
-}
-
 // MemberEditInp 修改/新增管理员
 type MemberEditInp struct {
 	Id           int64       `json:"id"                                            dc:""`
@@ -188,6 +182,7 @@ type MemberListInp struct {
 	form.PageReq
 	form.RangeDateReq
 	form.StatusReq
+	RoleId    int     `json:"roleId"     dc:"角色ID"`
 	DeptId    int     `json:"deptId"     dc:"部门ID"`
 	Mobile    int     `json:"mobile"     dc:"手机号"`
 	Username  string  `json:"username"   dc:"用户名"`
@@ -227,6 +222,7 @@ type LoginMemberInfoModel struct {
 	RealName    string      `json:"realName"           dc:"姓名"`
 	Avatar      string      `json:"avatar"             dc:"头像"`
 	Balance     float64     `json:"balance"            dc:"余额"`
+	Integral    float64     `json:"integral"           dc:"积分"`
 	Sex         int         `json:"sex"                dc:"性别"`
 	Qq          string      `json:"qq"                 dc:"qq"`
 	Email       string      `json:"email"              dc:"邮箱"`
@@ -236,6 +232,7 @@ type LoginMemberInfoModel struct {
 	Address     string      `json:"address"            dc:"联系地址"`
 	Cash        *MemberCash `json:"cash"               dc:"收款信息"`
 	CreatedAt   *gtime.Time `json:"createdAt"          dc:"创建时间"`
+	OpenId      string      `json:"openId"             dc:"本次登录的openId"` // 区别与绑定的微信openid
 	*MemberLoginStatModel
 }
 
@@ -251,7 +248,7 @@ type MemberCash struct {
 
 // MemberStatusInp  更新状态
 type MemberStatusInp struct {
-	entity.AdminPost
+	entity.AdminMember
 }
 type MemberStatusModel struct{}
 
@@ -276,3 +273,89 @@ type MemberLoginStatModel struct {
 	LastLoginAt *gtime.Time `json:"lastLoginAt" dc:"最后登录时间"`
 	LastLoginIp string      `json:"lastLoginIp" dc:"最后登录IP"`
 }
+
+// MemberAddBalanceInp  增加余额
+type MemberAddBalanceInp struct {
+	Id               int64   `json:"id"          v:"required#用户ID不能为空"         dc:"管理员ID"`
+	OperateMode      int64   `json:"operateMode"      v:"in:1,2#输入的操作方式是无效的"     dc:"操作方式"`
+	Num              float64 `json:"num"                dc:"操作数量"`
+	AppId            string  `json:"-"`
+	AddonsName       string  `json:"-"`
+	SelfNum          float64 `json:"-"`
+	SelfCreditGroup  string  `json:"-"`
+	OtherNum         float64 `json:"-"`
+	OtherCreditGroup string  `json:"-"`
+	Remark           string  `json:"-"`
+}
+
+func (in *MemberAddBalanceInp) Filter(ctx context.Context) (err error) {
+	if in.Num <= 0 {
+		err = gerror.New("操作数量必须大于0")
+		return
+	}
+
+	if in.OperateMode == 1 {
+		// 加款
+		in.SelfNum = -in.Num
+		in.SelfCreditGroup = consts.CreditGroupOpIncr
+		in.OtherNum = in.Num
+		in.OtherCreditGroup = consts.CreditGroupIncr
+		in.Remark = fmt.Sprintf("增加余额:%v", in.OtherNum)
+	} else {
+		// 扣款
+		in.SelfNum = in.Num
+		in.SelfCreditGroup = consts.CreditGroupOpDecr
+		in.OtherNum = -in.Num
+		in.OtherCreditGroup = consts.CreditGroupDecr
+		in.Remark = fmt.Sprintf("扣除余额:%v", in.OtherNum)
+	}
+
+	in.AppId = contexts.GetModule(ctx)
+	in.AddonsName = contexts.GetAddonName(ctx)
+	return
+}
+
+type MemberAddBalanceModel struct{}
+
+// MemberAddIntegralInp  增加积分
+type MemberAddIntegralInp struct {
+	Id               int64   `json:"id"        v:"required#用户ID不能为空"           dc:"管理员ID"`
+	OperateMode      int64   `json:"operateMode"        dc:"操作方式"`
+	Num              float64 `json:"num"                dc:"操作数量"`
+	AppId            string  `json:"-"`
+	AddonsName       string  `json:"-"`
+	SelfNum          float64 `json:"-"`
+	SelfCreditGroup  string  `json:"-"`
+	OtherNum         float64 `json:"-"`
+	OtherCreditGroup string  `json:"-"`
+	Remark           string  `json:"-"`
+}
+
+func (in *MemberAddIntegralInp) Filter(ctx context.Context) (err error) {
+	if in.Num <= 0 {
+		err = gerror.New("操作数量必须大于0")
+		return
+	}
+
+	if in.OperateMode == 1 {
+		// 加款
+		in.SelfNum = -in.Num
+		in.SelfCreditGroup = consts.CreditGroupOpIncr
+		in.OtherNum = in.Num
+		in.OtherCreditGroup = consts.CreditGroupIncr
+		in.Remark = fmt.Sprintf("增加积分:%v", in.OtherNum)
+	} else {
+		// 扣款
+		in.SelfNum = in.Num
+		in.SelfCreditGroup = consts.CreditGroupOpDecr
+		in.OtherNum = -in.Num
+		in.OtherCreditGroup = consts.CreditGroupDecr
+		in.Remark = fmt.Sprintf("扣除积分:%v", in.OtherNum)
+	}
+
+	in.AppId = contexts.GetModule(ctx)
+	in.AddonsName = contexts.GetAddonName(ctx)
+	return
+}
+
+type MemberAddIntegralModel struct{}

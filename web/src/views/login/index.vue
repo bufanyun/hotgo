@@ -97,19 +97,19 @@
               <div class="flex-initial mx-2">
                 <a href="javascript:">
                   <n-icon size="24" color="#2d8cf0">
-                    <LogoGithub />
+                    <LogoWechat />
                   </n-icon>
                 </a>
               </div>
               <div class="flex-initial mx-2">
                 <a href="javascript:">
                   <n-icon size="24" color="#2d8cf0">
-                    <LogoFacebook />
+                    <LogoTiktok />
                   </n-icon>
                 </a>
               </div>
               <div class="flex-initial" style="margin-left: auto">
-                <a href="javascript:">注册账号</a>
+                <a @click="handleRegister">注册账号</a>
               </div>
             </div>
           </n-form-item>
@@ -125,7 +125,7 @@
   import { useUserStore } from '@/store/modules/user';
   import { useMessage, useLoadingBar } from 'naive-ui';
   import { ResultEnum } from '@/enums/httpEnum';
-  import { PersonOutline, LockClosedOutline, LogoGithub, LogoFacebook } from '@vicons/ionicons5';
+  import { PersonOutline, LockClosedOutline, LogoWechat, LogoTiktok } from '@vicons/ionicons5';
   import { PageEnum } from '@/enums/pageEnum';
   import { SafetyCertificateOutlined } from '@vicons/antd';
   import { GetCaptcha } from '@/api/base';
@@ -163,7 +163,6 @@
   };
 
   const userStore = useUserStore();
-
   const router = useRouter();
   const route = useRoute();
 
@@ -213,7 +212,13 @@
     setTimeout(function () {
       refreshCode();
     });
+    console.log('window.location.href',route.path);
   });
+
+  function handleRegister() {
+    message.success('即将开放，请稍后');
+    return;
+  }
 </script>
 
 <style lang="less" scoped>

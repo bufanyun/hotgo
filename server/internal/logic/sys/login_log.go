@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -79,13 +78,8 @@ func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list
 	)...)
 
 	totalCount, err = mod.Clone().Count(1)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
-	}
-
-	if totalCount == 0 {
-		return list, totalCount, nil
+	if err != nil || totalCount == 0 {
+		return
 	}
 
 	//关联表select
@@ -99,7 +93,6 @@ func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list
 	}
 
 	for _, v := range list {
-		//g.DumpWithType(v)
 		//// 获取省市编码对应的地区名称
 		//region, err := location.ParseRegion(ctx, v.SysLogProvinceId, v.SysLogCityId, 0)
 		//if err != nil {
@@ -110,20 +103,20 @@ func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list
 		v.Browser = useragent.GetBrowser(v.SysLogUserAgent)
 	}
 
-	return list, totalCount, err
+	return
 }
 
 // Export 导出登录日志
 func (s *sSysLoginLog) Export(ctx context.Context, in sysin.LoginLogListInp) (err error) {
 	list, totalCount, err := s.List(ctx, in)
 	if err != nil {
-		return err
+		return
 	}
 
 	// 字段的排序是依据tags的字段顺序，如果你不想使用默认的排序方式，可以直接定义 tags = []string{"字段名称", "字段名称2", ...}
 	tags, err := convert.GetEntityDescTags(sysin.LoginLogExportModel{})
 	if err != nil {
-		return err
+		return
 	}
 
 	var (
@@ -132,35 +125,24 @@ func (s *sSysLoginLog) Export(ctx context.Context, in sysin.LoginLogListInp) (er
 		exports   []sysin.LoginLogExportModel
 	)
 
-	err = gconv.Scan(list, &exports)
-	if err != nil {
-		return err
-	}
-	if err = excel.ExportByStructs(ctx, tags, exports, fileName, sheetName); err != nil {
+	if err = gconv.Scan(list, &exports); err != nil {
 		return
 	}
+
+	err = excel.ExportByStructs(ctx, tags, exports, fileName, sheetName)
 	return
 }
 
 // Delete 删除登录日志
 func (s *sSysLoginLog) Delete(ctx context.Context, in sysin.LoginLogDeleteInp) (err error) {
 	_, err = dao.SysLoginLog.Ctx(ctx).Where(dao.SysLoginLog.Columns().Id, in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // View 获取登录日志指定信息
 func (s *sSysLoginLog) View(ctx context.Context, in sysin.LoginLogViewInp) (res *sysin.LoginLogViewModel, err error) {
-	if err = dao.SysLoginLog.Ctx(ctx).Where(dao.SysLoginLog.Columns().Id, in.Id).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	return res, nil
+	err = dao.SysLoginLog.Ctx(ctx).Where(dao.SysLoginLog.Columns().Id, in.Id).Scan(&res)
+	return
 }
 
 // Push 推送登录日志
@@ -184,13 +166,13 @@ func (s *sSysLoginLog) Push(ctx context.Context, in sysin.LoginLogPushInp) {
 	}
 
 	if err := queue.Push(consts.QueueLoginLogTopic, models); err != nil {
-		g.Log().Warningf(ctx, "sSysLoginLog.Push err:%+v", err)
+		g.Log().Warningf(ctx, "sSysLoginLog.Push err:%+v, models:%+v", err, models)
 	}
 	return
 }
 
 // RealWrite 真实写入
 func (s *sSysLoginLog) RealWrite(ctx context.Context, models entity.SysLoginLog) (err error) {
-	_, err = dao.SysLoginLog.Ctx(ctx).Data(models).FieldsEx(dao.SysLoginLog.Columns().Id).Insert()
+	_, err = dao.SysLoginLog.Ctx(ctx).FieldsEx(dao.SysLog.Columns().Id).Data(models).Insert()
 	return
 }

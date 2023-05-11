@@ -10,13 +10,12 @@
         type="card"
         class="card-tabs"
         :value="defaultTab"
-        size="large"
         animated
         @before-leave="handleBeforeLeave"
       >
-        <n-tab-pane name="1" tab="通知"> <List :type="defaultTab" /></n-tab-pane>
-        <n-tab-pane name="2" tab="公告"> <List :type="defaultTab" /> </n-tab-pane>
-        <n-tab-pane name="3" tab="私信"> <List :type="defaultTab" /> </n-tab-pane>
+        <n-tab-pane name="1" tab="系统通知"> <List :type="defaultTab" /></n-tab-pane>
+        <n-tab-pane name="2" tab="系统公告"> <List :type="defaultTab" /> </n-tab-pane>
+        <n-tab-pane name="3" tab="私信消息"> <List :type="defaultTab" /> </n-tab-pane>
       </n-tabs>
     </n-card>
   </div>

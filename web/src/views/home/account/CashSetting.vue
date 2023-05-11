@@ -89,8 +89,8 @@
     show.value = true;
     getUserInfo()
       .then((res) => {
+        res.cash.password = '';
         formValue.value = res.cash;
-        formValue.value.password = '';
       })
       .finally(() => {
         show.value = false;

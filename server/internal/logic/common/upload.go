@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package common
 
 import (
@@ -59,9 +58,17 @@ func (s *sCommonUpload) UploadFile(ctx context.Context, file *ghttp.UploadFile) 
 		return
 	}
 
-	_, err = f.GetFileType(meta.Ext)
+	if _, err = f.GetFileType(meta.Ext); err != nil {
+		return
+	}
+
+	result, err = s.HasFile(ctx, meta.Md5)
 	if err != nil {
-		return nil, err
+		return
+	}
+
+	if result != nil {
+		return
 	}
 
 	conf, err := service.SysConfig().GetUpload(ctx)
@@ -98,11 +105,22 @@ func (s *sCommonUpload) UploadImage(ctx context.Context, file *ghttp.UploadFile)
 	}
 
 	if !f.IsImgType(meta.Ext) {
-		return nil, gerror.New("上传的文件不是图片")
+		err = gerror.New("上传的文件不是图片")
+		return
 	}
 
 	if meta.Size > 2*1024*1024 {
-		return nil, gerror.New("图片大小不能超过2MB")
+		err = gerror.New("图片大小不能超过2MB")
+		return
+	}
+
+	result, err = s.HasFile(ctx, meta.Md5)
+	if err != nil {
+		return
+	}
+
+	if result != nil {
+		return
 	}
 
 	conf, err := service.SysConfig().GetUpload(ctx)
@@ -122,16 +140,13 @@ func (s *sCommonUpload) UploadImage(ctx context.Context, file *ghttp.UploadFile)
 	case consts.UploadDriveQiNiu:
 		return s.UploadQiNiu(ctx, conf, file, meta)
 	default:
-		return nil, gerror.Newf("暂不支持上传驱动:%v", conf.Drive)
+		err = gerror.Newf("暂不支持上传驱动:%v", conf.Drive)
+		return
 	}
 }
 
 // UploadLocal 上传本地
 func (s *sCommonUpload) UploadLocal(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error) {
-	if ok, err1 := s.HasFile(ctx, meta.Md5); ok || err1 != nil {
-		return
-	}
-
 	var (
 		value   = g.Cfg().MustGet(ctx, "server.serverRoot")
 		nowDate = time.Now().Format("2006-01-02")
@@ -158,7 +173,7 @@ func (s *sCommonUpload) UploadLocal(ctx context.Context, conf *model.UploadConfi
 
 	attachment, err := service.SysAttachment().Add(ctx, meta, fullPath, consts.UploadDriveLocal)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	attachment.FileUrl = s.LastUrl(ctx, conf, attachment.FileUrl, attachment.Drive)
@@ -171,10 +186,6 @@ func (s *sCommonUpload) UploadLocal(ctx context.Context, conf *model.UploadConfi
 
 // UploadUCloud 上传UCloud对象存储
 func (s *sCommonUpload) UploadUCloud(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error) {
-	if ok, err1 := s.HasFile(ctx, meta.Md5); ok || err1 != nil {
-		return
-	}
-
 	if conf.UCloudPath == "" {
 		err = gerror.New("UCloud存储驱动必须配置存储路径!")
 		return
@@ -194,26 +205,26 @@ func (s *sCommonUpload) UploadUCloud(ctx context.Context, conf *model.UploadConf
 		Endpoint:        conf.UCloudEndpoint,
 		VerifyUploadMD5: false,
 	}
+
 	req, err := ufile.NewFileRequest(config, nil)
 	if err != nil {
-		return nil, err
+		return
 	}
+
 	// 流式上传本地小文件
 	f2, err := file.Open()
-	defer func() {
-		_ = f2.Close()
-	}()
+	defer f2.Close()
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	if err = req.IOPut(f2, fullPath, ""); err != nil {
-		return nil, err
+		return
 	}
 
 	attachment, err := service.SysAttachment().Add(ctx, meta, fullPath, consts.UploadDriveUCloud)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	attachment.FileUrl = s.LastUrl(ctx, conf, attachment.FileUrl, attachment.Drive)
@@ -226,10 +237,6 @@ func (s *sCommonUpload) UploadUCloud(ctx context.Context, conf *model.UploadConf
 
 // UploadCOS 上传腾讯云对象存储
 func (s *sCommonUpload) UploadCOS(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error) {
-	if ok, err1 := s.HasFile(ctx, meta.Md5); ok || err1 != nil {
-		return
-	}
-
 	if conf.CosPath == "" {
 		err = gerror.New("COS存储驱动必须配置存储路径!")
 		return
@@ -243,11 +250,9 @@ func (s *sCommonUpload) UploadCOS(ctx context.Context, conf *model.UploadConfig,
 
 	// 流式上传本地小文件
 	f2, err := file.Open()
-	defer func() {
-		_ = f2.Close()
-	}()
+	defer f2.Close()
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	u, _ := url.Parse(conf.CosBucketURL)
@@ -259,14 +264,13 @@ func (s *sCommonUpload) UploadCOS(ctx context.Context, conf *model.UploadConfig,
 		},
 	})
 
-	_, err = c.Object.Put(ctx, fullPath, f2, nil)
-	if err != nil {
-		return nil, err
+	if _, err = c.Object.Put(ctx, fullPath, f2, nil); err != nil {
+		return
 	}
 
 	attachment, err := service.SysAttachment().Add(ctx, meta, fullPath, consts.UploadDriveCos)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	attachment.FileUrl = s.LastUrl(ctx, conf, attachment.FileUrl, attachment.Drive)
@@ -279,10 +283,6 @@ func (s *sCommonUpload) UploadCOS(ctx context.Context, conf *model.UploadConfig,
 
 // UploadOSS 上传阿里云云对象存储
 func (s *sCommonUpload) UploadOSS(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error) {
-	if ok, err1 := s.HasFile(ctx, meta.Md5); ok || err1 != nil {
-		return
-	}
-
 	if conf.OssPath == "" {
 		err = gerror.New("OSS存储驱动必须配置存储路径!")
 		return
@@ -296,30 +296,28 @@ func (s *sCommonUpload) UploadOSS(ctx context.Context, conf *model.UploadConfig,
 
 	// 流式上传本地小文件
 	f2, err := file.Open()
-	defer func() {
-		_ = f2.Close()
-	}()
+	defer f2.Close()
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	client, err := oss.New(conf.OssEndpoint, conf.OssSecretId, conf.OssSecretKey)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	bucket, err := client.Bucket(conf.OssBucket)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	if err = bucket.PutObject(fullPath, f2); err != nil {
-		return nil, err
+		return
 	}
 
 	attachment, err := service.SysAttachment().Add(ctx, meta, fullPath, consts.UploadDriveOss)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	attachment.FileUrl = s.LastUrl(ctx, conf, attachment.FileUrl, attachment.Drive)
@@ -332,10 +330,6 @@ func (s *sCommonUpload) UploadOSS(ctx context.Context, conf *model.UploadConfig,
 
 // UploadQiNiu 上传七牛云对象存储
 func (s *sCommonUpload) UploadQiNiu(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error) {
-	if ok, err1 := s.HasFile(ctx, meta.Md5); ok || err1 != nil {
-		return
-	}
-
 	if conf.QiNiuPath == "" {
 		err = gerror.New("七牛云存储驱动必须配置存储路径!")
 		return
@@ -349,11 +343,9 @@ func (s *sCommonUpload) UploadQiNiu(ctx context.Context, conf *model.UploadConfi
 
 	// 流式上传本地小文件
 	f2, err := file.Open()
-	defer func() {
-		_ = f2.Close()
-	}()
+	defer f2.Close()
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	putPolicy := storage.PutPolicy{
@@ -362,10 +354,13 @@ func (s *sCommonUpload) UploadQiNiu(ctx context.Context, conf *model.UploadConfi
 	token := putPolicy.UploadToken(qbox.NewMac(conf.QiNiuAccessKey, conf.QiNiuSecretKey))
 
 	cfg := storage.Config{}
+
 	// 是否使用https域名
 	cfg.UseHTTPS = true
+
 	// 上传是否使用CDN上传加速
 	cfg.UseCdnDomains = false
+
 	// 空间对应的机房
 	cfg.Region, err = storage.GetRegion(conf.QiNiuAccessKey, conf.QiNiuBucket)
 	if err != nil {
@@ -378,7 +373,7 @@ func (s *sCommonUpload) UploadQiNiu(ctx context.Context, conf *model.UploadConfi
 
 	attachment, err := service.SysAttachment().Add(ctx, meta, fullPath, consts.UploadDriveQiNiu)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	attachment.FileUrl = s.LastUrl(ctx, conf, attachment.FileUrl, attachment.Drive)
@@ -412,13 +407,9 @@ func (s *sCommonUpload) LastUrl(ctx context.Context, conf *model.UploadConfig, f
 }
 
 // HasFile 文件是否存在
-func (s *sCommonUpload) HasFile(ctx context.Context, md5 string) (bool, error) {
-	result, err := dao.SysAttachment.GetMd5File(ctx, md5)
-	if err != nil {
-		return false, err
-	}
-
-	return result != nil, nil
+func (s *sCommonUpload) HasFile(ctx context.Context, md5 string) (res *sysin.AttachmentListModel, err error) {
+	res, err = dao.SysAttachment.GetMd5File(ctx, md5)
+	return
 }
 
 // fileMeta 上传文件元数据

@@ -3,14 +3,11 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package admin
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/menu"
-	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/service"
 )
 
@@ -20,30 +17,6 @@ var (
 )
 
 type cMenu struct{}
-
-// RoleList 查询角色菜单列表
-func (c *cMenu) RoleList(ctx context.Context, req *menu.RoleListReq) (res *menu.RoleListRes, err error) {
-	var in adminin.MenuRoleListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	data, err := service.AdminMenu().RoleList(ctx, in)
-	if err != nil {
-		return
-	}
-
-	res = new(menu.RoleListRes)
-	res.CheckedKeys = data.CheckedKeys
-	res.Menus = data.Menus
-	return
-}
-
-// SearchList 查询菜单列表
-func (c *cMenu) SearchList(ctx context.Context, req *menu.SearchListReq) (res *menu.SearchListRes, err error) {
-	res, err = service.AdminMenu().SearchList(ctx, req)
-	return
-}
 
 // MaxSort 最大排序
 func (c *cMenu) MaxSort(ctx context.Context, req *menu.MaxSortReq) (res *menu.MaxSortRes, err error) {

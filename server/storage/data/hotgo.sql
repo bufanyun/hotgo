@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- 主机： localhost:3306
--- 生成日期： 2023-04-10 15:26:54
--- 服务器版本： 5.7.38-log
--- PHP 版本： 5.6.40
+-- 主机： localhost
+-- 生成日期： 2023-05-10 15:34:40
+-- 服务器版本： 5.7.41
+-- PHP 版本： 7.3.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -73,8 +72,51 @@ CREATE TABLE `hg_addon_hgexample_table` (
 --
 
 INSERT INTO `hg_addon_hgexample_table` (`id`, `category_id`, `flag`, `title`, `description`, `content`, `image`, `images`, `attachfile`, `attachfiles`, `map`, `star`, `price`, `views`, `activity_at`, `start_at`, `end_at`, `switch`, `sort`, `avatar`, `sex`, `qq`, `email`, `mobile`, `hobby`, `channel`, `city_id`, `pid`, `level`, `tree`, `remark`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, '[1, 2]', '测试标题', '描述', '<p>这是内容............</p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '[{\"key\": \"qwe\", \"value\": \"123\"}, {\"key\": \"asd\", \"value\": \"456\"}]', '3.0', '88.00', 10, '2022-12-23', '2022-12-01 00:00:00', '2022-12-31 23:59:59', 1, 20, '', 15, '133814250', '133814250@qq.com', '15303830571', '[3, 2, 1]', 1, 140406, 0, 1, '', '备注！', 1, 1, 1, '2022-12-15 19:30:14', '2023-02-23 15:08:14', NULL),
-(2, 0, '[1]', '测试2', '描述', '<h2><strong>不知道写点啥！</strong></h2><p><br></p><p><img src=\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png\"></p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '{}', '2.5', '10.00', 0, '2023-02-18', NULL, NULL, 2, 30, '', 0, '', '1561561@qq.com', '15303830571', '[2, 1]', 3, 140214, 0, 1, '', '', 1, 1, 1, '2023-02-06 14:17:11', '2023-02-23 13:59:01', NULL);
+(1, 1, '[1, 2]', '测试标题', '描述', '<p>这是内容............</p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '[{\"key\": \"qwe\", \"value\": \"123\"}, {\"key\": \"asd\", \"value\": \"456\"}]', 3.0, 88.00, 10, '2022-12-23', '2022-12-01 00:00:00', '2022-12-31 23:59:59', 1, 20, '', 15, '133814250', '133814250@qq.com', '15303830571', '[3, 2, 1]', 1, 140406, 0, 1, '', '备注！', 1, 1, 3, '2022-12-15 19:30:14', '2023-04-28 16:46:17', NULL),
+(2, 0, '[1]', '测试2', '描述', '<h2><strong>不知道写点啥！</strong></h2><p><br></p><p><img src=\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png\"></p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '{}', 2.5, 10.00, 0, '2023-02-18', NULL, NULL, 2, 30, '', 0, '', '1561561@qq.com', '15303830571', '[2, 1]', 3, 140214, 0, 1, '', '', 1, 1, 1, '2023-02-06 14:17:11', '2023-02-23 13:59:01', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `hg_admin_cash`
+--
+
+CREATE TABLE `hg_admin_cash` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `member_id` bigint(20) NOT NULL COMMENT '管理员ID',
+  `money` decimal(10,2) NOT NULL COMMENT '提现金额',
+  `fee` decimal(10,2) NOT NULL COMMENT '手续费',
+  `last_money` decimal(10,2) NOT NULL COMMENT '最终到账金额',
+  `ip` varchar(64) NOT NULL COMMENT '申请人IP',
+  `status` bigint(20) NOT NULL COMMENT '状态码',
+  `msg` varchar(128) NOT NULL COMMENT '处理结果',
+  `handle_at` datetime DEFAULT NULL COMMENT '处理时间',
+  `created_at` datetime NOT NULL COMMENT '申请时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_提现记录表';
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `hg_admin_credits_log`
+--
+
+CREATE TABLE `hg_admin_credits_log` (
+  `id` bigint(20) NOT NULL COMMENT '变动ID',
+  `member_id` bigint(20) DEFAULT '0' COMMENT '管理员ID',
+  `app_id` varchar(64) CHARACTER SET utf8mb4 DEFAULT '' COMMENT '应用id',
+  `addons_name` varchar(100) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '插件名称',
+  `credit_type` varchar(32) CHARACTER SET utf8mb4 NOT NULL DEFAULT '' COMMENT '变动类型',
+  `credit_group` varchar(32) CHARACTER SET utf8mb4 DEFAULT '' COMMENT '变动组别',
+  `before_num` decimal(10,2) DEFAULT '0.00' COMMENT '变动前',
+  `num` decimal(10,2) DEFAULT '0.00' COMMENT '变动数据',
+  `after_num` decimal(10,2) DEFAULT '0.00' COMMENT '变动后',
+  `remark` varchar(255) CHARACTER SET utf8mb4 DEFAULT '' COMMENT '备注',
+  `ip` varchar(20) CHARACTER SET utf8mb4 DEFAULT '' COMMENT '操作人IP',
+  `map_id` bigint(20) DEFAULT '0' COMMENT '关联ID',
+  `status` tinyint(1) DEFAULT '1' COMMENT '状态',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_资产变动表';
 
 -- --------------------------------------------------------
 
@@ -104,9 +146,9 @@ CREATE TABLE `hg_admin_dept` (
 --
 
 INSERT INTO `hg_admin_dept` (`id`, `pid`, `name`, `code`, `type`, `leader`, `phone`, `email`, `level`, `tree`, `sort`, `status`, `created_at`, `updated_at`) VALUES
-(100, 0, 'hotgo', 'hotgo', '', 'hotgo', '15303830571', '133814250@qq.com', 1, NULL, 0, 1, '2022-01-04 09:54:52', '2023-01-24 21:10:05'),
-(101, 100, '深圳总公司', 'shenzhen', 'company', 'hotgo', '15888888888', 'hotgo@qq.com', 2, 'tr_100 ', 1, 1, '2022-01-04 17:54:52', '2023-02-08 17:54:10'),
-(102, 100, '长沙分公司', 'chansgha', '', 'hotgo', '15888888888', 'hotgo@qq.com', 2, 'tr_100 ', 2, 1, '2022-01-04 01:54:52', '2023-01-24 21:17:56'),
+(100, 0, 'hotgo', 'hotgo', '', 'hotgo', '15303830571', '133814250@qq.com', 1, NULL, 0, 1, '2022-01-04 09:54:52', '2023-04-27 23:16:57'),
+(101, 100, '深圳总公司', 'shenzhen', 'company', 'hotgo', '15888888888', 'hotgo@qq.com', 2, 'tr_100 ', 1, 1, '2022-01-04 17:54:52', '2023-04-27 23:16:55'),
+(102, 100, '长沙分公司', 'chansgha', '', 'hotgo', '15888888888', 'hotgo@qq.com', 2, 'tr_100 ', 2, 1, '2022-01-04 01:54:52', '2023-04-27 23:17:01'),
 (103, 101, '研发部门', 'science', 'dept', 'hotgo', '15888888888', 'hotgo@qq.com', 3, 'tr_100 tr_101 ', 1, 1, '2022-01-04 17:54:52', '2023-01-24 21:17:38'),
 (105, 101, '测试部门', 'test', 'dept', 'hotgo', '15888888888', 'hotgo@qq.com', 3, 'tr_100 tr_101 ', 3, 1, '2022-01-04 17:54:52', '2023-01-24 21:17:31'),
 (106, 101, '财务部门', 'finance', 'dept', 'hotgo', '15888888888', 'hotgo@qq.com', 3, 'tr_100 tr_101 ', 4, 1, '2022-01-04 17:54:52', '2023-01-24 21:17:49'),
@@ -130,6 +172,7 @@ CREATE TABLE `hg_admin_member` (
   `salt` char(16) NOT NULL COMMENT '密码盐',
   `auth_key` char(32) NOT NULL DEFAULT '' COMMENT '授权令牌',
   `password_reset_token` varchar(150) DEFAULT '' COMMENT '密码重置令牌',
+  `integral` decimal(10,2) UNSIGNED DEFAULT '0.00' COMMENT '积分',
   `balance` decimal(10,2) UNSIGNED DEFAULT '0.00' COMMENT '余额',
   `avatar` char(150) DEFAULT '' COMMENT '头像',
   `sex` tinyint(1) DEFAULT '1' COMMENT '性别',
@@ -148,16 +191,16 @@ CREATE TABLE `hg_admin_member` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台_管理员';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_用户表';
 
 --
 -- 转存表中的数据 `hg_admin_member`
 --
 
-INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `username`, `password_hash`, `salt`, `auth_key`, `password_reset_token`, `balance`, `avatar`, `sex`, `qq`, `email`, `mobile`, `birthday`, `city_id`, `address`, `pid`, `level`, `tree`, `cash`, `last_active_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '183ae270128a324ba1d8726601f0ae12', '', '0.00', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-04-10 15:23:12', NULL, 1, '2021-02-12 17:59:45', '2023-04-10 15:23:12'),
-(3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '2c7db9eca4ed02a718e794ba4c904f56', '', '0.00', 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', NULL, NULL, '', 1, '2022-02-11 17:59:45', '2023-01-10 16:47:00'),
-(8, 105, 206, 'ameng', 'ameng', '4501790a9b89f4e66f4417c899836511', 'hfuUEb', '0d796b377f77f1e1d42278eedbab6110', '', '0.00', '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', NULL, '2023-03-05 15:25:49', '', 1, '2023-02-03 17:34:31', '2023-02-26 00:31:13');
+INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `username`, `password_hash`, `salt`, `auth_key`, `password_reset_token`, `integral`, `balance`, `avatar`, `sex`, `qq`, `email`, `mobile`, `birthday`, `city_id`, `address`, `pid`, `level`, `tree`, `cash`, `last_active_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
+(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '96b88e637cac8f2a65a447151574dc63', '', 89.00, 99391.78, 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-05-10 23:15:43', NULL, 1, '2021-02-12 17:59:45', '2023-05-10 23:15:43'),
+(3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '33db4202dd10e2c670bfdfb16cd2ecd5', '', 0.00, 4.00, 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', NULL, '2023-04-29 10:20:16', '', 1, '2022-02-11 17:59:45', '2023-04-29 10:20:16'),
+(8, 101, 200, 'ameng', 'ameng', '382df3b083a27886edb94e669a857c33', 'hfuUEb', 'a3197f39fae36471b2be8f2e86d8a91e', '', 11.00, 3.22, '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', NULL, '2023-04-30 20:04:06', '', 1, '2023-02-03 17:34:31', '2023-04-30 20:04:06');
 
 -- --------------------------------------------------------
 
@@ -168,7 +211,7 @@ INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `usernam
 CREATE TABLE `hg_admin_member_post` (
   `member_id` bigint(20) NOT NULL COMMENT '管理员ID',
   `post_id` bigint(20) NOT NULL COMMENT '岗位ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台_用户岗位关联';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_用户岗位关联';
 
 --
 -- 转存表中的数据 `hg_admin_member_post`
@@ -177,7 +220,8 @@ CREATE TABLE `hg_admin_member_post` (
 INSERT INTO `hg_admin_member_post` (`member_id`, `post_id`) VALUES
 (1, 1),
 (3, 4),
-(8, 2);
+(8, 2),
+(9, 2);
 
 -- --------------------------------------------------------
 
@@ -188,7 +232,7 @@ INSERT INTO `hg_admin_member_post` (`member_id`, `post_id`) VALUES
 CREATE TABLE `hg_admin_member_role` (
   `member_id` bigint(20) NOT NULL COMMENT '管理员ID',
   `role_id` bigint(20) NOT NULL COMMENT '角色ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台_用户角色关联';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_用户角色关联';
 
 --
 -- 转存表中的数据 `hg_admin_member_role`
@@ -231,7 +275,7 @@ CREATE TABLE `hg_admin_menu` (
   `status` tinyint(1) DEFAULT '1' COMMENT '菜单状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台_菜单权限';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_菜单权限';
 
 --
 -- 转存表中的数据 `hg_admin_menu`
@@ -240,18 +284,17 @@ CREATE TABLE `hg_admin_menu` (
 INSERT INTO `hg_admin_menu` (`id`, `pid`, `title`, `name`, `path`, `icon`, `type`, `redirect`, `permissions`, `permission_name`, `component`, `always_show`, `active_menu`, `is_root`, `is_frame`, `frame_src`, `keep_alive`, `hidden`, `affix`, `level`, `tree`, `sort`, `remark`, `status`, `created_at`, `updated_at`) VALUES
 (2047, 0, 'Dashboard', 'Dashboard', '/dashboard', 'DashboardOutlined', 1, '/dashboard/console', 'dashboard', '控制台', 'LAYOUT', 0, NULL, 0, 1, NULL, 0, 0, 0, 1, '', 10, '这是一个备注..', 1, '2022-07-17 11:40:03', '2022-07-17 11:40:03'),
 (2048, 2047, '主控台', 'dashboard_console', 'console', '', 2, '', '/console/stat', '主控台', '/dashboard/console/console', 0, '', 0, 1, '', 0, 0, 0, 2, '', 20, '', 1, '2022-07-17 11:45:09', '2022-11-22 11:32:30'),
-(2049, 2047, '监控页', 'dashboard_monitor', 'monitor', '', 2, '', 'dashboard_monitor', '监控页', '/dashboard/monitor/monitor', 0, '', 0, 1, '', 0, 0, 0, 2, '', 30, '', 0, '2022-07-17 11:45:09', '2023-01-20 19:24:35'),
 (2050, 2047, '工作台', 'dashboard_workplace', 'workplace', NULL, 2, NULL, 'dashboard_workplace', '工作台', '/dashboard/workplace/workplace', 0, NULL, 0, 1, NULL, 0, 0, 0, 2, '', 40, NULL, 1, '2022-07-17 11:45:09', '2022-07-17 11:45:12'),
 (2061, 0, '组织管理', 'Org', '/org', 'AppstoreOutlined', 1, '/org/user/user', '', '', 'LAYOUT', 0, '', 0, 0, '', 0, 0, 0, 1, '', 20, '', 1, '2022-09-16 06:08:19', '2022-09-16 17:16:37'),
-(2062, 2061, '后台用户', 'org_user', 'user', '', 2, '', '/dept/list,/post/list,/role/list,/member/list', '', '/org/user/user', 0, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-16 06:09:25', '2022-11-22 16:52:14'),
+(2062, 2061, '后台用户', 'org_user', 'user', '', 2, '', '/dept/list,/post/list,/role/list,/member/list,/dept/option', '', '/org/user/user', 0, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-16 06:09:25', '2023-04-26 23:56:29'),
 (2063, 2061, '部门管理', 'org_dept', 'dept', '', 2, '', '', '', '/org/dept/dept', 0, '', 0, 0, '', 0, 0, 0, 2, '', 20, '', 1, '2022-09-16 14:10:12', '2022-09-16 14:10:12'),
-(2064, 2061, '岗位管理', 'org_post', 'post', '', 2, '', '', '', '/org/post/post', 0, '', 0, 0, '', 0, 0, 0, 2, '', 30, '', 1, '2022-09-16 14:11:05', '2022-09-16 14:11:05'),
+(2064, 2061, '岗位管理', 'org_post', 'post', '', 2, '', '/post/list', '', '/org/post/post', 0, '', 0, 0, '', 0, 0, 0, 2, '', 30, '', 1, '2022-09-16 14:11:05', '2023-04-26 23:58:27'),
 (2065, 0, '权限管理', 'Permission', '/permission', 'SafetyCertificateOutlined', 1, '/permission/menu', '', '', 'LAYOUT', 1, '', 0, 0, '', 0, 0, 0, 1, '', 40, '', 1, '2022-09-15 22:08:19', '2023-01-10 17:17:53'),
 (2066, 2065, '菜单权限', 'permission_menu', 'menu', '', 2, '', '/menu/list', '', '/permission/menu/menu', 0, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-16 06:09:25', '2022-11-22 16:34:12'),
 (2067, 2065, '角色权限', 'permission_role', 'role', '', 2, '', '/role/list', '', '/permission/role/role', 0, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-15 22:09:25', '2022-11-22 16:34:01'),
 (2068, 0, '系统设置', 'System', '/system', 'SettingOutlined', 1, '/system/config', '', '', 'LAYOUT', 1, '', 0, 0, '', 0, 0, 0, 1, '', 30, '', 1, '2022-09-15 09:17:57', '2023-01-10 17:16:41'),
-(2069, 2068, '配置管理', 'system_config', 'config', '', 2, '', '', '', '/system/config/system', 0, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-16 01:19:01', '2022-09-16 17:30:05'),
-(2070, 2068, '字典管理', 'system_dict', 'dict', '', 2, '', '', '', '/system/dict/index', 1, '', 0, 0, '', 0, 0, 0, 2, '', 20, '', 1, '2022-09-16 17:33:05', '2022-09-16 17:33:05'),
+(2069, 2068, '配置管理', 'system_config', 'config', '', 2, '', '', '', '/system/config/system', 0, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-16 01:19:01', '2023-04-27 23:18:11'),
+(2070, 2068, '字典管理', 'system_dict', 'dict', '', 2, '', '', '', '/system/dict/index', 1, '', 0, 0, '', 0, 0, 0, 2, '', 20, '', 1, '2022-09-16 17:33:05', '2023-04-27 23:21:17'),
 (2071, 2068, '定时任务', 'system_cron', 'cron', '', 2, '', '', '', '/system/cron/index', 1, '', 0, 0, '', 0, 0, 0, 2, '', 30, '', 1, '2022-09-16 17:33:34', '2022-09-16 17:33:34'),
 (2072, 2068, '黑名单', 'system_blacklist', 'blacklist', '', 2, '', '', '', '/system/blacklist/index', 1, '', 0, 0, '', 0, 0, 0, 2, '', 40, '', 1, '2022-09-16 17:34:01', '2022-09-16 17:34:01'),
 (2073, 2219, '个人设置', 'home_account', 'account', '', 2, '', '', '', '/home/account/account', 1, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-16 17:34:35', '2023-02-01 15:05:57'),
@@ -280,7 +323,7 @@ INSERT INTO `hg_admin_menu` (`id`, `pid`, `title`, `name`, `path`, `icon`, `type
 (2100, 2120, '使用文档', 'https://github.com/bufanyun/hotgo/tree/v2.0/docs/guide-zh-CN', '/hotgo', '', 1, '', '', '', 'LAYOUT', 1, '', 0, 0, '', 0, 0, 0, 2, '', 1100, '', 1, '2022-09-18 21:35:17', '2023-02-22 18:53:21'),
 (2102, 0, '关于', 'about', '/about', 'ProjectOutlined', 1, '/about/index', '', '', 'LAYOUT', 1, 'about_index', 1, 0, '', 0, 0, 0, 1, '', 9000, '', 1, '2022-09-18 13:37:04', '2022-11-24 00:09:05'),
 (2103, 2102, '关于详情', 'about_index', 'index', '', 2, '', '', '', '/about/index', 1, 'about_index', 0, 0, '', 0, 1, 0, 2, '', 10, '', 1, '2022-09-18 13:38:00', '2022-09-18 21:38:25'),
-(2109, 2062, '编辑用户', 'org_user_edit', '', '', 3, '', '/member/edit', '', '/', 1, '', 0, 0, '', 0, 1, 0, 3, '', 10, '', 1, '2022-11-22 23:49:17', '2023-01-10 17:42:01'),
+(2109, 2062, '编辑用户', 'org_user_edit', '', '', 3, '', '/member/edit,/member/view', '', '/', 1, '', 0, 0, '', 0, 1, 0, 3, '', 10, '', 1, '2022-11-22 23:49:17', '2023-04-27 00:02:31'),
 (2110, 2062, '删除用户', 'org_user_delete', 'user', '', 3, '', '/member/delete', '', '/', 1, '', 0, 0, '', 0, 1, 0, 3, '', 10, '', 1, '2022-11-23 21:34:51', '2022-11-23 21:51:11'),
 (2111, 2062, '修改用户状态', 'org_user_status', 'user', '', 3, '', '/member/status', '', '/', 1, '', 0, 0, '', 0, 1, 0, 3, '', 10, '', 1, '2022-11-23 21:35:48', '2023-01-10 17:39:52'),
 (2112, 2063, '编辑部门', 'dept_edit', 'dept', '', 3, '', '/dept/edit', '', '', 1, '', 0, 0, '', 0, 0, 0, 3, '', 10, '', 1, '2022-11-23 21:57:15', '2023-01-10 17:29:26'),
@@ -327,7 +370,44 @@ INSERT INTO `hg_admin_menu` (`id`, `pid`, `title`, `name`, `path`, `icon`, `type
 (2228, 2227, '功能案例', 'hgexample', '/hgexample', '', 1, '', '', '', '/hgexample', 1, '', 0, 2, '', 0, 0, 0, 2, '', 10, '', 1, '2023-02-17 13:44:27', '2023-02-17 14:21:48'),
 (2229, 2097, '插件管理', 'develop_addons', 'addons', '', 2, '', '', '', '/develop/addons/index', 1, '', 0, 0, '', 0, 0, 0, 2, '', 20, '', 1, '2022-09-18 21:32:46', '2022-09-18 21:32:46'),
 (2230, 2228, '应用入口', 'hgexample_portal', 'hgexample_portal', '', 2, '', '', '', '/addons/hgexample/portal/index', 1, '', 0, 0, '', 0, 0, 0, 3, '', 5, '', 1, '2022-09-14 20:07:04', '2023-02-18 16:30:05'),
-(2231, 2228, '插件配置', 'hgexample_config', 'hgexample_config', '', 2, '', '', '', '/addons/hgexample/config/system', 1, '', 0, 0, '', 0, 0, 0, 3, '', 8, '', 1, '2022-09-14 20:07:04', '2023-02-18 16:30:05');
+(2231, 2228, '插件配置', 'hgexample_config', 'hgexample_config', '', 2, '', '', '', '/addons/hgexample/config/system', 1, '', 0, 0, '', 0, 0, 0, 3, '', 8, '', 1, '2022-09-14 20:07:04', '2023-02-18 16:30:05'),
+(2232, 2237, '在线充值', 'asset_recharge', 'recharge', '', 2, '', '/order/create', '', '/asset/recharge/recharge', 1, '', 0, 2, '', 0, 0, 0, 2, '', 10, '', 1, '2023-02-01 15:05:17', '2023-04-25 22:50:55'),
+(2235, 2237, '资金变动导出', 'creditsLogExport', '', '', 3, '', '/creditsLog/export', '', '', 1, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2023-04-15 15:59:58', '2023-04-18 22:16:52'),
+(2236, 2237, '资金变动', 'creditsLogIndex', 'creditsLogIndex', '', 2, '', '/creditsLog/list', '', '/asset/creditsLog/index', 1, '', 0, 0, '', 0, 0, 0, 2, '', 100, '', 1, NULL, '2023-04-25 22:51:02'),
+(2237, 0, '资金管理', 'asset', '/asset', 'AccountBookOutlined', 1, '', '', '', 'LAYOUT', 1, '', 0, 2, '', 0, 0, 0, 1, '', 90, '', 1, '2023-04-18 22:16:20', '2023-04-18 22:16:20'),
+(2240, 2232, '充值记录', 'asset_recharge_log', '', '', 3, '', '/order/list', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 40, '', 1, '2023-04-18 23:26:01', '2023-04-25 14:25:23'),
+(2241, 2232, '受理退款', 'asset_recharge_accept_refund', '', '', 3, '', '/order/acceptRefund', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 40, '', 1, '2023-04-18 23:26:01', '2023-04-25 14:25:23'),
+(2242, 2232, '申请退款', 'asset_recharge_apply_refund', '', '', 3, '', '/order/applyRefund', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 40, '', 1, '2023-04-18 23:26:01', '2023-04-25 14:25:23'),
+(2243, 2232, '删除关闭订单', 'asset_recharge_order_delete', '', '', 3, '', '/order/delete', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 40, '', 1, '2023-04-18 23:26:01', '2023-04-25 14:25:23'),
+(2244, 2237, '提现管理', 'asset_cash', '/cash', '', 2, '', '/cash/list,/cash/apply', '', '/asset/cash/index', 1, '', 0, 0, '', 0, 0, 0, 2, '', 20, '', 1, '2022-11-29 12:30:00', '2023-04-25 22:51:05'),
+(2245, 2244, '申请提现', 'cash_apply', '', '', 3, '', '/cash/apply', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 10, '', 1, '2023-04-26 21:37:56', '2023-04-26 21:37:56'),
+(2246, 2244, '提现打款处理', 'cash_payment', '', '', 3, '', '/cash/payment,/cash/view', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 20, '', 1, '2023-04-26 21:38:25', '2023-04-26 21:40:02'),
+(2247, 2062, '变更余额', 'org_user_add_balance', '', '', 3, '', '/member/addBalance', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 40, '', 1, '2023-04-27 22:31:02', '2023-04-27 22:31:02'),
+(2248, 2062, '变更积分', 'org_user_add_integral', '', '', 3, '', '/member/addIntegral', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 50, '', 1, '2023-04-27 22:31:43', '2023-04-27 22:31:43'),
+(2249, 2062, '重置登录密码', 'member_reset_pwd', '', '', 3, '', '/member/resetPwd', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 60, '', 1, '2023-04-27 22:50:27', '2023-04-27 22:50:27'),
+(2250, 2062, '用户列表', 'member_list', '', '', 3, '', '/dept/list,/post/list,/role/list,/member/list,/dept/option', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 0, '', 1, '2023-04-27 23:06:17', '2023-04-27 23:06:17'),
+(2251, 2069, '查看配置', 'config_get', '', '', 3, '', '/config/get', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 10, '', 1, '2023-04-27 23:18:44', '2023-04-27 23:18:44'),
+(2252, 2069, '更新配置', 'config_update', '', '', 3, '', '/config/update', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 20, '', 1, '2023-04-27 23:19:14', '2023-04-27 23:19:14'),
+(2253, 2070, '查看字典列表', 'dict_data_list', '', '', 3, '', '/dictType/tree,/dictData/list,/config/typeSelect', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 10, '', 1, '2023-04-27 23:21:47', '2023-04-27 23:32:17'),
+(2254, 2070, '编辑字典', 'dict_data_edit', '', '', 3, '', '/dictData/edit', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 20, '', 1, '2023-04-27 23:22:15', '2023-04-27 23:22:15'),
+(2255, 2070, '删除字典', 'dict_data_delete', '', '', 3, '', '/dictData/delete', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 30, '', 1, '2023-04-27 23:22:15', '2023-04-27 23:22:15'),
+(2256, 2070, '编辑字典类型', 'dict_type_edit', '', '', 3, '', '/dictType/edit', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 40, '', 1, '2023-04-27 23:22:15', '2023-04-27 23:22:15'),
+(2257, 2070, '删除字典类型', 'dict_type_delete', '', '', 3, '', '/dictType/delete', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 60, '', 1, '2023-04-27 23:22:15', '2023-04-27 23:22:15'),
+(2258, 2071, '任务列表', '/cron/list', '', '', 3, '', '/cron/list', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 10, '', 1, '2023-04-27 23:25:46', '2023-04-27 23:25:46'),
+(2259, 2071, '任务分组列表', '/cronGroup/list', '', '', 3, '', '/cronGroup/select,/cronGroup/list', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 20, '', 1, '2023-04-27 23:26:40', '2023-04-27 23:26:40'),
+(2260, 2071, '编辑任务', '/cron/edit', '', '', 3, '', '/cron/edit', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 30, '', 1, '2023-04-27 23:27:07', '2023-04-27 23:27:07'),
+(2261, 2071, '删除任务', '/cron/delete', '', '', 3, '', '/cron/delete', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 40, '', 1, '2023-04-27 23:27:59', '2023-04-27 23:27:59'),
+(2262, 2071, '修改任务状态', '/cron/status', '', '', 3, '', '/cron/status', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 60, '', 1, '2023-04-27 23:28:16', '2023-04-27 23:28:16'),
+(2263, 2071, '在线执行', '/cron/onlineExec', '', '', 3, '', '/cron/onlineExec', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 70, '', 1, '2023-04-27 23:28:32', '2023-04-27 23:28:32'),
+(2264, 2071, '编辑任务分组', '/cronGroup/edit', '', '', 3, '', '/cronGroup/edit', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 80, '', 1, '2023-04-27 23:28:55', '2023-04-27 23:28:55'),
+(2265, 2071, '删除任务分组', '/cronGroup/delete', '', '', 3, '', '/cronGroup/delete', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 90, '', 1, '2023-04-27 23:29:14', '2023-04-27 23:29:14'),
+(2266, 2072, '黑名单列表', '/blacklist/list', '', '', 3, '', '/blacklist/list', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 10, '', 1, '2023-04-27 23:29:59', '2023-04-27 23:29:59'),
+(2267, 2072, '编辑黑名单策略', '/blacklist/edit', '', '', 3, '', '/blacklist/edit', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 20, '', 1, '2023-04-27 23:30:25', '2023-04-27 23:30:25'),
+(2268, 2072, '修改策略状态', '/blacklist/status', '', '', 3, '', '/blacklist/status', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 30, '', 1, '2023-04-27 23:31:07', '2023-04-27 23:31:07'),
+(2269, 2072, '删除策略', '/blacklist/delete', '', '', 3, '', '/blacklist/delete', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 40, '', 1, '2023-04-27 23:31:21', '2023-04-27 23:31:21'),
+(2270, 2073, '修改登录密码', '/member/updatePwd', '', '', 3, '', '/member/updatePwd', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 10, '', 1, '2023-04-28 16:40:34', '2023-04-28 16:40:34'),
+(2271, 2073, '换绑手机号', '/member/updateMobile', '', '', 3, '', '/member/updateMobile', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 20, '', 1, '2023-04-28 16:40:52', '2023-04-28 16:40:52'),
+(2272, 2073, '换绑邮箱', '/member/updateEmail', '', '', 3, '', '/member/updateEmail', '', '', 1, '', 0, 2, '', 0, 0, 0, 3, '', 30, '', 1, '2023-04-28 16:41:11', '2023-04-28 16:41:11');
 
 -- --------------------------------------------------------
 
@@ -350,7 +430,7 @@ CREATE TABLE `hg_admin_notice` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台_通知公告';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_通知公告';
 
 --
 -- 转存表中的数据 `hg_admin_notice`
@@ -360,7 +440,9 @@ INSERT INTO `hg_admin_notice` (`id`, `title`, `type`, `tag`, `content`, `receive
 (29, '2023年春季学期开学工作通知！', 1, 1, '1.学生：2月11日、2月12日报到，2月13日起安排考试。\n\n2.教职工：2月10日（周五）起正式上班（2月11日、2月12日正常上班）。\n\n3.校内进行的各类社会服务项目，主办部门、单位须关注参与人员的健康状况，如有异常第一时间报告。感染后仍在康复期内的师生，不参加剧烈活动。开学后两周内，原则上不组织各类竞技性较强的体育比赛等活动。\n\n4.全校师生员工要牢固树立健康第一的观念，切实增强个人责任感和防护意识，掌握防护技能，坚持戴口罩、勤洗手等良好卫生习惯，加强身体锻炼，保持健康生活方式，提升健康素养和自我防护能力，当好自身健康第一责任人。符合条件的师生，积极有序接种第二剂次加强针疫苗。', 'null', '', 10, 1, 1, 1, '2023-02-09 12:25:39', '2023-02-09 12:48:08', NULL),
 (30, '国务院办公厅关于2023年部分节假日安排的通知', 1, 3, '新华社北京12月8日电  国务院办公厅关于2023年部分节假日安排的通知，全文如下：\n\n　　各省、自治区、直辖市人民政府，国务院\n\n　　各部委、各直属机构：\n\n　　经国务院批准，现将2023年元旦、春节、清明节、劳动节、端午节、中秋节和国庆节放假调休日期的具体安排通知如下。\n\n　　一、元旦：2022年12月31日至2023年1月2日放假调休，共3天。\n\n　　二、春节：1月21日至27日放假调休，共7天。1月28日（星期六）、1月29日（星期日）上班。\n\n　　三、清明节：4月5日放假，共1天。\n\n　　四、劳动节：4月29日至5月3日放假调休，共5天。4月23日（星期日）、5月6日（星期六）上班。\n\n　　五、端午节：6月22日至24日放假调休，共3天。6月25日（星期日）上班。\n\n　　六、中秋节、国庆节：9月29日至10月6日放假调休，共8天。10月7日（星期六）、10月8日（星期日）上班。\n\n　　节假日期间，各地区、各部门要妥善安排好值班和安全、保卫、疫情防控等工作，遇有重大突发事件，要按规定及时报告并妥善处置，确保人民群众祥和平安度过节日假期。', 'null', '', 20, 1, 1, 1, '2023-02-09 12:32:32', '2023-02-09 12:48:28', NULL),
 (31, 'hotgo新版本发布啦！', 2, 4, '<p><img src=\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdr8lj1mpl0eu0jpn.png\"></p><h2><br></h2><h2>本次更新内容如下：</h2><h2>1. 优化角色权限</h2><h2>2. 优化代码生成</h2><h2>3. ....</h2>', 'null', '', 30, 1, 1, 0, '2023-02-09 12:45:17', '2023-02-09 12:45:17', NULL),
-(32, '新的好友', 3, 5, '<p><strong>哈喽，你好呀！</strong></p>', '[1, 3, 8]', '', 40, 1, 1, 0, '2023-02-09 12:45:54', '2023-02-09 12:45:54', NULL);
+(32, '新的好友', 3, 5, '<p><strong>哈喽，你好呀！</strong></p>', '[1, 3, 8]', '', 40, 1, 1, 3, '2023-02-09 12:45:54', '2023-04-28 16:45:03', NULL),
+(33, '1', 2, 0, '', 'null', '', 50, 1, 3, 0, '2023-04-28 16:45:11', '2023-04-28 16:45:11', '2023-04-28 16:45:14'),
+(34, '1', 1, 0, '1', 'null', '', 50, 1, 3, 0, '2023-04-28 16:45:22', '2023-04-28 16:45:22', '2023-04-28 16:45:26');
 
 -- --------------------------------------------------------
 
@@ -375,7 +457,63 @@ CREATE TABLE `hg_admin_notice_read` (
   `clicks` int(11) DEFAULT '1' COMMENT '已读次数',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `created_at` datetime DEFAULT NULL COMMENT '阅读时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台_公告已读记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_公告已读记录';
+
+--
+-- 转存表中的数据 `hg_admin_notice_read`
+--
+
+INSERT INTO `hg_admin_notice_read` (`id`, `notice_id`, `member_id`, `clicks`, `updated_at`, `created_at`) VALUES
+(1, 31, 1, 2, '2023-04-26 22:44:51', '2023-04-25 22:59:16'),
+(2, 30, 1, 2, '2023-04-26 22:44:30', '2023-04-25 23:01:27'),
+(3, 32, 3, 0, '2023-04-28 16:48:41', '2023-04-28 16:48:41'),
+(4, 29, 3, 0, '2023-04-28 16:48:47', '2023-04-28 16:48:47'),
+(5, 30, 3, 0, '2023-04-28 16:48:47', '2023-04-28 16:48:47');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `hg_admin_oauth`
+--
+
+CREATE TABLE `hg_admin_oauth` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `member_id` bigint(20) DEFAULT '0' COMMENT '用户ID',
+  `unionid` varchar(64) DEFAULT '' COMMENT '唯一ID',
+  `oauth_client` varchar(32) DEFAULT NULL COMMENT '授权组别',
+  `oauth_openid` varchar(128) DEFAULT NULL COMMENT '授权开放ID',
+  `sex` tinyint(1) DEFAULT '1' COMMENT '性别',
+  `nickname` varchar(100) DEFAULT '' COMMENT '昵称',
+  `head_portrait` varchar(150) DEFAULT '' COMMENT '头像',
+  `birthday` date DEFAULT NULL COMMENT '生日',
+  `country` varchar(100) DEFAULT '' COMMENT '国家',
+  `province` varchar(100) DEFAULT '' COMMENT '省',
+  `city` varchar(100) DEFAULT '' COMMENT '市',
+  `status` tinyint(1) DEFAULT '1' COMMENT '状态',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime(1) DEFAULT NULL COMMENT '修改时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_第三方登录';
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `hg_admin_order`
+--
+
+CREATE TABLE `hg_admin_order` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `member_id` bigint(20) DEFAULT '0' COMMENT '管理员id',
+  `order_type` varchar(32) NOT NULL COMMENT '订单类型',
+  `product_id` bigint(20) DEFAULT NULL COMMENT '产品id',
+  `order_sn` varchar(64) DEFAULT '' COMMENT '关联订单号',
+  `money` decimal(10,2) NOT NULL COMMENT '充值金额',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `refund_reason` varchar(255) DEFAULT NULL COMMENT '退款原因',
+  `reject_refund_reason` varchar(255) DEFAULT NULL COMMENT '拒绝退款原因',
+  `status` tinyint(4) DEFAULT '1' COMMENT '状态',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_充值订单';
 
 -- --------------------------------------------------------
 
@@ -392,7 +530,7 @@ CREATE TABLE `hg_admin_post` (
   `status` tinyint(1) NOT NULL COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台_岗位';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_岗位';
 
 --
 -- 转存表中的数据 `hg_admin_post`
@@ -403,7 +541,7 @@ INSERT INTO `hg_admin_post` (`id`, `code`, `name`, `remark`, `sort`, `status`, `
 (2, 'se', '项目经理', '', 2, 1, '2022-01-04 17:54:52', '2023-01-18 00:00:00'),
 (3, 'hr', '人力资源', '', 3, 1, '2022-01-04 17:54:52', '2023-02-26 00:32:40'),
 (4, 'user', '普通员工', '', 4, 1, '2022-01-04 17:54:52', '2022-05-15 22:33:09'),
-(6, 'test', '测试', '测试..', 5, 1, '2022-08-14 11:41:22', '2023-01-24 21:21:42');
+(6, 'test', '测试', '测试..', 5, 1, '2022-08-14 11:41:22', '2023-04-27 23:17:27');
 
 -- --------------------------------------------------------
 
@@ -425,7 +563,7 @@ CREATE TABLE `hg_admin_role` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '角色状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台_角色信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_角色信息';
 
 --
 -- 转存表中的数据 `hg_admin_role`
@@ -433,14 +571,13 @@ CREATE TABLE `hg_admin_role` (
 
 INSERT INTO `hg_admin_role` (`id`, `name`, `key`, `data_scope`, `custom_dept`, `pid`, `level`, `tree`, `remark`, `sort`, `status`, `created_at`, `updated_at`) VALUES
 (1, '超级管理员', 'super', 1, '[]', 0, 1, NULL, '超级管理员，拥有全部菜单、数据权限，无需绑定和验证', 1, 1, '2022-01-04 17:54:52', '2023-01-12 00:00:00'),
-(2, '普通管理员', 'norm', 4, '[102, 108, 100]', 1, 2, 'tr_1 ', '普通管理员，拥有常规的后台系统权限', 2, 1, '2022-01-04 17:54:52', '2023-01-24 21:02:21'),
-(100, '测试角色', 'test', 5, '[]', 1, 2, 'tr_1 ', '测试角色', 10, 1, '2023-01-12 00:00:00', '2023-01-24 21:02:17'),
+(2, '管理员', 'manage', 1, '[]', 1, 2, 'tr_1 ', '普通管理员，拥有常规的后台系统权限', 2, 1, '2022-01-04 17:54:52', '2023-04-27 00:00:00'),
 (200, '金牌代理商', 'gold_agent', 7, '[]', 0, 1, NULL, '金牌代理商，分离机构权限，满足sass需求', 200, 1, '2023-01-12 00:00:00', '2022-08-13 23:28:52'),
 (201, '银牌代理商', 'silver_agent', 7, '[]', 200, 2, 'tr_200 ', '银牌代理商，分离机构权限，满足sass需求', 210, 1, '2023-01-12 00:00:00', '2022-08-13 23:28:52'),
 (202, '铜牌代理', 'copper_agent', 5, '[]', 200, 2, 'tr_200 ', '', 220, 1, '2023-01-12 11:20:02', '2023-01-24 20:56:34'),
-(206, '财务部', 'finance', 2, '[]', 1, 2, 'tr_1 ', '', 5, 1, '2023-01-24 20:22:10', '2023-01-24 21:02:24'),
-(207, '商务部', 'business', 1, '[]', 1, 2, 'tr_1 ', '', 3, 1, '2023-01-24 20:23:27', '2023-01-24 21:02:31'),
-(208, '技术部', 'science', 1, '[]', 1, 2, 'tr_1 ', '', 2, 1, '2023-01-24 20:23:54', '2023-01-24 21:02:03');
+(206, '财务部', 'finance', 2, '[]', 2, 3, 'tr_1 tr_2 ', '', 5, 1, '2023-01-24 20:22:10', '2023-04-26 23:59:30'),
+(207, '商务部', 'business', 1, '[]', 2, 3, 'tr_1 tr_2 ', '', 3, 1, '2023-01-24 20:23:27', '2023-04-26 23:59:25'),
+(208, '技术部', 'science', 1, '[]', 2, 3, 'tr_1 tr_2 ', '', 2, 1, '2023-01-24 20:23:54', '2023-04-26 23:59:19');
 
 -- --------------------------------------------------------
 
@@ -457,117 +594,208 @@ CREATE TABLE `hg_admin_role_casbin` (
   `v3` varchar(256) DEFAULT NULL,
   `v4` varchar(256) DEFAULT NULL,
   `v5` varchar(256) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='casbin权限表' ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_casbin权限表' ROW_FORMAT=DYNAMIC;
 
 --
 -- 转存表中的数据 `hg_admin_role_casbin`
 --
 
 INSERT INTO `hg_admin_role_casbin` (`id`, `p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES
-(8238, 'p', 'norm', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8239, 'p', 'norm', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8240, 'p', 'norm', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8241, 'p', 'norm', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8242, 'p', 'norm', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8243, 'p', 'norm', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8244, 'p', 'norm', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8245, 'p', 'norm', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8246, 'p', 'norm', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8247, 'p', 'norm', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8248, 'p', 'norm', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8249, 'p', 'norm', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8250, 'p', 'norm', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8251, 'p', 'norm', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8252, 'p', 'norm', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8253, 'p', 'norm', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8254, 'p', 'norm', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8255, 'p', 'norm', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8256, 'p', 'norm', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8257, 'p', 'norm', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8258, 'p', 'norm', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8259, 'p', 'norm', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8260, 'p', 'norm', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8261, 'p', 'norm', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8262, 'p', 'norm', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8263, 'p', 'norm', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8264, 'p', 'norm', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8265, 'p', 'norm', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8266, 'p', 'test', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8267, 'p', 'test', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8268, 'p', 'test', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8269, 'p', 'test', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8270, 'p', 'test', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8271, 'p', 'test', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8272, 'p', 'test', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8273, 'p', 'test', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8274, 'p', 'test', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8275, 'p', 'test', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8276, 'p', 'test', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8277, 'p', 'test', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8278, 'p', 'test', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8279, 'p', 'test', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8280, 'p', 'test', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8281, 'p', 'test', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8282, 'p', 'test', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8283, 'p', 'test', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8284, 'p', 'gold_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8285, 'p', 'gold_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8286, 'p', 'gold_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8287, 'p', 'silver_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8288, 'p', 'silver_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8289, 'p', 'silver_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8290, 'p', 'finance', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8291, 'p', 'finance', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8292, 'p', 'finance', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8293, 'p', 'finance', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8294, 'p', 'finance', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8295, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8296, 'p', 'finance', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8297, 'p', 'finance', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8298, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8299, 'p', 'finance', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8300, 'p', 'finance', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8301, 'p', 'finance', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8302, 'p', 'finance', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8303, 'p', 'finance', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8304, 'p', 'finance', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8305, 'p', 'finance', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8306, 'p', 'finance', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8307, 'p', 'finance', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8308, 'p', 'finance', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8309, 'p', 'finance', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8310, 'p', 'finance', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8311, 'p', 'finance', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8312, 'p', 'finance', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8313, 'p', 'finance', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8314, 'p', 'finance', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8315, 'p', 'finance', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8316, 'p', 'finance', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8317, 'p', 'finance', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8318, 'p', 'finance', '/loginLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8319, 'p', 'finance', '/loginLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8320, 'p', 'finance', '/serveLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8321, 'p', 'finance', '/serveLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8322, 'p', 'finance', '/notice/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8323, 'p', 'finance', '/notice/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8324, 'p', 'finance', '/notice/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8325, 'p', 'finance', '/notice/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8326, 'p', 'finance', '/notice/editNotify', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8327, 'p', 'finance', '/notice/editNotice', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8328, 'p', 'finance', '/notice/editLetter', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8329, 'p', 'finance', '/notice/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8330, 'p', 'finance', '/test/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8331, 'p', 'finance', '/test/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8332, 'p', 'finance', '/test/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8333, 'p', 'finance', '/test/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8334, 'p', 'finance', '/test/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8335, 'p', 'finance', '/test/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8336, 'p', 'business', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8337, 'p', 'business', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8338, 'p', 'business', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8339, 'p', 'science', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8340, 'p', 'science', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(8341, 'p', 'science', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', '');
+(20042, 'p', 'manage', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20043, 'p', 'manage', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20044, 'p', 'manage', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20045, 'p', 'manage', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20046, 'p', 'manage', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20047, 'p', 'manage', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20048, 'p', 'manage', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20049, 'p', 'manage', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20050, 'p', 'manage', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20051, 'p', 'manage', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20052, 'p', 'manage', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20053, 'p', 'manage', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20054, 'p', 'manage', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20055, 'p', 'manage', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20056, 'p', 'manage', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20057, 'p', 'manage', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20058, 'p', 'manage', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20059, 'p', 'manage', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20060, 'p', 'manage', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20061, 'p', 'manage', '/member/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20062, 'p', 'manage', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20063, 'p', 'manage', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20064, 'p', 'manage', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20065, 'p', 'manage', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20066, 'p', 'manage', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20067, 'p', 'manage', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20068, 'p', 'manage', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20069, 'p', 'manage', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20070, 'p', 'manage', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20071, 'p', 'manage', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20072, 'p', 'manage', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20073, 'p', 'manage', '/curdDemo/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20074, 'p', 'manage', '/curdDemo/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20075, 'p', 'manage', '/curdDemo/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20076, 'p', 'manage', '/curdDemo/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20077, 'p', 'manage', '/curdDemo/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20078, 'p', 'manage', '/curdDemo/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20079, 'p', 'manage', '/curdDemo/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20080, 'p', 'manage', '/curdDemo/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20081, 'p', 'manage', '/loginLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20082, 'p', 'manage', '/loginLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20083, 'p', 'manage', '/serveLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20084, 'p', 'manage', '/serveLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20085, 'p', 'manage', '/notice/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20086, 'p', 'manage', '/notice/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20087, 'p', 'manage', '/notice/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20088, 'p', 'manage', '/notice/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20089, 'p', 'manage', '/notice/editNotify', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20090, 'p', 'manage', '/notice/editNotice', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20091, 'p', 'manage', '/notice/editLetter', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20092, 'p', 'manage', '/notice/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20093, 'p', 'manage', '/test/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20094, 'p', 'manage', '/test/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20095, 'p', 'manage', '/test/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20096, 'p', 'manage', '/test/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20097, 'p', 'manage', '/test/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20098, 'p', 'manage', '/test/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20099, 'p', 'manage', '/order/create', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20100, 'p', 'manage', '/creditsLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20101, 'p', 'manage', '/creditsLog/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20102, 'p', 'manage', '/order/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20103, 'p', 'manage', '/order/acceptRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20104, 'p', 'manage', '/order/applyRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20105, 'p', 'manage', '/order/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20106, 'p', 'manage', '/cash/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20107, 'p', 'manage', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20108, 'p', 'manage', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20109, 'p', 'manage', '/cash/payment', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20110, 'p', 'manage', '/cash/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20111, 'p', 'manage', '/member/addBalance', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20112, 'p', 'manage', '/member/addIntegral', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20113, 'p', 'manage', '/member/resetPwd', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20114, 'p', 'manage', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20115, 'p', 'manage', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20116, 'p', 'manage', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20117, 'p', 'manage', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20118, 'p', 'manage', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20119, 'p', 'manage', '/config/get', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20120, 'p', 'manage', '/config/update', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20121, 'p', 'manage', '/dictType/tree', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20122, 'p', 'manage', '/dictData/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20123, 'p', 'manage', '/config/typeSelect', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20124, 'p', 'manage', '/dictData/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20125, 'p', 'manage', '/dictData/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20126, 'p', 'manage', '/dictType/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20127, 'p', 'manage', '/dictType/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20128, 'p', 'manage', '/cron/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20129, 'p', 'manage', '/cronGroup/select', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20130, 'p', 'manage', '/cronGroup/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20131, 'p', 'manage', '/cron/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20132, 'p', 'manage', '/cron/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20133, 'p', 'manage', '/cron/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20134, 'p', 'manage', '/cron/onlineExec', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20135, 'p', 'manage', '/cronGroup/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20136, 'p', 'manage', '/cronGroup/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20137, 'p', 'manage', '/blacklist/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20138, 'p', 'manage', '/blacklist/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20139, 'p', 'manage', '/blacklist/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20140, 'p', 'manage', '/blacklist/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20141, 'p', 'gold_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20142, 'p', 'gold_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20143, 'p', 'gold_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20144, 'p', 'gold_agent', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20145, 'p', 'gold_agent', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20146, 'p', 'gold_agent', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20147, 'p', 'gold_agent', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20148, 'p', 'gold_agent', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20149, 'p', 'gold_agent', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20150, 'p', 'gold_agent', '/member/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20151, 'p', 'gold_agent', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20152, 'p', 'gold_agent', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20153, 'p', 'gold_agent', '/order/create', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20154, 'p', 'gold_agent', '/creditsLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20155, 'p', 'gold_agent', '/creditsLog/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20156, 'p', 'gold_agent', '/order/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20157, 'p', 'gold_agent', '/order/acceptRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20158, 'p', 'gold_agent', '/order/applyRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20159, 'p', 'gold_agent', '/order/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20160, 'p', 'gold_agent', '/cash/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20161, 'p', 'gold_agent', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20162, 'p', 'gold_agent', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20163, 'p', 'gold_agent', '/cash/payment', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20164, 'p', 'gold_agent', '/cash/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20165, 'p', 'gold_agent', '/member/addBalance', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20166, 'p', 'gold_agent', '/member/addIntegral', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20167, 'p', 'gold_agent', '/member/resetPwd', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20168, 'p', 'gold_agent', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20169, 'p', 'gold_agent', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20170, 'p', 'gold_agent', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20171, 'p', 'gold_agent', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20172, 'p', 'gold_agent', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20173, 'p', 'gold_agent', '/member/updatePwd', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20174, 'p', 'gold_agent', '/member/updateMobile', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20175, 'p', 'gold_agent', '/member/updateEmail', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20176, 'p', 'silver_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20177, 'p', 'silver_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20178, 'p', 'silver_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20179, 'p', 'copper_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20180, 'p', 'copper_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20181, 'p', 'copper_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20182, 'p', 'finance', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20183, 'p', 'finance', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20184, 'p', 'finance', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20185, 'p', 'finance', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20186, 'p', 'finance', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20187, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20188, 'p', 'finance', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20189, 'p', 'finance', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20190, 'p', 'finance', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20191, 'p', 'finance', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20192, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20193, 'p', 'finance', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20194, 'p', 'finance', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20195, 'p', 'finance', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20196, 'p', 'finance', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20197, 'p', 'finance', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20198, 'p', 'finance', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20199, 'p', 'finance', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20200, 'p', 'finance', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20201, 'p', 'finance', '/member/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20202, 'p', 'finance', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20203, 'p', 'finance', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20204, 'p', 'finance', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20205, 'p', 'finance', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20206, 'p', 'finance', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20207, 'p', 'finance', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20208, 'p', 'finance', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20209, 'p', 'finance', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20210, 'p', 'finance', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20211, 'p', 'finance', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20212, 'p', 'finance', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20213, 'p', 'finance', '/loginLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20214, 'p', 'finance', '/loginLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20215, 'p', 'finance', '/serveLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20216, 'p', 'finance', '/serveLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20217, 'p', 'finance', '/notice/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20218, 'p', 'finance', '/notice/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20219, 'p', 'finance', '/notice/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20220, 'p', 'finance', '/notice/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20221, 'p', 'finance', '/notice/editNotify', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20222, 'p', 'finance', '/notice/editNotice', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20223, 'p', 'finance', '/notice/editLetter', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20224, 'p', 'finance', '/notice/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20225, 'p', 'finance', '/test/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20226, 'p', 'finance', '/test/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20227, 'p', 'finance', '/test/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20228, 'p', 'finance', '/test/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20229, 'p', 'finance', '/test/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20230, 'p', 'finance', '/test/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20231, 'p', 'business', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20232, 'p', 'business', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20233, 'p', 'business', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20234, 'p', 'science', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20235, 'p', 'science', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(20236, 'p', 'science', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -578,7 +806,7 @@ INSERT INTO `hg_admin_role_casbin` (`id`, `p_type`, `v0`, `v1`, `v2`, `v3`, `v4`
 CREATE TABLE `hg_admin_role_menu` (
   `role_id` bigint(20) NOT NULL COMMENT '角色ID',
   `menu_id` bigint(20) NOT NULL COMMENT '菜单ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台_角色菜单关联';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员_角色菜单关联';
 
 --
 -- 转存表中的数据 `hg_admin_role_menu`
@@ -642,9 +870,75 @@ INSERT INTO `hg_admin_role_menu` (`role_id`, `menu_id`) VALUES
 (2, 2116),
 (2, 2117),
 (2, 2118),
+(2, 2120),
 (2, 2121),
 (2, 2122),
 (2, 2124),
+(2, 2125),
+(2, 2198),
+(2, 2199),
+(2, 2200),
+(2, 2201),
+(2, 2202),
+(2, 2203),
+(2, 2204),
+(2, 2205),
+(2, 2206),
+(2, 2207),
+(2, 2208),
+(2, 2209),
+(2, 2210),
+(2, 2211),
+(2, 2212),
+(2, 2213),
+(2, 2214),
+(2, 2215),
+(2, 2216),
+(2, 2217),
+(2, 2218),
+(2, 2219),
+(2, 2220),
+(2, 2221),
+(2, 2222),
+(2, 2223),
+(2, 2224),
+(2, 2225),
+(2, 2226),
+(2, 2229),
+(2, 2232),
+(2, 2235),
+(2, 2236),
+(2, 2237),
+(2, 2240),
+(2, 2241),
+(2, 2242),
+(2, 2243),
+(2, 2244),
+(2, 2245),
+(2, 2246),
+(2, 2247),
+(2, 2248),
+(2, 2249),
+(2, 2250),
+(2, 2251),
+(2, 2252),
+(2, 2253),
+(2, 2254),
+(2, 2255),
+(2, 2256),
+(2, 2257),
+(2, 2258),
+(2, 2259),
+(2, 2260),
+(2, 2261),
+(2, 2262),
+(2, 2263),
+(2, 2264),
+(2, 2265),
+(2, 2266),
+(2, 2267),
+(2, 2268),
+(2, 2269),
 (100, 2047),
 (100, 2048),
 (100, 2049),
@@ -675,6 +969,31 @@ INSERT INTO `hg_admin_role_menu` (`role_id`, `menu_id`) VALUES
 (200, 2048),
 (200, 2049),
 (200, 2050),
+(200, 2062),
+(200, 2073),
+(200, 2109),
+(200, 2110),
+(200, 2111),
+(200, 2219),
+(200, 2220),
+(200, 2232),
+(200, 2235),
+(200, 2236),
+(200, 2237),
+(200, 2240),
+(200, 2241),
+(200, 2242),
+(200, 2243),
+(200, 2244),
+(200, 2245),
+(200, 2246),
+(200, 2247),
+(200, 2248),
+(200, 2249),
+(200, 2250),
+(200, 2270),
+(200, 2271),
+(200, 2272),
 (201, 2047),
 (201, 2048),
 (201, 2049),
@@ -761,6 +1080,67 @@ INSERT INTO `hg_admin_role_menu` (`role_id`, `menu_id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `hg_pay_log`
+--
+
+CREATE TABLE `hg_pay_log` (
+  `id` bigint(20) NOT NULL COMMENT '主键',
+  `member_id` bigint(20) DEFAULT '0' COMMENT '会员ID',
+  `app_id` varchar(50) DEFAULT NULL COMMENT '应用ID',
+  `addons_name` varchar(100) DEFAULT '' COMMENT '插件名称',
+  `order_sn` varchar(64) DEFAULT '' COMMENT '关联订单号',
+  `order_group` varchar(32) DEFAULT '' COMMENT '组别[默认统一支付类型]',
+  `openid` varchar(50) DEFAULT '' COMMENT 'openid',
+  `mch_id` varchar(20) DEFAULT '' COMMENT '商户支付账户',
+  `subject` varchar(255) DEFAULT NULL COMMENT '订单标题',
+  `detail` json DEFAULT NULL COMMENT '支付商品详情',
+  `auth_code` varchar(50) DEFAULT '' COMMENT '刷卡码',
+  `out_trade_no` varchar(128) DEFAULT '' COMMENT '商户订单号',
+  `transaction_id` varchar(128) DEFAULT NULL COMMENT '交易号',
+  `pay_type` varchar(32) NOT NULL COMMENT '支付类型',
+  `pay_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支付金额',
+  `actual_amount` decimal(10,2) DEFAULT NULL COMMENT '实付金额',
+  `pay_status` tinyint(4) DEFAULT '0' COMMENT '支付状态',
+  `pay_at` datetime DEFAULT NULL COMMENT '支付时间',
+  `trade_type` varchar(16) DEFAULT '' COMMENT '交易类型',
+  `refund_sn` varchar(128) DEFAULT NULL COMMENT '退款单号',
+  `is_refund` tinyint(4) DEFAULT '0' COMMENT '是否退款 ',
+  `custom` text COMMENT '自定义参数',
+  `create_ip` varchar(30) DEFAULT NULL COMMENT '创建者IP',
+  `pay_ip` varchar(30) DEFAULT NULL COMMENT '支付者IP',
+  `notify_url` varchar(255) DEFAULT NULL COMMENT '支付通知回调地址',
+  `return_url` varchar(255) DEFAULT NULL COMMENT '买家付款成功跳转地址',
+  `trace_ids` json DEFAULT NULL COMMENT '链路ID集合',
+  `status` tinyint(4) DEFAULT '1' COMMENT '状态',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='支付_支付日志';
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `hg_pay_refund`
+--
+
+CREATE TABLE `hg_pay_refund` (
+  `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
+  `member_id` bigint(20) DEFAULT '0' COMMENT '会员ID',
+  `app_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '应用ID',
+  `order_sn` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '业务订单号',
+  `refund_trade_no` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '退款交易号',
+  `refund_money` decimal(10,2) DEFAULT NULL COMMENT '退款金额',
+  `refund_way` tinyint(4) DEFAULT '1' COMMENT '退款方式',
+  `ip` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '申请者IP',
+  `reason` varchar(255) DEFAULT NULL COMMENT '申请退款原因',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '退款备注',
+  `status` tinyint(4) DEFAULT '1' COMMENT '退款状态',
+  `created_at` datetime DEFAULT NULL COMMENT '申请时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单退款账户记录';
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `hg_sys_addons_config`
 --
 
@@ -786,7 +1166,7 @@ CREATE TABLE `hg_sys_addons_config` (
 --
 
 INSERT INTO `hg_sys_addons_config` (`id`, `addon_name`, `group`, `name`, `type`, `key`, `value`, `default_value`, `sort`, `tip`, `is_default`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'hgexample', 'basic', '测试参数', 'string', 'basicTest', 'HotGo', 'HotGo', 10, '测试参数，可以按需添加配置自定义参数', 0, 1, '2023-02-14 10:56:01', '2023-02-19 15:46:33');
+(1, 'hgexample', 'basic', '测试参数', 'string', 'basicTest', 'HotGo', 'HotGo', 10, '测试参数，可以按需添加配置自定义参数', 0, 1, '2023-02-14 10:56:01', '2023-04-28 16:46:11');
 
 -- --------------------------------------------------------
 
@@ -808,7 +1188,7 @@ CREATE TABLE `hg_sys_addons_install` (
 --
 
 INSERT INTO `hg_sys_addons_install` (`id`, `name`, `version`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'hgexample', 'v1.0.0', 1, '2023-02-02 00:00:00', '2023-02-24 11:00:08');
+(1, 'hgexample', 'v1.0.0', 1, '2023-02-02 00:00:00', '2023-04-28 16:46:02');
 
 -- --------------------------------------------------------
 
@@ -836,26 +1216,6 @@ CREATE TABLE `hg_sys_attachment` (
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统_附件管理';
 
---
--- 转存表中的数据 `hg_sys_attachment`
---
-
-INSERT INTO `hg_sys_attachment` (`id`, `app_id`, `member_id`, `cate_id`, `drive`, `name`, `kind`, `meta_type`, `naive_type`, `path`, `file_url`, `size`, `ext`, `md5`, `status`, `created_at`, `updated_at`) VALUES
-(38, 'admin', 1, 0, 'ucloud', 'logo.png', 'images', 'image/png', '', 'hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 'hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 38601, 'png', '492c0e0f0eb8e7e6c7b6901d32854d19', 1, '2023-02-09 11:54:12', '2023-02-09 11:54:12'),
-(39, 'admin', 1, 0, 'ucloud', '8dfb227d9fd9e99caa884b1f450bcc1.jpg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg', 'hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg', 433261, 'jpg', '9c9d1077c59b7be96473b68226c2d875', 1, '2023-02-09 11:54:30', '2023-02-09 11:54:30'),
-(40, 'admin', 1, 0, 'ucloud', 'image.png', 'images', 'image/png', '', 'hotgo/attachment/2023-02-09/cqdq9iuv0phsg8patk.png', 'hotgo/attachment/2023-02-09/cqdq9iuv0phsg8patk.png', 34850, 'png', '340f4c2f7a2d92c1d982bbecd58d01a9', 1, '2023-02-09 11:55:40', '2023-02-09 11:55:40'),
-(41, 'admin', 1, 0, 'ucloud', 'p8.itc.webp', 'images', 'image/webp', '', 'hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', 'hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', 78100, 'webp', 'f38a6aefccaa6c6aff6a8d73bce108e2', 1, '2023-02-09 11:57:07', '2023-03-11 10:03:35'),
-(42, 'admin', 1, 0, 'ucloud', 'pic4.zhimg.jpg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg', 'hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg', 59608, 'jpg', '4f7b441436d8f18d848c83df3d5fd77c', 1, '2023-02-09 11:57:12', '2023-02-09 11:57:12'),
-(43, 'admin', 1, 0, 'ucloud', 'u=366042725,4290979312&fm=224&app=112&f=JPEG.jpg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg', 'hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg', 44488, 'jpg', '5a70496e61671cb9bea61c04144ed26a', 1, '2023-02-09 11:57:15', '2023-02-09 11:57:15'),
-(44, 'admin', 1, 0, 'ucloud', '测试1.doc', 'document', 'application/msword', 'text/plain', 'hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', 'hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', 9216, 'doc', '7b82c3bdd93f2bd53dbb6bdb8220428a', 1, '2023-02-09 11:57:24', '2023-02-09 11:58:37'),
-(45, 'admin', 1, 0, 'ucloud', '测试2.xlsx', 'document', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/plain', 'hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', 'hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', 9800, 'xlsx', 'df3457614fd455a6486a0c1dcf6e0603', 1, '2023-02-09 11:57:28', '2023-02-09 11:58:33'),
-(46, 'admin', 1, 0, 'ucloud', 'image.png', 'images', 'image/png', '', 'hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png', 'hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png', 34427, 'png', '7aeffef602e92d4c51e1860be0e08321', 1, '2023-02-09 11:58:20', '2023-02-09 11:58:20'),
-(47, 'admin', 1, 0, 'ucloud', 'f9dcd100baa1cd11d3d39ced8c66dcf4c2ce2d16.jpeg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', 'hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', 64239, 'jpeg', 'd5f74ac9e8e96cbf12401f8e254d2652', 1, '2023-02-09 11:58:25', '2023-03-11 10:06:05'),
-(48, 'admin', 1, 0, 'ucloud', '91ef76c6a7efce1bb8209a0a26e18bd9b58f651a.jpeg', 'images', 'image/jpeg', '', 'hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg', 'hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg', 24114, 'jpeg', '1a863f439969021a89783b55a68c8756', 1, '2023-02-09 11:58:29', '2023-03-17 10:46:52'),
-(49, 'admin', 1, 0, 'ucloud', 'image.png', 'images', 'image/png', '', 'hotgo/attachment/2023-02-09/cqdr8ebbk6x4t9kdnc.png', 'hotgo/attachment/2023-02-09/cqdr8ebbk6x4t9kdnc.png', 51172, 'png', '1eff6a983d2758c23549ccc0fd530346', 1, '2023-02-09 12:41:13', '2023-02-09 12:41:13'),
-(50, 'admin', 1, 0, 'ucloud', 'image.png', 'images', 'image/png', '', 'hotgo/attachment/2023-02-09/cqdr8lj1mpl0eu0jpn.png', 'hotgo/attachment/2023-02-09/cqdr8lj1mpl0eu0jpn.png', 34759, 'png', '0c17d9daec3550d5ecbf17ba9872f0a4', 1, '2023-02-09 12:41:28', '2023-02-09 12:41:28'),
-(54, 'admin', 1, 0, 'oss', 'ZGLY[F{0C1[(9YRO`RCO85H.png', 'images', 'image/png', '', 'hotgo/attachment/2023-03-20/crb40xohdtegnyvaqz.png', 'hotgo/attachment/2023-03-20/crb40xohdtegnyvaqz.png', 283126, 'png', '546b915ff551fca544dadb97cb3f5944', 1, '2023-03-20 17:40:41', '2023-03-20 17:40:41');
-
 -- --------------------------------------------------------
 
 --
@@ -881,7 +1241,7 @@ INSERT INTO `hg_sys_blacklist` (`id`, `ip`, `remark`, `status`, `created_at`, `u
 (3, '19.162.138.94', '指定IP', 1, '2022-10-01 14:02:09', '2023-01-20 23:11:43'),
 (5, '19.162.138.91,19.162.138.96', '多个IP', 1, '2022-10-01 14:02:09', '2023-01-20 23:11:36'),
 (6, '19.160.138.0/24', 'IP段', 1, '2022-10-01 14:02:09', '2023-01-20 23:11:30'),
-(7, '29.160.138.0-29.160.138.5', 'IP范围', 1, '2022-10-01 14:02:09', '2023-01-20 23:11:21');
+(7, '29.160.138.0-29.160.138.5', 'IP范围', 1, '2022-10-01 14:02:09', '2023-04-27 23:30:46');
 
 -- --------------------------------------------------------
 
@@ -895,7 +1255,7 @@ CREATE TABLE `hg_sys_config` (
   `name` varchar(100) DEFAULT '' COMMENT '参数名称',
   `type` varchar(32) NOT NULL COMMENT '键值类型:string,int,uint,bool,datetime,date',
   `key` varchar(100) DEFAULT '' COMMENT '参数键名',
-  `value` varchar(500) DEFAULT '' COMMENT '参数键值',
+  `value` longtext COMMENT '参数键值',
   `default_value` varchar(500) NOT NULL COMMENT '默认值',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
   `tip` varchar(500) DEFAULT NULL COMMENT '变量描述',
@@ -913,14 +1273,14 @@ INSERT INTO `hg_sys_config` (`id`, `group`, `name`, `type`, `key`, `value`, `def
 (1, 'theme', '默认主题', 'string', 'themeDarkTheme', 'dark', 'dark', 50, '', 1, 1, '2021-01-30 13:27:43', '2022-09-05 20:29:05'),
 (2, 'theme', '默认系统主题', 'string', 'themeAppTheme', '#2d8cf0', '#2d8cf0', 60, '', 1, 1, '2021-01-30 13:27:43', '2022-09-05 20:29:05'),
 (3, 'theme', '默认侧边栏风格', 'string', 'themeNavTheme', 'light', 'dark', 70, '', 1, 1, '2021-01-30 13:27:43', '2022-09-05 20:29:05'),
-(4, 'basic', '用户是否可注册开关', 'int', 'basicRegisterSwitch', '1', '1', 80, '', 1, 1, '2021-09-29 23:51:21', '2023-02-04 15:06:52'),
-(5, 'basic', '验证码开关', 'int', 'basicCaptchaSwitch', '1', '1', 90, '', 1, 1, '2021-09-29 23:51:21', '2023-02-04 15:06:52'),
-(6, 'basic', '网站名称', 'string', 'basicName', 'HotGo', 'HotGo!', 10, '', 1, 1, '2021-01-30 13:27:43', '2023-02-04 15:06:52'),
-(7, 'basic', '网站logo', 'string', 'basicLogo', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', '', 20, '首页使用', 1, 1, '2021-01-30 13:27:43', '2023-02-04 15:06:52'),
-(8, 'basic', '网站备案号', 'string', 'basicIcpCode', '豫ICP备16035288号', '', 30, '', 1, 1, '2021-01-30 13:27:43', '2023-02-04 15:06:52'),
-(9, 'basic', '网站开启访问', 'bool', 'basicSystemOpen', '1', 'true', 50, '', 1, 1, '2021-01-30 13:27:43', '2023-02-04 15:06:52'),
-(10, 'basic', '网站关闭提示', 'string', 'basicCloseText', '网站维护中，暂时无法访问！本网站正在进行系统维护和技术升级，网站暂时无法访问，敬请谅解！', '网站维护中，暂时无法访问！本网站正在进行系统维护和技术升级，网站暂时无法访问，敬请谅解！', 60, '', 1, 1, '2021-01-30 13:27:43', '2023-02-04 15:06:52'),
-(11, 'basic', '版权所有', 'string', 'basicCopyright', '© 2019 - 2023 HotGo All Rights Reserved.', '© 2021 - 2023 HotGo All Rights Reserved.', 40, '', 1, 1, '2021-01-30 13:27:43', '2023-02-04 15:06:52'),
+(4, 'basic', '用户是否可注册开关', 'int', 'basicRegisterSwitch', '1', '1', 80, '', 1, 1, '2021-09-29 23:51:21', '2023-04-30 20:38:06'),
+(5, 'basic', '验证码开关', 'int', 'basicCaptchaSwitch', '1', '1', 90, '', 1, 1, '2021-09-29 23:51:21', '2023-04-30 20:38:06'),
+(6, 'basic', '网站名称', 'string', 'basicName', 'HotGo', 'HotGo!', 10, '', 1, 1, '2021-01-30 13:27:43', '2023-04-30 20:38:06'),
+(7, 'basic', '网站logo', 'string', 'basicLogo', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', '', 20, '首页使用', 1, 1, '2021-01-30 13:27:43', '2023-04-30 20:38:06'),
+(8, 'basic', '网站备案号', 'string', 'basicIcpCode', '豫ICP备16035288号', '', 30, '', 1, 1, '2021-01-30 13:27:43', '2023-04-30 20:38:06'),
+(9, 'basic', '网站开启访问', 'bool', 'basicSystemOpen', '1', 'true', 50, '', 1, 1, '2021-01-30 13:27:43', '2023-04-30 20:38:06'),
+(10, 'basic', '网站关闭提示', 'string', 'basicCloseText', '网站维护中，暂时无法访问！本网站正在进行系统维护和技术升级，网站暂时无法访问，敬请谅解！', '网站维护中，暂时无法访问！本网站正在进行系统维护和技术升级，网站暂时无法访问，敬请谅解！', 60, '', 1, 1, '2021-01-30 13:27:43', '2023-04-30 20:38:06'),
+(11, 'basic', '版权所有', 'string', 'basicCopyright', '© 2019 - 2023 HotGo All Rights Reserved.', '© 2021 - 2023 HotGo All Rights Reserved.', 40, '', 1, 1, '2021-01-30 13:27:43', '2023-04-30 20:38:06'),
 (12, 'smtp', 'SMTP服务器', 'string', 'smtpHost', 'smtpdm.aliyun.com', 'smtpdm.aliyun.com', 50, '错误的配置发送邮件会导致服务器超时', 1, 1, '2021-01-30 13:27:43', '2023-02-04 16:59:13'),
 (13, 'smtp', 'SMTP端口', 'int', 'smtpPort', '25', '25', 100, '(不加密默认25,SSL默认465,TLS默认587)', 1, 1, '2021-01-30 13:27:43', '2023-02-04 16:59:13'),
 (14, 'smtp', 'SMTP用户名', 'string', 'smtpUser', 'ali@mail.qvnidaye.com', '', 110, '填写完整用户名', 1, 1, '2021-01-30 13:27:43', '2023-02-04 16:59:13'),
@@ -953,8 +1313,8 @@ INSERT INTO `hg_sys_config` (`id`, `group`, `name`, `type`, `key`, `value`, `def
 (51, 'smtp', '最小发送间隔', 'int', 'smtpMinInterval', '60', '', 150, '同地址', 1, 1, '2021-01-30 13:27:43', '2023-02-04 16:59:13'),
 (52, 'smtp', 'IP最大发送次数', 'int', 'smtpMaxIpLimit', '10', '', 160, '同IP每天最大允许发送次数', 1, 1, '2021-01-30 13:27:43', '2023-02-04 16:59:13'),
 (53, 'smtp', '验证码有效期', 'int', 'smtpCodeExpire', '600', '', 170, '单位：秒', 1, 1, '2021-01-30 13:27:43', '2023-02-04 16:59:13'),
-(54, 'basic', '网站域名', 'string', 'basicDomain', 'https://hotgo.facms.cn', 'https://hotgo.facms.cn', 45, '', 1, 1, '2021-01-30 13:27:43', '2023-02-04 15:06:52'),
-(55, 'basic', 'websocket地址', 'string', 'basicWsAddr', 'wss://hotgo.facms.cn/socket', 'wss://hotgo.facms.cn/socket', 48, '', 1, 1, '2021-01-30 13:27:43', '2023-02-04 15:06:52'),
+(54, 'basic', '网站域名', 'string', 'basicDomain', 'https://hotgo.facms.cn', 'https://hotgo.facms.cn', 45, '', 1, 1, '2021-01-30 13:27:43', '2023-04-30 20:38:06'),
+(55, 'basic', 'websocket地址', 'string', 'basicWsAddr', 'wss://hotgo.facms.cn/socket', 'wss://hotgo.facms.cn/socket', 48, '', 1, 1, '2021-01-30 13:27:43', '2023-04-30 20:38:06'),
 (56, 'upload', 'COS存储路径', 'string', 'uploadCosPath', 'hotgo/attachment/', 'hotgo/attachment/', 450, 'COS对象存储中的相对路径', 1, 1, '2021-01-30 13:27:43', '2023-03-20 17:41:17'),
 (57, 'upload', 'COS秘钥ID', 'string', 'uploadCosSecretId', '', '', 460, '子账号密钥获取可参考 https://cloud.tencent.com/document/product/598/37140', 1, 1, '2021-01-30 13:27:43', '2023-03-20 17:41:17'),
 (58, 'upload', 'COS秘钥', 'string', 'uploadCosSecretKey', '', '', 470, '', 1, 1, '2021-01-30 13:27:43', '2023-03-20 17:41:17'),
@@ -976,7 +1336,34 @@ INSERT INTO `hg_sys_config` (`id`, `group`, `name`, `type`, `key`, `value`, `def
 (81, 'sms', '腾讯云短信签名', 'string', 'smsTencentSign', '', '', 680, '查看地址：https://console.cloud.tencent.com/smsv2/csms-sign', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
 (82, 'sms', '腾讯云接入地域域名', 'string', 'smsTencentEndpoint', 'sms.tencentcloudapi.com', 'sms.tencentcloudapi.com', 690, '默认就近地域接入域名为 sms.tencentcloudapi.com ，也支持指定地域域名访问，例如广州地域的域名为 sms.ap-guangzhou.tencentcloudapi.com', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
 (83, 'sms', '腾讯云地域信息', 'string', 'smsTencentRegion', 'ap-guangzhou', 'ap-guangzhou', 695, '支持的地域列表参考 https://cloud.tencent.com/document/api/382/52071#.E5.9C.B0.E5.9F.9F.E5.88.97.E8.A1.A8', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
-(84, 'sms', '腾讯云短信模板', 'string', 'smsTencentTemplate', '[{\"key\":\"login\",\"value\":\"1758990\"},{\"key\":\"register\",\"value\":\"1758990\"},{\"key\":\"code\",\"value\":\"1758990\"},{\"key\":\"resetPwd\",\"value\":\"1758990\"},{\"key\":\"bind\",\"value\":\"1758990\"},{\"key\":\"cash\",\"value\":\"1758990\"}]', '', 698, '', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32');
+(84, 'sms', '腾讯云短信模板', 'string', 'smsTencentTemplate', '[{\"key\":\"login\",\"value\":\"1758990\"},{\"key\":\"register\",\"value\":\"1758990\"},{\"key\":\"code\",\"value\":\"1758990\"},{\"key\":\"resetPwd\",\"value\":\"1758990\"},{\"key\":\"bind\",\"value\":\"1758990\"},{\"key\":\"cash\",\"value\":\"1758990\"}]', '', 698, '', 1, 1, '2021-01-30 13:27:43', '2023-04-10 13:55:32'),
+(85, 'pay', 'Debug开关', 'bool', 'payDebug', '1', 'true', 800, '输出请求日志', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(86, 'pay', '支付宝应用ID', 'string', 'payAliPayAppId', '', '', 810, '', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(87, 'pay', '支付宝PrivateKey', 'string', 'payAliPayPrivateKey', 'storage/cert/pay/alipay/alipayPrivateKey', '', 820, '应用私钥，支持PKCS1和PKCS8', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(88, 'pay', '支付宝AppCertPublicKey', 'string', 'payAliPayAppCertPublicKey', 'storage/cert/pay/alipay/appCertPublicKey.crt', '', 830, 'appCertPublicKey.crt证书内容', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(89, 'pay', '支付宝RootCert', 'string', 'payAliPayRootCert', 'storage/cert/pay/alipay/alipayRootCert.crt', '', 840, 'alipayRootCert.crt证书内容', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(90, 'pay', '支付宝PublicKeyRSA2', 'string', 'payAliPayCertPublicKeyRSA2', 'storage/cert/pay/alipay/alipayCertPublicKey_RSA2.crt', '', 850, 'alipayCertPublicKey_RSA2.crt证书内容', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(91, 'pay', '微信支付应用ID', 'string', 'payWxPayAppId', '', '', 860, '', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(92, 'pay', '微信支付商户ID', 'string', 'payWxPayMchId', '', '', 870, '商户ID 或者服务商模式的 sp_mchid', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(93, 'pay', '微信支付证书序列号', 'string', 'payWxPaySerialNo', '', '', 880, '商户证书的证书序列号', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(94, 'pay', '微信支付APIv3Key', 'string', 'payWxPayAPIv3Key', '', '', 890, '商户平台获取', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(95, 'pay', '微信支付私钥', 'string', 'payWxPayPrivateKey', '', '', 900, 'apiclient_key.pem 读取后的内容', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(96, 'pay', 'QQ支付应用ID', 'string', 'payQQPayAppId', '', '', 910, '', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(97, 'pay', 'QQ支付商户ID', 'string', 'payQQPayMchId', '', '', 920, '', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(98, 'pay', 'QQ支付ApiKey', 'string', 'payQQPayApiKey', '', '', 930, 'API秘钥值', 1, 1, '2021-01-30 13:27:43', '2023-04-12 23:45:46'),
+(99, 'cash', '提现开关', 'int', 'cashSwitch', '1', '1', 200, '', 1, 1, '2021-09-29 23:51:21', '2022-12-21 21:58:52'),
+(100, 'cash', '提现最低手续费（元）', 'int', 'cashMinFee', '3', '3', 210, '', 1, 1, '2021-09-29 23:51:21', '2022-12-21 21:58:52'),
+(101, 'cash', '提现最低手续费比率', 'string', 'cashMinFeeRatio', '0.03', '0.03', 220, '', 1, 1, '2021-01-30 13:27:43', '2022-12-21 21:58:52'),
+(102, 'cash', '提现最低金额', 'int', 'cashMinMoney', '100', '', 230, '', 1, 1, '2021-01-30 13:27:43', '2022-12-21 21:58:52'),
+(103, 'cash', '提现提示信息', 'string', 'cashTips', '<p>温馨提示：请保证支付宝信息姓名、账号、收款码信息一致且无误，否则导致不到账后果自负。</p>\n\n <p>提现条件：满100元后可申请提现。</p>\n <p>提现手续费：固定3元/次，提现金额超过100元按3%收取，封顶135元/次。</p>', '', 240, '', 1, 1, '2021-01-30 13:27:43', '2022-12-21 21:58:52'),
+(104, 'wechat', '公众号AppId', 'string', 'officialAccountAppId', '', '', 1000, '请填写微信公众平台后台的AppId', 1, 1, '2021-01-30 13:27:43', '2023-04-30 22:26:12'),
+(105, 'wechat', '公众号AppSecret', 'string', 'officialAccountAppSecret', '', '', 1010, '请填写微信公众平台后台的AppSecret', 1, 1, '2021-01-30 13:27:43', '2023-04-30 22:26:12'),
+(106, 'wechat', '公众号token', 'string', 'officialAccountToken', '', '', 1020, '', 1, 1, '2021-01-30 13:27:43', '2023-04-30 22:26:12'),
+(107, 'wechat', '公众号EncodingAESKey', 'string', 'officialAccountEncodingAESKey', '', '', 1030, '与公众平台接入设置值一致，必须为英文或者数字，长度为43个字符. 请妥善保管,EncodingAESKey 泄露将可能被窃取或篡改平台的操作数据', 1, 1, '2021-01-30 13:27:43', '2023-04-30 22:26:12'),
+(108, 'wechat', '开放平台AppId', 'string', 'openPlatformAppId', '', '', 1040, '请填写微信开放平台平台后台的AppId', 1, 1, '2021-01-30 13:27:43', '2023-04-30 22:26:12'),
+(109, 'wechat', '开放平台AppSecret', 'string', 'openPlatformAppSecret', '', '', 1050, '请填写微信开放平台平台后台的AppSecret', 1, 1, '2021-01-30 13:27:43', '2023-04-30 22:26:12'),
+(110, 'wechat', '开放平台EncodingAESKey', 'string', 'openPlatformEncodingAESKey', '', '', 1060, '与开放平台接入设置值一致，必须为英文或者数字，长度为43个字符. 请妥善保管,EncodingAESKey 泄露将可能被窃取或篡改平台的操作数据', 1, 1, '2021-01-30 13:27:43', '2023-04-30 22:26:12'),
+(111, 'wechat', '开放平台token', 'string', 'openPlatformToken', '', '', 1070, '', 1, 1, '2021-01-30 13:27:43', '2023-04-30 22:26:12');
 
 -- --------------------------------------------------------
 
@@ -1004,8 +1391,9 @@ CREATE TABLE `hg_sys_cron` (
 --
 
 INSERT INTO `hg_sys_cron` (`id`, `group_id`, `name`, `params`, `pattern`, `policy`, `count`, `sort`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, 1, 'test', '', '* * * * * *', 1, 3, 10, '测试无参数任务', 2, '2022-10-01 22:02:09', '2023-02-23 14:57:45'),
-(2, 1, 'test2', 'hotGo,3,欢迎使用hotGo！', '* * * * * *', 1, 0, 10, '测试有参数任务', 2, '2022-10-01 06:02:09', '2023-02-04 17:39:53');
+(1, 1, 'test', '', '* * * * * *', 1, 3, 10, '测试无参数任务', 2, '2022-10-01 22:02:09', '2023-04-27 23:27:39'),
+(2, 1, 'test2', 'hotGo,3,欢迎使用hotGo！', '* * * * * *', 1, 0, 10, '测试有参数任务', 2, '2022-10-01 06:02:09', '2023-02-04 17:39:53'),
+(3, 1, 'close_order', '', '0 */10 * * * *', 1, 1, 100, '取消过期订单，10分钟运行一次', 2, '2023-04-22 21:58:47', '2023-04-22 22:00:23');
 
 -- --------------------------------------------------------
 
@@ -1059,7 +1447,7 @@ CREATE TABLE `hg_sys_dict_data` (
 --
 
 INSERT INTO `hg_sys_dict_data` (`id`, `label`, `value`, `value_type`, `type`, `list_class`, `is_default`, `sort`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, '男', '1', 'int', 'sys_user_sex', 'success', 1, 10, '性别男', 1, '2021-01-30 13:27:43', '2023-01-06 09:45:24'),
+(1, '男', '1', 'int', 'sys_user_sex', 'success', 1, 10, '性别男', 1, '2021-01-30 13:27:43', '2023-04-27 23:24:58'),
 (2, '女', '2', 'int', 'sys_user_sex', 'warning', 1, 20, '性别女', 1, '2021-01-30 13:27:43', '2023-01-06 09:45:21'),
 (3, '保密', '3', 'int', 'sys_user_sex', 'error', 1, 30, '性别保密', 1, '2021-01-30 13:27:43', '2023-01-06 09:45:18'),
 (4, '显示', '2', 'int', 'sys_show_hide', 'primary', 1, 10, '显示菜单', 1, '2021-01-30 13:27:43', '2023-01-18 09:52:59'),
@@ -1174,7 +1562,7 @@ INSERT INTO `hg_sys_dict_type` (`id`, `pid`, `name`, `type`, `sort`, `remark`, `
 (24, 25, '请求耗时', 'req_take_up_time', 0, '', 1, '2022-01-25 15:51:19', '2022-01-25 15:51:19'),
 (25, 0, '请求枚举', 'req', 40, '', 1, '2022-01-24 11:33:16', '2022-01-24 11:33:16'),
 (26, 0, '任务枚举', 'job', 30, '', 1, '2022-01-24 11:33:16', '2022-01-24 11:33:16'),
-(27, 0, '组织枚举', 'org', 20, '', 1, '2022-01-24 11:33:16', '2022-01-24 11:33:16'),
+(27, 0, '组织枚举', 'org', 20, '', 1, '2022-01-24 11:33:16', '2023-04-27 23:24:53'),
 (28, 0, '系统枚举', 'sys', 10, '', 1, '2022-01-24 11:33:16', '2023-02-26 00:33:13'),
 (29, 0, '通知枚举', 'notice', 50, '', 1, '2022-01-24 11:33:16', '2022-01-24 11:33:16'),
 (30, 27, '用户爱好', 'sys_user_hobby', 0, NULL, 1, '2021-03-01 11:41:07', '2021-03-01 11:41:07'),
@@ -1241,7 +1629,7 @@ CREATE TABLE `hg_sys_gen_codes` (
 --
 
 INSERT INTO `hg_sys_gen_codes` (`id`, `gen_type`, `gen_template`, `var_name`, `options`, `db_name`, `table_name`, `table_comment`, `dao_name`, `master_columns`, `addon_name`, `status`, `created_at`, `updated_at`) VALUES
-(1, 10, 0, 'CurdDemo', '{\"join\": [{\"uuid\": \"pgJsFoqfaGjqgKjy\", \"alias\": \"testCategory\", \"field\": \"id\", \"columns\": [{\"dc\": \"分类ID\", \"id\": 1, \"name\": \"id\", \"extra\": \"auto_increment\", \"index\": \"PRI\", \"goName\": \"TestCategoryId\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"分类名称\", \"id\": 2, \"name\": \"name\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryName\", \"goType\": \"string\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryName\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"描述\", \"id\": 3, \"name\": \"description\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryDescription\", \"goType\": \"string\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryDescription\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"排序\", \"id\": 4, \"name\": \"sort\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategorySort\", \"goType\": \"int\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategorySort\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"备注\", \"id\": 5, \"name\": \"remark\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryRemark\", \"goType\": \"string\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryRemark\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"状态\", \"id\": 6, \"name\": \"status\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryStatus\", \"goType\": \"int\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryStatus\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"tinyint(1)\", \"dataType\": \"tinyint\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"创建时间\", \"id\": 7, \"name\": \"created_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryCreatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryCreatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"修改时间\", \"id\": 8, \"name\": \"updated_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryUpdatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryUpdatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"删除时间\", \"id\": 9, \"name\": \"deleted_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryDeletedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryDeletedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}], \"daoName\": \"TestCategory\", \"linkMode\": 1, \"linkTable\": \"hg_test_category\", \"masterField\": \"category_id\"}], \"menu\": {\"pid\": 2097, \"icon\": \"MenuOutlined\", \"sort\": 200}, \"autoOps\": [\"genMenuPermissions\", \"runDao\", \"runService\", \"forcedCover\"], \"headOps\": [\"add\", \"batchDel\", \"export\"], \"columnOps\": [\"edit\", \"del\", \"view\", \"status\", \"switch\", \"check\"]}', 'default', 'hg_sys_gen_curd_demo', '生成演示', 'SysGenCurdDemo', '[{\"dc\": \"ID\", \"id\": 1, \"name\": \"id\", \"extra\": \"auto_increment\", \"index\": \"PRI\", \"goName\": \"Id\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": true, \"isSort\": true, \"length\": 0, \"tsName\": \"id\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"分类ID\", \"id\": 2, \"name\": \"category_id\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CategoryId\", \"goType\": \"int64\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"categoryId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"标题\", \"id\": 3, \"name\": \"title\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Title\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 64, \"tsName\": \"title\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(64)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"Input\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"描述\", \"id\": 4, \"name\": \"description\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Description\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"description\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"InputTextarea\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"内容\", \"id\": 5, \"name\": \"content\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Content\", \"goType\": \"string\", \"isEdit\": true, \"isList\": false, \"isSort\": false, \"length\": 65535, \"tsName\": \"content\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"text\", \"dataType\": \"text\", \"dictType\": 0, \"formMode\": \"InputEditor\", \"formRole\": \"none\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE %...%\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"单图\", \"id\": 6, \"name\": \"image\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Image\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"image\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"UploadImage\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"附件\", \"id\": 7, \"name\": \"attachfile\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Attachfile\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"attachfile\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"UploadFile\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"所在城市\", \"id\": 8, \"name\": \"city_id\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CityId\", \"goType\": \"int64\", \"isEdit\": true, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"cityId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"CitySelector\", \"formRole\": \"none\", \"isExport\": false, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"显示开关\", \"id\": 9, \"name\": \"switch\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Switch\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"switch\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"Switch\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"排序\", \"id\": 10, \"name\": \"sort\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Sort\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": true, \"length\": 0, \"tsName\": \"sort\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"状态\", \"id\": 11, \"name\": \"status\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Status\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"status\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"tinyint(1)\", \"dataType\": \"tinyint\", \"dictType\": 3, \"formMode\": \"Select\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"创建者\", \"id\": 12, \"name\": \"created_by\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CreatedBy\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"createdBy\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"更新者\", \"id\": 13, \"name\": \"updated_by\", \"extra\": \"\", \"index\": \"\", \"goName\": \"UpdatedBy\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"updatedBy\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"创建时间\", \"id\": 14, \"name\": \"created_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CreatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"createdAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"TimeRange\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"BETWEEN\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"修改时间\", \"id\": 15, \"name\": \"updated_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"UpdatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"updatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"Time\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"删除时间\", \"id\": 16, \"name\": \"deleted_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"DeletedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"deletedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"Time\", \"formRole\": \"none\", \"isExport\": false, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}]', '', 1, '2023-01-18 11:51:22', '2023-02-20 16:41:58');
+(1, 10, 0, 'CurdDemo', '{\"join\": [{\"uuid\": \"pgJsFoqfaGjqgKjy\", \"alias\": \"testCategory\", \"field\": \"id\", \"columns\": [{\"dc\": \"分类ID\", \"id\": 1, \"name\": \"id\", \"extra\": \"auto_increment\", \"index\": \"PRI\", \"goName\": \"TestCategoryId\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"分类名称\", \"id\": 2, \"name\": \"name\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryName\", \"goType\": \"string\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryName\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"描述\", \"id\": 3, \"name\": \"description\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryDescription\", \"goType\": \"string\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryDescription\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"排序\", \"id\": 4, \"name\": \"sort\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategorySort\", \"goType\": \"int\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategorySort\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"备注\", \"id\": 5, \"name\": \"remark\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryRemark\", \"goType\": \"string\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 255, \"tsName\": \"testCategoryRemark\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"状态\", \"id\": 6, \"name\": \"status\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryStatus\", \"goType\": \"int\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryStatus\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"tinyint(1)\", \"dataType\": \"tinyint\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"创建时间\", \"id\": 7, \"name\": \"created_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryCreatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryCreatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"修改时间\", \"id\": 8, \"name\": \"updated_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryUpdatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryUpdatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"删除时间\", \"id\": 9, \"name\": \"deleted_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"TestCategoryDeletedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"testCategoryDeletedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"\", \"formRole\": \"\", \"isExport\": false, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}], \"daoName\": \"TestCategory\", \"linkMode\": 1, \"linkTable\": \"hg_test_category\", \"masterField\": \"category_id\"}], \"menu\": {\"pid\": 2097, \"icon\": \"MenuOutlined\", \"sort\": 200}, \"autoOps\": [\"genMenuPermissions\", \"runDao\", \"runService\", \"forcedCover\"], \"headOps\": [\"add\", \"batchDel\", \"export\"], \"columnOps\": [\"edit\", \"del\", \"view\", \"status\", \"switch\", \"check\"]}', 'default', 'hg_sys_gen_curd_demo', '生成演示', 'SysGenCurdDemo', '[{\"dc\": \"ID\", \"id\": 1, \"name\": \"id\", \"extra\": \"auto_increment\", \"index\": \"PRI\", \"goName\": \"Id\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": true, \"isSort\": true, \"length\": 0, \"tsName\": \"id\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"分类ID\", \"id\": 2, \"name\": \"category_id\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CategoryId\", \"goType\": \"int64\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"categoryId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"标题\", \"id\": 3, \"name\": \"title\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Title\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 64, \"tsName\": \"title\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(64)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"Input\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"描述\", \"id\": 4, \"name\": \"description\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Description\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"description\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"InputTextarea\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"内容\", \"id\": 5, \"name\": \"content\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Content\", \"goType\": \"string\", \"isEdit\": true, \"isList\": false, \"isSort\": false, \"length\": 65535, \"tsName\": \"content\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"text\", \"dataType\": \"text\", \"dictType\": 0, \"formMode\": \"InputEditor\", \"formRole\": \"none\", \"isExport\": false, \"required\": false, \"queryWhere\": \"LIKE %...%\", \"isAllowNull\": \"NO\", \"defaultValue\": \"\"}, {\"dc\": \"单图\", \"id\": 6, \"name\": \"image\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Image\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"image\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"UploadImage\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"附件\", \"id\": 7, \"name\": \"attachfile\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Attachfile\", \"goType\": \"string\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 255, \"tsName\": \"attachfile\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"varchar(255)\", \"dataType\": \"varchar\", \"dictType\": 0, \"formMode\": \"UploadFile\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"LIKE\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"所在城市\", \"id\": 8, \"name\": \"city_id\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CityId\", \"goType\": \"int64\", \"isEdit\": true, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"cityId\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"CitySelector\", \"formRole\": \"none\", \"isExport\": false, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"显示开关\", \"id\": 9, \"name\": \"switch\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Switch\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"switch\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"Switch\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"排序\", \"id\": 10, \"name\": \"sort\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Sort\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": true, \"length\": 0, \"tsName\": \"sort\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"int(11)\", \"dataType\": \"int\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": false, \"queryWhere\": \"=\", \"isAllowNull\": \"NO\", \"defaultValue\": 0}, {\"dc\": \"状态\", \"id\": 11, \"name\": \"status\", \"extra\": \"\", \"index\": \"\", \"goName\": \"Status\", \"goType\": \"int\", \"isEdit\": true, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"status\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"tinyint(1)\", \"dataType\": \"tinyint\", \"dictType\": 3, \"formMode\": \"Select\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 1}, {\"dc\": \"创建者\", \"id\": 12, \"name\": \"created_by\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CreatedBy\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"createdBy\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"更新者\", \"id\": 13, \"name\": \"updated_by\", \"extra\": \"\", \"index\": \"\", \"goName\": \"UpdatedBy\", \"goType\": \"int64\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"updatedBy\", \"tsType\": \"number\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"bigint(20)\", \"dataType\": \"bigint\", \"dictType\": 0, \"formMode\": \"InputNumber\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": 0}, {\"dc\": \"创建时间\", \"id\": 14, \"name\": \"created_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"CreatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"createdAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": true, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"TimeRange\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"BETWEEN\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"修改时间\", \"id\": 15, \"name\": \"updated_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"UpdatedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": true, \"isSort\": false, \"length\": 0, \"tsName\": \"updatedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"Time\", \"formRole\": \"none\", \"isExport\": true, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}, {\"dc\": \"删除时间\", \"id\": 16, \"name\": \"deleted_at\", \"extra\": \"\", \"index\": \"\", \"goName\": \"DeletedAt\", \"goType\": \"*gtime.Time\", \"isEdit\": false, \"isList\": false, \"isSort\": false, \"length\": 0, \"tsName\": \"deletedAt\", \"tsType\": \"string\", \"unique\": false, \"isQuery\": false, \"sqlType\": \"datetime\", \"dataType\": \"datetime\", \"dictType\": 0, \"formMode\": \"Time\", \"formRole\": \"none\", \"isExport\": false, \"required\": true, \"queryWhere\": \"=\", \"isAllowNull\": \"YES\", \"defaultValue\": \"\"}]', '', 1, '2023-01-18 11:51:22', '2023-04-28 15:28:40');
 
 -- --------------------------------------------------------
 
@@ -1273,7 +1661,7 @@ CREATE TABLE `hg_sys_gen_curd_demo` (
 --
 
 INSERT INTO `hg_sys_gen_curd_demo` (`id`, `category_id`, `title`, `description`, `content`, `image`, `attachfile`, `city_id`, `switch`, `sort`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, '测试标题', '描述', '<h2><strong>不知道写点啥！</strong></h2><p><br></p><iframe class=\"ql-video\" frameborder=\"0\" allowfullscreen=\"true\" src=\"https://media.w3.org/2010/05/sintel/trailer.mp4\"></iframe><p><br></p><p><img src=\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq9iuv0phsg8patk.png\"></p>', 'https://bufanyun.cn-bj.ufileos.com/hotgo/logo.sig.png', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2022-12-30/cpf1x44idoycrtajf2.xlsx', 110102, 1, 10, 1, 0, 1, '2022-12-15 19:30:14', '2023-02-23 13:55:32', NULL);
+(1, 1, '测试标题', '描述', '<h2><strong>不知道写点啥！</strong></h2><p><br></p><iframe class=\"ql-video\" frameborder=\"0\" allowfullscreen=\"true\" src=\"https://media.w3.org/2010/05/sintel/trailer.mp4\"></iframe><p><br></p><p><img src=\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq9iuv0phsg8patk.png\"></p>', 'https://bufanyun.cn-bj.ufileos.com/hotgo/logo.sig.png', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2022-12-30/cpf1x44idoycrtajf2.xlsx', 110102, 1, 10, 1, 0, 1, '2022-12-15 19:30:14', '2023-05-08 23:19:49', NULL);
 
 -- --------------------------------------------------------
 
@@ -1297,7 +1685,7 @@ CREATE TABLE `hg_sys_log` (
   `province_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '省编码',
   `city_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '市编码',
   `error_code` int(11) DEFAULT '0' COMMENT '报错code',
-  `error_msg` varchar(1000) DEFAULT NULL COMMENT '报错信息',
+  `error_msg` longtext COMMENT '报错信息',
   `error_data` json DEFAULT NULL COMMENT '报错日志',
   `user_agent` varchar(512) DEFAULT NULL COMMENT 'UA信息',
   `take_up_time` bigint(20) DEFAULT '0' COMMENT '请求耗时',
@@ -1326,13 +1714,6 @@ CREATE TABLE `hg_sys_login_log` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统_登录日志';
-
---
--- 转存表中的数据 `hg_sys_login_log`
---
-
-INSERT INTO `hg_sys_login_log` (`id`, `req_id`, `member_id`, `username`, `response`, `login_at`, `login_ip`, `err_msg`, `status`, `created_at`, `updated_at`) VALUES
-(1, '40f70a09be144d17854a481189f48428', 1, 'admin', '{\"id\": 1, \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHAiOiJhZG1pbiIsImF2YXRhciI6Imh0dHA6Ly9idWZhbnl1bi5jbi1iai51ZmlsZW9zLmNvbS9ob3Rnby9hdHRhY2htZW50LzIwMjMtMDItMDkvY3FkcThlcjluZmtjaGRvcGF2LnBuZyIsImRlcHRJZCI6MTAwLCJlbWFpbCI6IjEzMzgxNDI1MEBxcS5jb20iLCJleHAiOjE2Nzk4ODUwNDIsImV4cGlyZXMiOjg2NDAwMCwiaWQiOjEsImlzUmVmcmVzaCI6ZmFsc2UsImp3dFZlcnNpb24iOiIxLjAiLCJtb2JpbGUiOiIxNTMwMzgzMDU3MSIsInBpZCI6MCwicmVhbE5hbWUiOiLlrZ_luIUiLCJyb2xlSWQiOjEsInJvbGVLZXkiOiJzdXBlciIsInVzZXJuYW1lIjoiYWRtaW4ifQ.cf3iZ2V9tvxDmZRO8oC97vEYTWd1B-h9u9aQovtb9ik\", \"expires\": 864000}', '2023-03-17 10:44:02', '127.0.0.1', '', 1, '2023-03-17 10:44:03', '2023-03-17 10:44:03');
 
 -- --------------------------------------------------------
 
@@ -5081,9 +5462,8 @@ CREATE TABLE `hg_sys_serve_license` (
 --
 
 INSERT INTO `hg_sys_serve_license` (`id`, `group`, `name`, `appid`, `secret_key`, `desc`, `remote_addr`, `online`, `online_limit`, `login_times`, `last_login_at`, `last_active_at`, `routes`, `allowed_ips`, `end_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'queue', '默认的消息队列', '1001', 'hotgo', '这是默认的消息队列TCP客户端授权凭证。', NULL, 0, 1, 1, '2023-03-23 00:00:00', NULL, NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-05 00:00:00'),
-(2, 'cron', '默认的定时任务', '1002', 'hotgo', '这是默认的定时任务TCP客户端授权凭证。', NULL, 0, 1, 1, '2023-03-23 00:00:00', NULL, NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-05 00:00:00'),
-(3, 'auth', '测试授权', 'mengshuai', '123456', '这是一个测试的授权服务，可以为第三方平台提供授权支持。', '127.0.0.1:54182', 1, 1, 20, '2023-03-13 16:01:02', '2023-03-13 17:15:04', NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-03-13 17:15:03');
+(1, 'cron', '默认的定时任务', '1002', 'hotgo', '这是默认的定时任务TCP客户端授权凭证。', '127.0.0.1:58398', 1, 1, 158, '2023-05-10 23:15:48', '2023-05-10 23:33:48', NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-05-10 23:33:48'),
+(2, 'auth', '测试授权', 'mengshuai', '123456', '这是一个测试的授权服务，可以为第三方平台提供授权支持。', '127.0.0.1:51615', 1, 1, 0, '2023-05-04 23:23:52', '2023-05-04 23:23:52', NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-05-04 23:23:52');
 
 -- --------------------------------------------------------
 
@@ -5103,13 +5483,6 @@ CREATE TABLE `hg_sys_serve_log` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统_服务日志';
-
---
--- 转存表中的数据 `hg_sys_serve_log`
---
-
-INSERT INTO `hg_sys_serve_log` (`id`, `trace_id`, `level_format`, `content`, `stack`, `line`, `trigger_ns`, `status`, `created_at`, `updated_at`) VALUES
-(3, 'ec3bc5835ce14d170412f80c95578ba6', 'ERRO', 'SafeGo failed err:[net.DialTimeout failed with network \"tcp\", address \"127.0.0.1:18999\", timeout \"30s\": dial tcp 127.0.0.1:18999: connectex: No connection could be made because the target machine actively refused it.\n1. net.DialTimeout failed with network \"tcp\", address \"127.0.0.1:18999\", timeout \"30s\"\n   1).  github.com/gogf/gf/v2/net/gtcp.NewNetConn\n        E:/gopath/pkg/mod/github.com/gogf/gf/v2@v2.3.2/net/gtcp/gtcp_func.go:42\n   2).  github.com/gogf/gf/v2/net/gtcp.NewConn\n        E:/gopath/pkg/mod/github.com/gogf/gf/v2@v2.3.2/net/gtcp/gtcp_conn.go:36\n   3).  hotgo/internal/cmd.glob..func4\n        E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/internal/cmd/queue.go:29\n   4).  hotgo/internal/cmd.glob..func2.1\n        E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/internal/cmd/cmd.go:57\n   5).  hotgo/utility/simple.SafeGo.func1\n        E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/utility/simple/simple.go:54\n2. dial tcp 127.0.0.1:18999: connectex: No connection could be made because the target machine actively refused it.\n]', '[\"1.  hotgo/utility/simple.Logf\", \"    E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/utility/simple/simple.go:69\", \"2.  hotgo/utility/simple.SafeGo.func1.1\", \"    E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/utility/simple/simple.go:50\", \"3.  hotgo/internal/cmd.glob..func4\", \"    E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/internal/cmd/queue.go:31\", \"4.  hotgo/internal/cmd.glob..func2.1\", \"    E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/internal/cmd/cmd.go:57\", \"5.  hotgo/utility/simple.SafeGo.func1\", \"    E:/Users/Administrator/Desktop/gosrc/hotgo_dev/server/utility/simple/simple.go:54\", \"\"]', 'simple.go:69', 1679246100245609100, 1, '2023-03-20 01:15:02', '2023-03-20 01:15:02');
 
 -- --------------------------------------------------------
 
@@ -5181,6 +5554,20 @@ ALTER TABLE `hg_addon_hgexample_table`
   ADD PRIMARY KEY (`id`);
 
 --
+-- 表的索引 `hg_admin_cash`
+--
+ALTER TABLE `hg_admin_cash`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `admin_id` (`member_id`);
+
+--
+-- 表的索引 `hg_admin_credits_log`
+--
+ALTER TABLE `hg_admin_credits_log`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `member_id` (`member_id`);
+
+--
 -- 表的索引 `hg_admin_dept`
 --
 ALTER TABLE `hg_admin_dept`
@@ -5231,6 +5618,22 @@ ALTER TABLE `hg_admin_notice_read`
   ADD UNIQUE KEY `notice_id` (`notice_id`,`member_id`);
 
 --
+-- 表的索引 `hg_admin_oauth`
+--
+ALTER TABLE `hg_admin_oauth`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `oauth_client` (`oauth_client`,`oauth_openid`),
+  ADD KEY `member_id` (`member_id`);
+
+--
+-- 表的索引 `hg_admin_order`
+--
+ALTER TABLE `hg_admin_order`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `order_sn` (`order_sn`),
+  ADD KEY `member_id` (`member_id`);
+
+--
 -- 表的索引 `hg_admin_post`
 --
 ALTER TABLE `hg_admin_post`
@@ -5253,6 +5656,21 @@ ALTER TABLE `hg_admin_role_casbin`
 --
 ALTER TABLE `hg_admin_role_menu`
   ADD PRIMARY KEY (`role_id`,`menu_id`);
+
+--
+-- 表的索引 `hg_pay_log`
+--
+ALTER TABLE `hg_pay_log`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `order_sn` (`order_sn`),
+  ADD KEY `member_id` (`member_id`);
+
+--
+-- 表的索引 `hg_pay_refund`
+--
+ALTER TABLE `hg_pay_refund`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `order_sn` (`order_sn`);
 
 --
 -- 表的索引 `hg_sys_addons_config`
@@ -5400,34 +5818,58 @@ ALTER TABLE `hg_addon_hgexample_table`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
 
 --
+-- 使用表AUTO_INCREMENT `hg_admin_cash`
+--
+ALTER TABLE `hg_admin_cash`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=17;
+
+--
+-- 使用表AUTO_INCREMENT `hg_admin_credits_log`
+--
+ALTER TABLE `hg_admin_credits_log`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '变动ID', AUTO_INCREMENT=18;
+
+--
 -- 使用表AUTO_INCREMENT `hg_admin_dept`
 --
 ALTER TABLE `hg_admin_dept`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '部门ID', AUTO_INCREMENT=113;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '部门ID', AUTO_INCREMENT=114;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_member`
 --
 ALTER TABLE `hg_admin_member`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '管理员ID', AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '管理员ID', AUTO_INCREMENT=10;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_menu`
 --
 ALTER TABLE `hg_admin_menu`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '菜单ID', AUTO_INCREMENT=2232;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '菜单ID', AUTO_INCREMENT=2281;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_notice`
 --
 ALTER TABLE `hg_admin_notice`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '公告ID', AUTO_INCREMENT=33;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '公告ID', AUTO_INCREMENT=35;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_notice_read`
 --
 ALTER TABLE `hg_admin_notice_read`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '记录ID', AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '记录ID', AUTO_INCREMENT=6;
+
+--
+-- 使用表AUTO_INCREMENT `hg_admin_oauth`
+--
+ALTER TABLE `hg_admin_oauth`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=4;
+
+--
+-- 使用表AUTO_INCREMENT `hg_admin_order`
+--
+ALTER TABLE `hg_admin_order`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=152;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_post`
@@ -5445,7 +5887,19 @@ ALTER TABLE `hg_admin_role`
 -- 使用表AUTO_INCREMENT `hg_admin_role_casbin`
 --
 ALTER TABLE `hg_admin_role_casbin`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8342;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20237;
+
+--
+-- 使用表AUTO_INCREMENT `hg_pay_log`
+--
+ALTER TABLE `hg_pay_log`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=171;
+
+--
+-- 使用表AUTO_INCREMENT `hg_pay_refund`
+--
+ALTER TABLE `hg_pay_refund`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID', AUTO_INCREMENT=4;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_addons_config`
@@ -5475,13 +5929,13 @@ ALTER TABLE `hg_sys_blacklist`
 -- 使用表AUTO_INCREMENT `hg_sys_config`
 --
 ALTER TABLE `hg_sys_config`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '配置ID', AUTO_INCREMENT=73;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '配置ID', AUTO_INCREMENT=112;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_cron`
 --
 ALTER TABLE `hg_sys_cron`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务ID', AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务ID', AUTO_INCREMENT=4;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_cron_group`
@@ -5511,7 +5965,7 @@ ALTER TABLE `hg_sys_ems_log`
 -- 使用表AUTO_INCREMENT `hg_sys_gen_codes`
 --
 ALTER TABLE `hg_sys_gen_codes`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '生成ID', AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '生成ID', AUTO_INCREMENT=4;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_gen_curd_demo`
@@ -5523,13 +5977,13 @@ ALTER TABLE `hg_sys_gen_curd_demo`
 -- 使用表AUTO_INCREMENT `hg_sys_log`
 --
 ALTER TABLE `hg_sys_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=22;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=10;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_login_log`
 --
 ALTER TABLE `hg_sys_login_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=40;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_serve_license`
@@ -5541,7 +5995,7 @@ ALTER TABLE `hg_sys_serve_license`
 -- 使用表AUTO_INCREMENT `hg_sys_serve_log`
 --
 ALTER TABLE `hg_sys_serve_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '日志ID', AUTO_INCREMENT=2;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_sms_log`

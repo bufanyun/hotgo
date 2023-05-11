@@ -8,15 +8,15 @@ hotgo:
   isDemo: false
   # https
   ssl:
-    switch: false                           # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
-    crtPath: "storage/ssl/server.crt"       # 证书路径
-    keyPath: "storage/ssl/server.key"       # 密钥路径
+    switch: false                                   # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
+    crtPath: "storage/cert/ssl/server.crt"          # 证书路径
+    keyPath: "storage/cert/ssl/server.key"          # 密钥路径
   # 全局请求日志
   log:
-    switch: true                            # 日志开关，默认为true
-    queue: true                             # 是否启用队列，启用时需要配置队列信息，默认为true
-    module: [ "admin", "api", "default" ]   # 需要记录的模块
-    skipCode: [ ]                           # 不记录的状态码，如： ["0", "-1"]
+    switch: true                                    # 日志开关，默认为true
+    queue: true                                     # 是否启用队列，启用时需要配置队列信息，默认为true
+    module: [ "admin", "api", "default" ]           # 需要记录的模块
+    skipCode: [ ]                                   # 不记录的状态码，如： ["0", "-1"]
   # 系统日志，用于在后台统计异常日志
   serveLog:
     switch: true                                    # 日志开关，默认为true
@@ -24,11 +24,11 @@ hotgo:
     levelFormat: ["WARN", "ERRO", "FATA", "PANI"]   # 需要记录的等级
   # admin
   admin:
-    superIds: [ 1,2,3 ]                     # 后台超管账号ID，通过ID验证超管
-    superRoleKey: "super"                   # 超管角色唯一标识符，通过角色验证超管
-    defaultPage: 10                         # 列表分页默认加载数量
-    defaultPageSize: 1                      # 列表分页默认加载页码
-    maxSortIncrement: 10                    # 最大排序值增量
+    superIds: [ 1 ]                                 # 后台超管账号ID，通过ID验证超管
+    superRoleKey: "super"                           # 超管角色唯一标识符，通过角色验证超管
+    defaultPage: 10                                 # 列表分页默认加载数量
+    defaultPageSize: 1                              # 列表分页默认加载页码
+    maxSortIncrement: 10                            # 最大排序值增量
 
 
 # gf配置
@@ -51,21 +51,39 @@ server:
   pprofPattern: "/pprof"                      # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
 
 
-tcpServe:
-  address: ":8099"                                                           # tcp服务监听地址
+tcp:
+  # 服务器
+  server:
+    address: ":8099"
+  # 客户端
+  client:
+    # 定时任务
+    cron:
+      group: "cron"                                                 # 分组名称
+      name: "cron1"                                                 # 客户端名称
+      address: "127.0.0.1:8099"                                     # 服务器地址
+      appId: "1002"                                                 # 应用名称
+      secretKey: "hotgo"                                            # 密钥
+    # 系统授权
+    auth:
+      group: "auth"                                                 # 分组名称
+      name: "auth1"                                                 # 客户端名称
+      address: "127.0.0.1:8099"                                     # 服务器地址
+      appId: "mengshuai"                                            # 应用名称
+      secretKey: "123456"                                           # 密钥
 
 
 # Global logging.
 logger:
   level: "all"
-  flags: 44
+  flags: 42
   path: "logs/logger"                     # 日志文件路径。默认为空，表示关闭，仅输出到终端
   file: "{Y-m-d}.log"                     # 日志文件格式。默认为"{Y-m-d}.log"
   stdoutColorDisabled: false              # 关闭终端的颜色打印。默认开启
   writerColorEnable: false                # 日志文件是否带上颜色。默认false，表示不带颜色
   rotateExpire: "7d"                      # 日志保留天数
   rotateBackupLimit: 2                    # 最大备份数量
-  rotateBackupCompress: 9                 # 日志文件压缩级别，0-9,9最高
+  rotateBackupCompress: 2                 # 日志文件压缩级别，0-9,9最高
 
 
 # 模板配置
@@ -94,6 +112,7 @@ router:
       "/site/captcha",          # 登录验证码
       "/site/login",            # 登录
       "/site/ping",             # ping
+      "/wechat/authorizeCall",  # 微信用户授权回调
     ]
     # 不需要验证权限的路由地址
     exceptAuth: [
@@ -145,8 +164,8 @@ jwt:
 #消息队列
 queue:
   switch: true                                        # 队列开关，可选：true|false，默认为true
-  driver: "disk"                                      # 队列驱动，可选：redis|rocketmq|kafka，默认为disk
-  retry: 2                                            # 重试次数，仅rocketmq|redis支持
+  driver: "disk"                                      # 队列驱动，可选：disk|redis|rocketmq|kafka，默认为disk
+  retry: 2                                            # 重试次数，仅rocketmq支持
   groupName: "hotgo"                                  # mq群组名称
   #磁盘队列
   disk:
@@ -155,10 +174,8 @@ queue:
     batchTime: 1                                      # 每1秒消息同步一次
     segmentSize: 10485760                             # 每个topic分片数据文件最大字节，默认10M
     segmentLimit: 3000                                # 每个topic最大分片数据文件数量，超出部分将会丢弃
+  #redis，默认使用全局redis运行队列
   redis:
-    address: "127.0.0.1:6379"                         # redis服务地址，默认为127.0.0.1:6379
-    db: 2                                             # 指定redis库
-    pass: ""                                          # redis密码
     timeout: 0                                        # 队列超时时间(s) ，0为永不超时，当队列一直没有被消费到达超时时间则队列会被销毁
   rocketmq:
     address: "127.0.0.1:9876"                         # brocker地址+端口
@@ -168,6 +185,7 @@ queue:
     version: "2.0.0.0"                                # kafka专属配置，默认2.0.0.0
     randClient: true                                  # 开启随机生成clientID，可以实现启动多实例同时一起消费相同topic，加速消费能力的特性，默认为true
     multiConsumer: true                               # 是否支持创建多个消费者
+
 
 # Redis
 redis:

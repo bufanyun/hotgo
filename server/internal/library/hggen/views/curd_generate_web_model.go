@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/utility/convert"
@@ -24,7 +25,9 @@ func (l *gCurd) webModelTplData(ctx context.Context, in *CurdPreviewInput) (data
 	data["defaultState"] = l.generateWebModelDefaultState(ctx, in)
 	data["rules"] = l.generateWebModelRules(ctx, in)
 	data["formSchema"] = l.generateWebModelFormSchema(ctx, in)
-	data["columns"] = l.generateWebModelColumns(ctx, in)
+	if data["columns"], err = l.generateWebModelColumns(ctx, in); err != nil {
+		return nil, err
+	}
 	return
 }
 
@@ -214,12 +217,14 @@ func (l *gCurd) generateWebModelFormSchemaEach(buffer *bytes.Buffer, fields []*s
 	}
 }
 
-func (l *gCurd) generateWebModelColumns(ctx context.Context, in *CurdPreviewInput) string {
+func (l *gCurd) generateWebModelColumns(ctx context.Context, in *CurdPreviewInput) (string, error) {
 	buffer := bytes.NewBuffer(nil)
 	buffer.WriteString("export const columns = [\n")
 
 	// 主表
-	l.generateWebModelColumnsEach(buffer, in, in.masterFields)
+	if err := l.generateWebModelColumnsEach(buffer, in, in.masterFields); err != nil {
+		return "", err
+	}
 
 	// 关联表
 	if len(in.options.Join) > 0 {
@@ -227,15 +232,17 @@ func (l *gCurd) generateWebModelColumns(ctx context.Context, in *CurdPreviewInpu
 			if !isEffectiveJoin(v) {
 				continue
 			}
-			l.generateWebModelColumnsEach(buffer, in, v.Columns)
+			if err := l.generateWebModelColumnsEach(buffer, in, v.Columns); err != nil {
+				return "", err
+			}
 		}
 	}
 
 	buffer.WriteString("];\n")
-	return buffer.String()
+	return buffer.String(), nil
 }
 
-func (l *gCurd) generateWebModelColumnsEach(buffer *bytes.Buffer, in *CurdPreviewInput, fields []*sysin.GenCodesColumnListModel) {
+func (l *gCurd) generateWebModelColumnsEach(buffer *bytes.Buffer, in *CurdPreviewInput, fields []*sysin.GenCodesColumnListModel) (err error) {
 	for _, field := range fields {
 		if !field.IsList {
 			continue
@@ -251,9 +258,17 @@ func (l *gCurd) generateWebModelColumnsEach(buffer *bytes.Buffer, in *CurdPrevie
 			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      return formatToDate(row.%s);\n    },\n  },\n", field.Dc, field.TsName, field.TsName)
 
 		case FormModeSelect:
+			if g.IsEmpty(in.options.dictMap[field.TsName]) {
+				err = gerror.Newf("设置单选下拉框选项时，必须选择字典类型，字段名称:%v", field.Name)
+				return
+			}
 			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (isNullObject(row.%s)) {\n        return ``;\n      }\n      return h(\n        NTag,\n        {\n          style: {\n            marginRight: '6px',\n          },\n          type: getOptionTag(options.value.%s, row.%s),\n          bordered: false,\n        },\n        {\n          default: () => getOptionLabel(options.value.%s, row.%s),\n        }\n      );\n    },\n  },\n", field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName], field.TsName, in.options.dictMap[field.TsName], field.TsName)
 
 		case FormModeSelectMultiple:
+			if g.IsEmpty(in.options.dictMap[field.TsName]) {
+				err = gerror.Newf("设置多选下拉框选项时，必须选择字典类型，字段名称:%v", field.Name)
+				return
+			}
 			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (isNullObject(row.%s) || !isArray(row.%s)) {\n        return ``;\n      }\n      return row.%s.map((tagKey) => {\n        return h(\n          NTag,\n          {\n            style: {\n              marginRight: '6px',\n            },\n            type: getOptionTag(options.value.%s, tagKey),\n            bordered: false,\n          },\n          {\n            default: () => getOptionLabel(options.value.%s, tagKey),\n          }\n        );\n      });\n    },\n  },\n", field.Dc, field.TsName, field.TsName, field.TsName, field.TsName, in.options.dictMap[field.TsName], in.options.dictMap[field.TsName])
 
 		case FormModeUploadImage:
@@ -280,4 +295,6 @@ func (l *gCurd) generateWebModelColumnsEach(buffer *bytes.Buffer, in *CurdPrevie
 
 		buffer.WriteString(component)
 	}
+
+	return
 }

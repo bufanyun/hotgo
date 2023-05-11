@@ -33,6 +33,7 @@
           block-line
           cascade
           checkable
+          :default-expand-all="true"
           :virtual-scroll="true"
           :data="treeData"
           :expandedKeys="expandedKeys"

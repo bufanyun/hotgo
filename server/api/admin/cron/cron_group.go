@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package cron
 
 import (
@@ -15,12 +14,8 @@ import (
 
 // GroupListReq 查询列表
 type GroupListReq struct {
-	form.PageReq
-	form.RangeDateReq
-	form.StatusReq
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	g.Meta  `path:"/cronGroup/list" method:"get" tags:"定时任务分组" summary:"获取定时任务分组列表"`
+	g.Meta `path:"/cronGroup/list" method:"get" tags:"定时任务分组" summary:"获取定时任务分组列表"`
+	sysin.CronGroupListInp
 }
 
 type GroupListRes struct {
@@ -30,8 +25,8 @@ type GroupListRes struct {
 
 // GroupViewReq 获取信息
 type GroupViewReq struct {
-	Id     int64 `json:"id" v:"required#定时任务分组ID不能为空" dc:"定时任务分组ID"`
 	g.Meta `path:"/cronGroup/view" method:"get" tags:"定时任务分组" summary:"获取指定信息"`
+	sysin.CronGroupViewInp
 }
 type GroupViewRes struct {
 	*sysin.CronGroupViewModel
@@ -39,33 +34,40 @@ type GroupViewRes struct {
 
 // GroupEditReq 修改/新增
 type GroupEditReq struct {
-	entity.SysCronGroup
 	g.Meta `path:"/cronGroup/edit" method:"post" tags:"定时任务分组" summary:"修改/新增定时任务分组"`
+	sysin.CronGroupEditInp
 }
-type GroupEditRes struct{}
+type GroupEditRes struct {
+	*sysin.CronGroupEditModel
+}
 
 // GroupDeleteReq 删除
 type GroupDeleteReq struct {
-	Id     interface{} `json:"id" v:"required#定时任务分组ID不能为空" dc:"定时任务分组ID"`
 	g.Meta `path:"/cronGroup/delete" method:"post" tags:"定时任务分组" summary:"删除定时任务分组"`
+	sysin.CronGroupDeleteInp
 }
-type GroupDeleteRes struct{}
+type GroupDeleteRes struct {
+	*sysin.CronGroupDeleteModel
+}
 
 // GroupMaxSortReq 最大排序
 type GroupMaxSortReq struct {
-	Id     int64 `json:"id" dc:"定时任务分组ID"`
 	g.Meta `path:"/cronGroup/maxSort" method:"get" tags:"定时任务分组" summary:"定时任务分组最大排序"`
+	sysin.CronGroupMaxSortInp
 }
 type GroupMaxSortRes struct {
-	Sort int `json:"sort" dc:"排序"`
+	*sysin.CronGroupMaxSortModel
 }
 
 // GroupStatusReq 更新状态
 type GroupStatusReq struct {
 	entity.SysCronGroup
 	g.Meta `path:"/cronGroup/status" method:"post" tags:"定时任务分组" summary:"更新定时任务分组状态"`
+	sysin.CronGroupStatusInp
 }
-type GroupStatusRes struct{}
+type GroupStatusRes struct {
+	*sysin.CronGroupStatusModel
+}
 
 // GroupSelectReq 定时任务分组选项
 type GroupSelectReq struct {

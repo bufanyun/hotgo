@@ -4,7 +4,6 @@ import { store } from '@/store';
 import { ACCESS_TOKEN, CURRENT_CONFIG, CURRENT_USER, IS_LOCKSCREEN } from '@/store/mutation-types';
 import { ResultEnum } from '@/enums/httpEnum';
 import { getConfig, getUserInfo, login } from '@/api/system/user';
-
 const Storage = createStorage({ storage: localStorage });
 
 export interface UserInfoState {
@@ -17,6 +16,7 @@ export interface UserInfoState {
   realName: string;
   avatar: string;
   balance: number;
+  integral: number;
   sex: number;
   qq: string;
   email: string;
@@ -33,6 +33,7 @@ export interface UserInfoState {
   loginCount: number;
   lastLoginAt: string;
   lastLoginIp: string;
+  openId: string;
 }
 
 export interface ConfigState {
@@ -125,14 +126,13 @@ export const useUserStore = defineStore({
         return Promise.reject(e);
       }
     },
-
     // 获取用户信息
     GetInfo() {
       const that: any = this;
       return new Promise((resolve, reject) => {
         getUserInfo()
           .then((res) => {
-            const result = res;
+            const result = res as UserInfoState;
             if (result.permissions && result.permissions.length) {
               const permissionsList = result.permissions;
               that.setPermissions(permissionsList);
@@ -143,7 +143,7 @@ export const useUserStore = defineStore({
             } else {
               reject(new Error('getInfo: permissionsList must be a non-null array !'));
             }
-            resolve(res);
+            resolve(result);
           })
           .catch((error) => {
             reject(error);

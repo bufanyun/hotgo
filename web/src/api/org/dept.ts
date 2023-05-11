@@ -31,3 +31,12 @@ export function Delete(params) {
     params,
   });
 }
+
+export function getDeptOption() {
+  const params = { pageSize: 100 };
+  return http.request({
+    url: '/dept/option',
+    method: 'GET',
+    params,
+  });
+}

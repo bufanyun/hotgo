@@ -56,3 +56,10 @@ func (c *cConfig) TypeSelect(ctx context.Context, req *config.TypeSelectReq) (re
 	}
 	return
 }
+
+// GetCash 获取指定分组的配置
+func (c *cConfig) GetCash(ctx context.Context, req *config.GetCashReq) (res *config.GetCashRes, err error) {
+	res = new(config.GetCashRes)
+	res.GetConfigModel, err = service.SysConfig().GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "cash"})
+	return
+}

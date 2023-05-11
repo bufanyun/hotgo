@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package admin
 
 import (
@@ -18,10 +17,9 @@ import (
 	"hotgo/internal/dao"
 	"hotgo/internal/library/casbin"
 	"hotgo/internal/library/contexts"
-	"hotgo/internal/model"
 	"hotgo/internal/model/do"
-	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
+	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
 	"hotgo/utility/tree"
@@ -37,94 +35,8 @@ func init() {
 	service.RegisterAdminMenu(NewAdminMenu())
 }
 
-// RoleList 查询角色菜单列表
-func (s *sAdminMenu) RoleList(ctx context.Context, in adminin.MenuRoleListInp) (*adminin.MenuRoleListModel, error) {
-	var (
-		mod         = dao.AdminRoleMenu.Ctx(ctx)
-		roleMenu    []*entity.AdminRoleMenu
-		lst         []*model.LabelTreeMenu
-		res         adminin.MenuRoleListModel
-		err         error
-		checkedKeys []int64
-	)
-
-	// 获取选中菜单ID
-	if in.RoleId > 0 {
-		mod = mod.Where("role_id", in.RoleId)
-	}
-
-	if err = mod.Fields().Scan(&roleMenu); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	for i := 0; i < len(roleMenu); i++ {
-		checkedKeys = append(checkedKeys, roleMenu[i].MenuId)
-	}
-	res.CheckedKeys = checkedKeys
-
-	// 获取菜单树
-	lst, err = dao.AdminMenu.GenLabelTreeList(ctx, 0)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	_ = gconv.Structs(lst, &res.Menus)
-
-	return &res, nil
-}
-
-// SearchList 查询菜单列表
-func (s *sAdminMenu) SearchList(ctx context.Context, req *menu.SearchListReq) (*menu.SearchListRes, error) {
-	var (
-		mod          = dao.AdminMenu.Ctx(ctx)
-		lst          []*model.TreeMenu
-		res          menu.SearchListRes
-		searchResult []*entity.AdminMenu
-		id           int64
-		ids          []int64
-		err          error
-	)
-
-	if req.Name != "" {
-		mod = mod.WhereLike("name", "%"+req.Name+"%")
-	}
-
-	if req.Status > 0 {
-		mod = mod.Where("status", req.Status)
-	}
-
-	if req.Name != "" || req.Status > 0 {
-		err = mod.Scan(&searchResult)
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return nil, err
-		}
-		for i := 0; i < len(searchResult); i++ {
-			id, err = dao.AdminMenu.TopPid(ctx, searchResult[i])
-			ids = append(ids, id)
-		}
-	}
-
-	lst, err = dao.AdminMenu.GenTreeList(ctx, 0, ids)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	_ = gconv.Structs(lst, &res)
-
-	return &res, nil
-}
-
 // MaxSort 最大排序
-func (s *sAdminMenu) MaxSort(ctx context.Context, req *menu.MaxSortReq) (*menu.MaxSortRes, error) {
-	var (
-		res menu.MaxSortRes
-		err error
-	)
-
+func (s *sAdminMenu) MaxSort(ctx context.Context, req *menu.MaxSortReq) (res *menu.MaxSortRes, err error) {
 	if req.Id > 0 {
 		if err = dao.AdminMenu.Ctx(ctx).Where("id", req.Id).Order("sort desc").Scan(&res); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
@@ -132,45 +44,30 @@ func (s *sAdminMenu) MaxSort(ctx context.Context, req *menu.MaxSortReq) (*menu.M
 		}
 	}
 
-	res.Sort = res.Sort + 10
+	if res == nil {
+		res = new(menu.MaxSortRes)
+	}
 
-	return &res, nil
+	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	return
 }
 
 // NameUnique 菜单名称是否唯一
-func (s *sAdminMenu) NameUnique(ctx context.Context, req *menu.NameUniqueReq) (*menu.NameUniqueRes, error) {
-	var (
-		res menu.NameUniqueRes
-		err error
-	)
-
+func (s *sAdminMenu) NameUnique(ctx context.Context, req *menu.NameUniqueReq) (res *menu.NameUniqueRes, err error) {
+	res = new(menu.NameUniqueRes)
 	res.IsUnique, err = dao.AdminMenu.IsUniqueName(ctx, req.Id, req.Name)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	return &res, nil
+	return
 }
 
 // CodeUnique 菜单编码是否唯一
-func (s *sAdminMenu) CodeUnique(ctx context.Context, req *menu.CodeUniqueReq) (*menu.CodeUniqueRes, error) {
-	var (
-		res menu.CodeUniqueRes
-		err error
-	)
-
+func (s *sAdminMenu) CodeUnique(ctx context.Context, req *menu.CodeUniqueReq) (res *menu.CodeUniqueRes, err error) {
+	res = new(menu.CodeUniqueRes)
 	res.IsUnique, err = dao.AdminMenu.IsUniqueName(ctx, req.Id, req.Code)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	return &res, nil
+	return
 }
 
 // Delete 删除
-func (s *sAdminMenu) Delete(ctx context.Context, req *menu.DeleteReq) error {
+func (s *sAdminMenu) Delete(ctx context.Context, req *menu.DeleteReq) (err error) {
 	exist, err := dao.AdminMenu.Ctx(ctx).Where("pid", req.Id).One()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
@@ -180,12 +77,7 @@ func (s *sAdminMenu) Delete(ctx context.Context, req *menu.DeleteReq) error {
 		return gerror.New("请先删除该菜单下的所有菜单！")
 	}
 	_, err = dao.AdminMenu.Ctx(ctx).Where("id", req.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // Edit 修改/新增
@@ -270,12 +162,8 @@ func (s *sAdminMenu) Edit(ctx context.Context, req *menu.EditReq) (err error) {
 
 // View 获取信息
 func (s *sAdminMenu) View(ctx context.Context, req *menu.ViewReq) (res *menu.ViewRes, err error) {
-	if err = dao.AdminMenu.Ctx(ctx).Where("id", req.Id).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	return res, nil
+	err = dao.AdminMenu.Ctx(ctx).Where("id", req.Id).Scan(&res)
+	return
 }
 
 // List 获取菜单列表
@@ -283,7 +171,7 @@ func (s *sAdminMenu) List(ctx context.Context, req *menu.ListReq) (lists []map[s
 	var models []*adminin.MenuTree
 	err = dao.AdminMenu.Ctx(ctx).Order("sort asc,id desc").Scan(&models)
 	if err != nil {
-		return lists, err
+		return
 	}
 	return tree.GenTree(gconv.SliceMap(models)), nil
 }
@@ -344,7 +232,7 @@ func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (lists rol
 			Where("role_id", contexts.GetRoleId(ctx)).
 			Array()
 		if err != nil {
-			return role.DynamicRes{}, err
+			return lists, err
 		}
 		if len(array) > 0 {
 			pidList, err := dao.AdminMenu.Ctx(ctx).Fields("pid").WhereIn("id", array).Group("pid").Array()
@@ -359,11 +247,11 @@ func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (lists rol
 	}
 
 	if err = mod.Order("sort asc,id desc").Scan(&allMenus); err != nil {
-		return lists, err
+		return
 	}
 
 	if len(allMenus) == 0 {
-		return lists, nil
+		return
 	}
 
 	for _, v := range allMenus {
@@ -403,7 +291,7 @@ func (s *sAdminMenu) LoginPermissions(ctx context.Context, memberId int64) (list
 	}
 
 	if err = mod.Scan(&allPermissions); err != nil {
-		return lists, err
+		return
 	}
 
 	// 无权限

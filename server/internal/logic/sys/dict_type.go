@@ -3,13 +3,11 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/model/entity"
@@ -36,7 +34,7 @@ func (s *sSysDictType) Tree(ctx context.Context) (list []*sysin.DictTypeTree, er
 
 	if err = mod.Order("sort asc,id asc").Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, err
+		return
 	}
 
 	list = s.treeList(0, models)
@@ -44,17 +42,15 @@ func (s *sSysDictType) Tree(ctx context.Context) (list []*sysin.DictTypeTree, er
 }
 
 // Delete 删除
-func (s *sSysDictType) Delete(ctx context.Context, in sysin.DictTypeDeleteInp) error {
-	var (
-		models *entity.SysDictType
-	)
-	err := dao.SysDictType.Ctx(ctx).Where("id", in.Id).Scan(&models)
-	if err != nil {
-		return err
+func (s *sSysDictType) Delete(ctx context.Context, in sysin.DictTypeDeleteInp) (err error) {
+	var models *entity.SysDictType
+	if err = dao.SysDictType.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
+		return
 	}
 
 	if models == nil {
-		return gerror.New("数据不存在或已删除！")
+		err = gerror.New("数据不存在或已删除！")
+		return
 	}
 
 	exist, err := dao.SysDictData.Ctx(ctx).Where("type", models.Type).One()
@@ -63,7 +59,8 @@ func (s *sSysDictType) Delete(ctx context.Context, in sysin.DictTypeDeleteInp) e
 		return err
 	}
 	if !exist.IsEmpty() {
-		return gerror.New("请先删除该字典类型下得所有字典数据！")
+		err = gerror.New("请先删除该字典类型下得所有字典数据！")
+		return
 	}
 
 	pidExist, err := dao.SysDictType.Ctx(ctx).Where("pid", models.Id).One()
@@ -71,56 +68,42 @@ func (s *sSysDictType) Delete(ctx context.Context, in sysin.DictTypeDeleteInp) e
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
+
 	if !pidExist.IsEmpty() {
-		return gerror.New("请先删除该字典类型下得所有子级类型！")
+		err = gerror.New("请先删除该字典类型下得所有子级类型！")
+		return
 	}
 
 	_, err = dao.SysDictType.Ctx(ctx).Where("id", in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // Edit 修改/新增
 func (s *sSysDictType) Edit(ctx context.Context, in sysin.DictTypeEditInp) (err error) {
 	if in.Name == "" {
 		err = gerror.New("名称不能为空")
-		return err
+		return
 	}
 
 	uniqueName, err := dao.SysDictType.IsUniqueType(ctx, in.Id, in.Name)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
+		return
 	}
 	if !uniqueName {
 		err = gerror.New("名称已存在")
-		return err
+		return
 	}
 
 	// 修改
-	in.UpdatedAt = gtime.Now()
 	if in.Id > 0 {
 		_, err = dao.SysDictType.Ctx(ctx).Where("id", in.Id).Data(in).Update()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
-
-		return nil
+		return
 	}
 
 	// 新增
-	in.CreatedAt = gtime.Now()
 	_, err = dao.SysDictType.Ctx(ctx).Data(in).Insert()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-	return nil
+	return
 }
 
 // TreeSelect 获取类型关系树选项
@@ -132,7 +115,7 @@ func (s *sSysDictType) TreeSelect(ctx context.Context, in sysin.DictTreeSelectIn
 
 	if err = mod.Order("pid asc,sort asc").Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, err
+		return
 	}
 
 	list = s.treeList(0, models)

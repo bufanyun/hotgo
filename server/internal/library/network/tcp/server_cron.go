@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gogf/gf/v2/os/gcron"
 	"github.com/gogf/gf/v2/os/gtime"
+	"hotgo/internal/consts"
 )
 
 func (server *Server) getCronKey(s string) string {
@@ -19,7 +20,7 @@ func (server *Server) stopCron() {
 
 func (server *Server) startCron() {
 	// 心跳超时检查
-	if gcron.Search(server.getCronKey(cronHeartbeatVerify)) == nil {
+	if gcron.Search(server.getCronKey(consts.TCPCronHeartbeatVerify)) == nil {
 		gcron.AddSingleton(server.Ctx, "@every 300s", func(ctx context.Context) {
 			if server.clients == nil {
 				return
@@ -30,11 +31,11 @@ func (server *Server) startCron() {
 					server.Logger.Debugf(server.Ctx, "client heartbeat timeout, close conn. auth:%+v", client.Auth)
 				}
 			}
-		}, server.getCronKey(cronHeartbeatVerify))
+		}, server.getCronKey(consts.TCPCronHeartbeatVerify))
 	}
 
 	// 认证检查
-	if gcron.Search(server.getCronKey(cronAuthVerify)) == nil {
+	if gcron.Search(server.getCronKey(consts.TCPCronAuthVerify)) == nil {
 		gcron.AddSingleton(server.Ctx, "@every 300s", func(ctx context.Context) {
 			if server.clients == nil {
 				return
@@ -45,6 +46,6 @@ func (server *Server) startCron() {
 					server.Logger.Debugf(server.Ctx, "client auth expired, close conn. auth:%+v", client.Auth)
 				}
 			}
-		}, server.getCronKey(cronAuthVerify))
+		}, server.getCronKey(consts.TCPCronAuthVerify))
 	}
 }

@@ -7,10 +7,16 @@ package service
 
 import (
 	"context"
+	"hotgo/internal/model/input/msgin"
 )
 
 type (
 	ITCPServer interface {
+		OnAuthSummary(ctx context.Context, args ...interface{})
+		CronDelete(ctx context.Context, in *msgin.CronDelete) (err error)
+		CronEdit(ctx context.Context, in *msgin.CronEdit) (err error)
+		CronStatus(ctx context.Context, in *msgin.CronStatus) (err error)
+		CronOnlineExec(ctx context.Context, in *msgin.CronOnlineExec) (err error)
 		Start(ctx context.Context)
 		Stop(ctx context.Context)
 	}

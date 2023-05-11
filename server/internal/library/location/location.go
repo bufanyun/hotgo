@@ -16,7 +16,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/kayon/iploc"
 	"hotgo/utility/validate"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
 	"strings"
@@ -169,7 +169,7 @@ func GetPublicIP(ctx context.Context) (ip string, err error) {
 	var data *WhoisRegionData
 	err = g.Client().Timeout(10*time.Second).GetVar(ctx, whoisApi).Scan(&data)
 	if err != nil {
-		g.Log().Infof(ctx, "GetPublicIP alternatives are being tried err:%+v", err)
+		g.Log().Info(ctx, "GetPublicIP fail, alternatives are being tried.")
 		return GetPublicIP2()
 	}
 
@@ -187,7 +187,7 @@ func GetPublicIP2() (ip string, err error) {
 	}
 	defer response.Body.Close()
 
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return
 	}
@@ -219,6 +219,9 @@ func GetLocalIP() (ip string, err error) {
 
 // GetClientIp 获取客户端IP
 func GetClientIp(r *ghttp.Request) string {
+	if r == nil {
+		return ""
+	}
 	ip := r.Header.Get("X-Forwarded-For")
 	if ip == "" {
 		ip = r.GetClientIp()

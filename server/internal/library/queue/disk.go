@@ -51,7 +51,7 @@ func (q *DiskConsumerMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg M
 				if mqMsg.MsgId != "" {
 					receiveDo(mqMsg)
 					queue.Commit(index, offset)
-					sleep = time.Millisecond * 1
+					sleep = time.Millisecond * 10
 				}
 			} else {
 				sleep = time.Second
@@ -99,6 +99,11 @@ func (d *DiskProducerMq) SendByteMsg(topic string, body []byte) (mqMsg MqMsg, er
 	if err = queue.Write(mqMsgJson); err != nil {
 		return mqMsg, gerror.New(fmt.Sprint("queue disk 生产者添加消息失败:", err))
 	}
+	return
+}
+
+func (d *DiskProducerMq) SendDelayMsg(topic string, body string, delaySecond int64) (mqMsg MqMsg, err error) {
+	err = gerror.New("implement me")
 	return
 }
 

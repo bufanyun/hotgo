@@ -3,17 +3,14 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
 	"context"
 	"fmt"
 	"github.com/gogf/gf/v2/database/gdb"
-	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/util/gconv"
-	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/hgorm"
 	"hotgo/internal/library/hgorm/handler"
@@ -71,38 +68,30 @@ func (s *sSysServeLog) List(ctx context.Context, in sysin.ServeLogListInp) (list
 	)...)
 
 	totalCount, err = mod.Clone().Count(1)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
-	}
-
-	if totalCount == 0 {
-		return list, totalCount, nil
+	if err != nil || totalCount == 0 {
+		return
 	}
 
 	//关联表select
 	fields, err := hgorm.GenJoinSelect(ctx, sysin.ServeLogListModel{}, dao.SysServeLog, []*hgorm.Join{
 		{Dao: dao.SysLog, Alias: "sysLog"},
 	})
-	if err = mod.Fields(fields).Handler(handler.FilterAuth).Page(in.Page, in.PerPage).OrderDesc(dao.SysServeLog.Columns().Id).Scan(&list); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
-	}
 
-	return list, totalCount, err
+	err = mod.Fields(fields).Handler(handler.FilterAuth).Page(in.Page, in.PerPage).OrderDesc(dao.SysServeLog.Columns().Id).Scan(&list)
+	return
 }
 
 // Export 导出服务日志
 func (s *sSysServeLog) Export(ctx context.Context, in sysin.ServeLogListInp) (err error) {
 	list, totalCount, err := s.List(ctx, in)
 	if err != nil {
-		return err
+		return
 	}
 
 	// 字段的排序是依据tags的字段顺序，如果你不想使用默认的排序方式，可以直接定义 tags = []string{"字段名称", "字段名称2", ...}
 	tags, err := convert.GetEntityDescTags(sysin.ServeLogExportModel{})
 	if err != nil {
-		return err
+		return
 	}
 
 	var (
@@ -111,39 +100,28 @@ func (s *sSysServeLog) Export(ctx context.Context, in sysin.ServeLogListInp) (er
 		exports   []sysin.ServeLogExportModel
 	)
 
-	err = gconv.Scan(list, &exports)
-	if err != nil {
+	if err = gconv.Scan(list, &exports); err != nil {
 		return err
 	}
-	if err = excel.ExportByStructs(ctx, tags, exports, fileName, sheetName); err != nil {
-		return
-	}
+
+	err = excel.ExportByStructs(ctx, tags, exports, fileName, sheetName)
 	return
 }
 
 // Delete 删除服务日志
 func (s *sSysServeLog) Delete(ctx context.Context, in sysin.ServeLogDeleteInp) (err error) {
 	_, err = dao.SysServeLog.Ctx(ctx).Where(dao.SysServeLog.Columns().Id, in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	return
 }
 
 // View 获取服务日志指定信息
 func (s *sSysServeLog) View(ctx context.Context, in sysin.ServeLogViewInp) (res *sysin.ServeLogViewModel, err error) {
-	if err = dao.SysServeLog.Ctx(ctx).Where(dao.SysServeLog.Columns().Id, in.Id).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	return res, nil
+	err = dao.SysServeLog.Ctx(ctx).Where(dao.SysServeLog.Columns().Id, in.Id).Scan(&res)
+	return
 }
 
 // RealWrite 真实写入
 func (s *sSysServeLog) RealWrite(ctx context.Context, models entity.SysServeLog) (err error) {
-	_, err = dao.SysServeLog.Ctx(ctx).Data(models).FieldsEx(dao.SysServeLog.Columns().Id).Insert()
+	_, err = dao.SysServeLog.Ctx(ctx).FieldsEx(dao.SysLog.Columns().Id).Data(models).Insert()
 	return
 }

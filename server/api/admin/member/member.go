@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package member
 
 import (
@@ -115,15 +114,6 @@ type DeleteReq struct {
 }
 type DeleteRes struct{}
 
-// MaxSortReq 最大排序
-type MaxSortReq struct {
-	g.Meta `path:"/member/maxSort" method:"get" tags:"用户" summary:"用户最大排序"`
-	adminin.MemberMaxSortInp
-}
-type MaxSortRes struct {
-	*adminin.MemberMaxSortModel
-}
-
 // LoginInfoReq 获取登录用户信息
 type LoginInfoReq struct {
 	g.Meta `path:"/member/info" method:"get" tags:"用户" summary:"获取登录用户信息" dc:"获取管理后台的登录用户信息"`
@@ -145,3 +135,17 @@ type SelectReq struct {
 	g.Meta `path:"/member/option" method:"get" summary:"用户" tags:"获取可选的后台用户选项"`
 }
 type SelectRes []*adminin.MemberSelectModel
+
+// AddBalanceReq 增加余额
+type AddBalanceReq struct {
+	g.Meta `path:"/member/addBalance" method:"post" tags:"用户" summary:"增加余额"`
+	adminin.MemberAddBalanceInp
+}
+type AddBalanceRes struct{}
+
+// AddIntegralReq 增加积分
+type AddIntegralReq struct {
+	g.Meta `path:"/member/addIntegral" method:"post" tags:"用户" summary:"增加积分"`
+	adminin.MemberAddIntegralInp
+}
+type AddIntegralRes struct{}

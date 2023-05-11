@@ -8,6 +8,10 @@ export function getPostList(params?) {
   });
 }
 
+export function getPostOption(params?) {
+  return getPostList(params);
+}
+
 export function Edit(params) {
   return http.request({
     url: '/post/edit',

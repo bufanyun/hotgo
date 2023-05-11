@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sysin
 
 import (
@@ -20,13 +19,13 @@ type CronMaxSortModel struct {
 	Sort int
 }
 
-// CronEditInp 修改/新增字典数据
+// CronEditInp 修改/新增
 type CronEditInp struct {
 	entity.SysCron
 }
 type CronEditModel struct{}
 
-// CronDeleteInp 删除字典类型
+// CronDeleteInp 删除
 type CronDeleteInp struct {
 	Id interface{}
 }

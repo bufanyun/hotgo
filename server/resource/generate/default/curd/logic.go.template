@@ -50,18 +50,13 @@ func (s *s@{.servFunName}) List(ctx context.Context, in @{.templateGroup}in.@{.v
 	mod := s.Model(ctx)
 @{.listWhere}
 @{.listJoin.link}
-	totalCount, err = mod.Clone().Count(1)
-	if err != nil {
-		return
-	}
-
-	if totalCount == 0 {
+	totalCount, err = mod.Clone().Count()
+	if totalCount == 0 || err != nil {
 		return
 	}
 
 @{.listJoin.select}
-
-    err = mod.Fields(fields).Page(in.Page, in.PerPage).@{.listOrder}.Scan(&list)
+    err = mod.Fields(@{.listJoin.fields}).Page(in.Page, in.PerPage).@{.listOrder}.Scan(&list)
 	return
 }
 @{ if eq .options.Step.HasExport true }

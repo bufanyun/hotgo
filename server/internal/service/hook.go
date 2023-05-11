@@ -11,6 +11,7 @@ import (
 
 type (
 	IHook interface {
+		BeforeServe(r *ghttp.Request)
 		AfterOutput(r *ghttp.Request)
 	}
 )

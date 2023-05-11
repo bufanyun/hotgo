@@ -37,3 +37,10 @@ export function sendTestSms(params) {
     params,
   });
 }
+
+export function getCashConfig() {
+  return http.request({
+    url: '/config/getCash',
+    method: 'get',
+  });
+}

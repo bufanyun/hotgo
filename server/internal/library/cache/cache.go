@@ -51,7 +51,7 @@ func SetAdapter(ctx context.Context) {
 
 		if !gfile.Exists(conf.FileDir) {
 			if err := gfile.Mkdir(conf.FileDir); err != nil {
-				g.Log().Fatalf(ctx, "Failed to create the cache directory. Procedure, err:%+v", err)
+				g.Log().Fatalf(ctx, "failed to create the cache directory. procedure, err:%+v", err)
 				return
 			}
 		}

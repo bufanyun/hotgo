@@ -113,9 +113,9 @@ func (s *sSysAddons) Selects(ctx context.Context, in sysin.AddonsSelectsInp) (re
 			Label: v,
 		})
 	}
-	sort.Sort(res.Status)
 
-	return res, nil
+	sort.Sort(res.Status)
+	return
 }
 
 // Build 提交生成

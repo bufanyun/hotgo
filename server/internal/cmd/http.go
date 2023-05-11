@@ -38,7 +38,10 @@ var (
 				r.Response.Writeln("403 - 网站拒绝显示此网页")
 			})
 
-			// 请求结束事件回调
+			// 初始化请求前回调
+			s.BindHookHandler("/*any", ghttp.HookBeforeServe, service.Hook().BeforeServe)
+
+			// 请求响应结束后回调
 			s.BindHookHandler("/*any", ghttp.HookAfterOutput, service.Hook().AfterOutput)
 
 			s.Group("/", func(group *ghttp.RouterGroup) {
@@ -68,11 +71,8 @@ var (
 				addons.RegisterModulesRouter(ctx, group)
 			})
 
-			// 启动定时任务
-			service.SysCron().StartCron(ctx)
-
-			//// 启动TCP服务
-			//service.TCPServer().Start(ctx)
+			// 启动tcp服务
+			service.TCPServer().Start(ctx)
 
 			// https
 			setSSL(ctx, s)
@@ -82,7 +82,7 @@ var (
 				s.Shutdown()
 				crons.StopALL()
 				websocket.Stop()
-				//service.TCPServer().Stop(ctx)
+				service.TCPServer().Stop(ctx)
 			})
 
 			// Just run the server.

@@ -3,6 +3,7 @@ export enum SocketEnum {
   EventConnected = 'connected',
   EventAdminMonitorTrends = 'admin/monitor/trends',
   EventAdminMonitorRunInfo = 'admin/monitor/runInfo',
+  EventAdminOrderNotify = 'admin/order/notify',
   TypeQueryUser = 2,
   TypeBoardCastMsg = 3,
   TypeQuerySwitcher = 4,

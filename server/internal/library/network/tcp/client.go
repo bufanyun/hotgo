@@ -3,7 +3,6 @@ package tcp
 import (
 	"context"
 	"fmt"
-	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/gtcp"
@@ -36,6 +35,7 @@ type Client struct {
 	IsLogin         bool // 是否已登录
 	addr            string
 	auth            *AuthMeta
+	rpc             *Rpc
 	timeout         time.Duration
 	connectInterval time.Duration
 	maxConnectCount uint
@@ -103,6 +103,7 @@ func NewClient(config *ClientConfig) (client *Client, err error) {
 		client.timeout = config.Timeout
 	}
 
+	client.rpc = NewRpc(client.Ctx)
 	return
 }
 
@@ -248,7 +249,31 @@ func (client *Client) read() {
 				client.Logger.Debugf(client.Ctx, "client RecvPkg invalid message: %+v", msg)
 				continue
 			}
-			f(msg.Data, client.conn)
+
+			switch msg.Router {
+			case "ResponseServerLogin", "ResponseServerHeartbeat": // 服务登录、心跳无需验证签名
+				ctx, cancel := initCtx(gctx.New(), &Context{})
+				doHandleRouterMsg(f, ctx, cancel, msg.Data)
+			default: // 通用路由消息处理
+				in, err := VerifySign(msg.Data, client.auth.AppId, client.auth.SecretKey)
+				if err != nil {
+					client.Logger.Warningf(client.Ctx, "client read VerifySign err:%+v message: %+v", err, msg)
+					continue
+				}
+
+				ctx, cancel := initCtx(gctx.New(), &Context{
+					Conn:    client.conn,
+					Auth:    client.auth,
+					TraceID: in.TraceID,
+				})
+
+				// 响应rpc消息
+				if client.rpc.HandleMsg(ctx, cancel, msg.Data) {
+					return
+				}
+
+				doHandleRouterMsg(f, ctx, cancel, msg.Data)
+			}
 		}
 	})
 }
@@ -307,16 +332,45 @@ func (client *Client) Write(data interface{}) error {
 		return gerror.New("client Write message is nil")
 	}
 
-	// 签名
-	SetSign(data, gctx.CtxId(client.Ctx), client.auth.AppId, client.auth.SecretKey)
-
 	msgType := reflect.TypeOf(data)
 	if msgType == nil || msgType.Kind() != reflect.Ptr {
 		return gerror.Newf("client json message pointer required: %+v", data)
 	}
 	msg := &Message{Router: msgType.Elem().Name(), Data: data}
 
-	client.Logger.Debugf(client.Ctx, "client Write Router:%v, data:%+v", msg.Router, gjson.New(data).String())
-
 	return SendPkg(client.conn, msg)
+}
+
+// Send 发送消息
+func (client *Client) Send(ctx context.Context, data interface{}) error {
+	MsgPkg(data, client.auth, gctx.CtxId(ctx))
+	return client.Write(data)
+}
+
+// Reply 回复消息
+func (client *Client) Reply(ctx context.Context, data interface{}) (err error) {
+	user := GetCtx(ctx)
+	if user == nil {
+		err = gerror.New("获取回复用户信息失败")
+		return
+	}
+	MsgPkg(data, client.auth, user.TraceID)
+	return client.Write(data)
+}
+
+// RpcRequest 发送消息并等待响应结果
+func (client *Client) RpcRequest(ctx context.Context, data interface{}) (res interface{}, err error) {
+	var (
+		traceID = MsgPkg(data, client.auth, gctx.CtxId(ctx))
+		key     = client.rpc.GetCallId(client.conn, traceID)
+	)
+
+	if traceID == "" {
+		err = gerror.New("traceID is required")
+		return
+	}
+
+	return client.rpc.Request(key, func() {
+		client.Write(data)
+	})
 }

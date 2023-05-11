@@ -18,6 +18,7 @@
 - [控制台](sys-console.md)
 - 请求中间件和WebHook
 - [权限控制](sys-auth.md)
+- [支付网关](sys-payment.md)
 - [数据库](sys-db.md)
 - [代码生成](sys-code.md)
 - 定时任务

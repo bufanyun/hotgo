@@ -3,17 +3,19 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/contexts"
+	"hotgo/internal/library/hgorm/handler"
 	"hotgo/internal/model/entity"
+	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/format"
@@ -30,114 +32,90 @@ func init() {
 	service.RegisterSysAttachment(NewSysAttachment())
 }
 
-// Delete 删除
-func (s *sSysAttachment) Delete(ctx context.Context, in sysin.AttachmentDeleteInp) error {
-	_, err := dao.SysAttachment.Ctx(ctx).Where("id", in.Id).Delete()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
+// Model ORM模型
+func (s *sSysAttachment) Model(ctx context.Context, option ...*handler.Option) *gdb.Model {
+	return handler.Model(dao.SysAttachment.Ctx(ctx), option...)
+}
 
-	return nil
+// Delete 删除
+func (s *sSysAttachment) Delete(ctx context.Context, in sysin.AttachmentDeleteInp) (err error) {
+	_, err = s.Model(ctx).Where("id", in.Id).Delete()
+	return
 }
 
 // Edit 修改/新增
 func (s *sSysAttachment) Edit(ctx context.Context, in sysin.AttachmentEditInp) (err error) {
 	if in.Name == "" {
 		err = gerror.New("标题不能为空")
-		return err
+		return
 	}
 
 	// 修改
-	in.UpdatedAt = gtime.Now()
 	if in.Id > 0 {
-		_, err = dao.SysAttachment.Ctx(ctx).Where("id", in.Id).Data(in).Update()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return err
-		}
-
-		return nil
+		_, err = s.Model(ctx).Where("id", in.Id).Data(in).Update()
+		return
 	}
 
 	// 新增
-	in.CreatedAt = gtime.Now()
 	_, err = dao.SysAttachment.Ctx(ctx).Data(in).Insert()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-	return nil
+	return
 }
 
 // Status 更新部门状态
 func (s *sSysAttachment) Status(ctx context.Context, in sysin.AttachmentStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
-		return err
+		return
 	}
 
 	if in.Status <= 0 {
 		err = gerror.New("状态不能为空")
-		return err
+		return
 	}
 
 	if !validate.InSliceInt(consts.StatusMap, in.Status) {
 		err = gerror.New("状态不正确")
-		return err
+		return
 	}
 
 	// 修改
-	in.UpdatedAt = gtime.Now()
-	_, err = dao.SysAttachment.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-
-	return nil
+	_, err = s.Model(ctx).Where("id", in.Id).Data("status", in.Status).Update()
+	return
 }
 
 // MaxSort 最大排序
-func (s *sSysAttachment) MaxSort(ctx context.Context, in sysin.AttachmentMaxSortInp) (*sysin.AttachmentMaxSortModel, error) {
-	var res sysin.AttachmentMaxSortModel
+func (s *sSysAttachment) MaxSort(ctx context.Context, in sysin.AttachmentMaxSortInp) (res *sysin.AttachmentMaxSortModel, err error) {
 	if in.Id > 0 {
-		if err := dao.SysAttachment.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return nil, err
+		if err = s.Model(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
+			return
 		}
 	}
 
-	res.Sort = res.Sort + 10
-
-	return &res, nil
+	if res == nil {
+		res = new(sysin.AttachmentMaxSortModel)
+	}
+	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	return
 }
 
 // View 获取指定字典类型信息
 func (s *sSysAttachment) View(ctx context.Context, in sysin.AttachmentViewInp) (res *sysin.AttachmentViewModel, err error) {
-	if err = dao.SysAttachment.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return nil, err
-	}
-
-	return res, nil
+	err = s.Model(ctx).Where("id", in.Id).Scan(&res)
+	return
 }
 
 // List 获取列表
 func (s *sSysAttachment) List(ctx context.Context, in sysin.AttachmentListInp) (list []*sysin.AttachmentListModel, totalCount int, err error) {
-	mod := dao.SysAttachment.Ctx(ctx)
+	mod := s.Model(ctx)
 
-	// 访问路径
 	if in.MemberId > 0 {
 		mod = mod.Where("member_id", in.MemberId)
 	}
 
-	// 模块
 	if in.Drive != "" {
 		mod = mod.Where("drive", in.Drive)
 	}
 
-	// 请求方式
 	if in.Status > 0 {
 		mod = mod.Where("status", in.Status)
 	}
@@ -145,21 +123,21 @@ func (s *sSysAttachment) List(ctx context.Context, in sysin.AttachmentListInp) (
 	totalCount, err = mod.Count()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
 	if totalCount == 0 {
-		return list, totalCount, nil
+		return
 	}
 
 	if err = mod.Page(in.Page, in.PerPage).Order("updated_at desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
 	conf, err := service.SysConfig().GetUpload(ctx)
 	if err != nil {
-		return list, totalCount, err
+		return
 	}
 
 	for _, v := range list {
@@ -167,21 +145,22 @@ func (s *sSysAttachment) List(ctx context.Context, in sysin.AttachmentListInp) (
 		v.FileUrl = service.CommonUpload().LastUrl(ctx, conf, v.FileUrl, v.Drive)
 	}
 
-	return list, totalCount, err
+	return
 }
 
 // Add 新增附件
-func (s *sSysAttachment) Add(ctx context.Context, meta *sysin.UploadFileMeta, fullPath, drive string) (data *entity.SysAttachment, err error) {
+func (s *sSysAttachment) Add(ctx context.Context, meta *sysin.UploadFileMeta, fullPath, drive string) (models *entity.SysAttachment, err error) {
 	var (
 		c              = contexts.Get(ctx)
 		user           = c.User
 		memberId int64 = 0
 	)
+
 	if user != nil {
 		memberId = user.Id
 	}
 
-	models := &entity.SysAttachment{
+	models = &entity.SysAttachment{
 		Id:        0,
 		AppId:     c.Module,
 		MemberId:  memberId,
@@ -201,9 +180,9 @@ func (s *sSysAttachment) Add(ctx context.Context, meta *sysin.UploadFileMeta, fu
 	}
 	id, err := dao.SysAttachment.Ctx(ctx).Data(models).InsertAndGetId()
 	if err != nil {
-		return nil, gerror.Wrap(err, consts.ErrorORM)
+		return
 	}
 
 	models.Id = id
-	return models, nil
+	return
 }

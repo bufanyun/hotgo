@@ -34,11 +34,15 @@ func init() {
 // GetConfigByGroup 获取指定分组的配置
 func (s *sSysAddonsConfig) GetConfigByGroup(ctx context.Context, in sysin.GetAddonsConfigInp) (res *sysin.GetAddonsConfigModel, err error) {
 	if in.AddonName == "" {
-		return nil, gerror.New("插件名称不能为空")
+		err = gerror.New("插件名称不能为空")
+		return
 	}
+
 	if in.Group == "" {
-		return nil, gerror.New("分组不能为空")
+		err = gerror.New("分组不能为空")
+		return
 	}
+
 	var (
 		mod    = dao.SysAddonsConfig.Ctx(ctx)
 		models []*entity.SysAddonsConfig
@@ -67,37 +71,44 @@ func (s *sSysAddonsConfig) GetConfigByGroup(ctx context.Context, in sysin.GetAdd
 			}
 		}
 	}
+
 	return
 }
 
 // ConversionType 转换类型
 func (s *sSysAddonsConfig) ConversionType(ctx context.Context, models *entity.SysAddonsConfig) (value interface{}, err error) {
 	if models == nil {
-		return nil, gerror.New("数据不存在")
+		err = gerror.New("数据不存在")
+		return
 	}
 	return consts.ConvType(models.Value, models.Type), nil
 }
 
 // UpdateConfigByGroup 更新指定分组的配置
-func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in sysin.UpdateAddonsConfigInp) error {
+func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in sysin.UpdateAddonsConfigInp) (err error) {
 	if in.AddonName == "" {
-		return gerror.New("插件名称不能为空")
+		err = gerror.New("插件名称不能为空")
+		return
 	}
+
 	if in.Group == "" {
-		return gerror.New("分组不能为空")
+		err = gerror.New("分组不能为空")
+		return
 	}
+
 	var (
 		mod    = dao.SysAddonsConfig.Ctx(ctx)
 		models []*entity.SysAddonsConfig
 	)
-	if err := mod.
+
+	if err = mod.
 		Where("addon_name", in.AddonName).
 		Where("group", in.Group).
 		Scan(&models); err != nil {
 		return err
 	}
 
-	err := dao.SysAddonsConfig.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+	err = dao.SysAddonsConfig.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		for k, v := range in.List {
 			row := s.getConfigByKey(k, models)
 			// 新增
@@ -119,7 +130,7 @@ func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in sysin.Upd
 			}
 
 			// 更新
-			_, err := dao.SysAddonsConfig.Ctx(ctx).Where("id", row.Id).Data(g.Map{"value": v, "updated_at": gtime.Now()}).Update()
+			_, err = dao.SysAddonsConfig.Ctx(ctx).Where("id", row.Id).Data(g.Map{"value": v, "updated_at": gtime.Now()}).Update()
 			if err != nil {
 				err = gerror.Wrap(err, consts.ErrorORM)
 				return err

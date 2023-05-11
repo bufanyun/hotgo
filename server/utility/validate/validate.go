@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package validate
 
 import (
@@ -14,6 +13,7 @@ import (
 	"net"
 	"net/url"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -33,14 +33,8 @@ func IsHTTPS(ctx context.Context) bool {
 		g.Log().Info(ctx, "IsHTTPS ctx not request")
 		return false
 	}
-	var (
-		proto = r.Header.Get("X-Forwarded-Proto")
-	)
 
-	if r.TLS != nil || gstr.Equal(proto, "https") {
-		return true
-	}
-	return false
+	return r.TLS != nil || gstr.Equal(r.Header.Get("X-Forwarded-Proto"), "https")
 }
 
 // IsIp 是否为ipv4
@@ -148,4 +142,60 @@ func IsSameMinute(t1, t2 int64) bool {
 	d1 := time.Unix(t1, 0).Format("2006-01-02 15:04")
 	d2 := time.Unix(t2, 0).Format("2006-01-02 15:04")
 	return d1 == d2
+}
+
+// IsMobileVisit 是否为移动端访问
+func IsMobileVisit(userAgent string) bool {
+	if len(userAgent) == 0 {
+		return false
+	}
+
+	isMobile := false
+	mobileKeywords := []string{"Mobile", "Android", "Silk/", "Kindle", "BlackBerry", "Opera Mini", "Opera Mobi"}
+	for i := 0; i < len(mobileKeywords); i++ {
+		if strings.Contains(userAgent, mobileKeywords[i]) {
+			isMobile = true
+			break
+		}
+	}
+
+	return isMobile
+}
+
+// IsWxBrowserVisit 是否为微信访问
+func IsWxBrowserVisit(userAgent string) bool {
+	if len(userAgent) == 0 {
+		return false
+	}
+
+	is := false
+	userAgent = strings.ToLower(userAgent)
+	mobileKeywords := []string{"MicroMessenger"}
+	for i := 0; i < len(mobileKeywords); i++ {
+		if strings.Contains(userAgent, strings.ToLower(mobileKeywords[i])) {
+			is = true
+			break
+		}
+	}
+
+	return is
+}
+
+// IsWxMiniProgramVisit 是否为微信小程序访问
+func IsWxMiniProgramVisit(userAgent string) bool {
+	if len(userAgent) == 0 {
+		return false
+	}
+
+	is := false
+	userAgent = strings.ToLower(userAgent)
+	mobileKeywords := []string{"miniProgram"}
+	for i := 0; i < len(mobileKeywords); i++ {
+		if strings.Contains(userAgent, strings.ToLower(mobileKeywords[i])) {
+			is = true
+			break
+		}
+	}
+
+	return is
 }

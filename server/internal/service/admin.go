@@ -13,18 +13,17 @@ import (
 	"hotgo/internal/model"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
+	"hotgo/internal/model/input/payin"
 
 	"github.com/gogf/gf/v2/database/gdb"
 )
 
 type (
 	IAdminMenu interface {
-		RoleList(ctx context.Context, in adminin.MenuRoleListInp) (*adminin.MenuRoleListModel, error)
-		SearchList(ctx context.Context, req *menu.SearchListReq) (*menu.SearchListRes, error)
-		MaxSort(ctx context.Context, req *menu.MaxSortReq) (*menu.MaxSortRes, error)
-		NameUnique(ctx context.Context, req *menu.NameUniqueReq) (*menu.NameUniqueRes, error)
-		CodeUnique(ctx context.Context, req *menu.CodeUniqueReq) (*menu.CodeUniqueRes, error)
-		Delete(ctx context.Context, req *menu.DeleteReq) error
+		MaxSort(ctx context.Context, req *menu.MaxSortReq) (res *menu.MaxSortRes, err error)
+		NameUnique(ctx context.Context, req *menu.NameUniqueReq) (res *menu.NameUniqueRes, err error)
+		CodeUnique(ctx context.Context, req *menu.CodeUniqueReq) (res *menu.CodeUniqueRes, err error)
+		Delete(ctx context.Context, req *menu.DeleteReq) (err error)
 		Edit(ctx context.Context, req *menu.EditReq) (err error)
 		View(ctx context.Context, req *menu.ViewReq) (res *menu.ViewRes, err error)
 		List(ctx context.Context, req *menu.ListReq) (lists []map[string]interface{}, err error)
@@ -35,9 +34,71 @@ type (
 		StartMonitor(ctx context.Context)
 		GetMeta(ctx context.Context) *model.MonitorData
 	}
+	IAdminOrder interface {
+		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
+		AcceptRefund(ctx context.Context, in adminin.OrderAcceptRefundInp) (err error)
+		ApplyRefund(ctx context.Context, in adminin.OrderApplyRefundInp) (err error)
+		PayNotify(ctx context.Context, in payin.NotifyCallFuncInp) (err error)
+		Create(ctx context.Context, in adminin.OrderCreateInp) (res *adminin.OrderCreateModel, err error)
+		List(ctx context.Context, in adminin.OrderListInp) (list []*adminin.OrderListModel, totalCount int, err error)
+		Export(ctx context.Context, in adminin.OrderListInp) (err error)
+		Edit(ctx context.Context, in adminin.OrderEditInp) (err error)
+		Delete(ctx context.Context, in adminin.OrderDeleteInp) (err error)
+		View(ctx context.Context, in adminin.OrderViewInp) (res *adminin.OrderViewModel, err error)
+		Status(ctx context.Context, in adminin.OrderStatusInp) (err error)
+	}
+	IAdminRole interface {
+		Verify(ctx context.Context, path, method string) bool
+		List(ctx context.Context, in adminin.RoleListInp) (res *adminin.RoleListModel, totalCount int, err error)
+		GetName(ctx context.Context, RoleId int64) (name string, err error)
+		GetMemberList(ctx context.Context, RoleId int64) (list []*adminin.RoleListModel, err error)
+		GetPermissions(ctx context.Context, reqInfo *role.GetPermissionsReq) (MenuIds []int64, err error)
+		UpdatePermissions(ctx context.Context, reqInfo *role.UpdatePermissionsReq) (err error)
+		Edit(ctx context.Context, in *role.EditReq) (err error)
+		Delete(ctx context.Context, in *role.DeleteReq) (err error)
+		DataScopeSelect(ctx context.Context) (res form.Selects)
+		DataScopeEdit(ctx context.Context, in *adminin.DataScopeEditInp) (err error)
+	}
+	IAdminCreditsLog interface {
+		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
+		SaveBalance(ctx context.Context, in adminin.CreditsLogSaveBalanceInp) (res *adminin.CreditsLogSaveBalanceModel, err error)
+		SaveIntegral(ctx context.Context, in adminin.CreditsLogSaveIntegralInp) (res *adminin.CreditsLogSaveIntegralModel, err error)
+		List(ctx context.Context, in adminin.CreditsLogListInp) (list []*adminin.CreditsLogListModel, totalCount int, err error)
+		Export(ctx context.Context, in adminin.CreditsLogListInp) (err error)
+	}
+	IAdminMemberPost interface {
+		UpdatePostIds(ctx context.Context, memberId int64, postIds []int64) (err error)
+		GetMemberByIds(ctx context.Context, memberId int64) (postIds []int64, err error)
+	}
+	IAdminMember interface {
+		AddBalance(ctx context.Context, in adminin.MemberAddBalanceInp) (err error)
+		AddIntegral(ctx context.Context, in adminin.MemberAddIntegralInp) (err error)
+		UpdateCash(ctx context.Context, in adminin.MemberUpdateCashInp) (err error)
+		UpdateEmail(ctx context.Context, in adminin.MemberUpdateEmailInp) (err error)
+		UpdateMobile(ctx context.Context, in adminin.MemberUpdateMobileInp) (err error)
+		UpdateProfile(ctx context.Context, in adminin.MemberUpdateProfileInp) (err error)
+		UpdatePwd(ctx context.Context, in adminin.MemberUpdatePwdInp) (err error)
+		ResetPwd(ctx context.Context, in adminin.MemberResetPwdInp) (err error)
+		EmailUnique(ctx context.Context, in adminin.MemberEmailUniqueInp) (res *adminin.MemberEmailUniqueModel, err error)
+		MobileUnique(ctx context.Context, in adminin.MemberMobileUniqueInp) (res *adminin.MemberMobileUniqueModel, err error)
+		NameUnique(ctx context.Context, in adminin.MemberNameUniqueInp) (res *adminin.MemberNameUniqueModel, err error)
+		VerifySuperId(ctx context.Context, verifyId int64) bool
+		Delete(ctx context.Context, in adminin.MemberDeleteInp) (err error)
+		Edit(ctx context.Context, in adminin.MemberEditInp) (err error)
+		View(ctx context.Context, in adminin.MemberViewInp) (res *adminin.MemberViewModel, err error)
+		List(ctx context.Context, in adminin.MemberListInp) (list []*adminin.MemberListModel, totalCount int, err error)
+		LoginMemberInfo(ctx context.Context) (res *adminin.LoginMemberInfoModel, err error)
+		Login(ctx context.Context, in adminin.MemberLoginInp) (res *adminin.MemberLoginModel, err error)
+		RoleMemberList(ctx context.Context, in adminin.RoleMemberListInp) (list []*adminin.MemberListModel, totalCount int, err error)
+		Status(ctx context.Context, in adminin.MemberStatusInp) (err error)
+		GetIdByCode(ctx context.Context, in adminin.GetIdByCodeInp) (res *adminin.GetIdByCodeModel, err error)
+		Select(ctx context.Context, in adminin.MemberSelectInp) (res []*adminin.MemberSelectModel, err error)
+		FilterAuthModel(ctx context.Context, memberId int64) *gdb.Model
+		MemberLoginStat(ctx context.Context, in adminin.MemberLoginStatInp) (res *adminin.MemberLoginStatModel, err error)
+	}
 	IAdminNotice interface {
 		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
-		Delete(ctx context.Context, in adminin.NoticeDeleteInp) error
+		Delete(ctx context.Context, in adminin.NoticeDeleteInp) (err error)
 		Edit(ctx context.Context, in adminin.NoticeEditInp) (err error)
 		Status(ctx context.Context, in adminin.NoticeStatusInp) (err error)
 		MaxSort(ctx context.Context, in adminin.NoticeMaxSortInp) (res *adminin.NoticeMaxSortModel, err error)
@@ -50,27 +111,21 @@ type (
 		MessageList(ctx context.Context, in adminin.NoticeMessageListInp) (list []*adminin.NoticeMessageListModel, totalCount int, err error)
 	}
 	IAdminPost interface {
-		Delete(ctx context.Context, in adminin.PostDeleteInp) error
+		Delete(ctx context.Context, in adminin.PostDeleteInp) (err error)
 		Edit(ctx context.Context, in adminin.PostEditInp) (err error)
-		MaxSort(ctx context.Context, in adminin.PostMaxSortInp) (*adminin.PostMaxSortModel, error)
-		NameUnique(ctx context.Context, in adminin.PostNameUniqueInp) (*adminin.PostNameUniqueModel, error)
-		CodeUnique(ctx context.Context, in adminin.PostCodeUniqueInp) (*adminin.PostCodeUniqueModel, error)
+		MaxSort(ctx context.Context, in adminin.PostMaxSortInp) (res *adminin.PostMaxSortModel, err error)
+		NameUnique(ctx context.Context, in adminin.PostNameUniqueInp) (res *adminin.PostNameUniqueModel, err error)
+		CodeUnique(ctx context.Context, in adminin.PostCodeUniqueInp) (res *adminin.PostCodeUniqueModel, err error)
 		View(ctx context.Context, in adminin.PostViewInp) (res *adminin.PostViewModel, err error)
 		List(ctx context.Context, in adminin.PostListInp) (list []*adminin.PostListModel, totalCount int, err error)
 		GetMemberByStartName(ctx context.Context, memberId int64) (name string, err error)
 		Status(ctx context.Context, in adminin.PostStatusInp) (err error)
 	}
-	IAdminRole interface {
-		Verify(ctx context.Context, path, method string) bool
-		List(ctx context.Context, in adminin.RoleListInp) (res *adminin.RoleListModel, totalCount int, err error)
-		GetName(ctx context.Context, RoleId int64) (name string, err error)
-		GetMemberList(ctx context.Context, RoleId int64) (list []*adminin.RoleListModel, err error)
-		GetPermissions(ctx context.Context, reqInfo *role.GetPermissionsReq) (MenuIds []int64, err error)
-		UpdatePermissions(ctx context.Context, reqInfo *role.UpdatePermissionsReq) error
-		Edit(ctx context.Context, in *role.EditReq) (err error)
-		Delete(ctx context.Context, in *role.DeleteReq) (err error)
-		DataScopeSelect(ctx context.Context) (res form.Selects)
-		DataScopeEdit(ctx context.Context, in *adminin.DataScopeEditInp) (err error)
+	IAdminCash interface {
+		View(ctx context.Context, in adminin.CashViewInp) (res *adminin.CashViewModel, err error)
+		List(ctx context.Context, in adminin.CashListInp) (list []*adminin.CashListModel, totalCount int, err error)
+		Apply(ctx context.Context, in adminin.CashApplyInp) (err error)
+		Payment(ctx context.Context, in adminin.CashPaymentInp) (err error)
 	}
 	IAdminDept interface {
 		NameUnique(ctx context.Context, in adminin.DeptNameUniqueInp) (res *adminin.DeptNameUniqueModel, err error)
@@ -79,104 +134,35 @@ type (
 		Status(ctx context.Context, in adminin.DeptStatusInp) (err error)
 		MaxSort(ctx context.Context, in adminin.DeptMaxSortInp) (res *adminin.DeptMaxSortModel, err error)
 		View(ctx context.Context, in adminin.DeptViewInp) (res *adminin.DeptViewModel, err error)
+		Option(ctx context.Context, in adminin.DeptOptionInp) (res *adminin.DeptOptionModel, totalCount int, err error)
 		List(ctx context.Context, in adminin.DeptListInp) (res *adminin.DeptListModel, err error)
 		GetName(ctx context.Context, id int64) (name string, err error)
-	}
-	IAdminMember interface {
-		UpdateCash(ctx context.Context, in adminin.MemberUpdateCashInp) (err error)
-		UpdateEmail(ctx context.Context, in adminin.MemberUpdateEmailInp) (err error)
-		UpdateMobile(ctx context.Context, in adminin.MemberUpdateMobileInp) (err error)
-		UpdateProfile(ctx context.Context, in adminin.MemberUpdateProfileInp) (err error)
-		UpdatePwd(ctx context.Context, in adminin.MemberUpdatePwdInp) (err error)
-		ResetPwd(ctx context.Context, in adminin.MemberResetPwdInp) (err error)
-		EmailUnique(ctx context.Context, in adminin.MemberEmailUniqueInp) (*adminin.MemberEmailUniqueModel, error)
-		MobileUnique(ctx context.Context, in adminin.MemberMobileUniqueInp) (*adminin.MemberMobileUniqueModel, error)
-		NameUnique(ctx context.Context, in adminin.MemberNameUniqueInp) (*adminin.MemberNameUniqueModel, error)
-		VerifySuperId(ctx context.Context, verifyId int64) bool
-		Delete(ctx context.Context, in adminin.MemberDeleteInp) error
-		Edit(ctx context.Context, in adminin.MemberEditInp) (err error)
-		MaxSort(ctx context.Context, in adminin.MemberMaxSortInp) (*adminin.MemberMaxSortModel, error)
-		View(ctx context.Context, in adminin.MemberViewInp) (res *adminin.MemberViewModel, err error)
-		List(ctx context.Context, in adminin.MemberListInp) (list []*adminin.MemberListModel, totalCount int, err error)
-		LoginMemberInfo(ctx context.Context) (res *adminin.LoginMemberInfoModel, err error)
-		Login(ctx context.Context, in adminin.MemberLoginInp) (res *adminin.MemberLoginModel, err error)
-		RoleMemberList(ctx context.Context, in adminin.RoleMemberListInp) (list []*adminin.MemberListModel, totalCount int, err error)
-		Status(ctx context.Context, in adminin.MemberStatusInp) (err error)
-		GetIdByCode(ctx context.Context, in adminin.GetIdByCodeInp) (res *adminin.GetIdByCodeModel, err error)
-		Select(ctx context.Context, in adminin.MemberSelectInp) (res []*adminin.MemberSelectModel, err error)
-		FilterAuthModel(ctx context.Context, memberId int64) *gdb.Model
-		MemberLoginStat(ctx context.Context, in adminin.MemberLoginStatInp) (res *adminin.MemberLoginStatModel, err error)
-	}
-	IAdminMemberPost interface {
-		UpdatePostIds(ctx context.Context, memberId int64, postIds []int64) (err error)
-		GetMemberByIds(ctx context.Context, memberId int64) (postIds []int64, err error)
 	}
 )
 
 var (
-	localAdminMonitor    IAdminMonitor
+	localAdminCash       IAdminCash
+	localAdminDept       IAdminDept
+	localAdminMember     IAdminMember
 	localAdminNotice     IAdminNotice
 	localAdminPost       IAdminPost
 	localAdminRole       IAdminRole
-	localAdminDept       IAdminDept
-	localAdminMember     IAdminMember
+	localAdminCreditsLog IAdminCreditsLog
 	localAdminMemberPost IAdminMemberPost
 	localAdminMenu       IAdminMenu
+	localAdminMonitor    IAdminMonitor
+	localAdminOrder      IAdminOrder
 )
 
-func AdminNotice() IAdminNotice {
-	if localAdminNotice == nil {
-		panic("implement not found for interface IAdminNotice, forgot register?")
+func AdminCreditsLog() IAdminCreditsLog {
+	if localAdminCreditsLog == nil {
+		panic("implement not found for interface IAdminCreditsLog, forgot register?")
 	}
-	return localAdminNotice
+	return localAdminCreditsLog
 }
 
-func RegisterAdminNotice(i IAdminNotice) {
-	localAdminNotice = i
-}
-
-func AdminPost() IAdminPost {
-	if localAdminPost == nil {
-		panic("implement not found for interface IAdminPost, forgot register?")
-	}
-	return localAdminPost
-}
-
-func RegisterAdminPost(i IAdminPost) {
-	localAdminPost = i
-}
-
-func AdminRole() IAdminRole {
-	if localAdminRole == nil {
-		panic("implement not found for interface IAdminRole, forgot register?")
-	}
-	return localAdminRole
-}
-
-func RegisterAdminRole(i IAdminRole) {
-	localAdminRole = i
-}
-
-func AdminDept() IAdminDept {
-	if localAdminDept == nil {
-		panic("implement not found for interface IAdminDept, forgot register?")
-	}
-	return localAdminDept
-}
-
-func RegisterAdminDept(i IAdminDept) {
-	localAdminDept = i
-}
-
-func AdminMember() IAdminMember {
-	if localAdminMember == nil {
-		panic("implement not found for interface IAdminMember, forgot register?")
-	}
-	return localAdminMember
-}
-
-func RegisterAdminMember(i IAdminMember) {
-	localAdminMember = i
+func RegisterAdminCreditsLog(i IAdminCreditsLog) {
+	localAdminCreditsLog = i
 }
 
 func AdminMemberPost() IAdminMemberPost {
@@ -210,4 +196,81 @@ func AdminMonitor() IAdminMonitor {
 
 func RegisterAdminMonitor(i IAdminMonitor) {
 	localAdminMonitor = i
+}
+
+func AdminOrder() IAdminOrder {
+	if localAdminOrder == nil {
+		panic("implement not found for interface IAdminOrder, forgot register?")
+	}
+	return localAdminOrder
+}
+
+func RegisterAdminOrder(i IAdminOrder) {
+	localAdminOrder = i
+}
+
+func AdminRole() IAdminRole {
+	if localAdminRole == nil {
+		panic("implement not found for interface IAdminRole, forgot register?")
+	}
+	return localAdminRole
+}
+
+func RegisterAdminRole(i IAdminRole) {
+	localAdminRole = i
+}
+
+func AdminCash() IAdminCash {
+	if localAdminCash == nil {
+		panic("implement not found for interface IAdminCash, forgot register?")
+	}
+	return localAdminCash
+}
+
+func RegisterAdminCash(i IAdminCash) {
+	localAdminCash = i
+}
+
+func AdminDept() IAdminDept {
+	if localAdminDept == nil {
+		panic("implement not found for interface IAdminDept, forgot register?")
+	}
+	return localAdminDept
+}
+
+func RegisterAdminDept(i IAdminDept) {
+	localAdminDept = i
+}
+
+func AdminMember() IAdminMember {
+	if localAdminMember == nil {
+		panic("implement not found for interface IAdminMember, forgot register?")
+	}
+	return localAdminMember
+}
+
+func RegisterAdminMember(i IAdminMember) {
+	localAdminMember = i
+}
+
+func AdminNotice() IAdminNotice {
+	if localAdminNotice == nil {
+		panic("implement not found for interface IAdminNotice, forgot register?")
+	}
+	return localAdminNotice
+}
+
+func RegisterAdminNotice(i IAdminNotice) {
+	localAdminNotice = i
+}
+
+func AdminPost() IAdminPost {
+	if localAdminPost == nil {
+		panic("implement not found for interface IAdminPost, forgot register?")
+	}
+	return localAdminPost
+}
+
+func RegisterAdminPost(i IAdminPost) {
+	localAdminPost = i
 }

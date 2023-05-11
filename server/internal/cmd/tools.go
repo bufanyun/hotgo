@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package cmd
 
 import (
@@ -16,7 +15,7 @@ import (
 var (
 	Tools = &gcmd.Command{
 		Name:        "tools",
-		Brief:       "工具",
+		Brief:       "常用工具",
 		Description: ``,
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			flags := parser.GetOptAll()
@@ -39,12 +38,12 @@ var (
 					g.Log().Fatal(ctx, "casbin参数不能为空")
 					return
 				}
+				casbin.InitEnforcer(ctx)
 				if a1 == "clear" {
 					if err := casbin.Clear(ctx); err != nil {
 						return err
 					}
 				} else if a1 == "refresh" {
-					casbin.InitEnforcer(ctx)
 					if err := casbin.Refresh(ctx); err != nil {
 						return err
 					}

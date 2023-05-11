@@ -1,19 +1,8 @@
 package tcp
 
-import "github.com/gogf/gf/v2/os/gtime"
-
-// 定时任务
-const (
-	cronHeartbeatVerify = "tcpHeartbeatVerify"
-	cronHeartbeat       = "tcpHeartbeat"
-	cronAuthVerify      = "tcpAuthVerify"
-)
-
-// 认证分组
-const (
-	ClientGroupCron  = "cron"  // 定时任务
-	ClientGroupQueue = "queue" // 消息队列
-	ClientGroupAuth  = "auth"  // 服务授权
+import (
+	"github.com/gogf/gf/v2/net/gtcp"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
 // AuthMeta 认证元数据
@@ -23,6 +12,12 @@ type AuthMeta struct {
 	AppId     string      `json:"appId"`
 	SecretKey string      `json:"secretKey"`
 	EndAt     *gtime.Time `json:"-"`
+}
+
+type Context struct {
+	Conn    *gtcp.Conn `json:"conn"`
+	Auth    *AuthMeta  `json:"auth"`    // 认证元数据
+	TraceID string     `json:"traceID"` // 链路ID
 }
 
 // CallbackEvent 回调事件
