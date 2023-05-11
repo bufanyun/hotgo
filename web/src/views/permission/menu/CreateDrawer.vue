@@ -115,7 +115,19 @@
             <n-form-item label="根路由" path="isRoot">
               <n-radio-group v-model:value="formParams.isRoot" name="isRoot">
                 <n-radio-button
-                  v-for="switchStatus in switchStatusMap"
+                  v-for="switchStatus in statusMap"
+                  :key="switchStatus.value"
+                  :value="switchStatus.value"
+                  :label="switchStatus.label"
+                />
+              </n-radio-group>
+            </n-form-item>
+          </n-gi>
+          <n-gi>
+            <n-form-item label="页签固定" path="affix">
+              <n-radio-group v-model:value="formParams.affix" name="affix">
+                <n-radio-button
+                  v-for="switchStatus in statusMap"
                   :key="switchStatus.value"
                   :value="switchStatus.value"
                   :label="switchStatus.label"
@@ -127,7 +139,7 @@
             <n-form-item label="简化路由" path="alwaysShow">
               <n-radio-group v-model:value="formParams.alwaysShow" name="alwaysShow">
                 <n-radio-button
-                  v-for="switchStatus in switchStatusMap"
+                  v-for="switchStatus in statusMap"
                   :key="switchStatus.value"
                   :value="switchStatus.value"
                   :label="switchStatus.label"
@@ -142,7 +154,7 @@
             <n-form-item label="缓存路由" path="keepAlive">
               <n-radio-group v-model:value="formParams.keepAlive" name="keepAlive">
                 <n-radio-button
-                  v-for="switchStatus in switchStatusMap"
+                  v-for="switchStatus in statusMap"
                   :key="switchStatus.value"
                   :value="switchStatus.value"
                   :label="switchStatus.label"
@@ -169,7 +181,7 @@
             <n-form-item label="是否外链" path="isFrame">
               <n-radio-group v-model:value="formParams.isFrame" name="isFrame">
                 <n-radio-button
-                  v-for="switchStatus in switchStatusMap"
+                  v-for="switchStatus in statusMap"
                   :key="switchStatus.value"
                   :value="switchStatus.value"
                   :label="switchStatus.label"

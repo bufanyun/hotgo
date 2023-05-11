@@ -3,7 +3,7 @@ import { NAvatar, NImage, NTag, NSwitch, NRate } from 'naive-ui';
 import { cloneDeep } from 'lodash-es';
 import { FormSchema } from '@/components/Form';
 import { Dicts } from '@/api/dict/dict';
-@{ if eq .options.Step.HasSwitch true }import { Switch } from '@/api/@{.varName | LcFirst}';@{end}
+@{ if eq .options.Step.HasSwitch true }import { Switch } from '@{.importWebApi}';@{end}
 import { isArray, isNullObject } from '@/utils/is';
 import { getFileExt } from '@/utils/urlUtils';
 import { defRangeShortcuts, defShortcuts, formatToDate } from '@/utils/dateUtil';

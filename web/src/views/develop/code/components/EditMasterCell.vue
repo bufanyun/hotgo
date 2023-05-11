@@ -82,6 +82,7 @@
   const dataSource = ref(formValue.value.masterColumns);
 
   async function reloadFields(loading = false) {
+    dataSource.value = [];
     if (loading) {
       show.value = true;
     }
