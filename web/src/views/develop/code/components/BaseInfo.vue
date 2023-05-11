@@ -104,7 +104,7 @@
                           <QuestionCircleOutlined />
                         </n-icon>
                       </template>
-                      <span>主表中存在`switch`字段时才会生效</span>
+                      <span>表单组件中存在`开关`类型才会生效</span>
                     </n-popover>
                     <n-checkbox value="notFilterAuth" label="不过滤权限" />
                     <n-popover trigger="hover">

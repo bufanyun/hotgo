@@ -67,7 +67,11 @@ func (l *gCurd) generateLogicSwitchUpdate(ctx context.Context, in *CurdPreviewIn
 func (l *gCurd) generateLogicSwitchFields(ctx context.Context, in *CurdPreviewInput) string {
 	buffer := bytes.NewBuffer(nil)
 	if in.options.Step.HasSwitch {
-		buffer.WriteString("\t\tdao." + in.In.DaoName + ".Columns().Switch,\n")
+		for _, field := range in.masterFields {
+			if field.FormMode == "Switch" {
+				buffer.WriteString("\t\tdao." + in.In.DaoName + ".Columns()." + field.GoName + ",\n")
+			}
+		}
 	}
 	return buffer.String()
 }

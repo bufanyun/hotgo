@@ -232,6 +232,15 @@ func HasColumn(masterFields []*sysin.GenCodesColumnListModel, column string) boo
 	return false
 }
 
+func HasColumnWithFormMode(masterFields []*sysin.GenCodesColumnListModel, column string) bool {
+	for _, field := range masterFields {
+		if field.FormMode == column {
+			return true
+		}
+	}
+	return false
+}
+
 func HasMaxSort(masterFields []*sysin.GenCodesColumnListModel) bool {
 	return HasColumn(masterFields, "Sort")
 }
@@ -247,5 +256,5 @@ func HasSwitch(headOps []string, masterFields []*sysin.GenCodesColumnListModel) 
 	if !gstr.InArray(headOps, "switch") {
 		return false
 	}
-	return HasColumn(masterFields, "Switch")
+	return HasColumnWithFormMode(masterFields, "Switch")
 }
