@@ -30,18 +30,17 @@ var Curd = gCurd{}
 type gCurd struct{}
 
 type CurdStep struct {
-	HasMaxSort       bool `json:"hasMaxSort"`
-	HasAdd           bool `json:"hasAdd"`
-	HasBatchDel      bool `json:"hasBatchDel"`
-	HasExport        bool `json:"hasExport"`
-	HasNotFilterAuth bool `json:"hasNotFilterAuth"`
-	HasEdit          bool `json:"hasEdit"`
-	HasDel           bool `json:"hasDel"`
-	HasView          bool `json:"hasView"`
-	HasStatus        bool `json:"hasStatus"`
-	HasSwitch        bool `json:"hasSwitch"`
-	HasCheck         bool `json:"hasCheck"`
-	HasMenu          bool `json:"hasMenu"`
+	HasMaxSort  bool `json:"hasMaxSort"`
+	HasAdd      bool `json:"hasAdd"`
+	HasBatchDel bool `json:"hasBatchDel"`
+	HasExport   bool `json:"hasExport"`
+	HasEdit     bool `json:"hasEdit"`
+	HasDel      bool `json:"hasDel"`
+	HasView     bool `json:"hasView"`
+	HasStatus   bool `json:"hasStatus"`
+	HasSwitch   bool `json:"hasSwitch"`
+	HasCheck    bool `json:"hasCheck"`
+	HasMenu     bool `json:"hasMenu"`
 }
 
 type CurdOptionsJoin struct {
@@ -145,7 +144,6 @@ func initStep(in *CurdPreviewInput) {
 	in.options.Step.HasAdd = gstr.InArray(in.options.HeadOps, "add")
 	in.options.Step.HasBatchDel = gstr.InArray(in.options.HeadOps, "batchDel")
 	in.options.Step.HasExport = gstr.InArray(in.options.HeadOps, "export")
-	in.options.Step.HasNotFilterAuth = gstr.InArray(in.options.ColumnOps, "notFilterAuth")
 	in.options.Step.HasEdit = gstr.InArray(in.options.ColumnOps, "edit")
 	in.options.Step.HasDel = gstr.InArray(in.options.ColumnOps, "del")
 	in.options.Step.HasView = gstr.InArray(in.options.ColumnOps, "view")

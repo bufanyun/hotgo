@@ -106,15 +106,6 @@
                       </template>
                       <span>主表中存在`switch`字段时才会生效</span>
                     </n-popover>
-                    <n-checkbox value="notFilterAuth" label="不过滤权限" />
-                    <n-popover trigger="hover">
-                      <template #trigger>
-                        <n-icon size="15" class="tips-help-icon" color="#2d8cf0">
-                          <QuestionCircleOutlined />
-                        </n-icon>
-                      </template>
-                      <span>系统默认会过滤权限，勾选后强制不开启权限验证</span>
-                    </n-popover>
                   </n-space>
                 </n-checkbox-group>
               </n-form-item>
