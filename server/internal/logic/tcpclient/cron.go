@@ -31,7 +31,7 @@ func (s *sCronClient) Start(ctx context.Context) {
 		return
 	}
 
-	if config.Client == nil || config.Client.Cron == nil {
+	if config == nil || config.Client == nil || config.Client.Cron == nil {
 		g.Log().Errorf(ctx, "CronClient config is invalid")
 		return
 	}
