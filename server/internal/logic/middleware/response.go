@@ -104,11 +104,13 @@ func responseJson(r *ghttp.Request) {
 		g.Log().Warningf(ctx, "exception:%v", err)
 
 		code = gerror.Code(err).Code()
-		message = err.Error()
 
 		// 是否输出错误到页面
 		if g.Cfg().MustGet(ctx, "hotgo.debug", true).Bool() {
+			message = err.Error()
 			data = charset.ParseErrStack(err)
+		} else {
+			message = consts.ErrorMessage(err)
 		}
 	} else {
 		data = r.GetHandlerResponse()
