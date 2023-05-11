@@ -4,7 +4,6 @@
     - [goframe](https://goframe.org/pages/viewpage.action?pageId=1114119)
     - [naiveui](https://www.naiveui.com)
     - [naive-ui-admin](https://docs.naiveadmin.com/)
-    - [naiveui](https://www.naiveui.com)
   
 
 - 常用组件

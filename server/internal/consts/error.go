@@ -15,7 +15,7 @@ const (
 )
 
 // 需要隐藏真实错误的Wrap，开启访问日志后仍然会将真实错误记录
-var concealErrorSlice = []string{ErrorORM, ErrorNotData, ErrorRotaPointer}
+var concealErrorSlice = []string{ErrorORM, ErrorRotaPointer}
 
 // ErrorMessage 错误显示信息，非debug模式有效
 func ErrorMessage(err error) (message string) {
