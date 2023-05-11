@@ -105,7 +105,7 @@
       width: 200,
     },
     {
-      title: '状态码',
+      title: '状态',
       key: 'status',
       render(row) {
         return h(
@@ -180,9 +180,9 @@
     {
       field: 'status',
       component: 'NSelect',
-      label: '状态码',
+      label: '状态',
       componentProps: {
-        placeholder: '请选择状态码',
+        placeholder: '请选择状态',
         options: [
           {
             label: '未使用',
@@ -247,7 +247,7 @@
             message.success('操作成功');
             reloadTable();
           })
-          .catch((e: Error) => {
+          .catch((_e: Error) => {
             // message.error(e.message ?? '操作失败');
           });
       },
@@ -287,11 +287,6 @@
 
   function reloadTable() {
     actionRef.value.reload();
-  }
-
-  function handleEdit(record: Recordable) {
-    console.log('点击了编辑', record);
-    router.push({ name: 'sms_view', params: { id: record.id } });
   }
 
   function handleSubmit(values: Recordable) {
