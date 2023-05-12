@@ -1,6 +1,6 @@
 import { h } from 'vue';
 import { NAvatar, NTag } from 'naive-ui';
-import { timestampToTime, formatBefore, formatAfter } from '@/utils/dateUtil';
+import { timestampToTime, formatBefore } from '@/utils/dateUtil';
 
 export const columns = [
   {
@@ -31,11 +31,11 @@ export const columns = [
       return row.app;
     },
   },
-  // {
-  //   title: '用户ID',
-  //   key: 'userId',
-  //   width: 100,
-  // },
+  {
+    title: '用户ID',
+    key: 'userId',
+    width: 100,
+  },
   {
     title: '用户名',
     key: 'username',
@@ -88,14 +88,6 @@ export const columns = [
     width: 150,
     render(row) {
       return row.os;
-    },
-  },
-  {
-    title: '授权过期',
-    key: 'expTime',
-    width: 80,
-    render: (rows, _) => {
-      return formatAfter(new Date(rows.expTime * 1000));
     },
   },
   {

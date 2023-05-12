@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost:3306
--- 生成日期： 2023-05-11 15:56:13
+-- 生成日期： 2023-05-12 15:45:52
 -- 服务器版本： 5.7.38-log
 -- PHP 版本： 5.6.40
 
@@ -171,7 +171,6 @@ CREATE TABLE `hg_admin_member` (
   `username` varchar(20) NOT NULL DEFAULT '' COMMENT '帐号',
   `password_hash` char(32) NOT NULL DEFAULT '' COMMENT '密码',
   `salt` char(16) NOT NULL COMMENT '密码盐',
-  `auth_key` char(32) NOT NULL DEFAULT '' COMMENT '授权令牌',
   `password_reset_token` varchar(150) DEFAULT '' COMMENT '密码重置令牌',
   `integral` decimal(10,2) UNSIGNED DEFAULT '0.00' COMMENT '积分',
   `balance` decimal(10,2) UNSIGNED DEFAULT '0.00' COMMENT '余额',
@@ -198,10 +197,10 @@ CREATE TABLE `hg_admin_member` (
 -- 转存表中的数据 `hg_admin_member`
 --
 
-INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `username`, `password_hash`, `salt`, `auth_key`, `password_reset_token`, `integral`, `balance`, `avatar`, `sex`, `qq`, `email`, `mobile`, `birthday`, `city_id`, `address`, `pid`, `level`, `tree`, `cash`, `last_active_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '72c79855b0e94d4503e80a9fe064c645', '', '89.00', '99391.78', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-05-11 15:52:51', NULL, 1, '2021-02-12 17:59:45', '2023-05-11 15:52:51'),
-(3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '33db4202dd10e2c670bfdfb16cd2ecd5', '', '0.00', '4.00', 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', NULL, '2023-04-29 10:20:16', '', 1, '2022-02-11 17:59:45', '2023-04-29 10:20:16'),
-(8, 101, 200, 'ameng', 'ameng', '382df3b083a27886edb94e669a857c33', 'hfuUEb', 'a3197f39fae36471b2be8f2e86d8a91e', '', '11.00', '3.22', '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', NULL, '2023-04-30 20:04:06', '', 1, '2023-02-03 17:34:31', '2023-04-30 20:04:06');
+INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `username`, `password_hash`, `salt`, `password_reset_token`, `integral`, `balance`, `avatar`, `sex`, `qq`, `email`, `mobile`, `birthday`, `city_id`, `address`, `pid`, `level`, `tree`, `cash`, `last_active_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
+(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '', '89.00', '99391.78', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-05-12 15:44:12', NULL, 1, '2021-02-12 17:59:45', '2023-05-12 15:44:12'),
+(3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '', '0.00', '4.00', 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', NULL, '2023-04-29 10:20:16', '', 1, '2022-02-11 17:59:45', '2023-04-29 10:20:16'),
+(8, 101, 200, 'ameng', 'ameng', '382df3b083a27886edb94e669a857c33', 'hfuUEb', '', '11.00', '3.22', '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', NULL, '2023-04-30 20:04:06', '', 1, '2023-02-03 17:34:31', '2023-04-30 20:04:06');
 
 -- --------------------------------------------------------
 

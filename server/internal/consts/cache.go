@@ -7,6 +7,6 @@ package consts
 
 // cache
 const (
-	CacheJwtToken    = "jwt_token:"     // JWT-token
-	CacheJwtUserBind = "jwt_user_bind:" // JWT-用户身份绑定
+	CacheToken     = "token"      // 登录token
+	CacheTokenBind = "token_bind" // 登录用户身份绑定
 )

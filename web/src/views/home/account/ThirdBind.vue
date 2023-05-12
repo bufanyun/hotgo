@@ -193,7 +193,7 @@
             message.success('更新成功');
 
             userStore.logout().then(() => {
-              message.success('成功退出登录');
+              message.success('成功注销登录');
               // 移除标签页
               localStorage.removeItem(TABS_ROUTES);
               router

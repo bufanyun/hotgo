@@ -105,10 +105,10 @@ const transform: AxiosTransform = {
         const LoginPath = PageEnum.BASE_LOGIN;
         if (router.currentRoute.value?.name === LoginName) return;
         // 到登录页
-        errorMsg = '登录超时，请重新登录!';
+        errorMsg = message ?? '登录超时，请重新登录!';
         $dialog.warning({
           title: '提示',
-          content: '登录身份已失效，请重新登录!',
+          content: errorMsg, // '登录身份已失效，请重新登录!',
           positiveText: '确定',
           //negativeText: '取消',
           closable: false,

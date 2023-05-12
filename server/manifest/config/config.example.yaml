@@ -153,12 +153,14 @@ cache:
   fileDir: "./storage/cache"         # 文件缓存路径，adapter=file时必填
 
 
-#JWT
-jwt:
-  version: "1.0"                         # 版本号
-  expires: "864000"                      # 有效期，单位：秒
-  sign: "hotgo"                          # 秘钥，考虑安全问题请修改默认值
-  multiPort: true                        # 是否允许多端登录，默认为true
+# 登录令牌
+token:
+  secretKey: "hotgo123"                  # 令牌加密秘钥，考虑安全问题生产环境中请修改默认值
+  expires: 604800                        # 令牌有效期，单位：秒。默认7天
+  autoRefresh: true                      # 是否开启自动刷新过期时间， false|true 默认为true
+  refreshInterval: 86400                 # 刷新间隔，单位：秒。必须小于expires，否则无法触发。默认1天内只允许刷新一次
+  maxRefreshTimes: 30                    # 最大允许刷新次数，-1不限制。默认30次
+  multiLogin: true                       # 是否允许多端登录， false|true 默认为true
 
 
 #消息队列

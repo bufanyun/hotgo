@@ -19,8 +19,8 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/library/cache"
 	"hotgo/internal/library/contexts"
-	"hotgo/internal/library/jwt"
 	"hotgo/internal/library/response"
+	"hotgo/internal/library/token"
 	"hotgo/internal/library/wechat"
 	"hotgo/internal/model/input/commonin"
 	"hotgo/internal/service"
@@ -65,7 +65,7 @@ func (s *sCommonWechat) Authorize(ctx context.Context, in commonin.WechatAuthori
 		path        = gmeta.Get(common.WechatAuthorizeCallReq{}, "path").String()
 		redirectUri = basic.Domain + prefix + path
 		memberId    = contexts.GetUserId(ctx)
-		state       = s.GetCacheKey(in.Type, jwt.GenAuthKey(jwt.GetAuthorization(request)))
+		state       = s.GetCacheKey(in.Type, token.GetAuthKey(token.GetAuthorization(request)))
 		scope       string
 	)
 
@@ -109,14 +109,14 @@ func (s *sCommonWechat) AuthorizeCall(ctx context.Context, in commonin.WechatAut
 
 	defer delete(s.temp, in.State)
 
-	token, err := wechat.GetUserAccessToken(ctx, in.Code)
+	tk, err := wechat.GetUserAccessToken(ctx, in.Code)
 	if err != nil {
 		return
 	}
 
 	switch data.Type {
 	case consts.WechatAuthorizeOpenId: // 设置openid
-		cache.Instance().Set(ctx, data.State, token.OpenID, time.Hour*24*7)
+		cache.Instance().Set(ctx, data.State, tk.OpenID, time.Hour*24*7)
 	case consts.WechatAuthorizeBindLogin: // 绑定微信登录
 		// ...
 	default:
@@ -131,7 +131,7 @@ func (s *sCommonWechat) AuthorizeCall(ctx context.Context, in commonin.WechatAut
 // GetOpenId 从缓存中获取临时openid
 func (s *sCommonWechat) GetOpenId(ctx context.Context) (openId string, err error) {
 	request := ghttp.RequestFromCtx(ctx)
-	key := s.GetCacheKey(consts.WechatAuthorizeOpenId, jwt.GenAuthKey(jwt.GetAuthorization(request)))
+	key := s.GetCacheKey(consts.WechatAuthorizeOpenId, token.GetAuthKey(token.GetAuthorization(request)))
 	date, err := cache.Instance().Get(ctx, key)
 	if err != nil {
 		err = gerror.Newf("GetOpenId err:%+v", err.Error())

@@ -261,7 +261,18 @@ type TCPClientConnConfig struct {
 	SecretKey string `json:"secretKey"`
 }
 
+// TCPConfig tcp服务器配置
 type TCPConfig struct {
 	Server *TCPServerConfig `json:"server"`
 	Client *TCPClientConfig `json:"client"`
+}
+
+// TokenConfig 登录令牌配置
+type TokenConfig struct {
+	SecretKey       string `json:"secretKey"`
+	Expires         int64  `json:"expires"`
+	AutoRefresh     bool   `json:"autoRefresh"`
+	RefreshInterval int64  `json:"refreshInterval"`
+	MaxRefreshTimes int64  `json:"maxRefreshTimes"`
+	MultiLogin      bool   `json:"multiLogin"`
 }

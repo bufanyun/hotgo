@@ -35,7 +35,7 @@ type SysLogColumns struct {
 	ProvinceId string // 省编码
 	CityId     string // 市编码
 	ErrorCode  string // 报错code
-	ErrorMsg   string // 报错信息
+	ErrorMsg   string // 对外错误提示
 	ErrorData  string // 报错日志
 	UserAgent  string // UA信息
 	TakeUpTime string // 请求耗时

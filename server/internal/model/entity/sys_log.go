@@ -26,7 +26,7 @@ type SysLog struct {
 	ProvinceId int64       `json:"provinceId" description:"省编码"`
 	CityId     int64       `json:"cityId"     description:"市编码"`
 	ErrorCode  int         `json:"errorCode"  description:"报错code"`
-	ErrorMsg   string      `json:"errorMsg"   description:"报错信息"`
+	ErrorMsg   string      `json:"errorMsg"   description:"对外错误提示"`
 	ErrorData  *gjson.Json `json:"errorData"  description:"报错日志"`
 	UserAgent  string      `json:"userAgent"  description:"UA信息"`
 	TakeUpTime int64       `json:"takeUpTime" description:"请求耗时"`

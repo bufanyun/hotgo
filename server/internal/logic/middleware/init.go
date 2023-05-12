@@ -6,22 +6,21 @@
 package middleware
 
 import (
-	"github.com/gogf/gf/v2/crypto/gmd5"
+	"context"
+	"fmt"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gcode"
-	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/text/gstr"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/addons"
-	"hotgo/internal/library/cache"
 	"hotgo/internal/library/contexts"
-	"hotgo/internal/library/jwt"
 	"hotgo/internal/library/response"
+	"hotgo/internal/library/token"
 	"hotgo/internal/model"
 	"hotgo/internal/service"
+	"hotgo/utility/validate"
 	"net/http"
 	"strings"
 )
@@ -33,10 +32,10 @@ type sMiddleware struct {
 }
 
 func init() {
-	service.RegisterMiddleware(New())
+	service.RegisterMiddleware(NewMiddleware())
 }
 
-func New() *sMiddleware {
+func NewMiddleware() *sMiddleware {
 	return &sMiddleware{
 		LoginUrl: "/common",
 		DemoWhiteList: g.Map{
@@ -124,85 +123,38 @@ func (s *sMiddleware) Addon(r *ghttp.Request) {
 	r.Middleware.Next()
 }
 
-// inspectAuth 检查并完成身份认证
-func inspectAuth(r *ghttp.Request, appName string) (err error) {
-	var (
-		ctx           = r.Context()
-		user          = new(model.Identity)
-		authorization = jwt.GetAuthorization(r)
-		customCtx     = &model.Context{}
-	)
-
-	if authorization == "" {
-		err = gerror.New("请先登录！")
+// deliverUserContext 将用户信息传递到上下文中
+func deliverUserContext(r *ghttp.Request) (err error) {
+	user, err := token.ParseLoginUser(r)
+	if err != nil {
 		return
 	}
-
-	// 获取jwtToken
-	jwtToken := consts.CacheJwtToken + gmd5.MustEncryptString(authorization)
-	jwtSign := g.Cfg().MustGet(ctx, "jwt.sign", "hotgo")
-
-	data, parseErr := jwt.ParseToken(authorization, jwtSign.Bytes())
-	if parseErr != nil {
-		err = gerror.Newf("token不正确或已过期! err :%+v", parseErr.Error())
-		return
-	}
-
-	if parseErr = gconv.Struct(data, &user); parseErr != nil {
-		err = gerror.Newf("登录信息解析异常，请重新登录！ err :%+v", parseErr.Error())
-		return
-	}
-
-	// 判断token跟redis的缓存的token是否一样
-	isContains, containsErr := cache.Instance().Contains(ctx, jwtToken)
-	if containsErr != nil {
-		err = gerror.Newf("token无效！ err :%+v", containsErr.Error())
-		return
-	}
-
-	if !isContains {
-		err = gerror.Newf("token已过期")
-		return
-	}
-
-	// 是否开启多端登录
-	if !g.Cfg().MustGet(ctx, "jwt.multiPort", true).Bool() {
-		key := consts.CacheJwtUserBind + appName + ":" + gconv.String(user.Id)
-		originJwtToken, originErr := cache.Instance().Get(ctx, key)
-		if originErr != nil {
-			err = gerror.Newf("信息异常，请重新登录！ err :%+v", originErr.Error())
-			return
-		}
-
-		if originJwtToken == nil || originJwtToken.IsEmpty() {
-			err = gerror.New("token已过期！")
-			return
-		}
-
-		if jwtToken != originJwtToken.String() {
-			err = gerror.New("账号已在其他地方登录！")
-			return
-		}
-	}
-
-	// 保存到上下文
-	if user != nil {
-		customCtx.User = &model.Identity{
-			Id:       user.Id,
-			Pid:      user.Pid,
-			DeptId:   user.DeptId,
-			RoleId:   user.RoleId,
-			RoleKey:  user.RoleKey,
-			Username: user.Username,
-			RealName: user.RealName,
-			Avatar:   user.Avatar,
-			Email:    user.Email,
-			Mobile:   user.Mobile,
-			Exp:      user.Exp,
-			Expires:  user.Expires,
-			App:      user.App,
-		}
-	}
-	contexts.SetUser(ctx, customCtx.User)
+	contexts.SetUser(r.Context(), user)
 	return
+}
+
+// isExceptAuth 是否是不需要验证权限的路由地址
+func isExceptAuth(ctx context.Context, appName, path string) bool {
+	pathList := g.Cfg().MustGet(ctx, fmt.Sprintf("router.%v.exceptAuth", appName)).Strings()
+
+	for i := 0; i < len(pathList); i++ {
+		if validate.InSliceExistStr(pathList[i], path) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// isExceptLogin 是否是不需要登录的路由地址
+func isExceptLogin(ctx context.Context, appName, path string) bool {
+	pathList := g.Cfg().MustGet(ctx, fmt.Sprintf("router.%v.exceptLogin", appName)).Strings()
+
+	for i := 0; i < len(pathList); i++ {
+		if validate.InSliceExistStr(pathList[i], path) {
+			return true
+		}
+	}
+
+	return false
 }
