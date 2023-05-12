@@ -8,6 +8,7 @@ package views
 import (
 	"context"
 	"fmt"
+
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/text/gstr"
 )
@@ -59,6 +60,29 @@ func (l *gCurd) webIndexTplData(ctx context.Context, in *CurdPreviewInput) (g.Ma
 	if len(iconsImport) > 0 {
 		data["iconsImport"] = fmt.Sprintf(IndexIconsImport, gstr.Implode(",", iconsImport))
 	}
+
+	// 没有需要查询的字段则隐藏搜索表单
+	isSearchForm := false
+	for _, field := range in.masterFields {
+		if field.IsQuery == true {
+			isSearchForm = true
+			break
+		}
+	}
+	if isSearchForm == false {
+		if len(in.options.Join) > 0 {
+		LoopOut:
+			for _, v := range in.options.Join {
+				for _, column := range v.Columns {
+					if column.IsQuery == true {
+						isSearchForm = true
+						break LoopOut
+					}
+				}
+			}
+		}
+	}
+	data["isSearchForm"] = isSearchForm
 
 	return data, nil
 }
