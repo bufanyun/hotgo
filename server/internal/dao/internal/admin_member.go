@@ -27,7 +27,6 @@ type AdminMemberColumns struct {
 	Username           string // 帐号
 	PasswordHash       string // 密码
 	Salt               string // 密码盐
-	AuthKey            string // 授权令牌
 	PasswordResetToken string // 密码重置令牌
 	Integral           string // 积分
 	Balance            string // 余额
@@ -59,7 +58,6 @@ var adminMemberColumns = AdminMemberColumns{
 	Username:           "username",
 	PasswordHash:       "password_hash",
 	Salt:               "salt",
-	AuthKey:            "auth_key",
 	PasswordResetToken: "password_reset_token",
 	Integral:           "integral",
 	Balance:            "balance",

@@ -4,6 +4,7 @@ export enum ApiEnum {
 
   // 基础
   SiteLogin = '/site/login', // 登录
+  SiteLogout = '/site/logout', // 注销
   SiteConfig = '/site/config', // 配置信息
 
   // 用户

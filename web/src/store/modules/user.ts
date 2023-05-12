@@ -3,7 +3,7 @@ import { createStorage, storage } from '@/utils/Storage';
 import { store } from '@/store';
 import { ACCESS_TOKEN, CURRENT_CONFIG, CURRENT_USER, IS_LOCKSCREEN } from '@/store/mutation-types';
 import { ResultEnum } from '@/enums/httpEnum';
-import { getConfig, getUserInfo, login } from '@/api/system/user';
+import { getConfig, getUserInfo, login, logout } from '@/api/system/user';
 const Storage = createStorage({ storage: localStorage });
 
 export interface UserInfoState {
@@ -114,7 +114,7 @@ export const useUserStore = defineStore({
         const response = await login(userInfo);
         const { data, code } = response;
         if (code === ResultEnum.SUCCESS) {
-          const ex = 7 * 24 * 60 * 60 * 1000;
+          const ex = 30 * 24 * 60 * 60 * 1000;
           storage.set(ACCESS_TOKEN, data.token, ex);
           storage.set(CURRENT_USER, data, ex);
           storage.set(IS_LOCKSCREEN, false);
@@ -168,11 +168,19 @@ export const useUserStore = defineStore({
     },
     // 登出
     async logout() {
-      this.setPermissions([]);
-      this.setUserInfo(null);
-      storage.remove(ACCESS_TOKEN);
-      storage.remove(CURRENT_USER);
-      return Promise.resolve('');
+      try {
+        const response = await logout();
+        const { code } = response;
+        if (code === ResultEnum.SUCCESS) {
+          this.setPermissions([]);
+          this.setUserInfo(null);
+          storage.remove(ACCESS_TOKEN);
+          storage.remove(CURRENT_USER);
+        }
+        return Promise.resolve(response);
+      } catch (e) {
+        return Promise.reject(e);
+      }
     },
   },
 });

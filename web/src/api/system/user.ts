@@ -102,6 +102,21 @@ export function login(params) {
 }
 
 /**
+ * @description: 用户注销
+ */
+export function logout() {
+  return http.request<BasicResponseModel>(
+    {
+      url: ApiEnum.SiteLogout,
+      method: 'POST',
+    },
+    {
+      isTransformResponse: false,
+    }
+  );
+}
+
+/**
  * @description: 用户修改密码
  */
 export function changePassword(params, uid) {
@@ -115,15 +130,4 @@ export function changePassword(params, uid) {
       isTransformResponse: false,
     }
   );
-}
-
-/**
- * @description: 用户登出
- */
-export function logout(params) {
-  return http.request({
-    url: '/login/logout',
-    method: 'POST',
-    params,
-  });
 }

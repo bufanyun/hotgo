@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package router
 
 import (
@@ -27,7 +26,7 @@ func WebSocket(ctx context.Context, group *ghttp.RouterGroup) {
 		)
 
 		// ws连接中间件
-		group.Middleware(service.Middleware().WebSocketToken)
+		group.Middleware(service.Middleware().WebSocketAuth)
 
 		// ws
 		group.GET("/", websocket.WsPage)

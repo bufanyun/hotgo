@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package monitor
 
 import (
@@ -47,13 +46,12 @@ type OnlineModel struct {
 	Addr          string `json:"addr"`          // 客户端地址
 	Os            string `json:"os"`            // 客户端系统名称
 	Browser       string `json:"browser"`       // 浏览器
-	FirstTime     uint64 `json:"firstTime"`     // 首次连接时间
+	FirstTime     int64  `json:"firstTime"`     // 首次连接时间
 	HeartbeatTime uint64 `json:"heartbeatTime"` // 用户上次心跳时间
 	App           string `json:"app"`           // 应用名称
 	UserId        int64  `json:"userId"`        // 用户ID
 	Username      string `json:"username"`      // 用户名
 	Avatar        string `json:"avatar"`        // 头像
-	ExpTime       int64  `json:"expTime"`       // 过期时间
 }
 
 type OnlineModels []*OnlineModel

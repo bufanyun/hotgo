@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package common
 
 import (
@@ -13,7 +12,7 @@ import (
 
 // LoginLogoutReq 注销登录
 type LoginLogoutReq struct {
-	g.Meta `path:"/site/logout" method:"get" tags:"后台基础" summary:"注销登录"`
+	g.Meta `path:"/site/logout" method:"post" tags:"后台基础" summary:"注销登录"`
 }
 type LoginLogoutRes struct{}
 
@@ -21,7 +20,6 @@ type LoginLogoutRes struct{}
 type LoginCaptchaReq struct {
 	g.Meta `path:"/site/captcha" method:"get" tags:"后台基础" summary:"获取登录验证码"`
 }
-
 type LoginCaptchaRes struct {
 	Cid    string `json:"cid" dc:"验证码ID"`
 	Base64 string `json:"base64" dc:"验证码"`

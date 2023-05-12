@@ -3,13 +3,13 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package admin
 
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/api/admin/monitor"
 	"hotgo/internal/consts"
@@ -79,13 +79,12 @@ func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (
 			Addr:          conn.Addr,
 			Os:            useragent.GetOs(conn.UserAgent),
 			Browser:       useragent.GetBrowser(conn.UserAgent),
-			FirstTime:     conn.FirstTime,
+			FirstTime:     gtime.New(conn.User.LoginAt).Unix(),
 			HeartbeatTime: conn.HeartbeatTime,
 			App:           conn.User.App,
 			UserId:        conn.User.Id,
 			Username:      conn.User.Username,
 			Avatar:        conn.User.Avatar,
-			ExpTime:       conn.User.Exp,
 		})
 	}
 

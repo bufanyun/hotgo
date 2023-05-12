@@ -28,7 +28,7 @@ type SysLog struct {
 	ProvinceId interface{} // 省编码
 	CityId     interface{} // 市编码
 	ErrorCode  interface{} // 报错code
-	ErrorMsg   interface{} // 报错信息
+	ErrorMsg   interface{} // 对外错误提示
 	ErrorData  *gjson.Json // 报错日志
 	UserAgent  interface{} // UA信息
 	TakeUpTime interface{} // 请求耗时

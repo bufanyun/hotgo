@@ -3,13 +3,13 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package format
 
 import (
 	"fmt"
-	"github.com/shopspring/decimal"
+	"github.com/gogf/gf/v2/util/gconv"
 	"math"
+	"strconv"
 )
 
 // RoundInt64 四舍五入
@@ -19,22 +19,19 @@ func RoundInt64(x float64) int64 {
 
 // Round2String 四舍五入保留小数，默认2位
 func Round2String(value float64, args ...interface{}) (v string) {
-	var places int32 = 2
+	var places = 2
 	if len(args) > 0 {
-		places = args[0].(int32)
+		places = gconv.Int(args[0])
 	}
 
-	return decimal.NewFromFloat(value).Round(places).String()
+	cDig := strconv.Itoa(places)
+	val := fmt.Sprintf("%0."+cDig+"f", value)
+	return val
 }
 
 // Round2Float64 四舍五入保留小数，默认2位
 func Round2Float64(value float64, args ...interface{}) (v float64) {
-	var places int32 = 2
-	if len(args) > 0 {
-		places = args[0].(int32)
-	}
-
-	return decimal.NewFromFloat(value).Round(places).InexactFloat64()
+	return gconv.Float64(Round2String(value, args...))
 }
 
 // FileSize 字节的单位转换 保留两位小数

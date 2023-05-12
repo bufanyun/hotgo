@@ -21,7 +21,7 @@ import (
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/hgorm/handler"
 	"hotgo/internal/library/hgorm/hook"
-	"hotgo/internal/library/jwt"
+	"hotgo/internal/library/token"
 	"hotgo/internal/model"
 	"hotgo/internal/model/do"
 	"hotgo/internal/model/entity"
@@ -663,9 +663,8 @@ func (s *sAdminMember) LoginMemberInfo(ctx context.Context) (res *adminin.LoginM
 // Login 提交登录
 func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (res *adminin.MemberLoginModel, err error) {
 	var (
-		ro      *entity.AdminRole
-		mb      *entity.AdminMember
-		expires = g.Cfg().MustGet(ctx, "jwt.expires", 1).Int64()
+		ro *entity.AdminRole
+		mb *entity.AdminMember
 	)
 
 	if err = dao.AdminMember.Ctx(ctx).Where("username", in.Username).Scan(&mb); err != nil {
@@ -707,7 +706,7 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 		return
 	}
 
-	identity := &model.Identity{
+	user := &model.Identity{
 		Id:       mb.Id,
 		Pid:      mb.Pid,
 		DeptId:   mb.DeptId,
@@ -718,20 +717,17 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 		Avatar:   mb.Avatar,
 		Email:    mb.Email,
 		Mobile:   mb.Mobile,
-		Exp:      gtime.Timestamp() + expires,
-		Expires:  expires,
 		App:      consts.AppAdmin,
+		LoginAt:  gtime.Now(),
 	}
 
-	token, err := jwt.GenerateLoginToken(ctx, identity, false)
+	loginToken, expires, err := token.Login(ctx, user)
 	if err != nil {
-		err = gerror.New(err.Error())
-		return
+		return nil, err
 	}
 
 	update := do.AdminMember{
-		AuthKey:      jwt.GenAuthKey(token),
-		LastActiveAt: gtime.Now(),
+		LastActiveAt: user.LoginAt,
 	}
 
 	// 更新登录信息
@@ -740,8 +736,8 @@ func (s *sAdminMember) Login(ctx context.Context, in adminin.MemberLoginInp) (re
 	}
 
 	res = &adminin.MemberLoginModel{
-		Id:      identity.Id,
-		Token:   token,
+		Id:      user.Id,
+		Token:   loginToken,
 		Expires: expires,
 	}
 

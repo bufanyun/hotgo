@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package middleware
 
 import (
@@ -13,24 +12,24 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/response"
-	"hotgo/utility/auth"
 )
 
-// WebSocketToken 检查ws连接token
-func (s *sMiddleware) WebSocketToken(r *ghttp.Request) {
-	var ctx = r.Context()
+// WebSocketAuth websocket鉴权中间件
+func (s *sMiddleware) WebSocketAuth(r *ghttp.Request) {
+	var (
+		ctx    = r.Context()
+		prefix = g.Cfg().MustGet(ctx, "router.websocket.prefix", "/websocket").String()
+		path   = gstr.Replace(r.URL.Path, prefix, "", 1)
+	)
 
-	// 替换掉模块前缀
-	routerPrefix := g.Cfg().MustGet(ctx, "router.ws.prefix", "/socket")
-	path := gstr.Replace(r.URL.Path, routerPrefix.String(), "", 1)
-
-	/// 不需要验证登录的路由地址
-	if auth.IsExceptLogin(ctx, path) {
+	// 不需要验证登录的路由地址
+	if isExceptLogin(ctx, consts.AppWebSocket, path) {
 		r.Middleware.Next()
 		return
 	}
 
-	if err := inspectAuth(r, consts.AppAdmin); err != nil {
+	// 将用户信息传递到上下文中
+	if err := deliverUserContext(r); err != nil {
 		response.JsonExit(r, gcode.CodeNotAuthorized.Code(), err.Error())
 		return
 	}

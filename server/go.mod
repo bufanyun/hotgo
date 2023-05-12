@@ -10,7 +10,6 @@ require (
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.1
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
 	github.com/apache/rocketmq-client-go/v2 v2.1.0
-	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
 	github.com/casbin/casbin/v2 v2.55.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/forgoer/openssl v1.4.0
@@ -18,13 +17,13 @@ require (
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.4.1
 	github.com/gogf/gf/contrib/nosql/redis/v2 v2.4.1
 	github.com/gogf/gf/v2 v2.4.1
+	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/kayon/iploc v0.0.0-20200312105652-bda3e968a794
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/qiniu/go-sdk/v7 v7.14.0
 	github.com/shirou/gopsutil/v3 v3.23.3
-	github.com/shopspring/decimal v1.3.1
 	github.com/silenceper/wechat/v2 v2.1.4
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.633
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.633

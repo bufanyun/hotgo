@@ -5,7 +5,9 @@
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package consts
 
-import "github.com/gogf/gf/v2/text/gstr"
+import (
+	"github.com/gogf/gf/v2/text/gstr"
+)
 
 // 错误解释
 const (

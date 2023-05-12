@@ -25,7 +25,7 @@ func WebSocket(ctx context.Context, group *ghttp.RouterGroup) {
 			websocket.Index,
 		)
 		// ws连接中间件
-		group.Middleware(service.Middleware().WebSocketToken)
+		group.Middleware(service.Middleware().WebSocketAuth)
 		group.Bind(
 		// 需要验证的路由
 		// ..

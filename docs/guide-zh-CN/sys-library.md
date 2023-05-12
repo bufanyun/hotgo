@@ -3,8 +3,8 @@
 目录
 
 - 缓存驱动
-- 请求上下文（待写）
-- JWT（待写）
+- 请求上下文
+- JWT
 - 地理定位（待写）
 - 通知（待写）
 
@@ -87,8 +87,68 @@ func test(ctx context.Context) {
 ```
 
 ### JWT
+
+- 基于jwt+缓存驱动实现的用户登录令牌功能，支持自动续约，解决了jwt服务端无法退出问题和jwt令牌无法主动失效问题
+
+#### 配置示例
+```yaml
+# 登录令牌
+token:
+  secretKey: "hotgo123"                  # 令牌加密秘钥，考虑安全问题生产环境中请修改默认值
+  expires: 604800                        # 令牌有效期，单位：秒。默认7天
+  autoRefresh: true                      # 是否开启自动刷新过期时间， false|true 默认为true
+  refreshInterval: 86400                 # 刷新间隔，单位：秒。必须小于expires，否则无法触发。默认1天内只允许刷新一次
+  maxRefreshTimes: 30                    # 最大允许刷新次数，-1不限制。默认30次
+  multiLogin: true                       # 是否允许多端登录， false|true 默认为true
+
+```
+
 ```go
-// 待写
+package admin
+
+import (
+	"fmt"
+	"context"
+	"hotgo/internal/library/token"
+	"hotgo/internal/model"
+)
+
+
+func test(ctx context.Context) {
+	// 登录
+	user := &model.Identity{
+		Id:       mb.Id,
+		Pid:      mb.Pid,
+		DeptId:   mb.DeptId,
+		RoleId:   ro.Id,
+		RoleKey:  ro.Key,
+		Username: mb.Username,
+		RealName: mb.RealName,
+		Avatar:   mb.Avatar,
+		Email:    mb.Email,
+		Mobile:   mb.Mobile,
+		App:      consts.AppAdmin,
+		LoginAt:  gtime.Now(),
+	}
+
+	loginToken, expires, err := token.Login(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+	
+	// gf请求对象
+	r := *ghttp.Request
+	
+	// 获取登录用户信息
+	user, err := token.ParseLoginUser(r)
+	if err != nil {
+		return
+	}
+	
+	// 注销登录
+	err = token.Logout(r)
+}
+
 ```
 
 ### 地理定位

@@ -7,16 +7,14 @@ package common
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/crypto/gmd5"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/common"
 	"hotgo/internal/consts"
-	"hotgo/internal/library/cache"
 	"hotgo/internal/library/captcha"
-	"hotgo/internal/library/jwt"
+	"hotgo/internal/library/token"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
@@ -112,13 +110,6 @@ func (c *cSite) Login(ctx context.Context, req *common.LoginReq) (res *common.Lo
 
 // Logout 注销登录
 func (c *cSite) Logout(ctx context.Context, req *common.LoginLogoutReq) (res *common.LoginLogoutRes, err error) {
-	token := consts.CacheJwtToken + gmd5.MustEncryptString(jwt.GetAuthorization(ghttp.RequestFromCtx(ctx)))
-	if len(token) == 0 {
-		err = gerror.New("当前用户未登录！")
-		return
-	}
-
-	// 删除登录token
-	_, err = cache.Instance().Remove(ctx, token)
+	err = token.Logout(ghttp.RequestFromCtx(ctx))
 	return
 }

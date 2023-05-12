@@ -17,6 +17,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/payment"
+	"hotgo/internal/library/token"
 	"hotgo/internal/library/wechat"
 	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
@@ -74,6 +75,12 @@ func (s *sSysConfig) InitConfig(ctx context.Context) {
 	}
 	payment.SetConfig(pay)
 
+	tk, err := s.GetLoadToken(ctx)
+	if err != nil {
+		g.Log().Fatalf(ctx, "init token conifg fail：%+v", err)
+	}
+	token.SetConfig(tk)
+
 }
 
 // GetLoadTCP 获取本地tcp配置
@@ -91,6 +98,12 @@ func (s *sSysConfig) GetLoadCache(ctx context.Context) (conf *model.CacheConfig,
 // GetLoadGenerate 获取本地生成配置
 func (s *sSysConfig) GetLoadGenerate(ctx context.Context) (conf *model.GenerateConfig, err error) {
 	err = g.Cfg().MustGet(ctx, "hggen").Scan(&conf)
+	return
+}
+
+// GetLoadToken 获取本地token配置
+func (s *sSysConfig) GetLoadToken(ctx context.Context) (conf *model.TokenConfig, err error) {
+	err = g.Cfg().MustGet(ctx, "token").Scan(&conf)
 	return
 }
 

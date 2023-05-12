@@ -8,8 +8,8 @@ package location
 import (
 	"context"
 	"fmt"
-	"github.com/axgle/mahonia"
 	"github.com/gogf/gf/v2/container/gmap"
+	"github.com/gogf/gf/v2/encoding/gcharset"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/text/gstr"
@@ -67,19 +67,18 @@ func WhoisLocation(ctx context.Context, ip string) (*IpLocationData, error) {
 
 	defer response.Close()
 
-	var (
-		whoisData *WhoisRegionData
-		enc       = mahonia.NewDecoder("gbk")
-		data      = enc.ConvertString(response.ReadAllString())
-	)
+	str, err := gcharset.ToUTF8("GBK", response.ReadAllString())
+	if err != nil {
+		return nil, err
+	}
 
-	if err = gconv.Struct(data, &whoisData); err != nil {
+	var whoisData *WhoisRegionData
+	if err = gconv.Struct([]byte(str), &whoisData); err != nil {
 		return nil, err
 	}
 
 	return &IpLocationData{
-		Ip: whoisData.Ip,
-		//Country      string `json:"country"`
+		Ip:           whoisData.Ip,
 		Region:       whoisData.Addr,
 		Province:     whoisData.Pro,
 		ProvinceCode: gconv.Int64(whoisData.ProCode),

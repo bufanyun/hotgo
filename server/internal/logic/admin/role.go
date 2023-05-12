@@ -21,7 +21,6 @@ import (
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
-	"hotgo/utility/auth"
 	"hotgo/utility/convert"
 	"hotgo/utility/tree"
 	"sort"
@@ -39,10 +38,6 @@ func init() {
 
 // Verify 验证权限
 func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
-	if auth.IsExceptAuth(ctx, path) {
-		return true
-	}
-
 	var (
 		user         = contexts.Get(ctx).User
 		superRoleKey = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
@@ -57,6 +52,7 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 	if service.AdminMember().VerifySuperId(ctx, user.Id) || user.RoleKey == superRoleKey.String() {
 		return true
 	}
+
 	ok, err := casbin.Enforcer.Enforce(user.RoleKey, path, method)
 	if err != nil {
 		g.Log().Infof(ctx, "admin Verify Enforce  err:%+v", err)

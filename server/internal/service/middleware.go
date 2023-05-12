@@ -20,7 +20,7 @@ type (
 		Blacklist(r *ghttp.Request)
 		Develop(r *ghttp.Request)
 		ResponseHandler(r *ghttp.Request)
-		WebSocketToken(r *ghttp.Request)
+		WebSocketAuth(r *ghttp.Request)
 	}
 )
 

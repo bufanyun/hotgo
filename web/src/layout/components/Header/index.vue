@@ -301,16 +301,16 @@
         });
       };
 
-      // 退出登录
+      // 注销登录
       const doLogout = () => {
         dialog.info({
           title: '提示',
-          content: '您确定要退出登录吗',
+          content: '您确定要注销登录吗',
           positiveText: '确定',
           negativeText: '取消',
           onPositiveClick: () => {
             userStore.logout().then(() => {
-              message.success('成功退出登录');
+              message.success('成功注销登录');
               // 移除标签页
               localStorage.removeItem(TABS_ROUTES);
               router
@@ -377,7 +377,7 @@
           key: 1,
         },
         {
-          label: '退出登录',
+          label: '注销登录',
           key: 2,
         },
       ];
