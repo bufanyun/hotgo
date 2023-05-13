@@ -9,8 +9,11 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"hotgo/internal/dao"
 	"hotgo/internal/model/input/sysin"
+	"strings"
 
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/text/gstr"
@@ -179,6 +182,32 @@ func makeValidatorFunc(field *sysin.GenCodesColumnListModel) (err error, rule st
 		rule = fmt.Sprintf(EditInpValidatorGenerally, "regex:(^[0-9]{1,10}$)|(^[0-9]{1,10}[\\\\.]{1}[0-9]{1,2}$)", field.GoName, field.Dc+"最多允许输入10位整数及2位小数")
 	} else {
 		err = gerror.New("not support")
+	}
+
+	// 生成验证字典
+	if field.DictType > 0 {
+		var (
+			ctx         = context.Background()
+			valueType   gdb.Value
+			resultValue gdb.Result
+		)
+		valueType, err = dao.SysDictType.Ctx(ctx).Fields(dao.SysDictType.Columns().Type).Where(dao.SysDictType.Columns().Id, field.DictType).Value()
+		if err != nil {
+			return
+		}
+		resultValue, err = dao.SysDictData.Ctx(context.Background()).Fields(dao.SysDictData.Columns().Value).Where(dao.SysDictData.Columns().Type, valueType.String()).All()
+		if err != nil {
+			return
+		}
+		if resultValue.Len() > 0 {
+			names := make([]string, 0)
+			for _, item := range resultValue {
+				names = append(names, item["value"].String())
+			}
+			dictRule := "in:" + strings.Join(names, ",")
+			rule += fmt.Sprintf(EditInpValidatorGenerally, dictRule, field.GoName, field.Dc+"值不正确")
+			err = nil
+		}
 	}
 	return
 }
