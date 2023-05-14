@@ -27,6 +27,7 @@ type @{.varName}EditInp struct {
 }
 
 func (in *@{.varName}EditInp) Filter(ctx context.Context) (err error) {
+@{.editInpValidator}
 	return
 }
 
