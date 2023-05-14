@@ -284,6 +284,7 @@
               return h(NTreeSelect, {
                 value: row.dictType,
                 disabled: row.name === 'id',
+                clearable: true,
                 options: props.selectList?.dictMode ?? [],
                 onUpdateValue: function (e) {
                   row.dictType = e;
