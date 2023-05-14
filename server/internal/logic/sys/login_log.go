@@ -148,7 +148,6 @@ func (s *sSysLoginLog) View(ctx context.Context, in sysin.LoginLogViewInp) (res 
 
 // Push 推送登录日志
 func (s *sSysLoginLog) Push(ctx context.Context, in sysin.LoginLogPushInp) {
-	g.DumpWithType(in)
 	if in.Response == nil {
 		in.Response = new(adminin.LoginModel)
 	}
