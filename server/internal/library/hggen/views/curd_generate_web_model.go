@@ -53,6 +53,9 @@ func (l *gCurd) generateWebModelDefaultState(ctx context.Context, in *CurdPrevie
 		if value == "" {
 			value = "''"
 		}
+		if field.Name == "status" {
+			value = 1
+		}
 		buffer.WriteString(fmt.Sprintf("  %s: %v,\n", field.TsName, value))
 	}
 	buffer.WriteString("};")
@@ -261,6 +264,8 @@ func (l *gCurd) generateWebModelColumnsEach(buffer *bytes.Buffer, in *CurdPrevie
 		case FormModeDate:
 			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      return formatToDate(row.%s);\n    },\n  },\n", field.Dc, field.TsName, field.TsName)
 
+		case FormModeRadio:
+			fallthrough
 		case FormModeSelect:
 			if g.IsEmpty(in.options.dictMap[field.TsName]) {
 				err = gerror.Newf("设置单选下拉框选项时，必须选择字典类型，字段名称:%v", field.Name)
