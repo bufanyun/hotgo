@@ -18,6 +18,7 @@ export function createRouterGuards(router: Router) {
   router.beforeEach(async (to, from, next) => {
     const Loading = window['$loading'] || null;
     Loading && Loading.start();
+
     if (from.path === LOGIN_PATH && to.name === 'errorPage') {
       next(PageEnum.BASE_HOME);
       return;
@@ -25,6 +26,7 @@ export function createRouterGuards(router: Router) {
 
     // Whitelist can be directly entered
     if (whitePathList.includes(to.path as PageEnum)) {
+      await userStore.LoadLoginConfig();
       next();
       return;
     }
@@ -37,6 +39,7 @@ export function createRouterGuards(router: Router) {
         next();
         return;
       }
+
       // redirect login page
       const redirectData: { path: string; replace: boolean; query?: Recordable<string> } = {
         path: LOGIN_PATH,
@@ -75,6 +78,7 @@ export function createRouterGuards(router: Router) {
       return;
     }
 
+    await userStore.LoadLoginConfig();
     await userStore.GetConfig();
     const routes = await asyncRouteStore.generateRoutes(userInfo);
 

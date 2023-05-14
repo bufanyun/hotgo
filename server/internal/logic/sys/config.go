@@ -83,27 +83,13 @@ func (s *sSysConfig) InitConfig(ctx context.Context) {
 
 }
 
-// GetLoadTCP 获取本地tcp配置
-func (s *sSysConfig) GetLoadTCP(ctx context.Context) (conf *model.TCPConfig, err error) {
-	err = g.Cfg().MustGet(ctx, "tcp").Scan(&conf)
-	return
-}
-
-// GetLoadCache 获取本地缓存配置
-func (s *sSysConfig) GetLoadCache(ctx context.Context) (conf *model.CacheConfig, err error) {
-	err = g.Cfg().MustGet(ctx, "cache").Scan(&conf)
-	return
-}
-
-// GetLoadGenerate 获取本地生成配置
-func (s *sSysConfig) GetLoadGenerate(ctx context.Context) (conf *model.GenerateConfig, err error) {
-	err = g.Cfg().MustGet(ctx, "hggen").Scan(&conf)
-	return
-}
-
-// GetLoadToken 获取本地token配置
-func (s *sSysConfig) GetLoadToken(ctx context.Context) (conf *model.TokenConfig, err error) {
-	err = g.Cfg().MustGet(ctx, "token").Scan(&conf)
+// GetLogin 获取登录配置
+func (s *sSysConfig) GetLogin(ctx context.Context) (conf *model.LoginConfig, err error) {
+	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "login"})
+	if err != nil {
+		return
+	}
+	err = gconv.Scan(models.List, &conf)
 	return
 }
 
@@ -179,6 +165,30 @@ func (s *sSysConfig) GetBasic(ctx context.Context) (conf *model.BasicConfig, err
 		return
 	}
 	err = gconv.Scan(models.List, &conf)
+	return
+}
+
+// GetLoadTCP 获取本地tcp配置
+func (s *sSysConfig) GetLoadTCP(ctx context.Context) (conf *model.TCPConfig, err error) {
+	err = g.Cfg().MustGet(ctx, "tcp").Scan(&conf)
+	return
+}
+
+// GetLoadCache 获取本地缓存配置
+func (s *sSysConfig) GetLoadCache(ctx context.Context) (conf *model.CacheConfig, err error) {
+	err = g.Cfg().MustGet(ctx, "cache").Scan(&conf)
+	return
+}
+
+// GetLoadGenerate 获取本地生成配置
+func (s *sSysConfig) GetLoadGenerate(ctx context.Context) (conf *model.GenerateConfig, err error) {
+	err = g.Cfg().MustGet(ctx, "hggen").Scan(&conf)
+	return
+}
+
+// GetLoadToken 获取本地token配置
+func (s *sSysConfig) GetLoadToken(ctx context.Context) (conf *model.TokenConfig, err error) {
+	err = g.Cfg().MustGet(ctx, "token").Scan(&conf)
 	return
 }
 

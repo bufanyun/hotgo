@@ -55,8 +55,7 @@ type SmsLogListInp struct {
 
 func (in *SmsLogListInp) Filter(ctx context.Context) (err error) {
 	if in.Event != "" {
-		_, ok := consts.SmsTemplateEventMap[in.Event]
-		if !ok {
+		if _, ok := consts.SmsTemplateEventMap[in.Event]; !ok {
 			err = gerror.Newf("无效的事件类型:%v", in.Event)
 			return
 		}

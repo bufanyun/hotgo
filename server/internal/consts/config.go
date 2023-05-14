@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package consts
 
 import "github.com/gogf/gf/v2/util/gconv"
@@ -13,22 +12,25 @@ var RequestEncryptKey = []byte("f080a463654b2279")
 
 // 配置数据类型
 const (
-	ConfigTypeString   = "string"
-	ConfigTypeInt      = "int"
-	ConfigTypeInt8     = "int8"
-	ConfigTypeInt16    = "int16"
-	ConfigTypeInt32    = "int32"
-	ConfigTypeInt64    = "int64"
-	ConfigTypeUint     = "uint"
-	ConfigTypeUint8    = "uint8"
-	ConfigTypeUint16   = "uint16"
-	ConfigTypeUint32   = "uint32"
-	ConfigTypeUint64   = "uint64"
-	ConfigTypeFloat32  = "float32"
-	ConfigTypeFloat64  = "float64"
-	ConfigTypeBool     = "bool"
-	ConfigTypeDate     = "date"
-	ConfigTypeDateTime = "datetime"
+	ConfigTypeString      = "string"
+	ConfigTypeInt         = "int"
+	ConfigTypeInt8        = "int8"
+	ConfigTypeInt16       = "int16"
+	ConfigTypeInt32       = "int32"
+	ConfigTypeInt64       = "int64"
+	ConfigTypeUint        = "uint"
+	ConfigTypeUint8       = "uint8"
+	ConfigTypeUint16      = "uint16"
+	ConfigTypeUint32      = "uint32"
+	ConfigTypeUint64      = "uint64"
+	ConfigTypeFloat32     = "float32"
+	ConfigTypeFloat64     = "float64"
+	ConfigTypeBool        = "bool"
+	ConfigTypeDate        = "date"
+	ConfigTypeDateTime    = "datetime"
+	ConfigTypeSliceString = "[]string"
+	ConfigTypeSliceInt    = "[]int"
+	ConfigTypeSliceInt64  = "[]int64"
 )
 
 var ConfigTypes = []string{ConfigTypeString,
@@ -37,6 +39,7 @@ var ConfigTypes = []string{ConfigTypeString,
 	ConfigTypeFloat32, ConfigTypeFloat64,
 	ConfigTypeBool,
 	ConfigTypeDate, ConfigTypeDateTime,
+	ConfigTypeSliceString, ConfigTypeSliceInt, ConfigTypeSliceInt64,
 }
 
 // ConvType 类型转换
@@ -74,6 +77,12 @@ func ConvType(val interface{}, t string) interface{} {
 		val = gconv.Time(val, "Y-m-d")
 	case ConfigTypeDateTime:
 		val = gconv.Time(val, "Y-m-d H:i:s")
+	case ConfigTypeSliceInt:
+		val = gconv.SliceInt(val)
+	case ConfigTypeSliceInt64:
+		val = gconv.SliceInt64(val)
+	case ConfigTypeSliceString:
+		val = gconv.SliceStr(val)
 	default:
 		val = gconv.String(val)
 	}

@@ -102,11 +102,11 @@
         down: '0',
         up: '0',
       });
-      const s = ref([]);
-      const x = ref([]);
+      const s = ref<any>([]);
+      const x = ref<any>([]);
       const sName = ref('上行宽带');
       const xName = ref('下行宽带');
-      const months = ref([]);
+      const months = ref<any>([]);
       const option = ref({
         title: {
           subtext: '单位：KB',
@@ -198,14 +198,14 @@
       });
 
       const fullYearSalesChart = ref<HTMLDivElement | null>(null);
-      watch(props, (_newVal, _oldVal) => {
-        last.value = _newVal.dataModel[_newVal.dataModel.length - 1];
-
+      watch(props, (newVal, _oldVal) => {
+        last.value  = newVal.dataModel[newVal.dataModel.length - 1];
         if (months.value.length < 10) {
-          for (let i = 0; i < _newVal.dataModel?.length; i++) {
-            s.value.push(_newVal.dataModel[i].up);
-            x.value.push(_newVal.dataModel[i].down);
-            months.value.push(_newVal.dataModel[i].time);
+          for (let i = 0; i < newVal.dataModel?.length; i++) {
+            const v : any = newVal.dataModel[i]
+            s.value.push(v.up);
+            x.value.push(v.down);
+            months.value.push(v.time);
           }
         } else {
           s.value.shift();

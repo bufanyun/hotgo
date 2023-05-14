@@ -378,7 +378,7 @@ func (s *sAdminOrder) Status(ctx context.Context, in adminin.OrderStatusInp) (er
 		return
 	}
 
-	if !validate.InSliceInt(consts.StatusMap, in.Status) {
+	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
 		err = gerror.New("状态不正确")
 		return
 	}

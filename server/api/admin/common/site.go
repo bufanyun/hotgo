@@ -7,6 +7,7 @@ package common
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
+	"hotgo/internal/model"
 	"hotgo/internal/model/input/adminin"
 )
 
@@ -15,6 +16,15 @@ type LoginLogoutReq struct {
 	g.Meta `path:"/site/logout" method:"post" tags:"后台基础" summary:"注销登录"`
 }
 type LoginLogoutRes struct{}
+
+// RegisterReq 提交账号注册
+type RegisterReq struct {
+	g.Meta `path:"/site/register" method:"post" tags:"后台基础" summary:"账号注册"`
+	adminin.RegisterInp
+}
+type RegisterRes struct {
+	*adminin.LoginModel
+}
 
 // LoginCaptchaReq 获取登录验证码
 type LoginCaptchaReq struct {
@@ -25,17 +35,22 @@ type LoginCaptchaRes struct {
 	Base64 string `json:"base64" dc:"验证码"`
 }
 
-// LoginReq 提交登录
-type LoginReq struct {
-	g.Meta   `path:"/site/login" method:"post" tags:"后台基础" summary:"账号登录"`
-	Username string `json:"username" v:"required#用户名不能为空" dc:"用户名"`
-	Password string `json:"password" v:"required#密码不能为空" dc:"密码"`
-	Cid      string `json:"cid"  dc:"验证码ID"`
-	Code     string `json:"code" dc:"验证码"`
-	IsLock   bool   `json:"isLock"  dc:"是否为锁屏状态"`
+// AccountLoginReq 提交账号登录
+type AccountLoginReq struct {
+	g.Meta `path:"/site/accountLogin" method:"post" tags:"后台基础" summary:"账号登录"`
+	adminin.AccountLoginInp
 }
-type LoginRes struct {
-	*adminin.MemberLoginModel
+type AccountLoginRes struct {
+	*adminin.LoginModel
+}
+
+// MobileLoginReq 提交手机号登录
+type MobileLoginReq struct {
+	g.Meta `path:"/site/mobileLogin" method:"post" tags:"后台基础" summary:"手机号登录"`
+	adminin.MobileLoginInp
+}
+type MobileLoginRes struct {
+	*adminin.LoginModel
 }
 
 // SiteConfigReq 获取配置
@@ -43,9 +58,18 @@ type SiteConfigReq struct {
 	g.Meta `path:"/site/config" method:"get" tags:"后台基础" summary:"获取配置"`
 }
 type SiteConfigRes struct {
-	Version string `json:"version" dc:"系统版本"`
-	WsAddr  string `json:"wsAddr" dc:"客户端websocket地址"`
-	Domain  string `json:"domain" dc:"对外域名"`
+	Version string `json:"version"        dc:"系统版本"`
+	WsAddr  string `json:"wsAddr"         dc:"客户端websocket地址"`
+	Domain  string `json:"domain"         dc:"对外域名"`
+	//InviteUrl string `json:"inviteUrl"      dc:"邀请注册地址"`
+}
+
+// SiteLoginConfigReq 获取登录配置
+type SiteLoginConfigReq struct {
+	g.Meta `path:"/site/loginConfig" method:"get" tags:"后台基础" summary:"获取登录配置"`
+}
+type SiteLoginConfigRes struct {
+	*model.LoginConfig
 }
 
 // SitePingReq ping

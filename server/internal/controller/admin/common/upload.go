@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package common
 
 import (
@@ -19,7 +18,7 @@ var Upload = new(cUpload)
 type cUpload struct{}
 
 // UploadImage 上传图片
-func (c *cUpload) UploadImage(ctx context.Context, req *common.UploadImageReq) (res common.UploadImageRes, err error) {
+func (c *cUpload) UploadImage(ctx context.Context, _ *common.UploadImageReq) (res common.UploadImageRes, err error) {
 	file := g.RequestFromCtx(ctx).GetUploadFile("file")
 	if file == nil {
 		err = gerror.New("没有找到上传的文件")
@@ -30,7 +29,7 @@ func (c *cUpload) UploadImage(ctx context.Context, req *common.UploadImageReq) (
 }
 
 // UploadFile 上传附件
-func (c *cUpload) UploadFile(ctx context.Context, req *common.UploadFileReq) (res common.UploadFileRes, err error) {
+func (c *cUpload) UploadFile(ctx context.Context, _ *common.UploadFileReq) (res common.UploadFileRes, err error) {
 	file := g.RequestFromCtx(ctx).GetUploadFile("file")
 	if file == nil {
 		err = gerror.New("没有找到上传的文件")

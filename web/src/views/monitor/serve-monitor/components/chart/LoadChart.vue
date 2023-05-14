@@ -19,7 +19,7 @@
       },
     },
     setup(props) {
-      const data = ref([]);
+      const data = ref<any>([]);
       const option = ref({
         tooltip: {
           trigger: 'item',
@@ -76,9 +76,10 @@
       const orderChartWrapper = ref<HTMLDivElement | null>(null);
       const init = () => {
         for (let i = 0; i < props.dataModel?.length; i++) {
+          const v : any = props.dataModel[i]
           data.value.push({
             name: 'CPU分钟负载比率',
-            value: [props.dataModel[i]?.time, props.dataModel[i]?.ratio],
+            value: [v?.time, v?.ratio],
           });
         }
 
@@ -103,8 +104,8 @@
       onBeforeUnmount(() => {
         dispose(orderChartWrapper.value as HTMLDivElement);
       });
-      watch(props, (_newVal, _oldVal) => {
-        let last = _newVal.dataModel[_newVal.dataModel.length - 1];
+      watch(props, (newVal, _oldVal) => {
+        let last : any = newVal.dataModel[newVal.dataModel.length - 1];
         data.value.shift();
         data.value.push({
           name: 'CPU分钟负载比率',

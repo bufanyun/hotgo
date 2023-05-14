@@ -61,11 +61,6 @@ func (s *sPay) List(ctx context.Context, in payin.PayListInp) (list []*payin.Pay
 		mod = mod.WhereBetween(dao.PayLog.Columns().CreatedAt, in.CreatedAt[0], in.CreatedAt[1])
 	}
 
-	// 查询分类名称
-	if in.TestCategoryName != "" {
-		mod = mod.WhereLike(dao.TestCategory.Columns().Name, in.TestCategoryName)
-	}
-
 	totalCount, err = mod.Clone().Count()
 	if err != nil {
 		return
@@ -143,7 +138,7 @@ func (s *sPay) Status(ctx context.Context, in payin.PayStatusInp) (err error) {
 		return
 	}
 
-	if !validate.InSliceInt(consts.StatusMap, in.Status) {
+	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
 		err = gerror.New("状态不正确")
 		return
 	}

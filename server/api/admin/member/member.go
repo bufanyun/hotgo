@@ -53,33 +53,6 @@ type ResetPwdReq struct {
 }
 type ResetPwdRes struct{}
 
-// EmailUniqueReq 邮箱是否唯一
-type EmailUniqueReq struct {
-	g.Meta `path:"/member/emailUnique" method:"get" tags:"用户" summary:"邮箱是否唯一"`
-	adminin.MemberEmailUniqueInp
-}
-type EmailUniqueRes struct {
-	*adminin.MemberEmailUniqueModel
-}
-
-// MobileUniqueReq 手机号是否唯一
-type MobileUniqueReq struct {
-	g.Meta `path:"/member/mobileUnique" method:"get" tags:"用户" summary:"手机号是否唯一"`
-	adminin.MemberMobileUniqueInp
-}
-type MobileUniqueRes struct {
-	*adminin.MemberMobileUniqueModel
-}
-
-// NameUniqueReq 名称是否唯一
-type NameUniqueReq struct {
-	g.Meta `path:"/member/nameUnique" method:"get" tags:"用户" summary:"用户名称是否唯一"`
-	adminin.MemberNameUniqueInp
-}
-type NameUniqueRes struct {
-	*adminin.MemberNameUniqueModel
-}
-
 // ListReq 查询列表
 type ListReq struct {
 	g.Meta `path:"/member/list" method:"get" tags:"用户" summary:"获取用户列表"`
@@ -114,15 +87,6 @@ type DeleteReq struct {
 }
 type DeleteRes struct{}
 
-// LoginInfoReq 获取登录用户信息
-type LoginInfoReq struct {
-	g.Meta `path:"/member/info" method:"get" tags:"用户" summary:"获取登录用户信息" dc:"获取管理后台的登录用户信息"`
-}
-
-type LoginInfoRes struct {
-	*adminin.LoginMemberInfoModel
-}
-
 // StatusReq 更新用户状态
 type StatusReq struct {
 	g.Meta `path:"/member/status" method:"post" tags:"用户" summary:"更新用户状态"`
@@ -132,9 +96,17 @@ type StatusRes struct{}
 
 // SelectReq 获取可选的后台用户选项
 type SelectReq struct {
-	g.Meta `path:"/member/option" method:"get" summary:"用户" tags:"获取可选的后台用户选项"`
+	g.Meta `path:"/member/option" method:"get" tags:"用户" summary:"获取可选的后台用户选项"`
 }
 type SelectRes []*adminin.MemberSelectModel
+
+// InfoReq 获取登录用户信息
+type InfoReq struct {
+	g.Meta `path:"/member/info" method:"get" tags:"用户" summary:"获取登录用户信息"`
+}
+type InfoRes struct {
+	*adminin.LoginMemberInfoModel
+}
 
 // AddBalanceReq 增加余额
 type AddBalanceReq struct {

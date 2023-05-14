@@ -30,24 +30,6 @@
           </template>
         </n-form-item>
 
-        <n-form-item label="用户是否可注册开关" path="basicRegisterSwitch">
-          <n-radio-group v-model:value="formValue.basicRegisterSwitch" name="basicRegisterSwitch">
-            <n-space>
-              <n-radio :value="1">开启</n-radio>
-              <n-radio :value="0">关闭</n-radio>
-            </n-space>
-          </n-radio-group>
-        </n-form-item>
-
-        <n-form-item label="验证码开关" path="basicCaptchaSwitch">
-          <n-radio-group v-model:value="formValue.basicCaptchaSwitch" name="basicCaptchaSwitch">
-            <n-space>
-              <n-radio :value="1">开启</n-radio>
-              <n-radio :value="0">关闭</n-radio>
-            </n-space>
-          </n-radio-group>
-        </n-form-item>
-
         <n-form-item label="网站开启访问" path="basicSystemOpen">
           <n-switch
             size="large"

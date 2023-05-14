@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package common
 
 import (
@@ -40,7 +39,7 @@ func (c *cSms) SendTest(ctx context.Context, req *common.SendTestSmsReq) (res *c
 }
 
 // SendBindSms 发送换绑短信
-func (c *cSms) SendBindSms(ctx context.Context, req *common.SendBindSmsReq) (res *common.SendBindSmsRes, err error) {
+func (c *cSms) SendBindSms(ctx context.Context, _ *common.SendBindSmsReq) (res *common.SendBindSmsRes, err error) {
 	var (
 		memberId = contexts.GetUserId(ctx)
 		models   *entity.AdminMember
@@ -73,5 +72,20 @@ func (c *cSms) SendBindSms(ctx context.Context, req *common.SendBindSmsReq) (res
 		Event:  consts.SmsTemplateBind,
 		Mobile: models.Mobile,
 	})
+	return
+}
+
+// SendSms 发送短信
+func (c *cSms) SendSms(ctx context.Context, req *common.SendSmsReq) (res *common.SendSmsRes, err error) {
+	var in sysin.SendCodeInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
+	err = service.SysSmsLog().SendCode(ctx, in)
 	return
 }

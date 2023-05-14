@@ -25,9 +25,11 @@ func Admin(ctx context.Context, group *ghttp.RouterGroup) {
 
 	prefix := g.Cfg().MustGet(ctx, "router.admin.prefix", "/admin")
 	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
+		group.Bind(
+			common.Site, // 基础
+		)
 		group.Middleware(service.Middleware().AdminAuth)
 		group.Bind(
-			common.Site,      // 基础
 			common.Console,   // 控制台
 			common.Ems,       // 邮件
 			common.Sms,       // 短信

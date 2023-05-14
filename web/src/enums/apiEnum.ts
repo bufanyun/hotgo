@@ -3,7 +3,10 @@ export enum ApiEnum {
   Prefix = '/api',
 
   // 基础
-  SiteLogin = '/site/login', // 登录
+  SiteRegister = '/site/register', // 账号注册
+  SiteAccountLogin = '/site/accountLogin', // 账号登录
+  SiteMobileLogin = '/site/mobileLogin', // 手机号登录
+  SiteLoginConfig = '/site/loginConfig', // 登录配置
   SiteLogout = '/site/logout', // 注销
   SiteConfig = '/site/config', // 配置信息
 

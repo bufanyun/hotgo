@@ -50,6 +50,7 @@ func (s *sAuthClient) Start(ctx context.Context) {
 			LoginEvent: s.onLoginEvent,
 			CloseEvent: s.onCloseEvent,
 		})
+
 		if err != nil {
 			g.Log().Errorf(ctx, "AuthClient NewClient fail：%+v", err)
 			return

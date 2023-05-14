@@ -5,11 +5,7 @@
 package dao
 
 import (
-	"context"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"hotgo/internal/consts"
 	"hotgo/internal/dao/internal"
-	"hotgo/internal/model/entity"
 )
 
 // internalAdminMemberDao is internal type for wrapping internal DAO implements.
@@ -29,66 +25,3 @@ var (
 )
 
 // Fill with you ideas below.
-
-// IsUniqueName 判断用户名是否唯一
-func (dao *adminMemberDao) IsUniqueName(ctx context.Context, id int64, name string) (bool, error) {
-	var data *entity.AdminDept
-	m := dao.Ctx(ctx).Where("username", name)
-
-	if id > 0 {
-		m = m.WhereNot("id", id)
-	}
-
-	if err := m.Scan(&data); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return false, err
-	}
-
-	if data == nil {
-		return true, nil
-	}
-
-	return false, nil
-}
-
-// IsUniqueEmail 判断邮箱是否唯一
-func (dao *adminMemberDao) IsUniqueEmail(ctx context.Context, id int64, email string) (bool, error) {
-	var data *entity.AdminMember
-	m := dao.Ctx(ctx).Where("email", email)
-
-	if id > 0 {
-		m = m.WhereNot("id", id)
-	}
-
-	if err := m.Scan(&data); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return false, err
-	}
-
-	if data == nil {
-		return true, nil
-	}
-
-	return false, nil
-}
-
-// IsUniqueMobile 判断手机号是否唯一
-func (dao *adminMemberDao) IsUniqueMobile(ctx context.Context, id int64, mobile string) (bool, error) {
-	var data *entity.AdminMember
-	m := dao.Ctx(ctx).Where("mobile", mobile)
-
-	if id > 0 {
-		m = m.WhereNot("id", id)
-	}
-
-	if err := m.Scan(&data); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return false, err
-	}
-
-	if data == nil {
-		return true, nil
-	}
-
-	return false, nil
-}

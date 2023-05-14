@@ -24,6 +24,7 @@ import (
 	"hotgo/internal/library/location"
 	"hotgo/internal/library/queue"
 	"hotgo/internal/model/entity"
+	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
@@ -147,10 +148,14 @@ func (s *sSysLoginLog) View(ctx context.Context, in sysin.LoginLogViewInp) (res 
 
 // Push 推送登录日志
 func (s *sSysLoginLog) Push(ctx context.Context, in sysin.LoginLogPushInp) {
+	g.DumpWithType(in)
+	if in.Response == nil {
+		in.Response = new(adminin.LoginModel)
+	}
 	var models entity.SysLoginLog
 	models.ReqId = gctx.CtxId(ctx)
 	models.MemberId = in.Response.Id
-	models.Username = in.Input.Username
+	models.Username = in.Response.Username
 	models.LoginAt = gtime.Now()
 	models.LoginIp = location.GetClientIp(ghttp.RequestFromCtx(ctx))
 	models.Status = consts.StatusEnabled
@@ -161,12 +166,12 @@ func (s *sSysLoginLog) Push(ctx context.Context, in sysin.LoginLogPushInp) {
 	}
 
 	models.Response = gjson.New(consts.NilJsonToString)
-	if in.Response != nil && in.Response.Id > 0 {
+	if in.Response != nil {
 		models.Response = gjson.New(in.Response)
 	}
 
 	if err := queue.Push(consts.QueueLoginLogTopic, models); err != nil {
-		g.Log().Warningf(ctx, "sSysLoginLog.Push err:%+v, models:%+v", err, models)
+		g.Log().Warningf(ctx, "push err:%+v, models:%+v", err, models)
 	}
 	return
 }
