@@ -70,7 +70,11 @@ func (l *gCurd) generateWebEditFormItem(ctx context.Context, in *CurdPreviewInpu
 			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-checkbox-group v-model:value=\"params.%s\">\n            <n-space>\n              <n-checkbox\n                v-for=\"item in options.%s\"\n                :key=\"item.value\"\n                :value=\"item.value\"\n                :label=\"item.label\"\n              />\n            </n-space>\n          </n-checkbox-group>\n          </n-form-item>", field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName])
 
 		case FormModeSelect:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-select v-model:value=\"params.%s\" :options=\"options.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName])
+			if in.options.dictMap[field.TsName] != nil {
+				component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-select v-model:value=\"params.%s\" :options=\"options.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName])
+			} else {
+				component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-select v-model:value=\"params.%s\" options=\"\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+			}
 
 		case FormModeSelectMultiple:
 			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-select multiple v-model:value=\"params.%s\" :options=\"options.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName])

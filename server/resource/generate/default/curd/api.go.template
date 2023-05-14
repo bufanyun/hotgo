@@ -4,7 +4,6 @@
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 // @AutoGenerate Version @{.hgVersion}
-// @AutoGenerate Date @{.nowTime}
 //
 package @{.varName | ToLower}
 
