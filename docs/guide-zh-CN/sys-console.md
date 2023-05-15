@@ -13,6 +13,7 @@
 - 仅推荐在开发期间快速调试使用，线上实际部署时建议将各个服务分开部署，这样重新部署某个服务时无需全部重启。
 
 ```shell
+
 # 默认
 go run main.go
 
@@ -22,6 +23,7 @@ gf run main.go
 
 ### HTTP服务
 - 启动HTTP服务，包含websocket。
+
 ```shell
 # 默认
 go run main.go http
@@ -41,7 +43,7 @@ go run main.go queue
 gf run main.go --args "queue"
 ```
 
-### 定时任务（暂未拆分，目前随HTTP服务启动）
+### 定时任务
 - 启动系统中统一注册的定时任务。
 
 ```shell
@@ -55,6 +57,8 @@ gf run main.go --args "cron"
 
 ### 常用工具
 - 释放casbin权限，用于清理无效的权限设置。
+
+
 ```shell
 go run main.go tools -m=casbin -a1=refresh
 ```
@@ -62,6 +66,7 @@ go run main.go tools -m=casbin -a1=refresh
 
 ### Makefile
 - 通过make提供一些快捷命令
+
 ```shell
 # 一键编译，打包前后端代码到可执行文件
 make build

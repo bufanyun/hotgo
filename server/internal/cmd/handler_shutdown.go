@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package cmd
 
 import (
@@ -11,6 +10,12 @@ import (
 	"github.com/gogf/gf/v2/os/gproc"
 	"hotgo/utility/simple"
 	"os"
+	"sync"
+)
+
+var (
+	serverCloseSignal = make(chan struct{}, 1)
+	serverWg          = sync.WaitGroup{}
 )
 
 func signalHandlerForOverall(sig os.Signal) {
