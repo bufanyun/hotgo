@@ -101,16 +101,16 @@ func responseJson(r *ghttp.Request) {
 
 	if err = r.GetError(); err != nil {
 		// 记录到自定义错误日志文件
-		g.Log().Warningf(ctx, "exception:%v", err)
+		g.Log().Stdout(false).Printf(ctx, "exception:%v", err)
 
 		code = gerror.Code(err).Code()
 
 		// 是否输出错误到页面
 		if g.Cfg().MustGet(ctx, "hotgo.debug", true).Bool() {
-			message = err.Error()
+			message = gerror.Current(err).Error()
 			data = charset.ParseErrStack(err)
 		} else {
-			message = consts.ErrorMessage(err)
+			message = consts.ErrorMessage(gerror.Current(err))
 		}
 	} else {
 		data = r.GetHandlerResponse()

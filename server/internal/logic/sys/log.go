@@ -105,7 +105,7 @@ func (s *sSysLog) AutoLog(ctx context.Context) error {
 		var err error
 		defer func() {
 			if err != nil {
-				panic(err)
+				g.Log().Error(ctx, "autoLog err:%+v", err)
 			}
 		}()
 
