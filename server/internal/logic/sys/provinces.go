@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -127,7 +126,7 @@ func (s *sSysProvinces) Status(ctx context.Context, in sysin.ProvincesStatusInp)
 		return
 	}
 
-	if !validate.InSliceInt(consts.StatusMap, in.Status) {
+	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
 		err = gerror.New("状态不正确")
 		return
 	}

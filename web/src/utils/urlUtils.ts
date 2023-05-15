@@ -41,3 +41,11 @@ export function getFileExt(fileName: string) {
   }
   return fileName.substring(fileName.lastIndexOf('.') + 1);
 }
+
+/**
+ * 获取当访问的url，不含参数
+ */
+export function getNowUrl(): string {
+  const w = window.location;
+  return w.protocol + '//' + w.host + w.pathname;
+}

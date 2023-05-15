@@ -1,9 +1,23 @@
 import { defineStore } from 'pinia';
 import { createStorage, storage } from '@/utils/Storage';
 import { store } from '@/store';
-import { ACCESS_TOKEN, CURRENT_CONFIG, CURRENT_USER, IS_LOCKSCREEN } from '@/store/mutation-types';
+import {
+  ACCESS_TOKEN,
+  CURRENT_CONFIG,
+  CURRENT_LOGIN_CONFIG,
+  CURRENT_USER,
+  IS_LOCKSCREEN,
+} from '@/store/mutation-types';
 import { ResultEnum } from '@/enums/httpEnum';
-import { getConfig, getUserInfo, login, logout } from '@/api/system/user';
+import {
+  getConfig,
+  getLoginConfig,
+  getUserInfo,
+  login,
+  logout,
+  mobileLogin,
+} from '@/api/system/user';
+import { isWechatBrowser } from '@/utils/is';
 const Storage = createStorage({ storage: localStorage });
 
 export interface UserInfoState {
@@ -34,12 +48,21 @@ export interface UserInfoState {
   lastLoginAt: string;
   lastLoginIp: string;
   openId: string;
+  inviteCode: string;
 }
 
 export interface ConfigState {
   domain: string;
   version: string;
   wsAddr: string;
+}
+
+export interface LoginConfigState {
+  loginRegisterSwitch: number;
+  loginCaptchaSwitch: number;
+  loginAutoOpenId: number;
+  loginProtocol: string;
+  loginPolicy: string;
 }
 
 export interface IUserState {
@@ -50,6 +73,7 @@ export interface IUserState {
   permissions: any[];
   info: UserInfoState | null;
   config: ConfigState | null;
+  loginConfig: LoginConfigState | null;
 }
 
 export const useUserStore = defineStore({
@@ -62,6 +86,7 @@ export const useUserStore = defineStore({
     permissions: [],
     info: Storage.get(CURRENT_USER, null),
     config: Storage.get(CURRENT_CONFIG, null),
+    loginConfig: Storage.get(CURRENT_LOGIN_CONFIG, null),
   }),
   getters: {
     getToken(): string {
@@ -84,6 +109,9 @@ export const useUserStore = defineStore({
     },
     getConfig(): ConfigState | null {
       return this.config;
+    },
+    getLoginConfig(): LoginConfigState | null {
+      return this.loginConfig;
     },
   },
   actions: {
@@ -108,10 +136,20 @@ export const useUserStore = defineStore({
     setConfig(config: ConfigState | null) {
       this.config = config;
     },
-    // 登录
+    setLoginConfig(config: LoginConfigState | null) {
+      this.loginConfig = config;
+    },
+    // 账号登录
     async login(userInfo) {
+      return await this.handleLogin(login(userInfo));
+    },
+    // 手机号登录
+    async mobileLogin(userInfo) {
+      return await this.handleLogin(mobileLogin(userInfo));
+    },
+    async handleLogin(request: Promise<any>) {
       try {
-        const response = await login(userInfo);
+        const response = await request;
         const { data, code } = response;
         if (code === ResultEnum.SUCCESS) {
           const ex = 30 * 24 * 60 * 60 * 1000;
@@ -150,7 +188,7 @@ export const useUserStore = defineStore({
           });
       });
     },
-    // 获取用户配置
+    // 获取基础配置
     GetConfig() {
       const that = this;
       return new Promise((resolve, reject) => {
@@ -165,6 +203,34 @@ export const useUserStore = defineStore({
             reject(error);
           });
       });
+    },
+    // 获取登录配置
+    LoadLoginConfig: function () {
+      const that = this;
+      return new Promise((resolve, reject) => {
+        getLoginConfig()
+          .then((res) => {
+            const result = res as unknown as LoginConfigState;
+            that.setLoginConfig(result);
+            storage.set(CURRENT_LOGIN_CONFIG, result);
+            resolve(res);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    // 是否允许获取微信openid
+    allowWxOpenId(): boolean {
+      if (!isWechatBrowser()) {
+        return false;
+      }
+
+      if (this.loginConfig?.loginAutoOpenId !== 1) {
+        return false;
+      }
+
+      return this.info?.openId === '';
     },
     // 登出
     async logout() {

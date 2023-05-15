@@ -88,10 +88,9 @@ type PayViewModel struct {
 // PayListInp 获取支付日志列表
 type PayListInp struct {
 	form.PageReq
-	Id               int64         `json:"id"               dc:"ID"`
-	Status           int           `json:"status"           dc:"状态"`
-	CreatedAt        []*gtime.Time `json:"createdAt"        dc:"创建时间"`
-	TestCategoryName string        `json:"testCategoryName" dc:"分类名称"`
+	Id        int64         `json:"id"               dc:"ID"`
+	Status    int           `json:"status"           dc:"状态"`
+	CreatedAt []*gtime.Time `json:"createdAt"        dc:"创建时间"`
 }
 
 func (in *PayListInp) Filter(ctx context.Context) (err error) {

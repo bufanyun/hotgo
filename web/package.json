@@ -1,6 +1,6 @@
 {
   "name": "hotgo",
-  "version": "2.6.10",
+  "version": "2.7.3",
   "author": {
     "name": "MengShuai",
     "email": "133814250@qq.com",
@@ -103,7 +103,6 @@
     "vite": "^2.9.8",
     "vite-plugin-compression": "^0.3.6",
     "vite-plugin-html": "^2.1.2",
-    "vite-plugin-mock": "^2.9.6",
     "vite-plugin-require-transform": "^1.0.5",
     "vite-plugin-style-import": "^1.4.1",
     "vite-plugin-top-level-await": "^1.2.2",

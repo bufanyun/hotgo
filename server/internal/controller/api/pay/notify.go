@@ -20,7 +20,7 @@ var (
 type cNotify struct{}
 
 // AliPay 支付宝回调
-func (c *cNotify) AliPay(ctx context.Context, req *pay.NotifyAliPayReq) (res *pay.NotifyAliPayRes, err error) {
+func (c *cNotify) AliPay(ctx context.Context, _ *pay.NotifyAliPayReq) (res *pay.NotifyAliPayRes, err error) {
 	_, err = service.Pay().Notify(ctx, payin.PayNotifyInp{PayType: consts.PayTypeAliPay})
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func (c *cNotify) AliPay(ctx context.Context, req *pay.NotifyAliPayReq) (res *pa
 }
 
 // WxPay 微信支付回调
-func (c *cNotify) WxPay(ctx context.Context, req *pay.NotifyWxPayReq) (res *pay.NotifyWxPayRes, err error) {
+func (c *cNotify) WxPay(ctx context.Context, _ *pay.NotifyWxPayReq) (res *pay.NotifyWxPayRes, err error) {
 	_, err = service.Pay().Notify(ctx, payin.PayNotifyInp{PayType: consts.PayTypeWxPay})
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (c *cNotify) WxPay(ctx context.Context, req *pay.NotifyWxPayReq) (res *pay.
 }
 
 // QQPay QQ支付回调
-func (c *cNotify) QQPay(ctx context.Context, req *pay.NotifyQQPayReq) (res *pay.NotifyQQPayRes, err error) {
+func (c *cNotify) QQPay(ctx context.Context, _ *pay.NotifyQQPayReq) (res *pay.NotifyQQPayRes, err error) {
 	_, err = service.Pay().Notify(ctx, payin.PayNotifyInp{PayType: consts.PayTypeQQPay})
 	if err != nil {
 		return nil, err

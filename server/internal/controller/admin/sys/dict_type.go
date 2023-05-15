@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -21,7 +20,7 @@ var (
 type cDictType struct{}
 
 // Tree 树
-func (c *cDictType) Tree(ctx context.Context, req *dict.TypeTreeReq) (res *dict.TypeTreeRes, err error) {
+func (c *cDictType) Tree(ctx context.Context, _ *dict.TypeTreeReq) (res *dict.TypeTreeRes, err error) {
 	res = new(dict.TypeTreeRes)
 	res.List, err = service.SysDictType().Tree(ctx)
 	return

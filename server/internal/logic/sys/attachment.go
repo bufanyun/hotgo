@@ -73,7 +73,7 @@ func (s *sSysAttachment) Status(ctx context.Context, in sysin.AttachmentStatusIn
 		return
 	}
 
-	if !validate.InSliceInt(consts.StatusMap, in.Status) {
+	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
 		err = gerror.New("状态不正确")
 		return
 	}

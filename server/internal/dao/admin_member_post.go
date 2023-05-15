@@ -7,7 +7,6 @@ package dao
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/dao/internal"
 	"hotgo/internal/model/entity"
 )
@@ -30,7 +29,6 @@ var (
 
 // UpdatePostIds 更新管理员岗位
 func (dao *adminMemberPostDao) UpdatePostIds(ctx context.Context, memberId int64, postIds []int64) (err error) {
-	g.DumpWithType(postIds)
 	_, err = dao.Ctx(ctx).
 		Where("member_id", memberId).
 		Delete()

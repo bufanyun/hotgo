@@ -15,7 +15,6 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/location"
-	"hotgo/internal/library/sms"
 	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
@@ -71,7 +70,7 @@ func (s *sSysSmsLog) Status(ctx context.Context, in sysin.SmsLogStatusInp) (err 
 		return
 	}
 
-	if !validate.InSliceInt(consts.StatusMap, in.Status) {
+	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
 		err = gerror.New("状态不正确")
 		return
 	}
@@ -180,9 +179,9 @@ func (s *sSysSmsLog) SendCode(ctx context.Context, in sysin.SendCodeInp) (err er
 		in.Code = grand.Digits(4)
 	}
 
-	if err = sms.New(config.SmsDrive).SendCode(ctx, in, config); err != nil {
-		return
-	}
+	//if err = sms.New(config.SmsDrive).SendCode(ctx, in, config); err != nil {
+	//	return
+	//}
 
 	var data = new(entity.SysSmsLog)
 	data.Event = in.Event

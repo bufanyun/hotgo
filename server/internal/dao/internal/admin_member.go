@@ -41,6 +41,7 @@ type AdminMemberColumns struct {
 	Pid                string // 上级管理员ID
 	Level              string // 关系树等级
 	Tree               string // 关系树
+	InviteCode         string // 邀请码
 	Cash               string // 提现配置
 	LastActiveAt       string // 最后活跃时间
 	Remark             string // 备注
@@ -72,6 +73,7 @@ var adminMemberColumns = AdminMemberColumns{
 	Pid:                "pid",
 	Level:              "level",
 	Tree:               "tree",
+	InviteCode:         "invite_code",
 	Cash:               "cash",
 	LastActiveAt:       "last_active_at",
 	Remark:             "remark",

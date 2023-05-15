@@ -1,13 +1,13 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { isNavigationFailure, Router } from 'vue-router';
-import { UserInfoState, useUserStoreWidthOut } from '@/store/modules/user';
+import { useUserStoreWidthOut } from '@/store/modules/user';
 import { useAsyncRouteStoreWidthOut } from '@/store/modules/asyncRoute';
 import { ACCESS_TOKEN } from '@/store/mutation-types';
 import { storage } from '@/utils/Storage';
 import { PageEnum } from '@/enums/pageEnum';
 import { ErrorPageRoute } from '@/router/base';
-import { isWechatBrowser } from '@/utils/is';
 import { jump } from '@/utils/http/axios';
+import { getNowUrl } from '@/utils/urlUtils';
 
 const LOGIN_PATH = PageEnum.BASE_LOGIN;
 const whitePathList = [LOGIN_PATH]; // no redirect whitelist
@@ -18,6 +18,7 @@ export function createRouterGuards(router: Router) {
   router.beforeEach(async (to, from, next) => {
     const Loading = window['$loading'] || null;
     Loading && Loading.start();
+
     if (from.path === LOGIN_PATH && to.name === 'errorPage') {
       next(PageEnum.BASE_HOME);
       return;
@@ -25,6 +26,7 @@ export function createRouterGuards(router: Router) {
 
     // Whitelist can be directly entered
     if (whitePathList.includes(to.path as PageEnum)) {
+      await userStore.LoadLoginConfig();
       next();
       return;
     }
@@ -37,6 +39,7 @@ export function createRouterGuards(router: Router) {
         next();
         return;
       }
+
       // redirect login page
       const redirectData: { path: string; replace: boolean; query?: Recordable<string> } = {
         path: LOGIN_PATH,
@@ -61,16 +64,16 @@ export function createRouterGuards(router: Router) {
     const redirect = decodeURIComponent(redirectPath);
     const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect };
     const userInfo = await userStore.GetInfo();
+    await userStore.LoadLoginConfig();
 
-    // 如果是微信访问，则记录本次登录的openid
-    if (isWechatBrowser() && (userInfo as UserInfoState).openId === '') {
+    // 是否允许获取微信openid
+    if (userStore.allowWxOpenId()) {
       let path = nextData.path;
       if (path === LOGIN_PATH) {
         path = PageEnum.BASE_HOME_REDIRECT;
       }
 
-      const w = window.location;
-      const URI = w.protocol + '//' + w.host + w.pathname + '#' + path;
+      const URI = getNowUrl() + '#' + path;
       jump('/wechat/authorize', { type: 'openId', syncRedirect: URI });
       return;
     }

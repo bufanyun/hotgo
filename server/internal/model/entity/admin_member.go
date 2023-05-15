@@ -32,6 +32,7 @@ type AdminMember struct {
 	Pid                int64       `json:"pid"                description:"上级管理员ID"`
 	Level              int         `json:"level"              description:"关系树等级"`
 	Tree               string      `json:"tree"               description:"关系树"`
+	InviteCode         string      `json:"inviteCode"         description:"邀请码"`
 	Cash               *gjson.Json `json:"cash"               description:"提现配置"`
 	LastActiveAt       *gtime.Time `json:"lastActiveAt"       description:"最后活跃时间"`
 	Remark             string      `json:"remark"             description:"备注"`

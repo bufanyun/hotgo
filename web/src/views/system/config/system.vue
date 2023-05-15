@@ -22,6 +22,7 @@
           <RevealSetting v-if="type === 3" />
           <EmailSetting v-if="type === 4" />
           <SmsSetting v-if="type === 5" />
+          <LoginSetting v-if="type === 6" />
           <CashSetting v-if="type === 7" />
           <UploadSetting v-if="type === 8" />
           <GeoSetting v-if="type === 9" />
@@ -44,6 +45,7 @@
   import SmsSetting from './SmsSetting.vue';
   import PaySetting from './PaySetting.vue';
   import WechatSetting from './WechatSetting.vue';
+  import LoginSetting from './LoginSetting.vue';
   const typeTabList = [
     {
       name: '基本设置',
@@ -70,11 +72,11 @@
       desc: '短信验证码平台',
       key: 5,
     },
-    // {
-    //   name: '管理员配置',
-    //   desc: '默认设置和权限屏蔽',
-    //   key: 6,
-    // },
+    {
+      name: '登录注册',
+      desc: '登录注册配置',
+      key: 6,
+    },
     {
       name: '提现配置',
       desc: '管理员提现规则配置',
@@ -113,6 +115,7 @@
       SmsSetting,
       PaySetting,
       WechatSetting,
+      LoginSetting,
     },
     setup() {
       const state = reactive({

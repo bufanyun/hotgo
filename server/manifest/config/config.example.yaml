@@ -109,14 +109,11 @@ router:
     prefix: "/admin"
     # 不需要验证登录的路由地址
     exceptLogin: [
-      "/site/captcha",          # 登录验证码
-      "/site/login",            # 登录
-      "/site/ping",             # ping
+      "/sms/send",              # 短信验证码
       "/wechat/authorizeCall",  # 微信用户授权回调
     ]
     # 不需要验证权限的路由地址
     exceptAuth: [
-      "/site/config",                   # 获取后台配置
       "/member/info",                   # 登录用户信息
       "/role/dynamic",                  # 获取动态路由
       "/notice/pullMessages",           # 拉取我的消息

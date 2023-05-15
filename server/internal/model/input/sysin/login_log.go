@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sysin
 
 import (
@@ -84,7 +83,6 @@ type LoginLogExportModel struct {
 
 // LoginLogPushInp 解推送登录日志
 type LoginLogPushInp struct {
-	Input    adminin.MemberLoginInp
-	Response *adminin.MemberLoginModel
+	Response *adminin.LoginModel
 	Err      error
 }

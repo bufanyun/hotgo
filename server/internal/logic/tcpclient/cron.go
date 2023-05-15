@@ -37,7 +37,7 @@ func (s *sCronClient) Start(ctx context.Context) {
 	}
 
 	simple.SafeGo(ctx, func(ctx context.Context) {
-		client, err := tcp.NewClient(&tcp.ClientConfig{
+		s.client, err = tcp.NewClient(&tcp.ClientConfig{
 			Addr: config.Client.Cron.Address,
 			Auth: &tcp.AuthMeta{
 				Group:     config.Client.Cron.Group,
@@ -48,12 +48,11 @@ func (s *sCronClient) Start(ctx context.Context) {
 			LoginEvent: s.onLoginEvent,
 			CloseEvent: s.onCloseEvent,
 		})
+
 		if err != nil {
 			g.Log().Errorf(ctx, "CronClient NewClient fail：%+v", err)
 			return
 		}
-
-		s.client = client
 
 		err = s.client.RegisterRouter(map[string]tcp.RouterHandler{
 			"CronDelete":     s.OnCronDelete,     // 删除任务

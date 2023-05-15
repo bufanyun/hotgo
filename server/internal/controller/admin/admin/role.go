@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package admin
 
 import (
@@ -103,7 +102,7 @@ func (c *cRole) UpdatePermissions(ctx context.Context, req *role.UpdatePermissio
 }
 
 // DataScopeSelect 获取数据权限选项
-func (c *cRole) DataScopeSelect(ctx context.Context, req *role.DataScopeSelectReq) (res *role.DataScopeSelectRes, err error) {
+func (c *cRole) DataScopeSelect(ctx context.Context, _ *role.DataScopeSelectReq) (res *role.DataScopeSelectRes, err error) {
 	data := service.AdminRole().DataScopeSelect(ctx)
 	res = new(role.DataScopeSelectRes)
 	res.List = data

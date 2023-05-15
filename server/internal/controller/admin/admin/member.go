@@ -96,54 +96,15 @@ func (c *cMember) ResetPwd(ctx context.Context, req *member.ResetPwdReq) (res *m
 	return
 }
 
-// EmailUnique 邮箱是否唯一
-func (c *cMember) EmailUnique(ctx context.Context, req *member.EmailUniqueReq) (res *member.EmailUniqueRes, err error) {
-	var in = adminin.MemberEmailUniqueInp{
-		Id:    req.Id,
-		Email: req.Email,
-	}
-
-	data, err := service.AdminMember().EmailUnique(ctx, in)
+// MemberInfo 登录用户信息
+func (c *cMember) MemberInfo(ctx context.Context, _ *member.InfoReq) (res *member.InfoRes, err error) {
+	data, err := service.AdminMember().LoginMemberInfo(ctx)
 	if err != nil {
 		return
 	}
 
-	res = new(member.EmailUniqueRes)
-	res.IsUnique = data.IsUnique
-	return
-}
-
-// MobileUnique 手机号是否唯一
-func (c *cMember) MobileUnique(ctx context.Context, req *member.MobileUniqueReq) (res *member.MobileUniqueRes, err error) {
-	var in = adminin.MemberMobileUniqueInp{
-		Id:     req.Id,
-		Mobile: req.Mobile,
-	}
-
-	data, err := service.AdminMember().MobileUnique(ctx, in)
-	if err != nil {
-		return
-	}
-
-	res = new(member.MobileUniqueRes)
-	res.IsUnique = data.IsUnique
-	return
-}
-
-// NameUnique 名称是否唯一
-func (c *cMember) NameUnique(ctx context.Context, req *member.NameUniqueReq) (res *member.NameUniqueRes, err error) {
-	var in = adminin.MemberNameUniqueInp{
-		Id:       req.Id,
-		Username: req.Username,
-	}
-
-	data, err := service.AdminMember().NameUnique(ctx, in)
-	if err != nil {
-		return
-	}
-
-	res = new(member.NameUniqueRes)
-	res.IsUnique = data.IsUnique
+	res = new(member.InfoRes)
+	res.LoginMemberInfoModel = data
 	return
 }
 
@@ -203,18 +164,6 @@ func (c *cMember) List(ctx context.Context, req *member.ListReq) (res *member.Li
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-	return
-}
-
-// LoginInfo 登录用户信息
-func (c *cMember) LoginInfo(ctx context.Context, req *member.LoginInfoReq) (res *member.LoginInfoRes, err error) {
-	data, err := service.AdminMember().LoginMemberInfo(ctx)
-	if err != nil {
-		return
-	}
-
-	res = new(member.LoginInfoRes)
-	res.LoginMemberInfoModel = data
 	return
 }
 

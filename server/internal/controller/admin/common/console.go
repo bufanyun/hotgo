@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package common
 
 import (
@@ -16,7 +15,7 @@ var Console = cConsole{}
 type cConsole struct{}
 
 // Stat 综合数据统计
-func (c *cConsole) Stat(ctx context.Context, req *common.ConsoleStatReq) (res *common.ConsoleStatRes, err error) {
+func (c *cConsole) Stat(_ context.Context, _ *common.ConsoleStatReq) (res *common.ConsoleStatRes, err error) {
 	res = new(common.ConsoleStatRes)
 
 	res.Visits.DayVisits = 12010

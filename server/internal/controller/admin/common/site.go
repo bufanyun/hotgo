@@ -16,7 +16,6 @@ import (
 	"hotgo/internal/library/captcha"
 	"hotgo/internal/library/token"
 	"hotgo/internal/model/input/adminin"
-	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/validate"
 )
@@ -26,12 +25,12 @@ var Site = cSite{}
 type cSite struct{}
 
 // Ping ping
-func (c *cSite) Ping(ctx context.Context, req *common.SitePingReq) (res *common.SitePingRes, err error) {
+func (c *cSite) Ping(_ context.Context, _ *common.SitePingReq) (res *common.SitePingRes, err error) {
 	return
 }
 
 // Config 获取配置
-func (c *cSite) Config(ctx context.Context, req *common.SiteConfigReq) (res *common.SiteConfigRes, err error) {
+func (c *cSite) Config(ctx context.Context, _ *common.SiteConfigReq) (res *common.SiteConfigRes, err error) {
 	request := ghttp.RequestFromCtx(ctx)
 	res = &common.SiteConfigRes{
 		Version: consts.VersionApp,
@@ -71,35 +70,77 @@ func (c *cSite) getDomain(ctx context.Context, request *ghttp.Request) string {
 	return basic.Domain
 }
 
+// LoginConfig 登录配置
+func (c *cSite) LoginConfig(ctx context.Context, _ *common.SiteLoginConfigReq) (res *common.SiteLoginConfigRes, err error) {
+	res = new(common.SiteLoginConfigRes)
+	login, err := service.SysConfig().GetLogin(ctx)
+	if err != nil {
+		return
+	}
+
+	res.LoginConfig = login
+	return
+}
+
 // Captcha 登录验证码
-func (c *cSite) Captcha(ctx context.Context, req *common.LoginCaptchaReq) (res *common.LoginCaptchaRes, err error) {
+func (c *cSite) Captcha(ctx context.Context, _ *common.LoginCaptchaReq) (res *common.LoginCaptchaRes, err error) {
 	cid, base64 := captcha.Generate(ctx)
 	res = &common.LoginCaptchaRes{Cid: cid, Base64: base64}
 	return
 }
 
-// Login 提交登录
-func (c *cSite) Login(ctx context.Context, req *common.LoginReq) (res *common.LoginRes, err error) {
-	var in adminin.MemberLoginInp
+// Register 账号注册
+func (c *cSite) Register(ctx context.Context, req *common.RegisterReq) (res *common.RegisterRes, err error) {
+	var in adminin.RegisterInp
 	if err = gconv.Scan(req, &in); err != nil {
 		return
 	}
 
-	defer func() {
-		var response = new(adminin.MemberLoginModel)
-		if res != nil && res.MemberLoginModel != nil {
-			response = res.MemberLoginModel
-		}
-		service.SysLoginLog().Push(ctx, sysin.LoginLogPushInp{Input: in, Response: response, Err: err})
-	}()
-
-	// 校验 验证码
-	if !req.IsLock && !captcha.Verify(req.Cid, req.Code) {
-		err = gerror.New("验证码错误")
+	if err = validate.PreFilter(ctx, &in); err != nil {
 		return
 	}
 
-	model, err := service.AdminMember().Login(ctx, in)
+	err = service.AdminSite().Register(ctx, in)
+	return
+}
+
+// AccountLogin 账号登录
+func (c *cSite) AccountLogin(ctx context.Context, req *common.AccountLoginReq) (res *common.AccountLoginRes, err error) {
+	var in adminin.AccountLoginInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	login, err := service.SysConfig().GetLogin(ctx)
+	if err != nil {
+		return
+	}
+
+	if login.CaptchaSwitch == 1 {
+		// 校验 验证码
+		if !req.IsLock && !captcha.Verify(req.Cid, req.Code) {
+			err = gerror.New("验证码错误")
+			return
+		}
+	}
+
+	model, err := service.AdminSite().AccountLogin(ctx, in)
+	if err != nil {
+		return
+	}
+
+	err = gconv.Scan(model, &res)
+	return
+}
+
+// MobileLogin 手机号登录
+func (c *cSite) MobileLogin(ctx context.Context, req *common.MobileLoginReq) (res *common.MobileLoginRes, err error) {
+	var in adminin.MobileLoginInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	model, err := service.AdminSite().MobileLogin(ctx, in)
 	if err != nil {
 		return
 	}
@@ -109,7 +150,7 @@ func (c *cSite) Login(ctx context.Context, req *common.LoginReq) (res *common.Lo
 }
 
 // Logout 注销登录
-func (c *cSite) Logout(ctx context.Context, req *common.LoginLogoutReq) (res *common.LoginLogoutRes, err error) {
+func (c *cSite) Logout(ctx context.Context, _ *common.LoginLogoutReq) (res *common.LoginLogoutRes, err error) {
 	err = token.Logout(ghttp.RequestFromCtx(ctx))
 	return
 }

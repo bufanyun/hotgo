@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -99,7 +98,7 @@ func (c *cCronGroup) Status(ctx context.Context, req *cron.GroupStatusReq) (res 
 }
 
 // Select 选项
-func (c *cCronGroup) Select(ctx context.Context, req *cron.GroupSelectReq) (res *cron.GroupSelectRes, err error) {
+func (c *cCronGroup) Select(ctx context.Context, _ *cron.GroupSelectReq) (res *cron.GroupSelectRes, err error) {
 	data, err := service.SysCronGroup().Select(ctx, sysin.CronGroupSelectInp{})
 	if err != nil {
 		return

@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent } from 'vue';
   import { HardwareChip, Bookmark, AppsSharp, PieChart, Analytics } from '@vicons/ionicons5';
 
   export default defineComponent({
@@ -79,12 +79,7 @@
       },
     },
     setup() {
-      // const loading = ref(true);
-      // setTimeout(() => {
-      //   loading.value = false;
-      // }, 1000);
       return {
-        // loading,
         Bookmark,
         AppsSharp,
         PieChart,
