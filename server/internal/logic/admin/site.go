@@ -12,6 +12,7 @@ import (
 	"hotgo/internal/dao"
 	"hotgo/internal/library/token"
 	"hotgo/internal/model"
+	"hotgo/internal/model/do"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/sysin"
@@ -252,6 +253,16 @@ func (s *sAdminSite) handleLogin(ctx context.Context, mb *entity.AdminMember) (r
 	loginToken, expires, err := token.Login(ctx, user)
 	if err != nil {
 		return nil, err
+	}
+
+	update := do.AdminMember{
+		LastActiveAt: user.LoginAt,
+	}
+
+	// 更新登录信息
+	if _, err = dao.AdminMember.Ctx(ctx).Data(update).Where(do.AdminMember{Id: mb.Id}).Update(); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return
 	}
 
 	res = &adminin.LoginModel{

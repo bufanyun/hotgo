@@ -294,11 +294,6 @@ func (server *Server) Close() {
 	server.wgLn.Wait()
 }
 
-// IsClose 服务是否关闭
-func (server *Server) IsClose() bool {
-	return server.closeFlag
-}
-
 // Write 向指定客户端发送消息
 func (server *Server) Write(conn *gtcp.Conn, data interface{}) (err error) {
 	if server.closeFlag {

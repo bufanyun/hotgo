@@ -20,9 +20,9 @@ func (s *sHook) accessLog(r *ghttp.Request) {
 	if r.IsFileRequest() {
 		return
 	}
-
 	var ctx = contexts.Detach(r.Context())
-	if contexts.Get(ctx) == nil {
+	modelCtx := contexts.Get(ctx)
+	if modelCtx == nil {
 		return
 	}
 

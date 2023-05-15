@@ -27,7 +27,6 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 			"@{.description}": sk.Description,
 			"@{.author}":      sk.Author,
 			"@{.version}":     sk.Version,
-			"@{.hgVersion}":   consts.VersionApp, // HG 版本
 		}
 	)
 

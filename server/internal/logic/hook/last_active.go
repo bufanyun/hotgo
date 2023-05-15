@@ -79,6 +79,7 @@ func (s *sHook) lastAdminActive(r *ghttp.Request) {
 			_, err := g.Model("admin_member").
 				Ctx(ctx).
 				Where("id", member.Id).
+				WhereLT("last_active_at", gtime.Now()).
 				Data(g.Map{"last_active_at": gtime.Now()}).
 				Update()
 			if err != nil {

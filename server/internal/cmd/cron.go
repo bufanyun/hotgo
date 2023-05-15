@@ -7,10 +7,10 @@ package cmd
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcmd"
 	"hotgo/internal/crons"
 	"hotgo/internal/service"
+	"os"
 )
 
 var (
@@ -25,18 +25,17 @@ var (
 			// tcp客户端
 			service.CronClient().Start(ctx)
 
-			serverWg.Add(1)
-
-			// 信号监听
-			signalListen(ctx, signalHandlerForOverall)
-			select {
-			case <-serverCloseSignal:
+			// 退出信号监听
+			signalListen(ctx, func(sig os.Signal) {
 				service.CronClient().Stop(ctx)
 				crons.StopALL()
-				serverWg.Done()
-			}
+				serverCloseSignal <- struct{}{}
+			})
 
-			g.Log().Debug(ctx, "cron successfully closed ..")
+			select {
+			case <-serverCloseSignal:
+				// ...
+			}
 			return
 		},
 	}

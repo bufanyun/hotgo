@@ -13,7 +13,8 @@ import (
 )
 
 var (
-	Main = &gcmd.Command{
+	serverCloseSignal chan struct{}
+	Main              = &gcmd.Command{
 		Description: `默认启动所有服务`,
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			return All.Func(ctx, parser)
@@ -75,10 +76,10 @@ var (
 
 			select {
 			case <-serverCloseSignal:
-				serverWg.Wait()
+				// ...
 			}
 
-			g.Log().Debug(ctx, "all service successfully closed ..")
+			g.Log().Debug(ctx, "service successfully closed ..")
 			return
 		},
 	}
@@ -88,4 +89,5 @@ func init() {
 	if err := Main.AddCommand(All, Http, Queue, Cron, Auth, Tools, Help); err != nil {
 		panic(err)
 	}
+	serverCloseSignal = make(chan struct{}, 1)
 }

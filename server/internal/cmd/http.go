@@ -10,11 +10,13 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
+	"hotgo/internal/crons"
 	"hotgo/internal/library/addons"
 	"hotgo/internal/library/casbin"
 	"hotgo/internal/router"
 	"hotgo/internal/service"
 	"hotgo/internal/websocket"
+	"os"
 )
 
 var (
@@ -75,20 +77,13 @@ var (
 			// https
 			setSSL(ctx, s)
 
-			serverWg.Add(1)
-
-			// 信号监听
-			signalListen(ctx, signalHandlerForOverall)
-			go func() {
-				select {
-				case <-serverCloseSignal:
-					websocket.Stop()
-					service.TCPServer().Stop(ctx)
-					s.Shutdown() // 主服务建议放在最后一个关闭
-					g.Log().Debug(ctx, "http successfully closed ..")
-					serverWg.Done()
-				}
-			}()
+			// 退出信号监听
+			signalListen(ctx, func(sig os.Signal) {
+				s.Shutdown()
+				crons.StopALL()
+				websocket.Stop()
+				service.TCPServer().Stop(ctx)
+			})
 
 			// Just run the server.
 			s.Run()

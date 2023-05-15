@@ -16,8 +16,7 @@
 - [目录结构](sys-catalog.md)
 - [开发规范](sys-exploit.md)
 - [控制台](sys-console.md)
-- [中间件/拦截器](sys-middleware.md)
-- [WebHook](sys-webhook.md)
+- 请求中间件和WebHook
 - [权限控制](sys-auth.md)
 - [支付网关](sys-payment.md)
 - [数据库](sys-db.md)

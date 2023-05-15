@@ -76,7 +76,7 @@ func (s *sCronClient) Start(ctx context.Context) {
 
 // Stop 停止服务
 func (s *sCronClient) Stop(ctx context.Context) {
-	if s.client != nil && !s.client.IsStop() {
+	if s.client != nil {
 		s.client.Stop()
 		g.Log().Debug(ctx, "CronClient stop..")
 	}

@@ -2,9 +2,11 @@ package adminin
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/encoding/gbase64"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
-	"hotgo/utility/simple"
+	"hotgo/internal/consts"
+	"hotgo/utility/encrypt"
 )
 
 // RegisterInp 账号注册
@@ -18,10 +20,17 @@ type RegisterInp struct {
 
 func (in *RegisterInp) Filter(ctx context.Context) (err error) {
 	// 解密密码
-	password, err := simple.DecryptText(in.Password)
+	str, err := gbase64.Decode([]byte(in.Password))
 	if err != nil {
 		return err
 	}
+
+	str, err = encrypt.AesECBDecrypt(str, consts.RequestEncryptKey)
+	if err != nil {
+		return err
+	}
+
+	password := string(str)
 
 	if err = g.Validator().Data(password).Rules("password").Messages("密码长度在6~18之间").Run(ctx); err != nil {
 		return

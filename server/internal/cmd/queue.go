@@ -25,14 +25,12 @@ var (
 				g.Log().Debug(ctx, "start queue consumer success..")
 			})
 
-			serverWg.Add(1)
-
 			// 信号监听
 			signalListen(ctx, signalHandlerForOverall)
 
 			select {
 			case <-serverCloseSignal:
-				serverWg.Done()
+				// ...
 			}
 
 			g.Log().Debug(ctx, "queue successfully closed ..")

@@ -7,9 +7,7 @@ package consts
 
 import "github.com/gogf/gf/v2/util/gconv"
 
-// RequestEncryptKey
-// 请求加密密钥用于敏感数据加密，16位字符，前后端需保持一致
-// 安全起见，生产环境运行时请注意修改
+// RequestEncryptKey 请求加密密钥用于敏感数据加密，16位字符，前后端需保持一致。安全起见请修改此值
 var RequestEncryptKey = []byte("f080a463654b2279")
 
 // 配置数据类型

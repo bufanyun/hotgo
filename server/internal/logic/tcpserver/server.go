@@ -53,17 +53,15 @@ func (s *sTCPServer) Start(ctx context.Context) {
 		})
 
 		// 服务监听
-		if err = s.serv.Listen(); err != nil {
-			if !s.serv.IsClose() {
-				g.Log().Warningf(ctx, "TCPServer Listen err:%v", err)
-			}
+		if err := s.serv.Listen(); err != nil {
+			g.Log().Warningf(ctx, "TCPServer Listen err:%v", err)
 		}
 	})
 }
 
 // Stop 关闭服务
 func (s *sTCPServer) Stop(ctx context.Context) {
-	if s.serv != nil && !s.serv.IsClose() {
+	if s.serv != nil {
 		s.serv.Close()
 		g.Log().Debug(ctx, "TCPServer stop..")
 	}

@@ -1,6 +1,6 @@
 <template>
   <QuillEditor
-    ref="quillEditorRef"
+    ref="quillEditor"
     toolbar="full"
     v-model:content="content"
     @ready="readyQuill"
@@ -33,7 +33,7 @@
   const emit = defineEmits(['update:value']);
   const message = useMessage();
   const initFinish = ref(false);
-  const quillEditorRef = ref();
+  const quillEditor = ref();
   const content = ref();
   const props = withDefaults(defineProps<Props>(), {
     value: '',
@@ -41,14 +41,14 @@
   });
 
   function readyQuill() {
-    quillEditorRef.value.setHTML(props.value);
+    quillEditor.value.setHTML(props.value);
   }
 
   watch(
     () => props.value,
     (newValue) => {
       if (!initFinish.value) {
-        quillEditorRef.value?.setHTML(newValue);
+        quillEditor.value?.setHTML(newValue);
       }
     },
     {
@@ -67,7 +67,7 @@
   }
 
   function onUpdateContent() {
-    emit('update:value', quillEditorRef.value.getHTML());
+    emit('update:value', quillEditor.value.getHTML());
   }
 
   function checkFileType(map: string[], fileType: string) {
