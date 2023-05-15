@@ -162,11 +162,13 @@ type LoginConfig struct {
 	RegisterSwitch int     `json:"loginRegisterSwitch"`
 	CaptchaSwitch  int     `json:"loginCaptchaSwitch"`
 	Avatar         string  `json:"loginAvatar"`
-	Protocol       string  `json:"loginProtocol"`
-	Policy         string  `json:"loginPolicy"`
 	RoleId         int64   `json:"loginRoleId"`
 	DeptId         int64   `json:"loginDeptId"`
 	PostIds        []int64 `json:"loginPostIds"`
+	Protocol       string  `json:"loginProtocol"`
+	Policy         string  `json:"loginPolicy"`
+	AutoOpenId     int     `json:"loginAutoOpenId"`
+	ForceInvite    int     `json:"loginForceInvite"`
 }
 
 ///////////// 以下是本地配置

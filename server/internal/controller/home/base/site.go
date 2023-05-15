@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package base
 
 import (
@@ -20,7 +19,7 @@ var Site = cSite{}
 
 type cSite struct{}
 
-func (a *cSite) Index(ctx context.Context, req *base.SiteIndexReq) (res *base.SiteIndexRes, err error) {
+func (a *cSite) Index(ctx context.Context, _ *base.SiteIndexReq) (res *base.SiteIndexRes, err error) {
 	service.View().Render(ctx, model.View{Data: g.Map{
 		"name":    "HotGo",
 		"version": consts.VersionApp,

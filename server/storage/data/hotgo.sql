@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
--- 主机： localhost
--- 生成日期： 2023-05-14 08:51:30
--- 服务器版本： 5.7.41
--- PHP 版本： 7.3.33
+-- 主机： localhost:3306
+-- 生成日期： 2023-05-15 10:04:47
+-- 服务器版本： 5.7.38-log
+-- PHP 版本： 5.6.40
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -72,8 +73,8 @@ CREATE TABLE `hg_addon_hgexample_table` (
 --
 
 INSERT INTO `hg_addon_hgexample_table` (`id`, `category_id`, `flag`, `title`, `description`, `content`, `image`, `images`, `attachfile`, `attachfiles`, `map`, `star`, `price`, `views`, `activity_at`, `start_at`, `end_at`, `switch`, `sort`, `avatar`, `sex`, `qq`, `email`, `mobile`, `hobby`, `channel`, `city_id`, `pid`, `level`, `tree`, `remark`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, '[1, 2]', '测试标题', '描述', '<p>这是内容............</p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '[{\"key\": \"qwe\", \"value\": \"123\"}, {\"key\": \"asd\", \"value\": \"456\"}]', 3.0, 88.00, 10, '2022-12-23', '2022-12-01 00:00:00', '2022-12-31 23:59:59', 1, 20, '', 15, '133814250', '133814250@qq.com', '15303830571', '[3, 2, 1]', 1, 140406, 0, 1, '', '备注！', 1, 1, 3, '2022-12-15 19:30:14', '2023-04-28 16:46:17', NULL),
-(2, 0, '[1]', '测试2', '描述', '<h2><strong>不知道写点啥！</strong></h2><p><br></p><p><img src=\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png\"></p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '{}', 2.5, 10.00, 0, '2023-02-18', NULL, NULL, 2, 30, '', 0, '', '1561561@qq.com', '15303830571', '[2, 1]', 3, 140214, 0, 1, '', '', 1, 1, 1, '2023-02-06 14:17:11', '2023-02-23 13:59:01', NULL);
+(1, 1, '[1, 2]', '测试标题', '描述', '<p>这是内容............</p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqamvhlq4w3ki6bl.webp', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqap5l9brk2lkavu.jpg\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaqua7fw8ukbbp5.jpg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx\", \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '[{\"key\": \"qwe\", \"value\": \"123\"}, {\"key\": \"asd\", \"value\": \"456\"}]', '3.0', '88.00', 10, '2022-12-23', '2022-12-01 00:00:00', '2022-12-31 23:59:59', 1, 20, '', 15, '133814250', '133814250@qq.com', '15303830571', '[3, 2, 1]', 1, 140406, 0, 1, '', '备注！', 1, 1, 3, '2022-12-15 19:30:14', '2023-04-28 16:46:17', NULL),
+(2, 0, '[1]', '测试2', '描述', '<h2><strong>不知道写点啥！</strong></h2><p><br></p><p><img src=\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbknawlkgdttuxl.png\"></p>', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqbmxmtaq06gbnqa.jpeg', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqborf529kf4cxbm.jpeg\"]', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqawg96ba4cuezvv.xlsx', '[\"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdqaup19k9oznyixz.doc\"]', '{}', '2.5', '10.00', 0, '2023-02-18', NULL, NULL, 2, 30, '', 0, '', '1561561@qq.com', '15303830571', '[2, 1]', 3, 140214, 0, 1, '', '', 1, 1, 1, '2023-02-06 14:17:11', '2023-02-23 13:59:01', NULL);
 
 -- --------------------------------------------------------
 
@@ -198,9 +199,9 @@ CREATE TABLE `hg_admin_member` (
 --
 
 INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `username`, `password_hash`, `salt`, `password_reset_token`, `integral`, `balance`, `avatar`, `sex`, `qq`, `email`, `mobile`, `birthday`, `city_id`, `address`, `pid`, `level`, `tree`, `invite_code`, `cash`, `last_active_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '', 89.00, 99391.78, 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '111', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-05-14 16:44:27', NULL, 1, '2021-02-12 17:59:45', '2023-05-14 16:44:27'),
-(3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '', 0.00, 4.00, 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', '222', NULL, '2023-05-14 12:29:15', '', 1, '2022-02-11 17:59:45', '2023-05-14 12:29:15'),
-(8, 101, 200, 'ameng', 'ameng', '382df3b083a27886edb94e669a857c33', 'hfuUEb', '', 11.00, 3.22, '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', '333', NULL, '2023-05-14 12:25:24', '', 1, '2023-02-03 17:34:31', '2023-05-14 12:25:24');
+(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '', '89.00', '99391.78', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '111', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-05-15 09:59:29', NULL, 1, '2021-02-12 17:59:45', '2023-05-15 09:59:29'),
+(3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '', '0.00', '4.00', 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', '222', NULL, '2023-05-14 12:29:15', '', 1, '2022-02-11 17:59:45', '2023-05-14 12:29:15'),
+(8, 101, 200, 'ameng', 'ameng', '382df3b083a27886edb94e669a857c33', 'hfuUEb', '', '11.00', '3.22', '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', '333', NULL, '2023-05-14 12:25:24', '', 1, '2023-02-03 17:34:31', '2023-05-14 12:25:24');
 
 -- --------------------------------------------------------
 
@@ -1367,14 +1368,16 @@ INSERT INTO `hg_sys_config` (`id`, `group`, `name`, `type`, `key`, `value`, `def
 (109, 'wechat', '开放平台AppSecret', 'string', 'openPlatformAppSecret', '', '', 1050, '请填写微信开放平台平台后台的AppSecret', 1, 1, '2021-01-30 13:27:43', '2023-04-30 22:26:12'),
 (110, 'wechat', '开放平台EncodingAESKey', 'string', 'openPlatformEncodingAESKey', '', '', 1060, '与开放平台接入设置值一致，必须为英文或者数字，长度为43个字符. 请妥善保管,EncodingAESKey 泄露将可能被窃取或篡改平台的操作数据', 1, 1, '2021-01-30 13:27:43', '2023-04-30 22:26:12'),
 (111, 'wechat', '开放平台token', 'string', 'openPlatformToken', '', '', 1070, '', 1, 1, '2021-01-30 13:27:43', '2023-04-30 22:26:12'),
-(112, 'login', '注册开关', 'int', 'loginRegisterSwitch', '1', '1', 1100, '', 1, 1, '2021-09-29 23:51:21', '2023-05-14 16:35:46'),
-(113, 'login', '验证码开关', 'int', 'loginCaptchaSwitch', '1', '1', 1110, '', 1, 1, '2021-09-29 23:51:21', '2023-05-14 16:35:46'),
-(114, 'login', '用户协议', 'string', 'loginProtocol', '<p><span style=\"color: rgb(31, 34, 37);\">用户协议..</span></p>', '', 1120, '', 1, 1, '2021-09-29 23:51:21', '2023-05-14 16:35:46'),
-(115, 'login', '隐私权政策', 'string', 'loginPolicy', '<p><span style=\"color: rgb(31, 34, 37);\">隐私权政策..</span></p>', '', 1130, '', 1, 1, '2021-09-29 23:51:21', '2023-05-14 16:35:46'),
-(116, 'login', '默认注册角色', 'int64', 'loginRoleId', '202', '', 1140, '', 1, 1, '2021-09-29 23:51:21', '2023-05-14 16:35:46'),
-(117, 'login', '默认注册部门', 'int64', 'loginDeptId', '112', '', 1150, '', 1, 1, '2021-09-29 23:51:21', '2023-05-14 16:35:46'),
-(118, 'login', '默认注册岗位', '[]int64', 'loginPostIds', '[4,6]', '', 1160, '', 1, 1, '2021-09-29 23:51:21', '2023-05-14 16:35:46'),
-(119, 'login', '默认注册头像', 'string', 'loginAvatar', 'http://localhost:8000/attachment/2023-05-14/csltf747yrr4gd4kc5.png', '', 1170, '', 1, 1, '2021-09-29 23:51:21', '2023-05-14 16:35:46');
+(112, 'login', '注册开关', 'int', 'loginRegisterSwitch', '1', '1', 1100, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
+(113, 'login', '验证码开关', 'int', 'loginCaptchaSwitch', '1', '1', 1110, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
+(114, 'login', '用户协议', 'string', 'loginProtocol', '<p><span style=\"color: rgb(31, 34, 37);\">用户协议..</span></p>', '', 1120, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
+(115, 'login', '隐私权政策', 'string', 'loginPolicy', '<p><span style=\"color: rgb(31, 34, 37);\">隐私权政策..</span></p>', '', 1130, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
+(116, 'login', '默认注册角色', 'int64', 'loginRoleId', '202', '', 1140, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
+(117, 'login', '默认注册部门', 'int64', 'loginDeptId', '112', '', 1150, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
+(118, 'login', '默认注册岗位', '[]int64', 'loginPostIds', '[6]', '', 1160, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
+(119, 'login', '默认注册头像', 'string', 'loginAvatar', 'http://localhost:8000/attachment/2023-05-14/csltf747yrr4gd4kc5.png', '', 1170, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
+(120, 'login', '强制邀请', 'int', 'loginForceInvite', '2', '1', 1190, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
+(121, 'login', '自动获取openId', 'int', 'loginAutoOpenId', '2', '1', 1195, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09');
 
 -- --------------------------------------------------------
 
@@ -5941,7 +5944,7 @@ ALTER TABLE `hg_sys_blacklist`
 -- 使用表AUTO_INCREMENT `hg_sys_config`
 --
 ALTER TABLE `hg_sys_config`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '配置ID', AUTO_INCREMENT=120;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '配置ID', AUTO_INCREMENT=122;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_cron`

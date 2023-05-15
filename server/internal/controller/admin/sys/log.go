@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -22,7 +21,7 @@ var Log = sLog{}
 type sLog struct{}
 
 // Clear 清空日志
-func (c *sLog) Clear(ctx context.Context, req *log.ClearReq) (res *log.ClearRes, err error) {
+func (c *sLog) Clear(ctx context.Context, _ *log.ClearReq) (res *log.ClearRes, err error) {
 	err = gerror.New("暂时考虑到安全问题，请到数据库清空")
 	return
 }

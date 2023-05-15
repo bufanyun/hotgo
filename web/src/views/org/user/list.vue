@@ -229,7 +229,7 @@
 
 <script lang="ts" setup>
   import { h, reactive, ref } from 'vue';
-  import { SelectOption, TreeSelectOption, useDialog, useMessage } from 'naive-ui';
+  import { useDialog, useMessage } from 'naive-ui';
   import { ActionItem, BasicTable, TableAction } from '@/components/Table';
   import { BasicForm } from '@/components/Form/index';
   import { Delete, Edit, List, Status, ResetPwd } from '@/api/org/user';
@@ -245,9 +245,9 @@
   import AddIntegral from './addIntegral.vue';
   import { addNewState, addState, options, register, defaultState } from './model';
   import { usePermission } from '@/hooks/web/usePermission';
-  import { useRouter } from 'vue-router';
   import { useUserStore } from '@/store/modules/user';
   import { LoginRoute } from '@/router';
+  import { getNowUrl } from '@/utils/urlUtils';
 
   interface Props {
     type?: string;
@@ -266,7 +266,6 @@
   };
 
   const { hasPermission } = usePermission();
-  const router = useRouter();
   const userStore = useUserStore();
   const showIntegralModal = ref(false);
   const showBalanceModal = ref(false);
@@ -489,24 +488,15 @@
     });
   }
 
-  function handleUpdateDeptValue(
-    value: string | number | Array<string | number> | null,
-    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
-  ) {
+  function handleUpdateDeptValue(value) {
     formParams.value.deptId = Number(value);
   }
 
-  function handleUpdateRoleValue(
-    value: string | number | Array<string | number> | null,
-    _option: SelectOption | null | Array<SelectOption | null>
-  ) {
+  function handleUpdateRoleValue(value) {
     formParams.value.roleId = Number(value);
   }
 
-  function handleUpdatePostValue(
-    value: string | number | Array<string | number> | null,
-    _option: SelectOption | null | Array<SelectOption | null>
-  ) {
+  function handleUpdatePostValue(value) {
     formParams.value.postIds = value;
   }
 
@@ -529,8 +519,7 @@
   }
 
   function handleInviteQR(code: string) {
-    const w = window.location;
-    const domain = w.protocol + '//' + w.host + w.pathname + '#';
+    const domain = getNowUrl() + '#';
     qrParams.value.qrUrl = domain + LoginRoute.path + '?scope=register&inviteCode=' + code;
     showQrModal.value = true;
   }

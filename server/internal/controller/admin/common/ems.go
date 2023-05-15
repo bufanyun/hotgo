@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package common
 
 import (
@@ -43,7 +42,7 @@ func (c *cEms) SendTest(ctx context.Context, req *common.SendTestEmailReq) (res 
 }
 
 // SendBindEms 发送换绑邮件
-func (c *cSms) SendBindEms(ctx context.Context, req *common.SendBindEmsReq) (res *common.SendBindEmsRes, err error) {
+func (c *cSms) SendBindEms(ctx context.Context, _ *common.SendBindEmsReq) (res *common.SendBindEmsRes, err error) {
 	var (
 		memberId = contexts.GetUserId(ctx)
 		models   *entity.AdminMember

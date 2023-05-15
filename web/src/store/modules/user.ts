@@ -17,6 +17,7 @@ import {
   logout,
   mobileLogin,
 } from '@/api/system/user';
+import { isWechatBrowser } from '@/utils/is';
 const Storage = createStorage({ storage: localStorage });
 
 export interface UserInfoState {
@@ -59,6 +60,7 @@ export interface ConfigState {
 export interface LoginConfigState {
   loginRegisterSwitch: number;
   loginCaptchaSwitch: number;
+  loginAutoOpenId: number;
   loginProtocol: string;
   loginPolicy: string;
 }
@@ -217,6 +219,18 @@ export const useUserStore = defineStore({
             reject(error);
           });
       });
+    },
+    // 是否允许获取微信openid
+    allowWxOpenId(): boolean {
+      if (!isWechatBrowser()) {
+        return false;
+      }
+
+      if (this.loginConfig?.loginAutoOpenId !== 1) {
+        return false;
+      }
+
+      return this.info?.openId === '';
     },
     // 登出
     async logout() {

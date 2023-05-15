@@ -32,8 +32,17 @@ func init() {
 
 // Register 账号注册
 func (s *sAdminSite) Register(ctx context.Context, in adminin.RegisterInp) (err error) {
-	var data adminin.MemberAddInp
+	config, err := service.SysConfig().GetLogin(ctx)
+	if err != nil {
+		return
+	}
 
+	if config.ForceInvite == 1 && in.InviteCode == "" {
+		err = gerror.New("请填写邀请码")
+		return
+	}
+
+	var data adminin.MemberAddInp
 	// 默认上级
 	data.Pid = 1
 
@@ -50,11 +59,6 @@ func (s *sAdminSite) Register(ctx context.Context, in adminin.RegisterInp) (err 
 		}
 
 		data.Pid = pmb.Id
-	}
-
-	config, err := service.SysConfig().GetLogin(ctx)
-	if err != nil {
-		return
 	}
 
 	if config.RegisterSwitch != 1 {
@@ -123,10 +127,15 @@ func (s *sAdminSite) Register(ctx context.Context, in adminin.RegisterInp) (err 
 	return g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
 		id, err := dao.AdminMember.Ctx(ctx).Data(data).InsertAndGetId()
 		if err != nil {
+			err = gerror.Wrap(err, consts.ErrorORM)
 			return
 		}
 
-		return dao.AdminMemberPost.UpdatePostIds(ctx, id, config.PostIds)
+		// 更新岗位
+		if err = dao.AdminMemberPost.UpdatePostIds(ctx, id, config.PostIds); err != nil {
+			err = gerror.Wrap(err, consts.ErrorORM)
+		}
+		return
 	})
 }
 
@@ -252,6 +261,7 @@ func (s *sAdminSite) handleLogin(ctx context.Context, mb *entity.AdminMember) (r
 
 	// 更新登录信息
 	if _, err = dao.AdminMember.Ctx(ctx).Data(update).Where(do.AdminMember{Id: mb.Id}).Update(); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
 

@@ -36,7 +36,6 @@ func (c *cSite) Config(ctx context.Context, _ *common.SiteConfigReq) (res *commo
 		Version: consts.VersionApp,
 		WsAddr:  c.getWsAddr(ctx, request),
 		Domain:  c.getDomain(ctx, request),
-		//InviteUrl: "http://192.168.1.27:8001/#/login?scope=register&inviteCode=",
 	}
 	return
 }

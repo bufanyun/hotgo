@@ -18,7 +18,11 @@
           </n-icon>
         </a>
       </div>
-      <div class="flex-initial" style="margin-left: auto" v-if="userStore.loginConfig?.loginRegisterSwitch === 1">
+      <div
+        class="flex-initial"
+        style="margin-left: auto"
+        v-if="userStore.loginConfig?.loginRegisterSwitch === 1"
+      >
         <a @click="updateActiveModule(moduleKey)">{{ tag }}</a>
       </div>
     </div>
@@ -27,9 +31,8 @@
 
 <script lang="ts" setup>
   import { LogoWechat, LogoTiktok } from '@vicons/ionicons5';
-
   import { useUserStore } from '@/store/modules/user';
-  import {useMessage} from "naive-ui";
+  import { useMessage } from 'naive-ui';
 
   const userStore = useUserStore();
 

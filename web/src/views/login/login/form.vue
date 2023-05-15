@@ -110,7 +110,7 @@
         <n-button :text="true" @click="handleResetPassword">忘记密码？</n-button>
       </div>
       <n-button type="primary" size="large" :block="true" :loading="loading" @click="handleLogin">
-        确定
+        登录
       </n-button>
 
       <FormOther moduleKey="register" tag="注册账号" @updateActiveModule="updateActiveModule" />

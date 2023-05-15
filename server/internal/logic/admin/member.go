@@ -437,6 +437,11 @@ func (s *sAdminMember) Edit(ctx context.Context, in adminin.MemberEditInp) (err 
 		return
 	}
 
+	config, err := service.SysConfig().GetLogin(ctx)
+	if err != nil {
+		return
+	}
+
 	// 修改
 	if in.Id > 0 {
 		if s.VerifySuperId(ctx, in.Id) {
@@ -462,17 +467,20 @@ func (s *sAdminMember) Edit(ctx context.Context, in adminin.MemberEditInp) (err 
 
 		return g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
 			if _, err = mod.Where("id", in.Id).Data(in).Update(); err != nil {
+				err = gerror.Wrap(err, consts.ErrorORM)
 				return
 			}
 
 			// 更新岗位
-			return dao.AdminMemberPost.UpdatePostIds(ctx, in.Id, in.PostIds)
+			if err = dao.AdminMemberPost.UpdatePostIds(ctx, in.Id, in.PostIds); err != nil {
+				err = gerror.Wrap(err, consts.ErrorORM)
+			}
+			return
 		})
 	}
 
 	// 新增用户时的额外属性
 	var data adminin.MemberAddInp
-	data.MemberEditInp = in
 	data.Salt = grand.S(6)
 	data.InviteCode = grand.S(12)
 	data.PasswordHash = gmd5.MustEncryptString(data.Password + data.Salt)
@@ -484,14 +492,24 @@ func (s *sAdminMember) Edit(ctx context.Context, in adminin.MemberEditInp) (err 
 		return
 	}
 
+	// 默认头像
+	if in.Avatar == "" {
+		in.Avatar = config.Avatar
+	}
+	data.MemberEditInp = in
+
 	return g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
 		id, err := dao.AdminMember.Ctx(ctx).Data(data).InsertAndGetId()
 		if err != nil {
+			err = gerror.Wrap(err, consts.ErrorORM)
 			return
 		}
 
 		// 更新岗位
-		return dao.AdminMemberPost.UpdatePostIds(ctx, id, in.PostIds)
+		if err = dao.AdminMemberPost.UpdatePostIds(ctx, id, in.PostIds); err != nil {
+			err = gerror.Wrap(err, consts.ErrorORM)
+		}
+		return
 	})
 }
 

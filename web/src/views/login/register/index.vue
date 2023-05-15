@@ -263,6 +263,7 @@
     modalTitle.value = '用户协议';
     modalContent.value = userStore.loginConfig?.loginProtocol as string;
   }
+
   function handleClickPolicy() {
     showModal.value = true;
     modalTitle.value = '隐私权政策';

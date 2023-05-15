@@ -1,12 +1,8 @@
 <template>
   <div>
     <n-checkbox v-model:checked="checked" class="text-14px">我已阅读并接受</n-checkbox>
-    <n-button :text="true" type="primary" @click="handleClickProtocol" class="text-13px"
-      >《用户协议》</n-button
-    >
-    <n-button :text="true" type="primary" @click="handleClickPolicy" class="text-13px"
-      >《隐私权政策》</n-button
-    >
+    <n-button :text="true" type="primary" @click="handleClickProtocol">《用户协议》</n-button>
+    <n-button :text="true" type="primary" @click="handleClickPolicy">《隐私权政策》</n-button>
   </div>
 </template>
 
@@ -41,6 +37,7 @@
   function handleClickProtocol() {
     emit('click-protocol');
   }
+
   function handleClickPolicy() {
     emit('click-policy');
   }
