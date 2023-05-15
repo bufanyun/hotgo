@@ -6,7 +6,7 @@
     </p>
     <p align="center">
         <a href="https://goframe.org/pages/viewpage.action?pageId=1114119" target="_blank">
-	        <img src="https://img.shields.io/badge/goframe-2.3-green" alt="goframe">
+	        <img src="https://img.shields.io/badge/goframe-2.4-green" alt="goframe">
 	    </a>
 	    <a href="https://v3.vuejs.org/" target="_blank">
 	        <img src="https://img.shields.io/badge/vue.js-vue3.x-green" alt="vue">

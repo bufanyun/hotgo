@@ -118,13 +118,16 @@
     :mask-closable="false"
     preset="dialog"
     :closable="false"
-    :title="modalTitle"
     :style="{
       width: dialogWidth,
       position: 'top',
       bottom: '15vw',
     }"
   >
+    <n-space justify="center">
+      <div class="agree-title">《{{ agreeTitle }}》</div>
+    </n-space>
+
     <div v-html="modalContent"></div>
 
     <n-divider />
@@ -168,7 +171,7 @@
   const userStore = useUserStore();
   const loading = ref(false);
   const showModal = ref(false);
-  const modalTitle = ref('');
+  const agreeTitle = ref('');
   const modalContent = ref('');
   const { sendLabel, isCounting, loading: sendLoading, activateSend } = useSendCode();
   const agreement = ref(false);
@@ -260,13 +263,13 @@
 
   function handleClickProtocol() {
     showModal.value = true;
-    modalTitle.value = '用户协议';
+    agreeTitle.value = '用户协议';
     modalContent.value = userStore.loginConfig?.loginProtocol as string;
   }
 
   function handleClickPolicy() {
     showModal.value = true;
-    modalTitle.value = '隐私权政策';
+    agreeTitle.value = '隐私权政策';
     modalContent.value = userStore.loginConfig?.loginPolicy as string;
   }
 
@@ -276,4 +279,9 @@
   }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .agree-title {
+    font-size: 18px;
+    margin-bottom: 22px;
+  }
+</style>
