@@ -99,6 +99,8 @@ func Logout(r *ghttp.Request) (err error) {
 
 	claims, err := parseToken(ctx, header)
 	if err != nil {
+		g.Log().Debugf(ctx, "logout parseToken err:%+v", err)
+		err = errorLogin
 		return
 	}
 
@@ -138,10 +140,13 @@ func ParseLoginUser(r *ghttp.Request) (user *model.Identity, err error) {
 
 	claims, err := parseToken(ctx, header)
 	if err != nil {
+		g.Log().Debugf(ctx, "parseToken err:%+v", err)
+		err = errorLogin
 		return
 	}
 
 	var (
+		// 认证key
 		authKey = GetAuthKey(header)
 		// 登录token
 		tokenKey = GetTokenKey(claims.App, authKey)
@@ -285,7 +290,7 @@ func GetAuthorization(r *ghttp.Request) string {
 
 // GetAuthKey 认证key
 func GetAuthKey(token string) string {
-	return gmd5.MustEncryptString(token)
+	return gmd5.MustEncryptString("hotgo" + token)
 }
 
 // GetTokenKey 令牌缓存key

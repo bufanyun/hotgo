@@ -227,18 +227,18 @@ func (s *sAdminMember) UpdateMobile(ctx context.Context, in adminin.MemberUpdate
 		return err
 	}
 
-	var memberInfo *entity.AdminMember
-	if err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Scan(&memberInfo); err != nil {
+	var mb *entity.AdminMember
+	if err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Scan(&mb); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
 
-	if memberInfo == nil {
+	if mb == nil {
 		err = gerror.New("用户信息不存在")
 		return err
 	}
 
-	if memberInfo.Mobile == in.Mobile {
+	if mb.Mobile == in.Mobile {
 		err = gerror.New("新旧手机号不能一样")
 		return
 	}
@@ -249,10 +249,10 @@ func (s *sAdminMember) UpdateMobile(ctx context.Context, in adminin.MemberUpdate
 	}
 
 	// 存在原绑定号码，需要进行验证
-	if memberInfo.Mobile != "" {
+	if mb.Mobile != "" {
 		err = service.SysSmsLog().VerifyCode(ctx, sysin.VerifyCodeInp{
 			Event:  consts.SmsTemplateBind,
-			Mobile: memberInfo.Mobile,
+			Mobile: mb.Mobile,
 			Code:   in.Code,
 		})
 		if err != nil {
@@ -264,8 +264,7 @@ func (s *sAdminMember) UpdateMobile(ctx context.Context, in adminin.MemberUpdate
 		dao.AdminMember.Columns().Mobile: in.Mobile,
 	}
 
-	_, err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Data(update).Update()
-	if err != nil {
+	if _, err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Data(update).Update(); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
@@ -281,13 +280,13 @@ func (s *sAdminMember) UpdateProfile(ctx context.Context, in adminin.MemberUpdat
 		return err
 	}
 
-	var memberInfo *entity.AdminMember
-	if err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Scan(&memberInfo); err != nil {
+	var mb *entity.AdminMember
+	if err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Scan(&mb); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
 
-	if memberInfo == nil {
+	if mb == nil {
 		err = gerror.New("用户信息不存在")
 		return err
 	}
@@ -302,8 +301,7 @@ func (s *sAdminMember) UpdateProfile(ctx context.Context, in adminin.MemberUpdat
 		dao.AdminMember.Columns().Address:  in.Address,
 	}
 
-	_, err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Data(update).Update()
-	if err != nil {
+	if _, err = dao.AdminMember.Ctx(ctx).Where("id", memberId).Data(update).Update(); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
@@ -718,7 +716,9 @@ func (s *sAdminMember) MemberLoginStat(ctx context.Context, in adminin.MemberLog
 
 // GetIdByCode 通过邀请码获取用户ID
 func (s *sAdminMember) GetIdByCode(ctx context.Context, in adminin.GetIdByCodeInp) (res *adminin.GetIdByCodeModel, err error) {
-	err = dao.AdminMember.Ctx(ctx).Fields(adminin.GetIdByCodeModel{}).Where("invite_code", in.Code).Scan(&res)
+	if err = dao.AdminMember.Ctx(ctx).Fields(adminin.GetIdByCodeModel{}).Where("invite_code", in.Code).Scan(&res); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+	}
 	return
 }
 
@@ -728,6 +728,9 @@ func (s *sAdminMember) Select(ctx context.Context, in adminin.MemberSelectInp) (
 		Fields("id as value,real_name as label,username,avatar").
 		Handler(handler.FilterAuthWithField("id")).
 		Scan(&res)
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+	}
 	return
 }
 

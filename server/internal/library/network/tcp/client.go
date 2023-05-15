@@ -195,7 +195,9 @@ func (client *Client) connect() {
 reconnect:
 	conn := client.dial()
 	if conn == nil {
-		client.Logger.Debugf(client.Ctx, "client dial failed")
+		if !client.stopFlag {
+			client.Logger.Debugf(client.Ctx, "client dial failed")
+		}
 		return
 	}
 
@@ -309,6 +311,11 @@ func (client *Client) Stop() {
 	client.stopFlag = true
 	client.stopCron()
 	client.Close()
+}
+
+// IsStop 是否已停止
+func (client *Client) IsStop() bool {
+	return client.stopFlag
 }
 
 // Destroy 销毁当前连接

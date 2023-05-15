@@ -7,9 +7,9 @@ package cmd
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcmd"
 	"hotgo/internal/service"
-	"os"
 )
 
 var (
@@ -20,17 +20,17 @@ var (
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			service.AuthClient().Start(ctx)
 
-			// 退出信号监听
-			signalListen(ctx, func(sig os.Signal) {
-				service.AuthClient().Stop(ctx)
-			})
+			serverWg.Add(1)
 
 			// 信号监听
 			signalListen(ctx, signalHandlerForOverall)
 			select {
 			case <-serverCloseSignal:
-				// ...
+				service.AuthClient().Stop(ctx)
+				serverWg.Done()
 			}
+
+			g.Log().Debug(ctx, "auth successfully closed ..")
 			return
 		},
 	}
