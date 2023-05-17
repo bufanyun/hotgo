@@ -7,6 +7,8 @@ package admin
 
 import (
 	"context"
+	"fmt"
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
@@ -91,12 +93,52 @@ func (s *sAdminDept) Edit(ctx context.Context, in adminin.DeptEditInp) (err erro
 
 	// 修改
 	if in.Id > 0 {
-		_, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+
+		// 获取父级tree
+		var pTree gdb.Value
+		pTree, err = dao.AdminDept.Ctx(ctx).Where("id", in.Pid).Fields("tree").Value()
+		if err != nil {
+			return
+		}
+		in.Tree = fmt.Sprintf("%str_%v ", pTree.String(), in.Id)
+
+		err = dao.AdminDept.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+			// 更新数据
+			_, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+			if err != nil {
+				return err
+			}
+
+			// 如果当前部门有子级,更新子级tree关系树
+			return updateChildrenTree(ctx, in.Id, in.Level, in.Tree)
+		})
+
 		return
 	}
 
 	// 新增
 	_, err = dao.AdminDept.Ctx(ctx).Data(in).Insert()
+	return
+}
+
+func updateChildrenTree(ctx context.Context, _id int64, _level int, _tree string) (err error) {
+	var list []*entity.AdminDept
+	err = dao.AdminDept.Ctx(ctx).Where("pid", _id).Scan(&list)
+	if err != nil {
+		return
+	}
+	for _, child := range list {
+		child.Level = _level + 1
+		child.Tree = fmt.Sprintf("%str_%v ", _tree, child.Id)
+		_, err = dao.AdminDept.Ctx(ctx).Where("id", child.Id).Data("level", child.Level, "tree", child.Tree).Update()
+		if err != nil {
+			return err
+		}
+		err = updateChildrenTree(ctx, child.Id, child.Level, child.Tree)
+		if err != nil {
+			return
+		}
+	}
 	return
 }
 

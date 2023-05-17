@@ -196,7 +196,7 @@
     createdAt: string;
     status: number;
     name: string;
-    index: string;
+    id: number;
     children?: RowData[];
   };
   const data = ref([]);
@@ -318,7 +318,7 @@
     },
   ];
 
-  const rowKey = (row: RowData) => row.index;
+  const rowKey = (row: RowData) => row.id;
 
   function addTable() {
     showModal.value = true;
