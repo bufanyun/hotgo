@@ -62,7 +62,7 @@ type MaxSortRes struct {
 
 // StatusReq 更新状态
 type StatusReq struct {
-	entity.AdminNotice
+	entity.SysAttachment
 	g.Meta `path:"/attachment/status" method:"post" tags:"附件" summary:"更新附件状态"`
 }
 type StatusRes struct{}
