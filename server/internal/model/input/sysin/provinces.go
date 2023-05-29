@@ -3,12 +3,15 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sysin
 
 import (
+	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"hotgo/internal/consts"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
+	"hotgo/utility/validate"
 )
 
 // ProvincesMaxSortInp 最大排序
@@ -23,7 +26,49 @@ type ProvincesMaxSortModel struct {
 type ProvincesEditInp struct {
 	entity.SysProvinces
 }
+
+func (in *ProvincesEditInp) Filter(ctx context.Context) (err error) {
+	if in.Title == "" {
+		err = gerror.New("标题不能为空")
+		return
+	}
+
+	if in.Id <= 0 {
+		err = gerror.New("地区Id必须大于0")
+		return
+	}
+
+	return
+}
+
 type ProvincesEditModel struct{}
+
+// ProvincesUpdateFields 修改数据字段过滤
+type ProvincesUpdateFields struct {
+	Id     int64  `json:"id"        description:"省市区ID"`
+	Title  string `json:"title"     description:"栏目名称"`
+	Pinyin string `json:"pinyin"    description:"拼音"`
+	Lng    string `json:"lng"       description:"经度"`
+	Lat    string `json:"lat"       description:"纬度"`
+	Pid    int64  `json:"pid"       description:"父栏目"`
+	Level  int    `json:"level"     description:"关系树等级"`
+	Tree   string `json:"tree"      description:"关系"`
+	Sort   int    `json:"sort"      description:"排序"`
+	Status int    `json:"status"    description:"状态"`
+}
+
+// ProvincesInsertFields 新增数据字段过滤
+type ProvincesInsertFields struct {
+	Title  string `json:"title"     description:"栏目名称"`
+	Pinyin string `json:"pinyin"    description:"拼音"`
+	Lng    string `json:"lng"       description:"经度"`
+	Lat    string `json:"lat"       description:"纬度"`
+	Pid    int64  `json:"pid"       description:"父栏目"`
+	Level  int    `json:"level"     description:"关系树等级"`
+	Tree   string `json:"tree"      description:"关系"`
+	Sort   int    `json:"sort"      description:"排序"`
+	Status int    `json:"status"    description:"状态"`
+}
 
 // ProvincesDeleteInp 删除字典类型
 type ProvincesDeleteInp struct {
@@ -57,6 +102,25 @@ type ProvincesListModel struct {
 type ProvincesStatusInp struct {
 	entity.SysProvinces
 }
+
+func (in *ProvincesStatusInp) Filter(ctx context.Context) (err error) {
+	if in.Id <= 0 {
+		err = gerror.New("ID不能为空")
+		return
+	}
+
+	if in.Status <= 0 {
+		err = gerror.New("状态不能为空")
+		return
+	}
+
+	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
+		err = gerror.New("状态不正确")
+		return
+	}
+	return
+}
+
 type ProvincesStatusModel struct{}
 
 // ProvincesChildrenListInp 获取省市区下级列表

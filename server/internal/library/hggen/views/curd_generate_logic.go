@@ -21,8 +21,8 @@ const (
 	LogicListSimpleSelect   = "\tfields, err := hgorm.GenSelect(ctx, sysin.%sListModel{}, dao.%s)\n\tif err != nil {\n\t\treturn\n\t}"
 	LogicListJoinSelect     = "\t//关联表select\n\tfields, err := hgorm.GenJoinSelect(ctx, %sin.%sListModel{}, dao.%s, []*hgorm.Join{\n%v\t})"
 	LogicListJoinOnRelation = "\t// 关联表%s\n\tmod = mod.%s(hgorm.GenJoinOnRelation(\n\t\tdao.%s.Table(), dao.%s.Columns().%s, // 主表表名,关联字段\n\t\tdao.%s.Table(), \"%s\", dao.%s.Columns().%s, // 关联表表名,别名,关联字段\n\t)...)\n\n"
-	LogicEditUpdate         = "\t\t_, err = s.Model(ctx%s).\n\t\t\tFields(\n%s\t\t\t).\n\t\t\tWhere(dao.%s.Columns().%s, in.%s).Data(in).Update()\n\t\treturn "
-	LogicEditInsert         = "\t_, err = s.Model(ctx, &handler.Option{FilterAuth: false}).\n\t\tFields(\n%s\t\t).\n\t\tData(in).Insert()"
+	LogicEditUpdate         = "\t\t_, err = s.Model(ctx%s).\n\t\t\tFields(%sin.%sUpdateFields{}).\n\t\t\tWherePri(in.%s).Data(in).Update()\n\t\treturn "
+	LogicEditInsert         = "\t_, err = s.Model(ctx, &handler.Option{FilterAuth: false}).\n\t\tFields(%sin.%sInsertFields{}).\n\t\tData(in).Insert()"
 	LogicEditUnique         = "\t// 验证'%s'唯一\n\tif err = hgorm.IsUnique(ctx, dao.%s, g.Map{dao.%s.Columns().%s: in.%s}, \"%s已存在\", in.Id); err != nil {\n\t\treturn\n\t}\n"
 	LogicSwitchUpdate       = "g.Map{\n\t\tin.Key:                       in.Value,\n%s}"
 	LogicStatusUpdate       = "g.Map{\n\t\tdao.%s.Columns().Status:    in.Status,\n%s}"
@@ -69,7 +69,7 @@ func (l *gCurd) generateLogicSwitchFields(ctx context.Context, in *CurdPreviewIn
 	if in.options.Step.HasSwitch {
 		for _, field := range in.masterFields {
 			if field.FormMode == "Switch" {
-				buffer.WriteString("\t\t\"" + field.TsName + "\",\n")
+				buffer.WriteString("\t\tdao." + in.In.DaoName + ".Columns()." + field.GoName + ",\n")
 			}
 		}
 	}
@@ -79,9 +79,7 @@ func (l *gCurd) generateLogicSwitchFields(ctx context.Context, in *CurdPreviewIn
 func (l *gCurd) generateLogicEdit(ctx context.Context, in *CurdPreviewInput) g.Map {
 	var (
 		data         = make(g.Map)
-		updateFields = ""
 		updateBuffer = bytes.NewBuffer(nil)
-		insertFields = ""
 		insertBuffer = bytes.NewBuffer(nil)
 		uniqueBuffer = bytes.NewBuffer(nil)
 	)
@@ -95,14 +93,6 @@ func (l *gCurd) generateLogicEdit(ctx context.Context, in *CurdPreviewInput) g.M
 			insertBuffer.WriteString("\tin.CreatedBy = contexts.GetUserId(ctx)\n")
 		}
 
-		if field.Index != consts.GenCodesIndexPK && (field.IsEdit == true || field.GoName == "UpdatedAt" || field.GoName == "UpdatedBy") {
-			updateFields = updateFields + "\t\t\t\tdao." + in.In.DaoName + ".Columns()." + field.GoName + ",\n"
-		}
-
-		if field.Index != consts.GenCodesIndexPK && (field.IsEdit == true || field.Required == true || field.GoName == "CreatedAt" || field.GoName == "CreatedBy") {
-			insertFields = insertFields + "\t\t\t\tdao." + in.In.DaoName + ".Columns()." + field.GoName + ",\n"
-		}
-
 		if field.Unique {
 			uniqueBuffer.WriteString(fmt.Sprintf(LogicEditUnique, field.GoName, in.In.DaoName, in.In.DaoName, field.GoName, field.GoName, field.Dc))
 		}
@@ -113,8 +103,8 @@ func (l *gCurd) generateLogicEdit(ctx context.Context, in *CurdPreviewInput) g.M
 		notFilterAuth = ", &handler.Option{FilterAuth: false}"
 	}
 
-	updateBuffer.WriteString(fmt.Sprintf(LogicEditUpdate, notFilterAuth, updateFields, in.In.DaoName, in.pk.GoName, in.pk.GoName))
-	insertBuffer.WriteString(fmt.Sprintf(LogicEditInsert, insertFields))
+	updateBuffer.WriteString(fmt.Sprintf(LogicEditUpdate, notFilterAuth, in.options.TemplateGroup, in.In.VarName, in.pk.GoName))
+	insertBuffer.WriteString(fmt.Sprintf(LogicEditInsert, in.options.TemplateGroup, in.In.VarName))
 
 	data["update"] = updateBuffer.String()
 	data["insert"] = insertBuffer.String()

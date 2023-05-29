@@ -30,14 +30,13 @@ func Init(ctx context.Context) {
 	// 设置服务日志处理
 	g.Log().SetHandlers(LoggingServeLogHandler)
 
-	_, err := g.Cfg().Get(ctx, "hotgo.debug")
-	if err != nil {
+	if _, err := g.Cfg().Get(ctx, "hotgo.debug"); err != nil {
 		g.Log().Fatal(ctx, "配置读取异常:", err, "\r\n你确定 config/config.yaml 文件存在且格式正确吗？\r\n")
 		return
 	}
 
 	// 默认上海时区
-	if err = gtime.SetTimeZone("Asia/Shanghai"); err != nil {
+	if err := gtime.SetTimeZone("Asia/Shanghai"); err != nil {
 		g.Log().Fatalf(ctx, "时区设置异常 err：%+v", err)
 		return
 	}

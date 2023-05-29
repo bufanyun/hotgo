@@ -10,7 +10,6 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
-	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/hgorm"
 	"hotgo/internal/model/entity"
@@ -18,7 +17,6 @@ import (
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/tree"
-	"hotgo/utility/validate"
 )
 
 type sSysProvinces struct{}
@@ -35,7 +33,7 @@ func init() {
 func (s *sSysProvinces) Tree(ctx context.Context) (list []g.Map, err error) {
 	var models []*entity.SysProvinces
 	if err = dao.SysProvinces.Ctx(ctx).Order("pid asc,id asc,sort asc").Scan(&models); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
+		err = gerror.Wrap(err, "获取省市区关系树选项列表失败！")
 		return
 	}
 
@@ -44,14 +42,14 @@ func (s *sSysProvinces) Tree(ctx context.Context) (list []g.Map, err error) {
 		list[k]["key"] = v["id"]
 		list[k]["label"] = v["title"]
 	}
-
 	return tree.GenTree(list), nil
 }
 
-// Delete 删除
+// Delete 删除省市区数据
 func (s *sSysProvinces) Delete(ctx context.Context, in sysin.ProvincesDeleteInp) (err error) {
 	var models *entity.SysProvinces
 	if err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
+		err = gerror.Wrap(err, "获取省市区数据失败！")
 		return
 	}
 
@@ -60,84 +58,64 @@ func (s *sSysProvinces) Delete(ctx context.Context, in sysin.ProvincesDeleteInp)
 		return
 	}
 
-	pidExist, err := dao.SysProvinces.Ctx(ctx).Where("pid", models.Id).One()
+	has, err := dao.SysProvinces.Ctx(ctx).Where("pid", models.Id).One()
 	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
+		err = gerror.Wrap(err, "删除省市区数据时获取上级数据失败！")
 		return
 	}
 
-	if !pidExist.IsEmpty() {
+	if !has.IsEmpty() {
 		err = gerror.New("请先删除该地区下得所有子级！")
 		return
 	}
 
-	_, err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Delete()
+	if _, err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Delete(); err != nil {
+		err = gerror.Wrap(err, "删除省市区数据失败！")
+		return
+	}
 	return
 }
 
-// Edit 修改/新增
+// Edit 修改/新增省市区数据
 func (s *sSysProvinces) Edit(ctx context.Context, in sysin.ProvincesEditInp) (err error) {
-	if in.Title == "" {
-		err = gerror.New("标题不能为空")
-		return
-	}
-
-	if in.Id <= 0 {
-		err = gerror.New("地区Id必须大于0")
-		return
-	}
-
 	// 关系树
 	in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, dao.SysProvinces, in.Pid)
 	if err != nil {
 		return
 	}
 
-	isUpdate := false
 	models, err := s.View(ctx, sysin.ProvincesViewInp{Id: in.Id})
 	if err != nil {
 		return
 	}
 
-	if models != nil {
-		isUpdate = true
-	}
-
 	// 修改
-	if isUpdate {
-		_, err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+	if models != nil {
+		if _, err = dao.SysProvinces.Ctx(ctx).Fields(sysin.ProvincesUpdateFields{}).WherePri(in.Id).Data(in).Update(); err != nil {
+			err = gerror.Wrap(err, "修改省市区数据失败！")
+		}
 		return
 	}
 
 	// 新增
-	_, err = dao.SysProvinces.Ctx(ctx).Data(in).Insert()
+	if _, err = dao.SysProvinces.Ctx(ctx).Fields(sysin.ProvincesInsertFields{}).Data(in).Insert(); err != nil {
+		err = gerror.Wrap(err, "新增省市区数据失败！")
+	}
 	return
 }
 
-// Status 更新部门状态
+// Status 更新省市区状态
 func (s *sSysProvinces) Status(ctx context.Context, in sysin.ProvincesStatusInp) (err error) {
-	if in.Id <= 0 {
-		err = gerror.New("ID不能为空")
-		return
+	if _, err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update(); err != nil {
+		err = gerror.Wrap(err, "更新省市区状态失败！")
 	}
-
-	if in.Status <= 0 {
-		err = gerror.New("状态不能为空")
-		return
-	}
-
-	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
-		err = gerror.New("状态不正确")
-		return
-	}
-
-	_, err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
 	return
 }
 
 // MaxSort 最大排序
 func (s *sSysProvinces) MaxSort(ctx context.Context, in sysin.ProvincesMaxSortInp) (res *sysin.ProvincesMaxSortModel, err error) {
 	if err = dao.SysProvinces.Ctx(ctx).Fields(dao.SysProvinces.Columns().Sort).OrderDesc(dao.SysProvinces.Columns().Sort).Scan(&res); err != nil {
+		err = gerror.Wrap(err, "获取省市区最大排序失败！")
 		return
 	}
 
@@ -148,9 +126,11 @@ func (s *sSysProvinces) MaxSort(ctx context.Context, in sysin.ProvincesMaxSortIn
 	return
 }
 
-// View 获取指定字典类型信息
+// View 获取省市区信息
 func (s *sSysProvinces) View(ctx context.Context, in sysin.ProvincesViewInp) (res *sysin.ProvincesViewModel, err error) {
-	err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Scan(&res)
+	if err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
+		err = gerror.Wrap(err, "获取省市区信息失败！")
+	}
 	return
 }
 
@@ -167,11 +147,18 @@ func (s *sSysProvinces) List(ctx context.Context, in sysin.ProvincesListInp) (li
 	}
 
 	totalCount, err = mod.Count()
-	if err != nil || totalCount == 0 {
+	if err != nil {
+		err = gerror.Wrap(err, "获取省市区数据行失败！")
 		return
 	}
 
-	err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list)
+	if totalCount == 0 {
+		return
+	}
+
+	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
+		err = gerror.Wrap(err, "获取省市区列表失败！")
+	}
 	return
 }
 
@@ -192,11 +179,18 @@ func (s *sSysProvinces) ChildrenList(ctx context.Context, in sysin.ProvincesChil
 	}
 
 	totalCount, err = mod.Count()
-	if err != nil || totalCount == 0 {
+	if err != nil {
+		err = gerror.Wrap(err, "获取省市区下级数据行失败！")
 		return
 	}
 
-	err = mod.Page(in.Page, in.PerPage).Order("sort asc,id desc").Scan(&list)
+	if totalCount == 0 {
+		return
+	}
+
+	if err = mod.Page(in.Page, in.PerPage).Order("sort asc,id desc").Scan(&list); err != nil {
+		err = gerror.Wrap(err, "获取省市区下级列表失败！")
+	}
 	return
 }
 
@@ -212,7 +206,6 @@ func (s *sSysProvinces) UniqueId(ctx context.Context, in sysin.ProvincesUniqueId
 		res.IsUnique = false
 		return
 	}
-
 	return
 }
 
@@ -224,7 +217,7 @@ func (s *sSysProvinces) Select(ctx context.Context, in sysin.ProvincesSelectInp)
 		Where("pid", in.Value)
 
 	if err = mod.Order("sort asc,id asc").Scan(&res.List); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
+		err = gerror.Wrap(err, "获取省市区选项失败！")
 		return
 	}
 
@@ -243,6 +236,5 @@ func (s *sSysProvinces) Select(ctx context.Context, in sysin.ProvincesSelectInp)
 			continue
 		}
 	}
-
 	return
 }

@@ -12,16 +12,6 @@ import (
 	"hotgo/internal/model/input/form"
 )
 
-// NameUniqueReq 名称是否唯一
-type NameUniqueReq struct {
-	Name   string `json:"name" v:"required#部门名称不能为空"  dc:"部门名称"`
-	Id     int64  `json:"id" dc:"部门ID"`
-	g.Meta `path:"/dept/name_unique" method:"get" tags:"部门" summary:"部门名称是否唯一"`
-}
-type NameUniqueRes struct {
-	IsUnique bool `json:"is_unique" dc:"是否唯一"`
-}
-
 // ListReq 查询列表
 type ListReq struct {
 	Name   string `json:"name" dc:"部门名称"`

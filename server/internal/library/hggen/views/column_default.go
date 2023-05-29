@@ -23,6 +23,13 @@ var defaultFormModeMap = map[string]string{
 	TsTypeAny:     FormModeInput,
 }
 
+var defaultEditFields = map[string]bool{
+	"id":         false,
+	"created_at": false,
+	"updated_at": false,
+	"deleted_at": false,
+}
+
 var defaultEditSwitch = map[string]bool{
 	"id":         false,
 	"level":      false,
@@ -33,6 +40,7 @@ var defaultEditSwitch = map[string]bool{
 	"updated_at": false,
 	"deleted_at": false,
 }
+
 var defaultListSwitch = map[string]bool{
 	"level":      false,
 	"tree":       false,
@@ -133,6 +141,10 @@ func setDefaultEdit(field *sysin.GenCodesColumnListModel) {
 	if field.Index == consts.GenCodesIndexPK {
 		field.IsEdit = false
 		return
+	}
+
+	if df, ok := defaultEditFields[field.Name]; ok {
+		field.IsEdit = df
 	}
 
 	if df, ok := defaultEditSwitch[field.Name]; ok {

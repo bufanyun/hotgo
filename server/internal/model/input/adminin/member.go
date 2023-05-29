@@ -15,6 +15,7 @@ import (
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
+	"hotgo/utility/validate"
 )
 
 // MemberUpdateCashInp 更新会员提现信息
@@ -110,11 +111,11 @@ type LoginMemberInfoModel struct {
 
 // MemberEditInp 修改/新增管理员
 type MemberEditInp struct {
-	Id           int64       `json:"id"                                            dc:""`
-	RoleId       int64       `json:"roleId"    v:"required#角色不能为空"             dc:"角色ID"`
-	PostIds      []int64     `json:"postIds"   v:"required#岗位不能为空"             dc:"岗位ID"`
-	DeptId       int64       `json:"deptId"    v:"required#部门不能为空"             dc:"部门ID"`
-	Username     string      `json:"username"   v:"required#账号不能为空"            dc:"帐号"`
+	Id           int64       `json:"id"                                            dc:"管理员ID"`
+	RoleId       int64       `json:"roleId"    v:"required#角色不能为空"            dc:"角色ID"`
+	PostIds      []int64     `json:"postIds"   v:"required#岗位不能为空"            dc:"岗位ID"`
+	DeptId       int64       `json:"deptId"    v:"required#部门不能为空"            dc:"部门ID"`
+	Username     string      `json:"username"   v:"required#账号不能为空"           dc:"帐号"`
 	PasswordHash string      `json:"passwordHash"                                  dc:"密码hash"`
 	Password     string      `json:"password"                                      dc:"密码"`
 	RealName     string      `json:"realName"                                      dc:"真实姓名"`
@@ -130,8 +131,6 @@ type MemberEditInp struct {
 	Mobile       string      `json:"mobile"                                        dc:"手机号码"`
 	Remark       string      `json:"remark"                                        dc:"备注"`
 	Status       int         `json:"status"                                        dc:"状态"`
-	CreatedAt    *gtime.Time `json:"createdAt"                                     dc:"创建时间"`
-	UpdatedAt    *gtime.Time `json:"updatedAt"                                     dc:"修改时间"`
 }
 
 type MemberAddInp struct {
@@ -214,6 +213,25 @@ type MemberCash struct {
 type MemberStatusInp struct {
 	entity.AdminMember
 }
+
+func (in *MemberStatusInp) Filter(ctx context.Context) (err error) {
+	if in.Id <= 0 {
+		err = gerror.New("ID不能为空")
+		return
+	}
+
+	if in.Status <= 0 {
+		err = gerror.New("状态不能为空")
+		return
+	}
+
+	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
+		err = gerror.New("状态不正确")
+		return
+	}
+	return
+}
+
 type MemberStatusModel struct{}
 
 // MemberSelectInp 获取可选的后台用户选项

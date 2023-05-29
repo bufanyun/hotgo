@@ -13,6 +13,7 @@ import (
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
+	"hotgo/utility/validate"
 )
 
 var (
@@ -36,6 +37,10 @@ func (c *cDictData) Delete(ctx context.Context, req *dict.DataDeleteReq) (res *d
 func (c *cDictData) Edit(ctx context.Context, req *dict.DataEditReq) (res *dict.DataEditRes, err error) {
 	var in sysin.DictDataEditInp
 	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
 		return
 	}
 

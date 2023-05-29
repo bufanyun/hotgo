@@ -65,6 +65,36 @@ export const options = ref<Options>({
 });
 
 export const rules = {
+  categoryId: {
+    required: true,
+    trigger: ['blur', 'input'],
+    type: 'number',
+    message: '请输入分类ID',
+  },
+  title: {
+    required: true,
+    trigger: ['blur', 'input'],
+    type: 'string',
+    message: '请输入标题',
+  },
+  description: {
+    required: true,
+    trigger: ['blur', 'input'],
+    type: 'string',
+    message: '请输入描述',
+  },
+  content: {
+    required: true,
+    trigger: ['blur', 'input'],
+    type: 'string',
+    message: '请输入内容',
+  },
+  sort: {
+    required: true,
+    trigger: ['blur', 'input'],
+    type: 'number',
+    message: '请输入排序',
+  },
 };
 
 export const schemas = ref<FormSchema[]>([
@@ -172,6 +202,10 @@ export const columns = [
     },
   },
   {
+    title: '所在城市',
+    key: 'cityId',
+  },
+  {
     title: '显示开关',
     key: 'switch',
     width: 100,
@@ -216,6 +250,14 @@ export const columns = [
         }
       );
     },
+  },
+  {
+    title: '创建者',
+    key: 'createdBy',
+  },
+  {
+    title: '更新者',
+    key: 'updatedBy',
   },
   {
     title: '创建时间',

@@ -18,6 +18,24 @@ import (
 	"hotgo/utility/encrypt"
 )
 
+// FilterMaskDemo 过滤演示环境下的配置隐藏字段
+func FilterMaskDemo(ctx context.Context, src g.Map) g.Map {
+	if src == nil || len(src) == 0 {
+		return nil
+	}
+
+	if !g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool() {
+		return src
+	}
+
+	for k, _ := range src {
+		if _, ok := consts.ConfigMaskDemoField[k]; ok {
+			src[k] = consts.DemoTips
+		}
+	}
+	return src
+}
+
 // DecryptText 解密文本
 func DecryptText(text string) (string, error) {
 	str, err := gbase64.Decode([]byte(text))

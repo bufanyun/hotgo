@@ -5,7 +5,9 @@
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package consts
 
-import "github.com/gogf/gf/v2/util/gconv"
+import (
+	"github.com/gogf/gf/v2/util/gconv"
+)
 
 // RequestEncryptKey
 // 请求加密密钥用于敏感数据加密，16位字符，前后端需保持一致
@@ -42,6 +44,29 @@ var ConfigTypes = []string{ConfigTypeString,
 	ConfigTypeBool,
 	ConfigTypeDate, ConfigTypeDateTime,
 	ConfigTypeSliceString, ConfigTypeSliceInt, ConfigTypeSliceInt64,
+}
+
+// ConfigMaskDemoField 演示环境下需要隐藏的配置
+var ConfigMaskDemoField = map[string]struct{}{
+	// 邮箱
+	"smtpUser": {}, "smtpPass": {},
+
+	// 云存储
+	"uploadUCloudPublicKey": {}, "uploadUCloudPrivateKey": {}, "uploadCosSecretId": {}, "uploadCosSecretKey": {},
+	"uploadOssSecretId": {}, "uploadOssSecretKey": {}, "uploadQiNiuAccessKey": {}, "uploadQiNiuSecretKey": {},
+
+	// 地图
+	"geoAmapWebKey": {},
+
+	// 短信
+	"smsAliYunAccessKeyID": {}, "smsAliYunAccessKeySecret": {}, "smsTencentSecretId": {}, "smsTencentSecretKey": {},
+
+	// 支付
+	"payWxPayMchId": {}, "payWxPaySerialNo": {}, "payWxPayAPIv3Key": {}, "payWxPayPrivateKey": {}, "payQQPayMchId": {}, "payQQPayApiKey": {},
+
+	// 微信
+	"officialAccountAppSecret": {}, "officialAccountToken": {}, "officialAccountEncodingAESKey": {}, "openPlatformAppSecret": {},
+	"openPlatformToken": {}, "openPlatformEncodingAESKey": {},
 }
 
 // ConvType 类型转换

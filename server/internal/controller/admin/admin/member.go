@@ -115,6 +115,10 @@ func (c *cMember) Delete(ctx context.Context, req *member.DeleteReq) (res *membe
 		return
 	}
 
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
 	err = service.AdminMember().Delete(ctx, in)
 	return
 }
@@ -174,12 +178,16 @@ func (c *cMember) Status(ctx context.Context, req *member.StatusReq) (res *membe
 		return
 	}
 
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
 	err = service.AdminMember().Status(ctx, in)
 	return
 }
 
 // Select 获取可选的后台用户选项
-func (c *cMember) Select(ctx context.Context, req *member.SelectReq) (res *member.SelectRes, err error) {
+func (c *cMember) Select(ctx context.Context, _ *member.SelectReq) (res *member.SelectRes, err error) {
 	data, err := service.AdminMember().Select(ctx, adminin.MemberSelectInp{})
 	if err != nil {
 		return

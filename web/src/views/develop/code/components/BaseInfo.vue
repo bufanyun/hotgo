@@ -154,7 +154,7 @@
                           <QuestionCircleOutlined />
                         </n-icon>
                       </template>
-                      <span>只会强制覆盖需要生成的文件，但不包含SQL文件</span>
+                      <span>强制覆盖所有需要生成的代码文件，但不包含菜单SQL文件</span>
                     </n-popover>
                   </n-space>
                 </n-checkbox-group>
