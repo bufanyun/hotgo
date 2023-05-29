@@ -20,6 +20,16 @@ import (
 	"hotgo/utility/validate"
 )
 @{ if eq .options.Step.HasEdit true }
+// @{.varName}UpdateFields 修改@{.tableComment}字段过滤
+type @{.varName}UpdateFields struct {
+@{.updateFieldsColumns}
+}
+
+// @{.varName}InsertFields 新增@{.tableComment}字段过滤
+type @{.varName}InsertFields struct {
+@{.insertFieldsColumns}
+}
+
 // @{.varName}EditInp 修改/新增@{.tableComment}
 type @{.varName}EditInp struct {
 	entity.@{.daoName}
@@ -97,6 +107,20 @@ type @{.varName}StatusInp struct {
 }
 
 func (in *@{.varName}StatusInp) Filter(ctx context.Context) (err error) {
+	if in.@{.pk.GoName} <= 0 {
+		err = gerror.New("@{.pk.Dc}不能为空")
+		return
+	}
+
+	if in.Status <= 0 {
+		err = gerror.New("状态不能为空")
+		return
+	}
+
+	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
+		err = gerror.New("状态不正确")
+		return
+	}
 	return
 }
 

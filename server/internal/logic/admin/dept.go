@@ -9,7 +9,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/contexts"
@@ -20,7 +20,6 @@ import (
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
 	"hotgo/utility/tree"
-	"hotgo/utility/validate"
 )
 
 type sAdminDept struct{}
@@ -31,18 +30,6 @@ func NewAdminDept() *sAdminDept {
 
 func init() {
 	service.RegisterAdminDept(NewAdminDept())
-}
-
-// NameUnique 菜单名称是否唯一
-func (s *sAdminDept) NameUnique(ctx context.Context, in adminin.DeptNameUniqueInp) (res *adminin.DeptNameUniqueModel, err error) {
-	isUnique, err := dao.AdminDept.IsUniqueName(ctx, in.Id, in.Name)
-	if err != nil {
-		return
-	}
-
-	res = new(adminin.DeptNameUniqueModel)
-	res.IsUnique = isUnique
-	return
 }
 
 // Delete 删除
@@ -71,18 +58,7 @@ func (s *sAdminDept) Delete(ctx context.Context, in adminin.DeptDeleteInp) (err 
 
 // Edit 修改/新增
 func (s *sAdminDept) Edit(ctx context.Context, in adminin.DeptEditInp) (err error) {
-	if in.Name == "" {
-		err = gerror.New("名称不能为空")
-		return
-	}
-
-	uniqueName, err := dao.AdminDept.IsUniqueName(ctx, in.Id, in.Name)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return
-	}
-	if !uniqueName {
-		err = gerror.New("名称已存在")
+	if err = hgorm.IsUnique(ctx, dao.AdminDept, g.Map{dao.AdminDept.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
 		return
 	}
 
@@ -103,7 +79,7 @@ func (s *sAdminDept) Edit(ctx context.Context, in adminin.DeptEditInp) (err erro
 
 		err = dao.AdminDept.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 			// 更新数据
-			_, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+			_, err = dao.AdminDept.Ctx(ctx).Fields(adminin.DeptUpdateFields{}).WherePri(in.Id).Data(in).Update()
 			if err != nil {
 				return err
 			}
@@ -116,7 +92,7 @@ func (s *sAdminDept) Edit(ctx context.Context, in adminin.DeptEditInp) (err erro
 	}
 
 	// 新增
-	_, err = dao.AdminDept.Ctx(ctx).Data(in).Insert()
+	_, err = dao.AdminDept.Ctx(ctx).Fields(adminin.DeptInsertFields{}).Data(in).Insert()
 	return
 }
 
@@ -144,24 +120,9 @@ func updateChildrenTree(ctx context.Context, _id int64, _level int, _tree string
 
 // Status 更新部门状态
 func (s *sAdminDept) Status(ctx context.Context, in adminin.DeptStatusInp) (err error) {
-	if in.Id <= 0 {
-		err = gerror.New("ID不能为空")
-		return
+	if _, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update(); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
 	}
-
-	if in.Status <= 0 {
-		err = gerror.New("状态不能为空")
-		return
-	}
-
-	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
-		err = gerror.New("状态不正确")
-		return
-	}
-
-	// 修改
-	in.UpdatedAt = gtime.Now()
-	_, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
 	return
 }
 
@@ -177,6 +138,7 @@ func (s *sAdminDept) MaxSort(ctx context.Context, in adminin.DeptMaxSortInp) (re
 	if res == nil {
 		res = new(adminin.DeptMaxSortModel)
 	}
+
 	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
 	return
 }

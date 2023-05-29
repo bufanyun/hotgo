@@ -22,27 +22,27 @@ var (
 type cCash struct{}
 
 // View 获取指定信息
-func (c *cCash) View(ctx context.Context, req *cash.ViewReq) (*cash.ViewRes, error) {
+func (c *cCash) View(ctx context.Context, req *cash.ViewReq) (res *cash.ViewRes, err error) {
 	data, err := service.AdminCash().View(ctx, adminin.CashViewInp{Id: req.Id})
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	var res cash.ViewRes
+	res = new(cash.ViewRes)
 	res.CashViewModel = data
-	return &res, nil
+	return
 }
 
 // List 查看列表
 func (c *cCash) List(ctx context.Context, req *cash.ListReq) (res *cash.ListRes, err error) {
 	var in adminin.CashListInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	list, totalCount, err := service.AdminCash().List(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	res = new(cash.ListRes)

@@ -17,9 +17,12 @@ import (
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
 	"hotgo/utility/validate"
+	"sync"
 )
 
-type sSysBlacklist struct{}
+type sSysBlacklist struct {
+	sync.RWMutex
+}
 
 func NewSysBlacklist() *sSysBlacklist {
 	return &sSysBlacklist{}
@@ -126,7 +129,6 @@ func (s *sSysBlacklist) List(ctx context.Context, in sysin.BlacklistListInp) (li
 	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		return
 	}
-
 	return
 }
 
@@ -139,6 +141,9 @@ func (s *sSysBlacklist) VariableLoad(ctx context.Context, err error) {
 
 // Load 加载黑名单
 func (s *sSysBlacklist) Load(ctx context.Context) {
+	s.RLock()
+	defer s.RUnlock()
+
 	global.Blacklists = make(map[string]struct{})
 
 	array, err := dao.SysBlacklist.Ctx(ctx).

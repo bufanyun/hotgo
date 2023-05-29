@@ -217,7 +217,7 @@ func (s *sAdminMenu) getChildrenList(menu *adminin.MenuRouteSummary, treeMap map
 }
 
 // GetMenuList 获取菜单列表
-func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (lists role.DynamicRes, err error) {
+func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (res *role.DynamicRes, err error) {
 	var (
 		allMenus []adminin.MenuRouteSummary
 		menus    []adminin.MenuRouteSummary
@@ -232,12 +232,12 @@ func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (lists rol
 			Where("role_id", contexts.GetRoleId(ctx)).
 			Array()
 		if err != nil {
-			return lists, err
+			return nil, err
 		}
 		if len(array) > 0 {
 			pidList, err := dao.AdminMenu.Ctx(ctx).Fields("pid").WhereIn("id", array).Group("pid").Array()
 			if err != nil {
-				return role.DynamicRes{}, err
+				return nil, err
 			}
 			if len(pidList) > 0 {
 				array = append(pidList, array...)
@@ -263,7 +263,8 @@ func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (lists rol
 		err = s.getChildrenList(&menus[i], treeMap)
 	}
 
-	lists.List = append(lists.List, s.genNaiveMenus(menus)...)
+	res = new(role.DynamicRes)
+	res.List = append(res.List, s.genNaiveMenus(menus)...)
 	return
 }
 

@@ -83,7 +83,6 @@ func (s *sSysCron) Edit(ctx context.Context, in sysin.CronEditInp) (err error) {
 		if _, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Data(in).Update(); err != nil {
 			return
 		}
-
 		simple.SafeGo(ctx, func(ctx context.Context) {
 			crons.RefreshStatus(&in.SysCron)
 		})

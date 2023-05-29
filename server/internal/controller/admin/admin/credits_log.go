@@ -65,7 +65,7 @@ func (c *cCreditsLog) Export(ctx context.Context, req *creditslog.ExportReq) (re
 }
 
 // Option 获取变动状态选项
-func (c *cCreditsLog) Option(ctx context.Context, req *creditslog.OptionReq) (res *creditslog.OptionRes, err error) {
+func (c *cCreditsLog) Option(_ context.Context, _ *creditslog.OptionReq) (res *creditslog.OptionRes, err error) {
 	res = &creditslog.OptionRes{
 		CreditType:  consts.CreditTypeOptions,
 		CreditGroup: consts.CreditGroupOptions,

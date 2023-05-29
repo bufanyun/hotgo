@@ -12,6 +12,7 @@ import (
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
+	"hotgo/utility/validate"
 )
 
 var (
@@ -19,18 +20,6 @@ var (
 )
 
 type cDept struct{}
-
-// NameUnique 名称是否唯一
-func (c *cDept) NameUnique(ctx context.Context, req *dept.NameUniqueReq) (res *dept.NameUniqueRes, err error) {
-	data, err := service.AdminDept().NameUnique(ctx, adminin.DeptNameUniqueInp{Id: req.Id, Name: req.Name})
-	if err != nil {
-		return
-	}
-
-	res = new(dept.NameUniqueRes)
-	res.IsUnique = data.IsUnique
-	return
-}
 
 // Delete 删除
 func (c *cDept) Delete(ctx context.Context, req *dept.DeleteReq) (res *dept.DeleteRes, err error) {
@@ -48,6 +37,10 @@ func (c *cDept) Edit(ctx context.Context, req *dept.EditReq) (res *dept.EditRes,
 	var in adminin.DeptEditInp
 	if err = gconv.Scan(req, &in); err != nil {
 		return nil, err
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
 	}
 
 	err = service.AdminDept().Edit(ctx, in)
@@ -99,6 +92,10 @@ func (c *cDept) List(ctx context.Context, req *dept.ListReq) (res *dept.ListRes,
 func (c *cDept) Status(ctx context.Context, req *dept.StatusReq) (res *dept.StatusRes, err error) {
 	var in adminin.DeptStatusInp
 	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
 		return
 	}
 

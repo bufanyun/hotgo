@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
@@ -14,6 +13,7 @@ import (
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
+	"hotgo/utility/validate"
 )
 
 var (
@@ -23,7 +23,7 @@ var (
 type cProvinces struct{}
 
 // Tree 关系树选项列表
-func (c *cProvinces) Tree(ctx context.Context, req *provinces.TreeReq) (res *provinces.TreeRes, err error) {
+func (c *cProvinces) Tree(ctx context.Context, _ *provinces.TreeReq) (res *provinces.TreeRes, err error) {
 	res = new(provinces.TreeRes)
 	res.List, err = service.SysProvinces().Tree(ctx)
 	return
@@ -44,6 +44,10 @@ func (c *cProvinces) Delete(ctx context.Context, req *provinces.DeleteReq) (res 
 func (c *cProvinces) Edit(ctx context.Context, req *provinces.EditReq) (res *provinces.EditRes, err error) {
 	var in sysin.ProvincesEditInp
 	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
 		return
 	}
 
@@ -99,6 +103,10 @@ func (c *cProvinces) List(ctx context.Context, req *provinces.ListReq) (res *pro
 func (c *cProvinces) Status(ctx context.Context, req *provinces.StatusReq) (res *provinces.StatusRes, err error) {
 	var in sysin.ProvincesStatusInp
 	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
 		return
 	}
 

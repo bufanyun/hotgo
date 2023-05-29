@@ -8,8 +8,10 @@ package sys
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/hgorm"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
@@ -80,29 +82,22 @@ func (s *sSysDictType) Delete(ctx context.Context, in sysin.DictTypeDeleteInp) (
 
 // Edit 修改/新增
 func (s *sSysDictType) Edit(ctx context.Context, in sysin.DictTypeEditInp) (err error) {
-	if in.Name == "" {
-		err = gerror.New("名称不能为空")
-		return
-	}
-
-	uniqueName, err := dao.SysDictType.IsUniqueType(ctx, in.Id, in.Name)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return
-	}
-	if !uniqueName {
-		err = gerror.New("名称已存在")
+	if err = hgorm.IsUnique(ctx, dao.SysDictType, g.Map{dao.SysDictType.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
 		return
 	}
 
 	// 修改
 	if in.Id > 0 {
-		_, err = dao.SysDictType.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+		if _, err = dao.SysDictType.Ctx(ctx).Fields(sysin.DictTypeUpdateFields{}).WherePri(in.Id).Data(in).Update(); err != nil {
+			err = gerror.Wrap(err, consts.ErrorORM)
+		}
 		return
 	}
 
 	// 新增
-	_, err = dao.SysDictType.Ctx(ctx).Data(in).Insert()
+	if _, err = dao.SysDictType.Ctx(ctx).Fields(sysin.DictTypeInsertFields{}).Data(in).Insert(); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+	}
 	return
 }
 

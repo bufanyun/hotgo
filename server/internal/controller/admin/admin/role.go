@@ -13,6 +13,7 @@ import (
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
+	"hotgo/utility/validate"
 )
 
 var (
@@ -20,26 +21,6 @@ var (
 )
 
 type cRole struct{}
-
-// RoleMemberList 获取角色下的用户列表
-func (c *cRole) RoleMemberList(ctx context.Context, req *role.MemberListReq) (res *role.MemberListRes, err error) {
-	var in adminin.RoleMemberListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	list, totalCount, err := service.AdminMember().RoleMemberList(ctx, in)
-	if err != nil {
-		return
-	}
-
-	res = new(role.MemberListRes)
-	res.List = list
-	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
-	res.PerPage = req.Page
-	res.PerPage = req.PerPage
-	return
-}
 
 // List 获取列表
 func (c *cRole) List(ctx context.Context, req *role.ListReq) (res *role.ListRes, err error) {
@@ -63,49 +44,79 @@ func (c *cRole) List(ctx context.Context, req *role.ListReq) (res *role.ListRes,
 
 // Edit 修改角色
 func (c *cRole) Edit(ctx context.Context, req *role.EditReq) (res *role.EditRes, err error) {
-	err = service.AdminRole().Edit(ctx, req)
+	var in adminin.RoleEditInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
+	err = service.AdminRole().Edit(ctx, in)
 	return
 }
 
 // Delete 删除
 func (c *cRole) Delete(ctx context.Context, req *role.DeleteReq) (res *role.DeleteRes, err error) {
-	err = service.AdminRole().Delete(ctx, req)
+	var in adminin.RoleDeleteInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
+	err = service.AdminRole().Delete(ctx, in)
 	return
 }
 
 // Dynamic 动态路由
-func (c *cRole) Dynamic(ctx context.Context, req *role.DynamicReq) (res role.DynamicRes, err error) {
+func (c *cRole) Dynamic(ctx context.Context, _ *role.DynamicReq) (res *role.DynamicRes, err error) {
 	return service.AdminMenu().GetMenuList(ctx, contexts.GetUserId(ctx))
 }
 
 // GetPermissions 获取指定角色权限
 func (c *cRole) GetPermissions(ctx context.Context, req *role.GetPermissionsReq) (res *role.GetPermissionsRes, err error) {
-	MenuIds, err := service.AdminRole().GetPermissions(ctx, req)
+	var in adminin.GetPermissionsInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
+	data, err := service.AdminRole().GetPermissions(ctx, in)
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	res = &role.GetPermissionsRes{
-		MenuIds: []int64{},
-	}
-
-	if MenuIds != nil {
-		res.MenuIds = MenuIds
-	}
-	return res, nil
+	res = new(role.GetPermissionsRes)
+	res.GetPermissionsModel = data
+	return
 }
 
 // UpdatePermissions 修改角色菜单权限
 func (c *cRole) UpdatePermissions(ctx context.Context, req *role.UpdatePermissionsReq) (res *role.UpdatePermissionsRes, err error) {
-	err = service.AdminRole().UpdatePermissions(ctx, req)
+	var in adminin.UpdatePermissionsInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
+	err = service.AdminRole().UpdatePermissions(ctx, in)
 	return
 }
 
 // DataScopeSelect 获取数据权限选项
-func (c *cRole) DataScopeSelect(ctx context.Context, _ *role.DataScopeSelectReq) (res *role.DataScopeSelectRes, err error) {
-	data := service.AdminRole().DataScopeSelect(ctx)
+func (c *cRole) DataScopeSelect(_ context.Context, _ *role.DataScopeSelectReq) (res *role.DataScopeSelectRes, err error) {
 	res = new(role.DataScopeSelectRes)
-	res.List = data
+	res.List = service.AdminRole().DataScopeSelect()
 	return
 }
 
@@ -117,6 +128,10 @@ func (c *cRole) DataScopeEdit(ctx context.Context, req *role.DataScopeEditReq) (
 	}
 
 	in.CustomDept = req.CustomDept
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
 	err = service.AdminRole().DataScopeEdit(ctx, &in)
 	return
 }

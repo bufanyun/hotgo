@@ -6,19 +6,13 @@
 package adminin
 
 import (
+	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"hotgo/internal/consts"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
+	"hotgo/utility/validate"
 )
-
-// DeptNameUniqueInp 名称是否唯一
-type DeptNameUniqueInp struct {
-	Name string
-	Id   int64
-}
-
-type DeptNameUniqueModel struct {
-	IsUnique bool
-}
 
 // DeptMaxSortInp 最大排序
 type DeptMaxSortInp struct {
@@ -29,13 +23,59 @@ type DeptMaxSortModel struct {
 	Sort int
 }
 
-// DeptEditInp 修改/新增字典数据
+// DeptEditInp 修改/新增部门数据
 type DeptEditInp struct {
 	entity.AdminDept
 }
+
+func (in *DeptEditInp) Filter(ctx context.Context) (err error) {
+	if in.Name == "" {
+		err = gerror.New("名称不能为空")
+		return
+	}
+
+	if in.Id > 0 && in.Id == in.Pid {
+		err = gerror.New("上级部门不能是自己")
+		return
+	}
+
+	return
+}
+
 type DeptEditModel struct{}
 
-// DeptDeleteInp 删除字典类型
+// DeptUpdateFields 修改数据字段过滤
+type DeptUpdateFields struct {
+	Id     int64  `json:"id"        description:"部门ID"`
+	Pid    int64  `json:"pid"       description:"父部门ID"`
+	Name   string `json:"name"      description:"部门名称"`
+	Code   string `json:"code"      description:"部门编码"`
+	Type   string `json:"type"      description:"部门类型"`
+	Leader string `json:"leader"    description:"负责人"`
+	Phone  string `json:"phone"     description:"联系电话"`
+	Email  string `json:"email"     description:"邮箱"`
+	Level  int    `json:"level"     description:"关系树等级"`
+	Tree   string `json:"tree"      description:"关系树"`
+	Sort   int    `json:"sort"      description:"排序"`
+	Status int    `json:"status"    description:"部门状态"`
+}
+
+// DeptInsertFields 新增数据字段过滤
+type DeptInsertFields struct {
+	Pid    int64  `json:"pid"       description:"父部门ID"`
+	Name   string `json:"name"      description:"部门名称"`
+	Code   string `json:"code"      description:"部门编码"`
+	Type   string `json:"type"      description:"部门类型"`
+	Leader string `json:"leader"    description:"负责人"`
+	Phone  string `json:"phone"     description:"联系电话"`
+	Email  string `json:"email"     description:"邮箱"`
+	Level  int    `json:"level"     description:"关系树等级"`
+	Tree   string `json:"tree"      description:"关系树"`
+	Sort   int    `json:"sort"      description:"排序"`
+	Status int    `json:"status"    description:"部门状态"`
+}
+
+// DeptDeleteInp 删除部门类型
 type DeptDeleteInp struct {
 	Id interface{}
 }
@@ -72,6 +112,26 @@ type DeptListModel struct {
 type DeptStatusInp struct {
 	entity.AdminDept
 }
+
+func (in *DeptStatusInp) Filter(ctx context.Context) (err error) {
+	if in.Id <= 0 {
+		err = gerror.New("ID不能为空")
+		return
+	}
+
+	if in.Status <= 0 {
+		err = gerror.New("状态不能为空")
+		return
+	}
+
+	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
+		err = gerror.New("状态不正确")
+		return
+	}
+
+	return
+}
+
 type DeptStatusModel struct{}
 
 type DeptOptionInp struct {

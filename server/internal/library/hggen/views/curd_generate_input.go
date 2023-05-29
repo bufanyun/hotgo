@@ -25,7 +25,8 @@ const (
 	InputTypeListModel        = 2 // 列表输出
 	InputTypeExportModel      = 3 // 列表导出
 	InputTypeEditInpValidator = 4 // 添加&编辑验证器
-
+	InputTypeUpdateFields     = 5 // 编辑修改过滤字段
+	InputTypeInsertFields     = 6 // 编辑新增过滤字段
 	EditInpValidatorGenerally = "if err := g.Validator().Rules(\"%s\").Data(in.%s).Messages(\"%s\").Run(ctx); err != nil {\n\t\treturn err.Current()\n\t}\n"
 )
 
@@ -35,6 +36,8 @@ func (l *gCurd) inputTplData(ctx context.Context, in *CurdPreviewInput) (data g.
 	data["listModelColumns"] = l.generateInputListColumns(ctx, in, InputTypeListModel)
 	data["exportModelColumns"] = l.generateInputListColumns(ctx, in, InputTypeExportModel)
 	data["editInpValidator"] = l.generateInputListColumns(ctx, in, InputTypeEditInpValidator)
+	data["updateFieldsColumns"] = l.generateInputListColumns(ctx, in, InputTypeUpdateFields)
+	data["insertFieldsColumns"] = l.generateInputListColumns(ctx, in, InputTypeInsertFields)
 	return
 }
 
@@ -132,7 +135,7 @@ func (l *gCurd) generateStructFieldDefinition(field *sysin.GenCodesColumnListMod
 		if !field.Required && (field.FormRole == "none" || field.FormRole == "") {
 			return nil
 		}
-		rule := "// 验证" + field.GoName + "\n"
+		rule := "// 验证" + field.Dc + "\n"
 		if field.Required && (field.FormRole == FormRoleNone || field.FormRole == "") {
 			field.FormRole = "required"
 		}
@@ -142,6 +145,22 @@ func (l *gCurd) generateStructFieldDefinition(field *sysin.GenCodesColumnListMod
 			rule += s
 		}
 		result = []string{rule}
+	case InputTypeUpdateFields:
+		if !field.IsEdit && field.GoName != "UpdatedBy" {
+			return nil
+		}
+
+		result = append(result, " #"+field.GoType)
+		result = append(result, " #"+fmt.Sprintf(tagKey+`json:"%s"`, field.TsName))
+		result = append(result, " #"+fmt.Sprintf(`dc:"%s"`+tagKey, descriptionTag))
+	case InputTypeInsertFields:
+		if !field.IsEdit && field.GoName != "CreatedBy" {
+			return nil
+		}
+
+		result = append(result, " #"+field.GoType)
+		result = append(result, " #"+fmt.Sprintf(tagKey+`json:"%s"`, field.TsName))
+		result = append(result, " #"+fmt.Sprintf(`dc:"%s"`+tagKey, descriptionTag))
 	default:
 		panic("inputType is invalid")
 	}

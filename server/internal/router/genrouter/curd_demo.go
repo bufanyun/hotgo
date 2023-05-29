@@ -3,8 +3,7 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-// @AutoGenerate Version 2.5.3
-// @AutoGenerate Date 2023-04-28 15:28:40
+// @AutoGenerate Version 2.7.3
 package genrouter
 
 import "hotgo/internal/controller/admin/sys"

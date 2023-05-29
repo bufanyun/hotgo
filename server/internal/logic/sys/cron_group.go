@@ -14,7 +14,6 @@ import (
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/validate"
 )
 
 type sSysCronGroup struct{}
@@ -35,40 +34,27 @@ func (s *sSysCronGroup) Delete(ctx context.Context, in sysin.CronGroupDeleteInp)
 
 // Edit 修改/新增
 func (s *sSysCronGroup) Edit(ctx context.Context, in sysin.CronGroupEditInp) (err error) {
-	if in.Name == "" {
-		err = gerror.New("分组名称不能为空")
-		return
-	}
-
 	// 修改
 	if in.Id > 0 {
-		_, err = dao.SysCronGroup.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+		if _, err = dao.SysCronGroup.Ctx(ctx).Fields(sysin.CronGroupUpdateFields{}).Where("id", in.Id).Data(in).Update(); err != nil {
+			err = gerror.Wrap(err, consts.ErrorORM)
+		}
 		return
 	}
 
 	// 新增
-	_, err = dao.SysCronGroup.Ctx(ctx).Data(in).Insert()
+	if _, err = dao.SysCronGroup.Ctx(ctx).Fields(sysin.CronGroupInsertFields{}).Data(in).Insert(); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+	}
+
 	return
 }
 
 // Status 更新状态
 func (s *sSysCronGroup) Status(ctx context.Context, in sysin.CronGroupStatusInp) (err error) {
-	if in.Id <= 0 {
-		err = gerror.New("ID不能为空")
-		return
+	if _, err = dao.SysCronGroup.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update(); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
 	}
-
-	if in.Status <= 0 {
-		err = gerror.New("状态不能为空")
-		return
-	}
-
-	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
-		err = gerror.New("状态不正确")
-		return
-	}
-
-	_, err = dao.SysCronGroup.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
 	return
 }
 
@@ -76,6 +62,7 @@ func (s *sSysCronGroup) Status(ctx context.Context, in sysin.CronGroupStatusInp)
 func (s *sSysCronGroup) MaxSort(ctx context.Context, in sysin.CronGroupMaxSortInp) (res *sysin.CronGroupMaxSortModel, err error) {
 	if in.Id > 0 {
 		if err = dao.SysCronGroup.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
+			err = gerror.Wrap(err, consts.ErrorORM)
 			return
 		}
 	}
@@ -90,7 +77,9 @@ func (s *sSysCronGroup) MaxSort(ctx context.Context, in sysin.CronGroupMaxSortIn
 
 // View 获取指定信息
 func (s *sSysCronGroup) View(ctx context.Context, in sysin.CronGroupViewInp) (res *sysin.CronGroupViewModel, err error) {
-	err = dao.SysCronGroup.Ctx(ctx).Where("id", in.Id).Scan(&res)
+	if err = dao.SysCronGroup.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+	}
 	return
 }
 
@@ -108,6 +97,7 @@ func (s *sSysCronGroup) List(ctx context.Context, in sysin.CronGroupListInp) (li
 
 	totalCount, err = mod.Count()
 	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
 
@@ -115,7 +105,9 @@ func (s *sSysCronGroup) List(ctx context.Context, in sysin.CronGroupListInp) (li
 		return
 	}
 
-	err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list)
+	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+	}
 	return
 }
 

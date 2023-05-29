@@ -12,7 +12,6 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
-	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
@@ -23,6 +22,7 @@ import (
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
+	"hotgo/utility/simple"
 )
 
 // MaskDemoField 演示环境下需要隐藏的配置
@@ -217,12 +217,9 @@ func (s *sSysConfig) GetConfigByGroup(ctx context.Context, in sysin.GetConfigInp
 		return
 	}
 
-	var (
-		models []*entity.SysConfig
-		isDemo = g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool()
-	)
-
+	var models []*entity.SysConfig
 	if err = dao.SysConfig.Ctx(ctx).Fields("key", "value", "type").Where("group", in.Group).Scan(&models); err != nil {
+		err = gerror.Wrapf(err, "获取配置分组[ %v ]失败，请稍后重试！", in.Group)
 		return
 	}
 
@@ -235,13 +232,10 @@ func (s *sSysConfig) GetConfigByGroup(ctx context.Context, in sysin.GetConfigInp
 				return nil, err
 			}
 			res.List[v.Key] = val
-			if isDemo && gstr.InArray(MaskDemoField, v.Key) {
-				res.List[v.Key] = consts.DemoTips
-				res.List[v.Key] = consts.DemoTips
-			}
 		}
 	}
 
+	res.List = simple.FilterMaskDemo(ctx, res.List)
 	return
 }
 

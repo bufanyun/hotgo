@@ -3,13 +3,11 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/model/input/sysin"
@@ -39,15 +37,9 @@ func (s *sSysDictData) Delete(ctx context.Context, in sysin.DictDataDeleteInp) e
 
 // Edit 修改/新增
 func (s *sSysDictData) Edit(ctx context.Context, in sysin.DictDataEditInp) (err error) {
-	if in.Label == "" {
-		err = gerror.New("字典标签不能为空")
-		return err
-	}
-
 	// 修改
-	in.UpdatedAt = gtime.Now()
 	if in.Id > 0 {
-		_, err = dao.SysDictData.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+		_, err = dao.SysDictData.Ctx(ctx).Fields(sysin.DictDataUpdateFields{}).WherePri(in.Id).Data(in).Update()
 		if err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
 			return err
@@ -57,12 +49,6 @@ func (s *sSysDictData) Edit(ctx context.Context, in sysin.DictDataEditInp) (err 
 	}
 
 	// 新增
-	in.CreatedAt = gtime.Now()
-	if in.TypeID <= 0 {
-		err = gerror.New("字典类型不能为空")
-		return err
-	}
-
 	in.Type, err = dao.SysDictType.GetType(ctx, in.TypeID)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
@@ -73,7 +59,7 @@ func (s *sSysDictData) Edit(ctx context.Context, in sysin.DictDataEditInp) (err 
 		return gerror.Wrap(err, "类型选择无效，请检查")
 	}
 
-	_, err = dao.SysDictData.Ctx(ctx).Data(in).Insert()
+	_, err = dao.SysDictData.Ctx(ctx).Fields(sysin.DictDataInsertFields{}).Data(in).Insert()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err

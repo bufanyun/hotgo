@@ -3,37 +3,13 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package role
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
-	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
 )
-
-// MemberListReq 查询列表
-type MemberListReq struct {
-	g.Meta `path:"/role/member_list" method:"get" tags:"角色" summary:"获取角色下的用户列表"`
-	form.PageReq
-	form.RangeDateReq
-	form.StatusReq
-	Role      int    `json:"role"   description:"角色ID"`
-	DeptId    int    `json:"deptId"   description:"部门ID"`
-	Mobile    int    `json:"mobile"   description:"手机号"`
-	Username  string `json:"username"   description:"用户名"`
-	Realname  string `json:"realname"   description:"真实姓名"`
-	StartTime string `json:"start_time"   description:"开始时间"`
-	EndTime   string `json:"end_time"   description:"结束时间"`
-	Name      string `json:"name"   description:"岗位名称"`
-	Code      string `json:"code"   description:"岗位编码"`
-}
-
-type MemberListRes struct {
-	List []*adminin.MemberListModel `json:"list"   description:"数据列表"`
-	form.PageRes
-}
 
 // ListReq 查询列表
 type ListReq struct {
@@ -81,42 +57,33 @@ type DynamicRes struct {
 	List []adminin.MenuRoute `json:"list"   description:"数据列表"`
 }
 
-type MenuEditReq struct {
-	g.Meta  `path:"/role/edit" method:"post" tags:"角色" summary:"编辑角色"`
-	RoleId  int64   `json:"id"`
-	MenuIds []int64 `json:"menuIds"`
-}
-
-type MenuEditRes struct{}
-
 type UpdatePermissionsReq struct {
-	g.Meta  `path:"/role/updatePermissions" method:"post" tags:"角色" summary:"编辑角色菜单权限"`
-	RoleId  int64   `json:"id"`
-	MenuIds []int64 `json:"menuIds"`
+	g.Meta `path:"/role/updatePermissions" method:"post" tags:"角色" summary:"编辑角色菜单权限"`
+	adminin.UpdatePermissionsInp
 }
 
 type UpdatePermissionsRes struct{}
 
 type GetPermissionsReq struct {
 	g.Meta `path:"/role/getPermissions" method:"get" tags:"角色" summary:"获取指定角色权限"`
-	RoleId int64 `json:"id"`
+	adminin.GetPermissionsInp
 }
 
 type GetPermissionsRes struct {
-	MenuIds []int64 `json:"menuIds"`
+	*adminin.GetPermissionsModel
 }
 
 // EditReq 修改/新增角色
 type EditReq struct {
 	g.Meta `path:"/role/edit" method:"post" tags:"角色" summary:"修改/新增角色"`
-	entity.AdminRole
+	adminin.RoleEditInp
 }
 type EditRes struct{}
 
 // DeleteReq 删除角色
 type DeleteReq struct {
 	g.Meta `path:"/role/delete" method:"post" tags:"角色" summary:"删除角色"`
-	Id     int64 `json:"id" v:"required"`
+	adminin.RoleDeleteInp
 }
 type DeleteRes struct{}
 

@@ -19,7 +19,7 @@ import (
 )
 
 func main() {
-	var ctx = gctx.New()
+	var ctx = gctx.GetInitCtx()
 	global.Init(ctx)
 	cmd.Main.Run(ctx)
 }

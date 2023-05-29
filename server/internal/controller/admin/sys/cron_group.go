@@ -12,6 +12,7 @@ import (
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
+	"hotgo/utility/validate"
 )
 
 var (
@@ -35,6 +36,10 @@ func (c *cCronGroup) Delete(ctx context.Context, req *cron.GroupDeleteReq) (res 
 func (c *cCronGroup) Edit(ctx context.Context, req *cron.GroupEditReq) (res *cron.GroupEditRes, err error) {
 	var in sysin.CronGroupEditInp
 	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
 		return
 	}
 
@@ -90,6 +95,10 @@ func (c *cCronGroup) List(ctx context.Context, req *cron.GroupListReq) (res *cro
 func (c *cCronGroup) Status(ctx context.Context, req *cron.GroupStatusReq) (res *cron.GroupStatusRes, err error) {
 	var in sysin.CronGroupStatusInp
 	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
 		return
 	}
 
