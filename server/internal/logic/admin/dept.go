@@ -7,7 +7,6 @@ package admin
 
 import (
 	"context"
-	"fmt"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
@@ -100,7 +99,7 @@ func (s *sAdminDept) Edit(ctx context.Context, in adminin.DeptEditInp) (err erro
 		if err != nil {
 			return
 		}
-		in.Tree = fmt.Sprintf("%str_%v ", pTree.String(), in.Id)
+		in.Tree = tree.GenLabel(pTree.String(), in.Id)
 
 		err = dao.AdminDept.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 			// 更新数据
@@ -129,7 +128,8 @@ func updateChildrenTree(ctx context.Context, _id int64, _level int, _tree string
 	}
 	for _, child := range list {
 		child.Level = _level + 1
-		child.Tree = fmt.Sprintf("%str_%v ", _tree, child.Id)
+		child.Tree = tree.GenLabel(_tree, child.Id)
+
 		_, err = dao.AdminDept.Ctx(ctx).Where("id", child.Id).Data("level", child.Level, "tree", child.Tree).Update()
 		if err != nil {
 			return err

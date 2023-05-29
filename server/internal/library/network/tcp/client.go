@@ -96,14 +96,14 @@ func NewClient(config *ClientConfig) (client *Client, err error) {
 
 	if config.ConnectInterval <= 0 {
 		client.connectInterval = 5 * time.Second
-		client.Logger.Debugf(client.Ctx, "invalid connectInterval, reset to %v", client.connectInterval)
+		//client.Logger.Debugf(client.Ctx, "invalid connectInterval, reset to %v", client.connectInterval)
 	} else {
 		client.connectInterval = config.ConnectInterval
 	}
 
 	if config.Timeout <= 0 {
 		client.timeout = 10 * time.Second
-		client.Logger.Debugf(client.Ctx, "invalid timeout, reset to %v", client.timeout)
+		//client.Logger.Debugf(client.Ctx, "invalid timeout, reset to %v", client.timeout)
 	} else {
 		client.timeout = config.Timeout
 	}

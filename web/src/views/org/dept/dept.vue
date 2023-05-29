@@ -102,16 +102,9 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="org_dept">
   import { h, onMounted, ref } from 'vue';
-  import {
-    DataTableColumns,
-    NButton,
-    NTag,
-    TreeSelectOption,
-    useDialog,
-    useMessage,
-  } from 'naive-ui';
+  import { DataTableColumns, NButton, NTag, useDialog, useMessage } from 'naive-ui';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
   import { PlusOutlined } from '@vicons/antd';
   import { TableAction } from '@/components/Table';
@@ -278,17 +271,12 @@
         );
       },
     },
-    // {
-    //   title: '排序',
-    //   key: 'sort',
-    //   width: 80,
-    // },
     {
       title: '创建时间',
       key: 'createdAt',
       width: 150,
       render: (rows, _) => {
-        return rows.createdAt; //timestampToTime();
+        return rows.createdAt;
       },
     },
     {
@@ -416,10 +404,7 @@
     await loadDataTable({});
   });
 
-  function handleUpdateValue(
-    value: string | number | Array<string | number> | null,
-    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
-  ) {
+  function handleUpdateValue(value) {
     formParams.value.pid = value;
   }
 </script>

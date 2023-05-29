@@ -131,7 +131,7 @@ func GetLocation(ctx context.Context, ip string) (data *IpLocationData, err erro
 	}
 
 	if validate.IsLocalIPAddr(ip) {
-		return nil, fmt.Errorf("must be a public ip:%v", ip)
+		return // nil, fmt.Errorf("must be a public ip:%v", ip)
 	}
 
 	if cacheMap.Contains(ip) {

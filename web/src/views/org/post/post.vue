@@ -96,7 +96,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="org_post">
   import { h, reactive, ref } from 'vue';
   import { useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';

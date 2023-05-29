@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost:3306
--- 生成日期： 2023-05-15 10:04:47
+-- 生成日期： 2023-05-29 11:43:40
 -- 服务器版本： 5.7.38-log
 -- PHP 版本： 5.6.40
 
@@ -199,7 +199,7 @@ CREATE TABLE `hg_admin_member` (
 --
 
 INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `username`, `password_hash`, `salt`, `password_reset_token`, `integral`, `balance`, `avatar`, `sex`, `qq`, `email`, `mobile`, `birthday`, `city_id`, `address`, `pid`, `level`, `tree`, `invite_code`, `cash`, `last_active_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '', '89.00', '99391.78', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '111', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-05-15 09:59:29', NULL, 1, '2021-02-12 17:59:45', '2023-05-15 09:59:29'),
+(1, 100, 1, '孟帅', 'admin', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '', '89.00', '99391.78', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', 1, '133814250', '133814250@qq.com', '15303830571', '2016-04-16', 410172, '莲花街001号', 0, 1, '', '111', '{\"name\": \"孟帅\", \"account\": \"15303830571\", \"payeeCode\": \"http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8mqal5isvcb58g.jpg\"}', '2023-05-29 11:41:32', NULL, 1, '2021-02-12 17:59:45', '2023-05-29 11:41:32'),
 (3, 100, 2, '测试账号', 'test', 'a7c588fffeb2c1d99b29879d7fe97c78', '6541561', '', '0.00', '4.00', 'http://alioss.qvnidaye.com//images/2021/03/12/image_1615529198_vMK4kwq2.jpg', 1, '', 'c@qq.cc', '15303888888', '2016-04-13', 371100, '大潮街道666号', 1, 2, 'tr_1 ', '222', NULL, '2023-05-14 12:29:15', '', 1, '2022-02-11 17:59:45', '2023-05-14 12:29:15'),
 (8, 101, 200, 'ameng', 'ameng', '382df3b083a27886edb94e669a857c33', 'hfuUEb', '', '11.00', '3.22', '', 1, '', '', '', NULL, 0, '', 1, 2, 'tr_1 ', '333', NULL, '2023-05-14 12:25:24', '', 1, '2023-02-03 17:34:31', '2023-05-14 12:25:24');
 
@@ -285,10 +285,10 @@ INSERT INTO `hg_admin_menu` (`id`, `pid`, `title`, `name`, `path`, `icon`, `type
 (2047, 0, 'Dashboard', 'Dashboard', '/dashboard', 'DashboardOutlined', 1, '/dashboard/console', 'dashboard', '控制台', 'LAYOUT', 0, NULL, 0, 1, NULL, 0, 0, 0, 1, '', 10, '这是一个备注..', 1, '2022-07-17 11:40:03', '2022-07-17 11:40:03'),
 (2048, 2047, '主控台', 'dashboard_console', 'console', '', 2, '', '/console/stat', '主控台', '/dashboard/console/console', 0, '', 0, 1, '', 0, 0, 0, 2, '', 20, '', 1, '2022-07-17 11:45:09', '2022-11-22 11:32:30'),
 (2050, 2047, '工作台', 'dashboard_workplace', 'workplace', NULL, 2, NULL, 'dashboard_workplace', '工作台', '/dashboard/workplace/workplace', 0, NULL, 0, 1, NULL, 0, 0, 0, 2, '', 40, NULL, 1, '2022-07-17 11:45:09', '2022-07-17 11:45:12'),
-(2061, 0, '组织管理', 'Org', '/org', 'AppstoreOutlined', 1, '/org/user/user', '', '', 'LAYOUT', 0, '', 0, 0, '', 0, 0, 0, 1, '', 20, '', 1, '2022-09-16 06:08:19', '2022-09-16 17:16:37'),
-(2062, 2061, '后台用户', 'org_user', 'user', '', 2, '', '/dept/list,/post/list,/role/list,/member/list,/dept/option', '', '/org/user/user', 0, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-16 06:09:25', '2023-04-26 23:56:29'),
-(2063, 2061, '部门管理', 'org_dept', 'dept', '', 2, '', '', '', '/org/dept/dept', 0, '', 0, 0, '', 0, 0, 0, 2, '', 20, '', 1, '2022-09-16 14:10:12', '2022-09-16 14:10:12'),
-(2064, 2061, '岗位管理', 'org_post', 'post', '', 2, '', '/post/list', '', '/org/post/post', 0, '', 0, 0, '', 0, 0, 0, 2, '', 30, '', 1, '2022-09-16 14:11:05', '2023-04-26 23:58:27'),
+(2061, 0, '组织管理', 'Org', '/org', 'AppstoreOutlined', 1, '/org/user/user', '', '', 'LAYOUT', 0, '', 0, 0, '', 0, 0, 0, 1, '', 20, '', 1, '2022-09-16 06:08:19', '2023-05-16 14:38:12'),
+(2062, 2061, '后台用户', 'user', 'user', '', 2, '', '/dept/list,/post/list,/role/list,/member/list,/dept/option', '', '/org/user/user', 0, '', 0, 0, '', 1, 0, 0, 2, '', 10, '', 1, '2022-09-16 06:09:25', '2023-05-16 18:04:12'),
+(2063, 2061, '部门管理', 'org_dept', 'dept', '', 2, '', '', '', '/org/dept/dept', 0, '', 0, 0, '', 1, 0, 0, 2, '', 20, '', 1, '2022-09-16 14:10:12', '2023-05-16 18:02:11'),
+(2064, 2061, '岗位管理', 'org_post', 'post', '', 2, '', '/post/list', '', '/org/post/post', 0, '', 0, 0, '', 1, 0, 0, 2, '', 30, '', 1, '2022-09-16 14:11:05', '2023-05-16 14:38:16'),
 (2065, 0, '权限管理', 'Permission', '/permission', 'SafetyCertificateOutlined', 1, '/permission/menu', '', '', 'LAYOUT', 1, '', 0, 0, '', 0, 0, 0, 1, '', 40, '', 1, '2022-09-15 22:08:19', '2023-01-10 17:17:53'),
 (2066, 2065, '菜单权限', 'permission_menu', 'menu', '', 2, '', '/menu/list', '', '/permission/menu/menu', 0, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-16 06:09:25', '2022-11-22 16:34:12'),
 (2067, 2065, '角色权限', 'permission_role', 'role', '', 2, '', '/role/list', '', '/permission/role/role', 0, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-15 22:09:25', '2022-11-22 16:34:01'),
@@ -300,11 +300,11 @@ INSERT INTO `hg_admin_menu` (`id`, `pid`, `title`, `name`, `path`, `icon`, `type
 (2073, 2219, '个人设置', 'home_account', 'account', '', 2, '', '', '', '/home/account/account', 1, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-16 17:34:35', '2023-02-01 15:05:57'),
 (2074, 0, '日志管理', 'Logs', '/log', 'UnorderedListOutlined', 1, '', '', '', 'LAYOUT', 1, '', 0, 0, '', 0, 0, 0, 1, '', 60, '', 1, '2022-09-16 01:38:32', '2023-01-10 17:19:46'),
 (2075, 2074, '访问日志', 'log', 'log', '', 1, '/log/log/index', '', '', 'ParentLayout', 0, '', 0, 0, '', 0, 0, 0, 2, '', 10, '', 1, '2022-09-09 17:39:16', '2023-01-20 23:08:41'),
-(2076, 2074, '登录日志', 'login_log', 'login-log', '', 1, '/log/login-log/index', '', '', 'ParentLayout', 0, '', 0, 0, '', 0, 0, 0, 2, '', 20, '', 1, '2022-09-15 20:04:20', '2023-05-11 22:22:54'),
+(2076, 2074, '登录日志', 'login_log', 'login-log', '', 1, '/log/login-log/index', '', '', 'ParentLayout', 0, '', 0, 0, '', 1, 0, 0, 2, '', 20, '', 1, '2022-09-15 20:04:20', '2023-05-16 14:39:47'),
 (2077, 2075, '全局日志详情', 'log_view', 'view/:id?', '', 2, '', '/log/view', '', '/log/log/view', 0, 'log', 0, 0, '', 0, 1, 0, 3, '', 62, '', 1, '2022-09-14 20:07:04', '2022-11-23 22:12:27'),
 (2078, 2075, '全局日志列表', 'log_list', 'index', '', 2, '', '/log/list', '', '/log/log/index', 0, 'log', 0, 0, '', 0, 1, 0, 3, '', 61, '', 1, '2022-09-15 04:38:33', '2022-11-23 22:12:07'),
 (2082, 2076, '登录日志详情', 'loginLogView', 'view/:id?', '', 2, '', '/loginLog/view', '', '/log/login-log/view', 0, 'login_log', 0, 0, '', 0, 1, 0, 3, '', 62, '', 1, '2022-09-14 20:07:04', '2023-01-19 21:13:43'),
-(2083, 2076, '登录列表', 'login_log_index', 'index', '', 2, '', '', '', '/log/login-log/index', 0, 'login_log', 0, 0, '', 0, 1, 0, 3, '', 61, '', 1, '2022-09-15 04:38:33', '2023-05-11 22:23:46'),
+(2083, 2076, '登录列表', 'login_log_index', 'index', '', 2, '', '', '', '/log/login-log/index', 0, 'login_log', 0, 0, '', 0, 1, 0, 3, '', 61, '', 1, '2022-09-15 04:38:33', '2023-05-16 16:31:24'),
 (2084, 2074, '短信记录', 'sms_log', 'sms', '', 1, '', '', '', '/log/sms-log/index', 0, '', 0, 0, '', 0, 0, 0, 2, '', 70, '', 1, '2022-09-17 19:13:51', '2023-05-11 21:59:17'),
 (2087, 2074, '服务日志', 'monitor_serve_log', 'serve_log', '', 1, '/log/serve_log/index', '', '', 'ParentLayout', 1, '', 0, 0, '', 0, 0, 0, 2, '', 30, '', 1, '2022-09-18 20:59:28', '2023-01-20 23:08:50'),
 (2088, 2087, '服务日志详情', 'monitor_serve_log_view', 'view/:id?', '', 2, '', '/serve_log/view', '', '/monitor/serve-log/view', 0, 'monitor_serve_log', 0, 0, '', 0, 1, 0, 3, '', 62, '', 1, '2022-09-14 20:07:04', '2023-01-20 18:41:13'),
@@ -600,201 +600,201 @@ CREATE TABLE `hg_admin_role_casbin` (
 --
 
 INSERT INTO `hg_admin_role_casbin` (`id`, `p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES
-(28037, 'p', 'manage', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28038, 'p', 'manage', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28039, 'p', 'manage', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28040, 'p', 'manage', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28041, 'p', 'manage', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28042, 'p', 'manage', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28043, 'p', 'manage', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28044, 'p', 'manage', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28045, 'p', 'manage', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28046, 'p', 'manage', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28047, 'p', 'manage', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28048, 'p', 'manage', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28049, 'p', 'manage', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28050, 'p', 'manage', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28051, 'p', 'manage', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28052, 'p', 'manage', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28053, 'p', 'manage', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28054, 'p', 'manage', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28055, 'p', 'manage', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28056, 'p', 'manage', '/member/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28057, 'p', 'manage', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28058, 'p', 'manage', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28059, 'p', 'manage', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28060, 'p', 'manage', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28061, 'p', 'manage', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28062, 'p', 'manage', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28063, 'p', 'manage', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28064, 'p', 'manage', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28065, 'p', 'manage', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28066, 'p', 'manage', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28067, 'p', 'manage', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28068, 'p', 'manage', '/curdDemo/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28069, 'p', 'manage', '/curdDemo/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28070, 'p', 'manage', '/curdDemo/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28071, 'p', 'manage', '/curdDemo/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28072, 'p', 'manage', '/curdDemo/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28073, 'p', 'manage', '/curdDemo/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28074, 'p', 'manage', '/curdDemo/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28075, 'p', 'manage', '/curdDemo/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28076, 'p', 'manage', '/loginLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28077, 'p', 'manage', '/loginLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28078, 'p', 'manage', '/serveLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28079, 'p', 'manage', '/serveLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28080, 'p', 'manage', '/notice/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28081, 'p', 'manage', '/notice/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28082, 'p', 'manage', '/notice/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28083, 'p', 'manage', '/notice/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28084, 'p', 'manage', '/notice/editNotify', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28085, 'p', 'manage', '/notice/editNotice', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28086, 'p', 'manage', '/notice/editLetter', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28087, 'p', 'manage', '/notice/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28088, 'p', 'manage', '/test/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28089, 'p', 'manage', '/test/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28090, 'p', 'manage', '/test/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28091, 'p', 'manage', '/test/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28092, 'p', 'manage', '/test/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28093, 'p', 'manage', '/test/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28094, 'p', 'manage', '/order/create', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28095, 'p', 'manage', '/creditsLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28096, 'p', 'manage', '/creditsLog/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28097, 'p', 'manage', '/order/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28098, 'p', 'manage', '/order/acceptRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28099, 'p', 'manage', '/order/applyRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28100, 'p', 'manage', '/order/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28101, 'p', 'manage', '/cash/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28102, 'p', 'manage', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28103, 'p', 'manage', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28104, 'p', 'manage', '/cash/payment', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28105, 'p', 'manage', '/cash/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28106, 'p', 'manage', '/member/addBalance', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28107, 'p', 'manage', '/member/addIntegral', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28108, 'p', 'manage', '/member/resetPwd', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28109, 'p', 'manage', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28110, 'p', 'manage', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28111, 'p', 'manage', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28112, 'p', 'manage', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28113, 'p', 'manage', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28114, 'p', 'manage', '/config/get', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28115, 'p', 'manage', '/config/update', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28116, 'p', 'manage', '/dictType/tree', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28117, 'p', 'manage', '/dictData/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28118, 'p', 'manage', '/config/typeSelect', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28119, 'p', 'manage', '/dictData/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28120, 'p', 'manage', '/dictData/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28121, 'p', 'manage', '/dictType/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28122, 'p', 'manage', '/dictType/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28123, 'p', 'manage', '/cron/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28124, 'p', 'manage', '/cronGroup/select', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28125, 'p', 'manage', '/cronGroup/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28126, 'p', 'manage', '/cron/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28127, 'p', 'manage', '/cron/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28128, 'p', 'manage', '/cron/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28129, 'p', 'manage', '/cron/onlineExec', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28130, 'p', 'manage', '/cronGroup/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28131, 'p', 'manage', '/cronGroup/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28132, 'p', 'manage', '/blacklist/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28133, 'p', 'manage', '/blacklist/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28134, 'p', 'manage', '/blacklist/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28135, 'p', 'manage', '/blacklist/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28136, 'p', 'gold_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28137, 'p', 'gold_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28138, 'p', 'gold_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28139, 'p', 'gold_agent', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28140, 'p', 'gold_agent', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28141, 'p', 'gold_agent', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28142, 'p', 'gold_agent', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28143, 'p', 'gold_agent', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28144, 'p', 'gold_agent', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28145, 'p', 'gold_agent', '/member/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28146, 'p', 'gold_agent', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28147, 'p', 'gold_agent', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28148, 'p', 'gold_agent', '/order/create', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28149, 'p', 'gold_agent', '/creditsLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28150, 'p', 'gold_agent', '/creditsLog/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28151, 'p', 'gold_agent', '/order/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28152, 'p', 'gold_agent', '/order/acceptRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28153, 'p', 'gold_agent', '/order/applyRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28154, 'p', 'gold_agent', '/order/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28155, 'p', 'gold_agent', '/cash/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28156, 'p', 'gold_agent', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28157, 'p', 'gold_agent', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28158, 'p', 'gold_agent', '/cash/payment', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28159, 'p', 'gold_agent', '/cash/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28160, 'p', 'gold_agent', '/member/addBalance', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28161, 'p', 'gold_agent', '/member/addIntegral', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28162, 'p', 'gold_agent', '/member/resetPwd', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28163, 'p', 'gold_agent', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28164, 'p', 'gold_agent', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28165, 'p', 'gold_agent', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28166, 'p', 'gold_agent', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28167, 'p', 'gold_agent', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28168, 'p', 'gold_agent', '/member/updatePwd', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28169, 'p', 'gold_agent', '/member/updateMobile', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28170, 'p', 'gold_agent', '/member/updateEmail', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28171, 'p', 'silver_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28172, 'p', 'silver_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28173, 'p', 'silver_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28174, 'p', 'copper_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28175, 'p', 'copper_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28176, 'p', 'copper_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28177, 'p', 'finance', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28178, 'p', 'finance', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28179, 'p', 'finance', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28180, 'p', 'finance', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28181, 'p', 'finance', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28182, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28183, 'p', 'finance', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28184, 'p', 'finance', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28185, 'p', 'finance', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28186, 'p', 'finance', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28187, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28188, 'p', 'finance', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28189, 'p', 'finance', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28190, 'p', 'finance', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28191, 'p', 'finance', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28192, 'p', 'finance', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28193, 'p', 'finance', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28194, 'p', 'finance', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28195, 'p', 'finance', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28196, 'p', 'finance', '/member/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28197, 'p', 'finance', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28198, 'p', 'finance', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28199, 'p', 'finance', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28200, 'p', 'finance', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28201, 'p', 'finance', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28202, 'p', 'finance', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28203, 'p', 'finance', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28204, 'p', 'finance', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28205, 'p', 'finance', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28206, 'p', 'finance', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28207, 'p', 'finance', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28208, 'p', 'finance', '/loginLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28209, 'p', 'finance', '/loginLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28210, 'p', 'finance', '/serveLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28211, 'p', 'finance', '/serveLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28212, 'p', 'finance', '/notice/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28213, 'p', 'finance', '/notice/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28214, 'p', 'finance', '/notice/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28215, 'p', 'finance', '/notice/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28216, 'p', 'finance', '/notice/editNotify', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28217, 'p', 'finance', '/notice/editNotice', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28218, 'p', 'finance', '/notice/editLetter', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28219, 'p', 'finance', '/notice/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28220, 'p', 'finance', '/test/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28221, 'p', 'finance', '/test/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28222, 'p', 'finance', '/test/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28223, 'p', 'finance', '/test/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28224, 'p', 'finance', '/test/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28225, 'p', 'finance', '/test/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28226, 'p', 'business', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28227, 'p', 'business', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28228, 'p', 'business', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28229, 'p', 'science', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28230, 'p', 'science', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
-(28231, 'p', 'science', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', '');
+(31157, 'p', 'manage', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31158, 'p', 'manage', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31159, 'p', 'manage', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31160, 'p', 'manage', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31161, 'p', 'manage', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31162, 'p', 'manage', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31163, 'p', 'manage', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31164, 'p', 'manage', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31165, 'p', 'manage', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31166, 'p', 'manage', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31167, 'p', 'manage', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31168, 'p', 'manage', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31169, 'p', 'manage', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31170, 'p', 'manage', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31171, 'p', 'manage', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31172, 'p', 'manage', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31173, 'p', 'manage', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31174, 'p', 'manage', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31175, 'p', 'manage', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31176, 'p', 'manage', '/member/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31177, 'p', 'manage', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31178, 'p', 'manage', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31179, 'p', 'manage', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31180, 'p', 'manage', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31181, 'p', 'manage', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31182, 'p', 'manage', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31183, 'p', 'manage', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31184, 'p', 'manage', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31185, 'p', 'manage', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31186, 'p', 'manage', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31187, 'p', 'manage', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31188, 'p', 'manage', '/curdDemo/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31189, 'p', 'manage', '/curdDemo/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31190, 'p', 'manage', '/curdDemo/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31191, 'p', 'manage', '/curdDemo/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31192, 'p', 'manage', '/curdDemo/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31193, 'p', 'manage', '/curdDemo/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31194, 'p', 'manage', '/curdDemo/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31195, 'p', 'manage', '/curdDemo/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31196, 'p', 'manage', '/loginLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31197, 'p', 'manage', '/loginLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31198, 'p', 'manage', '/serveLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31199, 'p', 'manage', '/serveLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31200, 'p', 'manage', '/notice/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31201, 'p', 'manage', '/notice/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31202, 'p', 'manage', '/notice/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31203, 'p', 'manage', '/notice/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31204, 'p', 'manage', '/notice/editNotify', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31205, 'p', 'manage', '/notice/editNotice', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31206, 'p', 'manage', '/notice/editLetter', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31207, 'p', 'manage', '/notice/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31208, 'p', 'manage', '/test/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31209, 'p', 'manage', '/test/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31210, 'p', 'manage', '/test/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31211, 'p', 'manage', '/test/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31212, 'p', 'manage', '/test/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31213, 'p', 'manage', '/test/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31214, 'p', 'manage', '/order/create', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31215, 'p', 'manage', '/creditsLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31216, 'p', 'manage', '/creditsLog/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31217, 'p', 'manage', '/order/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31218, 'p', 'manage', '/order/acceptRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31219, 'p', 'manage', '/order/applyRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31220, 'p', 'manage', '/order/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31221, 'p', 'manage', '/cash/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31222, 'p', 'manage', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31223, 'p', 'manage', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31224, 'p', 'manage', '/cash/payment', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31225, 'p', 'manage', '/cash/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31226, 'p', 'manage', '/member/addBalance', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31227, 'p', 'manage', '/member/addIntegral', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31228, 'p', 'manage', '/member/resetPwd', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31229, 'p', 'manage', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31230, 'p', 'manage', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31231, 'p', 'manage', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31232, 'p', 'manage', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31233, 'p', 'manage', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31234, 'p', 'manage', '/config/get', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31235, 'p', 'manage', '/config/update', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31236, 'p', 'manage', '/dictType/tree', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31237, 'p', 'manage', '/dictData/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31238, 'p', 'manage', '/config/typeSelect', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31239, 'p', 'manage', '/dictData/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31240, 'p', 'manage', '/dictData/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31241, 'p', 'manage', '/dictType/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31242, 'p', 'manage', '/dictType/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31243, 'p', 'manage', '/cron/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31244, 'p', 'manage', '/cronGroup/select', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31245, 'p', 'manage', '/cronGroup/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31246, 'p', 'manage', '/cron/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31247, 'p', 'manage', '/cron/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31248, 'p', 'manage', '/cron/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31249, 'p', 'manage', '/cron/onlineExec', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31250, 'p', 'manage', '/cronGroup/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31251, 'p', 'manage', '/cronGroup/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31252, 'p', 'manage', '/blacklist/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31253, 'p', 'manage', '/blacklist/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31254, 'p', 'manage', '/blacklist/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31255, 'p', 'manage', '/blacklist/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31256, 'p', 'gold_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31257, 'p', 'gold_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31258, 'p', 'gold_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31259, 'p', 'gold_agent', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31260, 'p', 'gold_agent', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31261, 'p', 'gold_agent', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31262, 'p', 'gold_agent', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31263, 'p', 'gold_agent', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31264, 'p', 'gold_agent', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31265, 'p', 'gold_agent', '/member/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31266, 'p', 'gold_agent', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31267, 'p', 'gold_agent', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31268, 'p', 'gold_agent', '/order/create', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31269, 'p', 'gold_agent', '/creditsLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31270, 'p', 'gold_agent', '/creditsLog/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31271, 'p', 'gold_agent', '/order/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31272, 'p', 'gold_agent', '/order/acceptRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31273, 'p', 'gold_agent', '/order/applyRefund', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31274, 'p', 'gold_agent', '/order/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31275, 'p', 'gold_agent', '/cash/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31276, 'p', 'gold_agent', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31277, 'p', 'gold_agent', '/cash/apply', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31278, 'p', 'gold_agent', '/cash/payment', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31279, 'p', 'gold_agent', '/cash/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31280, 'p', 'gold_agent', '/member/addBalance', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31281, 'p', 'gold_agent', '/member/addIntegral', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31282, 'p', 'gold_agent', '/member/resetPwd', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31283, 'p', 'gold_agent', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31284, 'p', 'gold_agent', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31285, 'p', 'gold_agent', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31286, 'p', 'gold_agent', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31287, 'p', 'gold_agent', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31288, 'p', 'gold_agent', '/member/updatePwd', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31289, 'p', 'gold_agent', '/member/updateMobile', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31290, 'p', 'gold_agent', '/member/updateEmail', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31291, 'p', 'silver_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31292, 'p', 'silver_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31293, 'p', 'silver_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31294, 'p', 'copper_agent', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31295, 'p', 'copper_agent', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31296, 'p', 'copper_agent', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31297, 'p', 'finance', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31298, 'p', 'finance', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31299, 'p', 'finance', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31300, 'p', 'finance', '/dept/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31301, 'p', 'finance', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31302, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31303, 'p', 'finance', '/member/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31304, 'p', 'finance', '/dept/option', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31305, 'p', 'finance', '/post/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31306, 'p', 'finance', '/menu/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31307, 'p', 'finance', '/role/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31308, 'p', 'finance', '/log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31309, 'p', 'finance', '/log/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31310, 'p', 'finance', '/loginLog/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31311, 'p', 'finance', '/serve_log/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31312, 'p', 'finance', '/notice/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31313, 'p', 'finance', '/attachment/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31314, 'p', 'finance', '/provinces/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31315, 'p', 'finance', '/member/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31316, 'p', 'finance', '/member/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31317, 'p', 'finance', '/member/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31318, 'p', 'finance', '/member/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31319, 'p', 'finance', '/dept/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31320, 'p', 'finance', '/dept/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31321, 'p', 'finance', '/dept/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31322, 'p', 'finance', '/post/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31323, 'p', 'finance', '/post/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31324, 'p', 'finance', '/post/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31325, 'p', 'finance', '/upload/image', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31326, 'p', 'finance', '/hgexample/table/list', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31327, 'p', 'finance', '/hgexample/table/view', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31328, 'p', 'finance', '/loginLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31329, 'p', 'finance', '/loginLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31330, 'p', 'finance', '/serveLog/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31331, 'p', 'finance', '/serveLog/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31332, 'p', 'finance', '/notice/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31333, 'p', 'finance', '/notice/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31334, 'p', 'finance', '/notice/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31335, 'p', 'finance', '/notice/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31336, 'p', 'finance', '/notice/editNotify', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31337, 'p', 'finance', '/notice/editNotice', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31338, 'p', 'finance', '/notice/editLetter', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31339, 'p', 'finance', '/notice/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31340, 'p', 'finance', '/test/maxSort', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31341, 'p', 'finance', '/test/export', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31342, 'p', 'finance', '/test/delete', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31343, 'p', 'finance', '/test/status', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31344, 'p', 'finance', '/test/switch', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31345, 'p', 'finance', '/test/edit', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31346, 'p', 'business', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31347, 'p', 'business', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31348, 'p', 'business', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31349, 'p', 'science', 'dashboard', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31350, 'p', 'science', '/console/stat', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', ''),
+(31351, 'p', 'science', 'dashboard_workplace', 'GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -1375,7 +1375,7 @@ INSERT INTO `hg_sys_config` (`id`, `group`, `name`, `type`, `key`, `value`, `def
 (116, 'login', '默认注册角色', 'int64', 'loginRoleId', '202', '', 1140, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
 (117, 'login', '默认注册部门', 'int64', 'loginDeptId', '112', '', 1150, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
 (118, 'login', '默认注册岗位', '[]int64', 'loginPostIds', '[6]', '', 1160, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
-(119, 'login', '默认注册头像', 'string', 'loginAvatar', 'http://localhost:8000/attachment/2023-05-14/csltf747yrr4gd4kc5.png', '', 1170, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
+(119, 'login', '默认注册头像', 'string', 'loginAvatar', 'http://bufanyun.cn-bj.ufileos.com/hotgo/attachment/2023-02-09/cqdq8er9nfkchdopav.png', '', 1170, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
 (120, 'login', '强制邀请', 'int', 'loginForceInvite', '2', '1', 1190, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09'),
 (121, 'login', '自动获取openId', 'int', 'loginAutoOpenId', '2', '1', 1195, '', 1, 1, '2021-09-29 23:51:21', '2023-05-15 09:46:09');
 
@@ -5476,7 +5476,7 @@ CREATE TABLE `hg_sys_serve_license` (
 --
 
 INSERT INTO `hg_sys_serve_license` (`id`, `group`, `name`, `appid`, `secret_key`, `desc`, `remote_addr`, `online`, `online_limit`, `login_times`, `last_login_at`, `last_active_at`, `routes`, `allowed_ips`, `end_at`, `remark`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'cron', '默认的定时任务', '1002', 'hotgo', '这是默认的定时任务TCP客户端授权凭证。', '127.0.0.1:62905', 1, 1, 295, '2023-05-14 16:44:30', '2023-05-14 16:50:30', NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-05-14 16:50:30'),
+(1, 'cron', '默认的定时任务', '1002', 'hotgo', '这是默认的定时任务TCP客户端授权凭证。', '127.0.0.1:62092', 1, 1, 337, '2023-05-16 12:44:16', '2023-05-16 18:06:18', NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-05-16 18:06:18'),
 (2, 'auth', '测试授权', 'mengshuai', '123456', '这是一个测试的授权服务，可以为第三方平台提供授权支持。', '127.0.0.1:51615', 1, 1, 0, '2023-05-04 23:23:52', '2023-05-04 23:23:52', NULL, '127.0.0.1', '2033-03-09 00:00:00', '', 1, '2023-03-11 00:00:00', '2023-05-04 23:23:52');
 
 -- --------------------------------------------------------
@@ -5836,31 +5836,31 @@ ALTER TABLE `hg_addon_hgexample_table`
 -- 使用表AUTO_INCREMENT `hg_admin_cash`
 --
 ALTER TABLE `hg_admin_cash`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=17;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_credits_log`
 --
 ALTER TABLE `hg_admin_credits_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '变动ID', AUTO_INCREMENT=18;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '变动ID';
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_dept`
 --
 ALTER TABLE `hg_admin_dept`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '部门ID', AUTO_INCREMENT=114;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '部门ID', AUTO_INCREMENT=113;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_member`
 --
 ALTER TABLE `hg_admin_member`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '管理员ID', AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '管理员ID', AUTO_INCREMENT=9;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_menu`
 --
 ALTER TABLE `hg_admin_menu`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '菜单ID', AUTO_INCREMENT=2281;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '菜单ID', AUTO_INCREMENT=2273;
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_notice`
@@ -5878,13 +5878,13 @@ ALTER TABLE `hg_admin_notice_read`
 -- 使用表AUTO_INCREMENT `hg_admin_oauth`
 --
 ALTER TABLE `hg_admin_oauth`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键';
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_order`
 --
 ALTER TABLE `hg_admin_order`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=152;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键';
 
 --
 -- 使用表AUTO_INCREMENT `hg_admin_post`
@@ -5902,19 +5902,19 @@ ALTER TABLE `hg_admin_role`
 -- 使用表AUTO_INCREMENT `hg_admin_role_casbin`
 --
 ALTER TABLE `hg_admin_role_casbin`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28232;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31352;
 
 --
 -- 使用表AUTO_INCREMENT `hg_pay_log`
 --
 ALTER TABLE `hg_pay_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=171;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键';
 
 --
 -- 使用表AUTO_INCREMENT `hg_pay_refund`
 --
 ALTER TABLE `hg_pay_refund`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID', AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID';
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_addons_config`
@@ -5980,7 +5980,7 @@ ALTER TABLE `hg_sys_ems_log`
 -- 使用表AUTO_INCREMENT `hg_sys_gen_codes`
 --
 ALTER TABLE `hg_sys_gen_codes`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '生成ID', AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '生成ID', AUTO_INCREMENT=2;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_gen_curd_demo`
@@ -6004,7 +6004,7 @@ ALTER TABLE `hg_sys_login_log`
 -- 使用表AUTO_INCREMENT `hg_sys_serve_license`
 --
 ALTER TABLE `hg_sys_serve_license`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '许可ID', AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '许可ID', AUTO_INCREMENT=3;
 
 --
 -- 使用表AUTO_INCREMENT `hg_sys_serve_log`
@@ -6016,7 +6016,7 @@ ALTER TABLE `hg_sys_serve_log`
 -- 使用表AUTO_INCREMENT `hg_sys_sms_log`
 --
 ALTER TABLE `hg_sys_sms_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=3;
 
 --
 -- 使用表AUTO_INCREMENT `hg_test_category`

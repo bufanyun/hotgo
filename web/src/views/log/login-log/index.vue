@@ -61,14 +61,14 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="login_log_index">
   import { h, reactive, ref } from 'vue';
   import { useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, useForm } from '@/components/Form/index';
   import { usePermission } from '@/hooks/web/usePermission';
   import { List, Export, Delete } from '@/api/loginLog';
-  import { State, columns, schemas } from './model';
+  import { columns, schemas } from './model';
   import { ExportOutlined, DeleteOutlined } from '@vicons/antd';
   import { useRouter } from 'vue-router';
 
