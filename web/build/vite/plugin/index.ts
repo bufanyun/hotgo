@@ -2,6 +2,7 @@ import type { Plugin } from 'vite';
 import Components from 'unplugin-vue-components/vite';
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
 import topLevelAwait from 'vite-plugin-top-level-await';
+import setupExtend from 'vite-plugin-vue-setup-extend';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import { configHtmlPlugin } from './html';
@@ -40,6 +41,8 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
       configCompressPlugin(VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE)
     );
   }
+
+  vitePlugins.push(setupExtend());
 
   return vitePlugins;
 }

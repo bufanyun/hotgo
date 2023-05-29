@@ -52,23 +52,17 @@ var (
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			g.Log().Debug(ctx, "starting all server")
 
-			simple.SafeGo(ctx, func(ctx context.Context) {
-				if err := Queue.Func(ctx, parser); err != nil {
-					g.Log().Fatal(ctx, "queue consumer start fail:", err)
-				}
-			})
+			// 需要启动的服务
+			var allServers = []*gcmd.Command{Http, Queue, Cron}
 
-			simple.SafeGo(ctx, func(ctx context.Context) {
-				if err := Cron.Func(ctx, parser); err != nil {
-					g.Log().Fatal(ctx, "cron start fail:", err)
-				}
-			})
-
-			simple.SafeGo(ctx, func(ctx context.Context) {
-				if err := Http.Func(ctx, parser); err != nil {
-					g.Log().Fatal(ctx, "http server start fail:", err)
-				}
-			})
+			for _, server := range allServers {
+				var cmd = server
+				simple.SafeGo(ctx, func(ctx context.Context) {
+					if err := cmd.Func(ctx, parser); err != nil {
+						g.Log().Fatal(ctx, "%v start fail:", cmd.Name, err)
+					}
+				})
+			}
 
 			// 信号监听
 			signalListen(ctx, signalHandlerForOverall)

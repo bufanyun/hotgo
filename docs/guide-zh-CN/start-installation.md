@@ -60,7 +60,7 @@ database:
       go mod tidy  
       
       # 查看命令行方法
-      go run main.go hlep
+      go run main.go help
       
       # 启动所有服务
       go run main.go  # 热编译启动： gf run main.go

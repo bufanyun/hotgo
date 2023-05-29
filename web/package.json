@@ -52,7 +52,7 @@
     "quill-magic-url": "^4.2.0",
     "throttle-debounce": "^5.0.0",
     "vfonts": "^0.1.0",
-    "vue": "^3.2.33",
+    "vue": "^3.2.35",
     "vue-router": "^4.0.15",
     "vue-types": "^4.1.1",
     "vue3-json-viewer": "^2.2.2",
@@ -106,6 +106,7 @@
     "vite-plugin-require-transform": "^1.0.5",
     "vite-plugin-style-import": "^1.4.1",
     "vite-plugin-top-level-await": "^1.2.2",
+    "vite-plugin-vue-setup-extend": "^0.4.0",
     "vue-eslint-parser": "^7.11.0"
   },
   "lint-staged": {

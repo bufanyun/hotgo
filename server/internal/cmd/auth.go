@@ -27,10 +27,10 @@ var (
 			select {
 			case <-serverCloseSignal:
 				service.AuthClient().Stop(ctx)
+				g.Log().Debug(ctx, "auth successfully closed ..")
 				serverWg.Done()
 			}
 
-			g.Log().Debug(ctx, "auth successfully closed ..")
 			return
 		},
 	}

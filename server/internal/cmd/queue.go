@@ -32,10 +32,10 @@ var (
 
 			select {
 			case <-serverCloseSignal:
+				g.Log().Debug(ctx, "queue successfully closed ..")
 				serverWg.Done()
 			}
 
-			g.Log().Debug(ctx, "queue successfully closed ..")
 			return
 		},
 	}

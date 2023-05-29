@@ -33,10 +33,10 @@ var (
 			case <-serverCloseSignal:
 				service.CronClient().Stop(ctx)
 				crons.StopALL()
+				g.Log().Debug(ctx, "cron successfully closed ..")
 				serverWg.Done()
 			}
 
-			g.Log().Debug(ctx, "cron successfully closed ..")
 			return
 		},
 	}
