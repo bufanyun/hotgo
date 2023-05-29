@@ -479,6 +479,7 @@ func (s *sAdminMember) Edit(ctx context.Context, in adminin.MemberEditInp) (err 
 
 	// 新增用户时的额外属性
 	var data adminin.MemberAddInp
+	data.MemberEditInp = in
 	data.Salt = grand.S(6)
 	data.InviteCode = grand.S(12)
 	data.PasswordHash = gmd5.MustEncryptString(data.Password + data.Salt)
@@ -491,10 +492,9 @@ func (s *sAdminMember) Edit(ctx context.Context, in adminin.MemberEditInp) (err 
 	}
 
 	// 默认头像
-	if in.Avatar == "" {
-		in.Avatar = config.Avatar
+	if data.Avatar == "" {
+		data.Avatar = config.Avatar
 	}
-	data.MemberEditInp = in
 
 	return g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
 		id, err := dao.AdminMember.Ctx(ctx).Data(data).InsertAndGetId()

@@ -7,6 +7,7 @@ package admin
 
 import (
 	"context"
+	"fmt"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -217,12 +218,50 @@ func (s *sAdminRole) Edit(ctx context.Context, in *role.EditReq) (err error) {
 
 	// 修改
 	if in.Id > 0 {
-		_, err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+		// 获取父级tree
+		var pTree gdb.Value
+		pTree, err = dao.AdminRole.Ctx(ctx).Where("id", in.Pid).Fields("tree").Value()
+		if err != nil {
+			return
+		}
+		in.Tree = fmt.Sprintf("%str_%v ", pTree.String(), in.Id)
+
+		err = dao.AdminRole.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+			// 更新数据
+			_, err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+			if err != nil {
+				return err
+			}
+
+			// 如果当前角色有子级,更新子级tree关系树
+			return updateRoleChildrenTree(ctx, in.Id, in.Level, in.Tree)
+		})
 		return
 	}
 
 	// 新增
 	_, err = dao.AdminRole.Ctx(ctx).Data(in).Insert()
+	return
+}
+
+func updateRoleChildrenTree(ctx context.Context, _id int64, _level int, _tree string) (err error) {
+	var list []*entity.AdminDept
+	err = dao.AdminRole.Ctx(ctx).Where("pid", _id).Scan(&list)
+	if err != nil {
+		return
+	}
+	for _, child := range list {
+		child.Level = _level + 1
+		child.Tree = fmt.Sprintf("%str_%v ", _tree, child.Id)
+		_, err = dao.AdminRole.Ctx(ctx).Where("id", child.Id).Data("level", child.Level, "tree", child.Tree).Update()
+		if err != nil {
+			return err
+		}
+		err = updateRoleChildrenTree(ctx, child.Id, child.Level, child.Tree)
+		if err != nil {
+			return
+		}
+	}
 	return
 }
 

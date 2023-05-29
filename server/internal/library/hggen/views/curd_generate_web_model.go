@@ -204,6 +204,8 @@ func (l *gCurd) generateWebModelFormSchemaEach(buffer *bytes.Buffer, fields []*s
 		case FormModeTimeRange:
 			component = fmt.Sprintf("  {\n    field: '%s',\n    component: '%s',\n    label: '%s',\n    componentProps: {\n      type: '%s',\n      clearable: true,\n      shortcuts: %s,\n      onUpdateValue: (e: any) => {\n        console.log(e);\n      },\n    },\n  },\n", field.TsName, "NDatePicker", field.Dc, "datetimerange", "defRangeShortcuts()")
 
+		case FormModeSwitch:
+			fallthrough
 		case FormModeRadio:
 			component = fmt.Sprintf("  {\n    field: '%s',\n    component: '%s',\n    label: '%s',\n    giProps: {\n      //span: 24,\n    },\n    componentProps: {\n      options: [],\n      onUpdateChecked: (e: any) => {\n        console.log(e);\n      },\n    },\n  },\n", field.TsName, "NRadioGroup", field.Dc)
 

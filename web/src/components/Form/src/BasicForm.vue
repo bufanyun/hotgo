@@ -43,15 +43,13 @@
           <!--NRadioGroup-->
           <template v-else-if="schema.component === 'NRadioGroup'">
             <n-radio-group v-model:value="formModel[schema.field]">
-              <n-space>
-                <n-radio
-                  v-for="item in schema.componentProps.options"
-                  :key="item.value"
-                  :value="item.value"
-                >
-                  {{ item.label }}
-                </n-radio>
-              </n-space>
+              <n-radio-button
+                v-for="item in schema.componentProps.options"
+                :key="item.value"
+                :value="item.value"
+              >
+                {{ item.label }}
+              </n-radio-button>
             </n-radio-group>
           </template>
           <!--动态渲染表单组件-->
