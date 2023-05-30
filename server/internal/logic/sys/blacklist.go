@@ -158,7 +158,7 @@ func (s *sSysBlacklist) Load(ctx context.Context) {
 	for _, v := range array {
 		list := convert.IpFilterStrategy(v.String())
 		if len(list) > 0 {
-			for k, _ := range list {
+			for k := range list {
 				global.Blacklists[k] = struct{}{}
 			}
 		}

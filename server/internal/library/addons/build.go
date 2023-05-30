@@ -40,6 +40,10 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 		return path
 	})
 
+	if err != nil {
+		return
+	}
+
 	for _, path := range list {
 		if !gfile.IsReadable(path) {
 			err = fmt.Errorf("file：%v is unreadable, please check permissions", path)

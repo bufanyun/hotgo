@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package websocket
 
 import (
@@ -105,7 +104,7 @@ func (c *Client) write() {
 	}()
 	defer func() {
 		clientManager.Unregister <- c
-		c.Socket.Close()
+		_ = c.Socket.Close()
 	}()
 	for {
 		select {
@@ -118,7 +117,7 @@ func (c *Client) write() {
 				g.Log().Warningf(ctxManager, "client write message, user:%+v", c.User)
 				return
 			}
-			c.Socket.WriteJSON(message)
+			_ = c.Socket.WriteJSON(message)
 		}
 	}
 }
@@ -147,7 +146,6 @@ func (c *Client) Context() context.Context {
 // Heartbeat 心跳更新
 func (c *Client) Heartbeat(currentTime uint64) {
 	c.HeartbeatTime = currentTime
-	return
 }
 
 // IsHeartbeatTimeout 心跳是否超时

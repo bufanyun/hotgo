@@ -40,5 +40,4 @@ func NotifyCall(ctx context.Context, in payin.NotifyCallFuncInp) {
 			}
 		})
 	}
-	return
 }

@@ -286,7 +286,9 @@ func (a *adapter) loadPolicyRule(rule policyRule, model model.Model) {
 		ruleText += ", " + rule.V5
 	}
 
-	persist.LoadPolicyLine(ruleText, model)
+	if err := persist.LoadPolicyLine(ruleText, model); err != nil {
+		panic(err)
+	}
 }
 
 // 构建策略规则

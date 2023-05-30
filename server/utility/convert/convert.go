@@ -3,14 +3,12 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package convert
 
 import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"hotgo/utility/validate"
 	"reflect"
-	"strings"
 	"unicode"
 )
 
@@ -45,20 +43,7 @@ func UniqueSliceString(languages []string) []string {
 	return result
 }
 
-// UnderlineToUpperCamelCase 下划线单词转为大写驼峰单词
-func UnderlineToUpperCamelCase(s string) string {
-	s = strings.Replace(s, "_", " ", -1)
-	s = strings.Title(s)
-	return strings.Replace(s, " ", "", -1)
-}
-
-// UnderlineToLowerCamelCase 下划线单词转为小写驼峰单词
-func UnderlineToLowerCamelCase(s string) string {
-	s = UnderlineToUpperCamelCase(s)
-	return string(unicode.ToLower(rune(s[0]))) + s[1:]
-}
-
-//CamelCaseToUnderline 驼峰单词转下划线单词
+// CamelCaseToUnderline 驼峰单词转下划线单词
 func CamelCaseToUnderline(s string) string {
 	var output []rune
 	for i, r := range s {

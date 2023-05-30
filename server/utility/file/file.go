@@ -3,13 +3,12 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package file
 
 import (
 	"github.com/gogf/gf/v2/os/gfile"
 	"hotgo/utility/format"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 )
 
@@ -30,7 +29,7 @@ func WalkDir(dirname string) (error, []fileInfo) {
 	if nil != err {
 		return err, nil
 	}
-	files, err := ioutil.ReadDir(op) //获取目录下所有文件的信息，包括文件和文件夹
+	files, err := os.ReadDir(op) //获取目录下所有文件的信息，包括文件和文件夹
 	if nil != err {
 		return err, nil
 	}
@@ -44,7 +43,11 @@ func WalkDir(dirname string) (error, []fileInfo) {
 			}
 			fileInfos = append(fileInfos, fs...) //将 slice 添加到 slice
 		} else {
-			fi := fileInfo{op + `/` + f.Name(), f.Size()}
+			info, err := f.Info()
+			if nil != err {
+				return err, nil
+			}
+			fi := fileInfo{op + `/` + f.Name(), info.Size()}
 			fileInfos = append(fileInfos, fi) //slice 中添加成员
 		}
 	}

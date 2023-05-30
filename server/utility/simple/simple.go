@@ -20,7 +20,7 @@ import (
 
 // FilterMaskDemo 过滤演示环境下的配置隐藏字段
 func FilterMaskDemo(ctx context.Context, src g.Map) g.Map {
-	if src == nil || len(src) == 0 {
+	if src == nil {
 		return nil
 	}
 
@@ -28,7 +28,7 @@ func FilterMaskDemo(ctx context.Context, src g.Map) g.Map {
 		return src
 	}
 
-	for k, _ := range src {
+	for k := range src {
 		if _, ok := consts.ConfigMaskDemoField[k]; ok {
 			src[k] = consts.DemoTips
 		}
@@ -88,45 +88,22 @@ func SafeGo(ctx context.Context, f func(ctx context.Context), level ...interface
 func Logf(level int, ctx context.Context, format string, v ...interface{}) {
 	switch level {
 	case glog.LEVEL_DEBU:
-		g.Log().Debugf(ctx, format, v)
+		g.Log().Debugf(ctx, format, v...)
 	case glog.LEVEL_INFO:
-		g.Log().Infof(ctx, format, v)
+		g.Log().Infof(ctx, format, v...)
 	case glog.LEVEL_NOTI:
-		g.Log().Noticef(ctx, format, v)
+		g.Log().Noticef(ctx, format, v...)
 	case glog.LEVEL_WARN:
-		g.Log().Warningf(ctx, format, v)
+		g.Log().Warningf(ctx, format, v...)
 	case glog.LEVEL_ERRO:
-		g.Log().Errorf(ctx, format, v)
+		g.Log().Errorf(ctx, format, v...)
 	case glog.LEVEL_CRIT:
-		g.Log().Critical(ctx, format, v)
+		g.Log().Criticalf(ctx, format, v...)
 	case glog.LEVEL_PANI:
-		g.Log().Panicf(ctx, format, v)
+		g.Log().Panicf(ctx, format, v...)
 	case glog.LEVEL_FATA:
-		g.Log().Fatalf(ctx, format, v)
+		g.Log().Fatalf(ctx, format, v...)
 	default:
-		g.Log().Error(ctx, "Logf level not find")
-	}
-}
-
-func Log(level int, ctx context.Context, v ...interface{}) {
-	switch level {
-	case glog.LEVEL_DEBU:
-		g.Log().Debug(ctx, v)
-	case glog.LEVEL_INFO:
-		g.Log().Info(ctx, v)
-	case glog.LEVEL_NOTI:
-		g.Log().Notice(ctx, v)
-	case glog.LEVEL_WARN:
-		g.Log().Warning(ctx, v)
-	case glog.LEVEL_ERRO:
-		g.Log().Error(ctx, v)
-	case glog.LEVEL_CRIT:
-		g.Log().Critical(ctx, v)
-	case glog.LEVEL_PANI:
-		g.Log().Panic(ctx, v)
-	case glog.LEVEL_FATA:
-		g.Log().Fatal(ctx, v)
-	default:
-		g.Log().Error(ctx, "Logf level not find")
+		g.Log().Errorf(ctx, format, v...)
 	}
 }

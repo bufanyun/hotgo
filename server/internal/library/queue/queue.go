@@ -168,7 +168,7 @@ func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 
 		randTag := string(charset.RandomCreateBytes(6))
 		// 是否支持创建多个消费者
-		if config.Kafka.MultiConsumer == false {
+		if !config.Kafka.MultiConsumer {
 			randTag = "001"
 		}
 

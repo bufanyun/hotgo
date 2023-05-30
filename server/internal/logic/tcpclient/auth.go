@@ -93,7 +93,7 @@ func (s *sAuthClient) IsLogin() bool {
 func (s *sAuthClient) onLoginEvent() {
 
 	// 获取授权数据
-	s.client.Send(s.client.Ctx, &msgin.AuthSummary{})
+	_ = s.client.Send(s.client.Ctx, &msgin.AuthSummary{})
 }
 
 // onCloseEvent 连接关闭回调事件

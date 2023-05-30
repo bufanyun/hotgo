@@ -84,7 +84,7 @@ func (s *sSysCron) Edit(ctx context.Context, in sysin.CronEditInp) (err error) {
 			return
 		}
 		simple.SafeGo(ctx, func(ctx context.Context) {
-			crons.RefreshStatus(&in.SysCron)
+			_ = crons.RefreshStatus(&in.SysCron)
 		})
 		return
 	}
@@ -123,11 +123,12 @@ func (s *sSysCron) Status(ctx context.Context, in sysin.CronStatusInp) (err erro
 
 	_, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
 	if err != nil {
+		return
 	}
 
 	models.Status = in.Status
 	simple.SafeGo(ctx, func(ctx context.Context) {
-		crons.RefreshStatus(models)
+		_ = crons.RefreshStatus(models)
 	})
 	return
 }
@@ -151,7 +152,6 @@ func (s *sSysCron) View(ctx context.Context, in sysin.CronViewInp) (res *sysin.C
 	if err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
 		return
 	}
-
 	return
 }
 

@@ -77,6 +77,10 @@ func (s *sSysServeLog) List(ctx context.Context, in sysin.ServeLogListInp) (list
 		{Dao: dao.SysLog, Alias: "sysLog"},
 	})
 
+	if err != nil {
+		return
+	}
+
 	err = mod.Fields(fields).Handler(handler.FilterAuth).Page(in.Page, in.PerPage).OrderDesc(dao.SysServeLog.Columns().Id).Scan(&list)
 	return
 }

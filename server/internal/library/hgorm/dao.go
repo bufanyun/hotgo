@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package hgorm
 
 // dao.
@@ -195,7 +194,7 @@ func IsUnique(ctx context.Context, dao interface{}, where g.Map, message string,
 
 	if count > 0 {
 		if message == "" {
-			for k, _ := range where {
+			for k := range where {
 				message = fmt.Sprintf("in the table：%s, %v not uniqued", d.Table(), where[k])
 				break
 			}

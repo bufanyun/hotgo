@@ -70,7 +70,6 @@ func CreateClient(accessKeyId *string, accessKeySecret *string) (_result *dysmsa
 	}
 	// 访问的域名
 	config.Endpoint = tea.String("dysmsapi.aliyuncs.com")
-	_result = &dysmsapi20170525.Client{}
 	_result, _err = dysmsapi20170525.NewClient(config)
 	return _result, _err
 }

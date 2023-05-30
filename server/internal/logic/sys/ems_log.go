@@ -281,7 +281,6 @@ func (s *sSysEmsLog) newView(ctx context.Context, in sysin.SendEmsInp, config *m
 		}
 		view.Assign("passwordResetLink", passwordResetLink)
 	}
-
 	return
 }
 
@@ -308,7 +307,6 @@ func (s *sSysEmsLog) GetTemplate(ctx context.Context, template string, config *m
 			return v.Value, nil
 		}
 	}
-
 	return
 }
 
@@ -346,7 +344,6 @@ func (s *sSysEmsLog) AllowSend(ctx context.Context, models *entity.SysEmsLog, co
 			return err
 		}
 	}
-
 	return
 }
 
@@ -400,7 +397,7 @@ func (s *sSysEmsLog) VerifyCode(ctx context.Context, in sysin.VerifyEmsCodeInp) 
 	}
 
 	if models.Code != in.Code {
-		dao.SysEmsLog.Ctx(ctx).Where("id", models.Id).Increment("times", 1)
+		_, _ = dao.SysEmsLog.Ctx(ctx).Where("id", models.Id).Increment("times", 1)
 		err = gerror.New("验证码错误！")
 		return
 	}

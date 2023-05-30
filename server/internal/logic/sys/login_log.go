@@ -88,6 +88,10 @@ func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list
 		{Dao: dao.SysLog, Alias: "sysLog"},
 	})
 
+	if err != nil {
+		return
+	}
+
 	if err = mod.Fields(fields).Hook(hook.CityLabel).Handler(handler.FilterAuth).Page(in.Page, in.PerPage).OrderDesc(dao.SysLoginLog.Columns().Id).Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
@@ -172,7 +176,6 @@ func (s *sSysLoginLog) Push(ctx context.Context, in sysin.LoginLogPushInp) {
 	if err := queue.Push(consts.QueueLoginLogTopic, models); err != nil {
 		g.Log().Warningf(ctx, "push err:%+v, models:%+v", err, models)
 	}
-	return
 }
 
 // RealWrite 真实写入

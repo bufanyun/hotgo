@@ -23,7 +23,6 @@ type ClientConn struct {
 	Conn      *gtcp.Conn
 	Auth      *AuthMeta
 	heartbeat int64
-	mutex     sync.Mutex
 }
 
 type ServerConfig struct {
@@ -88,11 +87,9 @@ func NewServer(config *ServerConfig) (server *Server, err error) {
 func (server *Server) accept(conn *gtcp.Conn) {
 	defer func() {
 		server.mutexConns.Lock()
-		conn.Close()
+		_ = conn.Close()
 		// 从登录列表中移除
-		if _, ok := server.clients[conn.RemoteAddr().String()]; ok {
-			delete(server.clients, conn.RemoteAddr().String())
-		}
+		delete(server.clients, conn.RemoteAddr().String())
 		server.mutexConns.Unlock()
 	}()
 
@@ -282,14 +279,14 @@ func (server *Server) Close() {
 
 	server.mutexConns.Lock()
 	for _, client := range server.clients {
-		client.Conn.Close()
+		_ = client.Conn.Close()
 	}
 	server.clients = nil
 	server.mutexConns.Unlock()
 	server.wgConns.Wait()
 
 	if server.ln != nil {
-		server.ln.Close()
+		_ = server.ln.Close()
 	}
 	server.wgLn.Wait()
 }
@@ -345,6 +342,6 @@ func (server *Server) RpcRequest(ctx context.Context, client *ClientConn, data i
 	}
 
 	return server.rpc.Request(key, func() {
-		server.Write(client.Conn, data)
+		_ = server.Write(client.Conn, data)
 	})
 }

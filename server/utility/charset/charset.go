@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package charset
 
 import (
@@ -30,7 +29,6 @@ func SplitMemberIds(str, pos string) (memberIds []int64) {
 	for _, memberId := range receiver {
 		memberIds = append(memberIds, gconv.Int64(strings.TrimSpace(memberId)))
 	}
-
 	return convert.UniqueSliceInt64(memberIds)
 }
 

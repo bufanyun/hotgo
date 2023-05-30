@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package views
 
 import (
@@ -236,7 +235,6 @@ func setDefaultList(field *sysin.GenCodesColumnListModel) {
 	if df, ok := defaultListSwitch[field.Name]; ok {
 		field.IsList = df
 	}
-	return
 }
 
 // setDefaultExport 设置默认导出
@@ -256,7 +254,6 @@ func setDefaultExport(field *sysin.GenCodesColumnListModel) {
 	if df, ok := defaultExportSwitch[field.Name]; ok {
 		field.IsExport = df
 	}
-	return
 }
 
 // setDefaultQuery 设置默认查询

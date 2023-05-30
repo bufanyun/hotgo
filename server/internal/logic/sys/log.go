@@ -129,7 +129,6 @@ func (s *sSysLog) AutoLog(ctx context.Context) error {
 		}
 
 		err = s.RealWrite(ctx, data)
-		return
 	})
 }
 
@@ -331,14 +330,14 @@ func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.
 			list[i].MemberName = memberName.String()
 		}
 
-		// 接口
-		if list[i].AppId == consts.AppApi {
-			//memberName, err = dao.Member.Ctx(ctx).Fields("realname").Where("id", res.List[i].MemberId).Value()
-			//if err != nil {
-			//	err = gerror.Wrap(err, consts.ErrorORM)
-			//	return nil, err
-			//}
-		}
+		//// 接口
+		//if list[i].AppId == consts.AppApi {
+		//	//memberName, err = dao.Member.Ctx(ctx).Fields("realname").Where("id", res.List[i].MemberId).Value()
+		//	//if err != nil {
+		//	//	err = gerror.Wrap(err, consts.ErrorORM)
+		//	//	return nil, err
+		//	//}
+		//}
 
 		if list[i].MemberName == "" {
 			list[i].MemberName = "游客"

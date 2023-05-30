@@ -57,8 +57,6 @@ func (m *Response) SetCode(code ...int) {
 	if m.Code == 0 {
 		m.Code = consts.TCPMsgCodeSuccess
 	}
-
-	return
 }
 
 // GetError 获取响应中的错误

@@ -15,6 +15,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/location"
+	"hotgo/internal/library/sms"
 	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
@@ -140,7 +141,6 @@ func (s *sSysSmsLog) List(ctx context.Context, in sysin.SmsLogListInp) (list []*
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return list, totalCount, err
 	}
-
 	return list, totalCount, err
 }
 
@@ -179,9 +179,9 @@ func (s *sSysSmsLog) SendCode(ctx context.Context, in sysin.SendCodeInp) (err er
 		in.Code = grand.Digits(4)
 	}
 
-	//if err = sms.New(config.SmsDrive).SendCode(ctx, in, config); err != nil {
-	//	return
-	//}
+	if err = sms.New(config.SmsDrive).SendCode(ctx, in, config); err != nil {
+		return
+	}
 
 	var data = new(entity.SysSmsLog)
 	data.Event = in.Event
@@ -237,7 +237,6 @@ func (s *sSysSmsLog) GetTemplate(ctx context.Context, template string, config *m
 		err = gerror.Newf("暂不支持短信驱动:%v", config.SmsDrive)
 		return
 	}
-
 	return
 }
 
@@ -269,7 +268,6 @@ func (s *sSysSmsLog) AllowSend(ctx context.Context, models *entity.SysSmsLog, co
 			return err
 		}
 	}
-
 	return
 }
 
@@ -319,7 +317,7 @@ func (s *sSysSmsLog) VerifyCode(ctx context.Context, in sysin.VerifyCodeInp) (er
 	}
 
 	if models.Code != in.Code {
-		dao.SysSmsLog.Ctx(ctx).Where("id", models.Id).Increment("times", 1)
+		_, _ = dao.SysSmsLog.Ctx(ctx).Where("id", models.Id).Increment("times", 1)
 		err = gerror.New("验证码错误！")
 		return
 	}
@@ -329,6 +327,5 @@ func (s *sSysSmsLog) VerifyCode(ctx context.Context, in sysin.VerifyCodeInp) (er
 		"status":     consts.SmsStatusUsed,
 		"updated_at": gtime.Now(),
 	}).Update()
-
 	return
 }

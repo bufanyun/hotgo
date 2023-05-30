@@ -7,7 +7,6 @@ package admin
 
 import (
 	"context"
-	"fmt"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -241,7 +240,7 @@ func (s *sAdminCash) Apply(ctx context.Context, in adminin.CashApplyInp) (err er
 			CreditGroup: consts.CreditGroupApplyCash,
 			Num:         -in.Money,
 			MapId:       lastInsertId,
-			Remark:      fmt.Sprintf("后台申请提现"),
+			Remark:      "后台申请提现",
 		})
 
 		return

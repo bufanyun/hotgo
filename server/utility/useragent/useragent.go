@@ -18,7 +18,7 @@ func GetOs(userAgent string) string {
 		return osName
 	}
 
-	strRe, _ := regexp.Compile("(?i:\\((.*?)\\))")
+	strRe, _ := regexp.Compile(`(?i:((.*?)))`)
 	userAgent = strRe.FindString(userAgent)
 
 	levelNames := ":micromessenger:dart:Windows NT:Windows Mobile:Windows Phone:Windows Phone OS:Macintosh|Macintosh:Mac OS:CrOS|CrOS:iPhone OS:iPad|iPad:OS:Android:Linux:blackberry:hpwOS:Series:Symbian:PalmOS:SymbianOS:J2ME:Sailfish:Bada:MeeGo:webOS|hpwOS:Maemo:"
@@ -83,7 +83,7 @@ func GetBrowser(userAgent string) string {
 
 	level := 0
 	for _, name := range names {
-		replaceRe, _ := regexp.Compile("(?i:[\\s?\\/0-9.]+)")
+		replaceRe, _ := regexp.Compile(`(?i:[\s?\/0-9.]+)`)
 		n := replaceRe.ReplaceAllString(name, "")
 		l := strings.Index(levelNames, fmt.Sprintf(":%s:", n))
 		if level == 0 {

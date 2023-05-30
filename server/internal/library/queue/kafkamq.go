@@ -16,7 +16,6 @@ import (
 )
 
 type KafkaMq struct {
-	endPoints   []string
 	Partitions  int32
 	producerIns sarama.AsyncProducer
 	consumerIns sarama.ConsumerGroup
@@ -128,7 +127,7 @@ func RegisterKafkaMqConsumer(connOpt KafkaConfig) (client MqConsumer, err error)
 	if err != nil {
 		return
 	}
-	if validateVersion(kfkVersion) == false {
+	if !validateVersion(kfkVersion) {
 		kfkVersion = sarama.V2_4_0_0
 	}
 
@@ -175,7 +174,7 @@ func doRegisterKafkaProducer(connOpt KafkaConfig, mqIns *KafkaMq) (err error) {
 	if err != nil {
 		return
 	}
-	if validateVersion(kfkVersion) == false {
+	if !validateVersion(kfkVersion) {
 		kfkVersion = sarama.V2_4_0_0
 	}
 

@@ -7,7 +7,6 @@ package tcp
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/net/gtcp"
 	"github.com/gogf/gf/v2/net/gtrace"
 	"hotgo/internal/consts"
 )
@@ -24,11 +23,6 @@ func initCtx(ctx context.Context, model *Context) (newCtx context.Context, cance
 	return
 }
 
-// SetCtx 设置上下文变量
-func SetCtx(ctx context.Context, model *Context) {
-	context.WithValue(ctx, consts.ContextTCPKey, model)
-}
-
 // GetCtx 获得上下文变量，如果没有设置，那么返回nil
 func GetCtx(ctx context.Context) *Context {
 	value := ctx.Value(consts.ContextTCPKey)
@@ -39,24 +33,4 @@ func GetCtx(ctx context.Context) *Context {
 		return localCtx
 	}
 	return nil
-}
-
-// GetCtxConn .
-func GetCtxConn(ctx context.Context) *gtcp.Conn {
-	c := GetCtx(ctx)
-	if c == nil {
-		return nil
-	}
-
-	return c.Conn
-}
-
-// GetCtxAuth 认证元数据
-func GetCtxAuth(ctx context.Context) *AuthMeta {
-	c := GetCtx(ctx)
-	if c == nil {
-		return nil
-	}
-
-	return c.Auth
 }

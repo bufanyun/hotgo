@@ -10,12 +10,12 @@ import (
 func (s *sAuthClient) OnResponseAuthSummary(ctx context.Context, args ...interface{}) {
 	var in *msgin.ResponseAuthSummary
 	if err := gconv.Scan(args[0], &in); err != nil {
-		s.client.Logger.Warningf(ctx, "OnResponseAuthSummary Scan err:+v", err)
+		s.client.Logger.Warningf(ctx, "OnResponseAuthSummary Scan err:%+v", err)
 		return
 	}
 
 	if err := in.GetError(); err != nil {
-		s.client.Logger.Warningf(ctx, "OnResponseAuthSummary GetError :+v", err)
+		s.client.Logger.Warningf(ctx, "OnResponseAuthSummary GetError:%+v", err)
 		return
 	}
 
