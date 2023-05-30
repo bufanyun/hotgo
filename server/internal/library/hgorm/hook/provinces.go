@@ -27,7 +27,6 @@ var CityLabel = gdb.HookHandler{
 				g.Log().Warningf(ctx, "hook.CityLabel parse err:%+v", err)
 			}
 			result[index]["cityLabel"] = gvar.New(cityLabel)
-			return
 		}
 
 		for i, record := range result {

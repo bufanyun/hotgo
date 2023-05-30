@@ -49,7 +49,7 @@ func NewCommonWechat() *sCommonWechat {
 func init() {
 	serv := NewCommonWechat()
 	service.RegisterCommonWechat(serv)
-	gcron.Add(gctx.New(), "@every 300s", serv.CleanTempMap, "WechatCleanTempMap")
+	_, _ = gcron.Add(gctx.New(), "@every 300s", serv.CleanTempMap, "WechatCleanTempMap")
 }
 
 // Authorize 微信用户授权
@@ -116,7 +116,7 @@ func (s *sCommonWechat) AuthorizeCall(ctx context.Context, in commonin.WechatAut
 
 	switch data.Type {
 	case consts.WechatAuthorizeOpenId: // 设置openid
-		cache.Instance().Set(ctx, data.State, tk.OpenID, time.Hour*24*7)
+		_ = cache.Instance().Set(ctx, data.State, tk.OpenID, time.Hour*24*7)
 	case consts.WechatAuthorizeBindLogin: // 绑定微信登录
 		// ...
 	default:

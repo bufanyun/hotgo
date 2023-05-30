@@ -33,16 +33,12 @@ func IsHTTPS(ctx context.Context) bool {
 		g.Log().Info(ctx, "IsHTTPS ctx not request")
 		return false
 	}
-
 	return r.TLS != nil || gstr.Equal(r.Header.Get("X-Forwarded-Proto"), "https")
 }
 
 // IsIp 是否为ipv4
 func IsIp(ip string) bool {
-	if net.ParseIP(ip) != nil {
-		return true
-	}
-	return false
+	return net.ParseIP(ip) != nil
 }
 
 // IsPublicIp 是否是公网IP
@@ -56,9 +52,7 @@ func IsPublicIp(Ip string) bool {
 	if ip4 := ip.To4(); ip4 != nil {
 		return !ip.Equal(net.IPv4bcast)
 	}
-
 	return true
-
 }
 
 // IsLocalIPAddr 检测 IP 地址字符串是否是内网地址
@@ -150,16 +144,15 @@ func IsMobileVisit(userAgent string) bool {
 		return false
 	}
 
-	isMobile := false
+	is := false
 	mobileKeywords := []string{"Mobile", "Android", "Silk/", "Kindle", "BlackBerry", "Opera Mini", "Opera Mobi"}
 	for i := 0; i < len(mobileKeywords); i++ {
 		if strings.Contains(userAgent, mobileKeywords[i]) {
-			isMobile = true
+			is = true
 			break
 		}
 	}
-
-	return isMobile
+	return is
 }
 
 // IsWxBrowserVisit 是否为微信访问
@@ -177,7 +170,6 @@ func IsWxBrowserVisit(userAgent string) bool {
 			break
 		}
 	}
-
 	return is
 }
 
@@ -196,6 +188,5 @@ func IsWxMiniProgramVisit(userAgent string) bool {
 			break
 		}
 	}
-
 	return is
 }

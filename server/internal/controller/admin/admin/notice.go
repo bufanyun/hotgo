@@ -143,11 +143,11 @@ func (c *cNotice) Letter(ctx context.Context, req *notice.EditLetterReq) (res *n
 func (c *cNotice) UpRead(ctx context.Context, req *notice.UpReadReq) (res *notice.UpReadRes, err error) {
 	var in adminin.NoticeUpReadInp
 	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
+		return
 	}
 
 	err = service.AdminNotice().UpRead(ctx, in)
-	return res, nil
+	return
 }
 
 // PullMessages 拉取未读消息列表

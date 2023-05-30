@@ -24,13 +24,11 @@ var (
 
 			// 信号监听
 			signalListen(ctx, signalHandlerForOverall)
-			select {
-			case <-serverCloseSignal:
-				service.AuthClient().Stop(ctx)
-				g.Log().Debug(ctx, "auth successfully closed ..")
-				serverWg.Done()
-			}
 
+			<-serverCloseSignal
+			service.AuthClient().Stop(ctx)
+			g.Log().Debug(ctx, "auth successfully closed ..")
+			serverWg.Done()
 			return
 		},
 	}

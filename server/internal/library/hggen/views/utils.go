@@ -15,7 +15,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/model"
 	"hotgo/internal/model/input/sysin"
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -77,7 +77,7 @@ func removeEndWrap(comment string) string {
 
 // ImportSql 导出sql文件
 func ImportSql(ctx context.Context, path string) error {
-	rows, err := ioutil.ReadFile(path)
+	rows, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}

@@ -120,7 +120,6 @@ func (c *AdapterFile) UpdateExpire(ctx context.Context, key interface{}, duratio
 	oldTTL = int64(expire)
 	if oldTTL == -2 {
 		// It does not exist.
-		oldTTL = -1
 		return
 	}
 	oldDuration = time.Duration(oldTTL) * time.Second

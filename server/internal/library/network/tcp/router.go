@@ -64,7 +64,7 @@ func MsgPkg(data interface{}, auth *AuthMeta, traceID string) string {
 
 // doHandleRouterMsg 处理路由消息
 func doHandleRouterMsg(fun RouterHandler, ctx context.Context, cancel context.CancelFunc, args ...interface{}) {
-	GoPool.Add(ctx, func(ctx context.Context) {
+	_ = GoPool.Add(ctx, func(ctx context.Context) {
 		fun(ctx, args...)
 		cancel()
 	})

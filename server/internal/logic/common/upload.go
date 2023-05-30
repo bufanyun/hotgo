@@ -192,8 +192,7 @@ func (s *sCommonUpload) UploadUCloud(ctx context.Context, conf *model.UploadConf
 	}
 
 	nowDate := time.Now().Format("2006-01-02")
-	fileName := gfile.Basename(file.Filename)
-	fileName = strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(6))
+	fileName := strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(6))
 	fileName = fileName + gfile.Ext(file.Filename)
 	fullPath := conf.UCloudPath + nowDate + "/" + fileName
 	config := &ufile.Config{
@@ -213,7 +212,7 @@ func (s *sCommonUpload) UploadUCloud(ctx context.Context, conf *model.UploadConf
 
 	// 流式上传本地小文件
 	f2, err := file.Open()
-	defer f2.Close()
+	defer func() { _ = f2.Close() }()
 	if err != nil {
 		return
 	}
@@ -243,14 +242,13 @@ func (s *sCommonUpload) UploadCOS(ctx context.Context, conf *model.UploadConfig,
 	}
 
 	nowDate := time.Now().Format("2006-01-02")
-	fileName := gfile.Basename(file.Filename)
-	fileName = strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(6))
+	fileName := strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(6))
 	fileName = fileName + gfile.Ext(file.Filename)
 	fullPath := conf.CosPath + nowDate + "/" + fileName
 
 	// 流式上传本地小文件
 	f2, err := file.Open()
-	defer f2.Close()
+	defer func() { _ = f2.Close() }()
 	if err != nil {
 		return
 	}
@@ -289,14 +287,13 @@ func (s *sCommonUpload) UploadOSS(ctx context.Context, conf *model.UploadConfig,
 	}
 
 	nowDate := time.Now().Format("2006-01-02")
-	fileName := gfile.Basename(file.Filename)
-	fileName = strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(6))
+	fileName := strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(6))
 	fileName = fileName + gfile.Ext(file.Filename)
 	fullPath := conf.OssPath + nowDate + "/" + fileName
 
 	// 流式上传本地小文件
 	f2, err := file.Open()
-	defer f2.Close()
+	defer func() { _ = f2.Close() }()
 	if err != nil {
 		return
 	}
@@ -336,14 +333,13 @@ func (s *sCommonUpload) UploadQiNiu(ctx context.Context, conf *model.UploadConfi
 	}
 
 	nowDate := time.Now().Format("2006-01-02")
-	fileName := gfile.Basename(file.Filename)
-	fileName = strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(6))
+	fileName := strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(6))
 	fileName = fileName + gfile.Ext(file.Filename)
 	fullPath := conf.QiNiuPath + nowDate + "/" + fileName
 
 	// 流式上传本地小文件
 	f2, err := file.Open()
-	defer f2.Close()
+	defer func() { _ = f2.Close() }()
 	if err != nil {
 		return
 	}

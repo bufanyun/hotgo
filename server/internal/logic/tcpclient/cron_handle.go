@@ -17,7 +17,7 @@ func (s *sCronClient) OnCronDelete(ctx context.Context, args ...interface{}) {
 	if err := gconv.Scan(args[0], &in); err != nil {
 		res.Code = 1
 		res.Message = err.Error()
-		s.client.Reply(ctx, res)
+		_ = s.client.Reply(ctx, res)
 		return
 	}
 
@@ -26,7 +26,7 @@ func (s *sCronClient) OnCronDelete(ctx context.Context, args ...interface{}) {
 		res.Message = err.Error()
 	}
 
-	s.client.Reply(ctx, res)
+	_ = s.client.Reply(ctx, res)
 }
 
 // OnCronEdit 编辑任务
@@ -39,7 +39,7 @@ func (s *sCronClient) OnCronEdit(ctx context.Context, args ...interface{}) {
 	if err := gconv.Scan(args[0], &in); err != nil {
 		res.Code = 1
 		res.Message = err.Error()
-		s.client.Reply(ctx, res)
+		_ = s.client.Reply(ctx, res)
 		return
 	}
 
@@ -48,7 +48,7 @@ func (s *sCronClient) OnCronEdit(ctx context.Context, args ...interface{}) {
 		res.Message = err.Error()
 	}
 
-	s.client.Reply(ctx, res)
+	_ = s.client.Reply(ctx, res)
 }
 
 // OnCronStatus 修改任务状态
@@ -61,7 +61,7 @@ func (s *sCronClient) OnCronStatus(ctx context.Context, args ...interface{}) {
 	if err := gconv.Scan(args[0], &in); err != nil {
 		res.Code = 1
 		res.Message = err.Error()
-		s.client.Reply(ctx, res)
+		_ = s.client.Reply(ctx, res)
 		return
 	}
 
@@ -70,7 +70,7 @@ func (s *sCronClient) OnCronStatus(ctx context.Context, args ...interface{}) {
 		res.Message = err.Error()
 	}
 
-	s.client.Reply(ctx, res)
+	_ = s.client.Reply(ctx, res)
 }
 
 // OnCronOnlineExec 执行一次任务
@@ -83,7 +83,7 @@ func (s *sCronClient) OnCronOnlineExec(ctx context.Context, args ...interface{})
 	if err := gconv.Scan(args[0], &in); err != nil {
 		res.Code = 1
 		res.Message = err.Error()
-		s.client.Reply(ctx, res)
+		_ = s.client.Reply(ctx, res)
 		return
 	}
 
@@ -92,5 +92,5 @@ func (s *sCronClient) OnCronOnlineExec(ctx context.Context, args ...interface{})
 		res.Message = err.Error()
 	}
 
-	s.client.Reply(ctx, res)
+	_ = s.client.Reply(ctx, res)
 }

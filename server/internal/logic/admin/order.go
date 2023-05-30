@@ -298,6 +298,10 @@ func (s *sAdminOrder) List(ctx context.Context, in adminin.OrderListInp) (list [
 		{Dao: dao.PayLog, Alias: "payLog"},
 	})
 
+	if err != nil {
+		return
+	}
+
 	err = mod.Fields(fields).Page(in.Page, in.PerPage).OrderDesc(dao.AdminOrder.Columns().Id).Scan(&list)
 	return
 }

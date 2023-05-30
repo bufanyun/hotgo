@@ -30,12 +30,9 @@ var (
 			// 信号监听
 			signalListen(ctx, signalHandlerForOverall)
 
-			select {
-			case <-serverCloseSignal:
-				g.Log().Debug(ctx, "queue successfully closed ..")
-				serverWg.Done()
-			}
-
+			<-serverCloseSignal
+			g.Log().Debug(ctx, "queue successfully closed ..")
+			serverWg.Done()
 			return
 		},
 	}

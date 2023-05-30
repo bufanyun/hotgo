@@ -67,11 +67,8 @@ var (
 			// 信号监听
 			signalListen(ctx, signalHandlerForOverall)
 
-			select {
-			case <-serverCloseSignal:
-				serverWg.Wait()
-			}
-
+			<-serverCloseSignal
+			serverWg.Wait()
 			g.Log().Debug(ctx, "all service successfully closed ..")
 			return
 		},

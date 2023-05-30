@@ -247,7 +247,6 @@ func ParseLoginUser(r *ghttp.Request) (user *model.Identity, err error) {
 		refreshToken()
 	})
 
-	user = new(model.Identity)
 	user = claims.Identity
 	return
 }

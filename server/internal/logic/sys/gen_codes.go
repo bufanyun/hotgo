@@ -238,11 +238,10 @@ func (s *sSysGenCodes) TableSelect(ctx context.Context, in sysin.GenCodesTableSe
 		bt, err := gregex.Replace(patternStr, []byte(repStr), []byte(newValue))
 		if err != nil {
 			err = gerror.Newf("表名[%v] gregex.Replace err:%v", v.Value, err.Error())
-			break
+			return nil, err
 		}
 
-		row := new(sysin.GenCodesTableSelectModel)
-		row = v
+		row := v
 		row.DefTableComment = v.Label
 		row.DaoName = gstr.CaseCamel(newValue)
 		row.DefVarName = gstr.CaseCamel(string(bt))
@@ -252,7 +251,6 @@ func (s *sSysGenCodes) TableSelect(ctx context.Context, in sysin.GenCodesTableSe
 
 		res = append(res, row)
 	}
-
 	return
 }
 

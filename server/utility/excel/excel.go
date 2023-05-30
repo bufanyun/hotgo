@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package excel
 
 import (
@@ -34,16 +33,12 @@ func ExportByStructs(ctx context.Context, tags []string, list interface{}, fileN
 	f := excelize.NewFile()
 	f.SetSheetName("Sheet1", sheetName)
 	_ = f.SetRowHeight("Sheet1", 1, 30)
-	header := make([]string, 0)
-	for _, v := range tags {
-		header = append(header, v)
-	}
 
 	rowStyleID, _ := f.NewStyle(defaultRowStyle)
 	if err != nil {
 		return
 	}
-	_ = f.SetSheetRow(sheetName, "A1", &header)
+	_ = f.SetSheetRow(sheetName, "A1", &tags)
 
 	var (
 		length    = len(tags)
@@ -73,10 +68,10 @@ func ExportByStructs(ctx context.Context, tags []string, list interface{}, fileN
 		}
 		rowNum++
 		if err = f.SetSheetRow(sheetName, "A"+gconv.String(rowNum), &row); err != nil {
-			return err
+			return
 		}
-		if err = f.SetCellStyle(sheetName, fmt.Sprintf("A%d", rowNum), fmt.Sprintf("%s", lastRow), rowStyleID); err != nil {
-			return err
+		if err = f.SetCellStyle(sheetName, fmt.Sprintf("A%d", rowNum), lastRow, rowStyleID); err != nil {
+			return
 		}
 	}
 
@@ -91,8 +86,8 @@ func ExportByStructs(ctx context.Context, tags []string, list interface{}, fileN
 	w.Header().Set("Content-Transfer-Encoding", "binary")
 	w.Header().Set("Access-Control-Expose-Headers", "Content-Disposition")
 
-	if err := f.Write(w); err != nil {
-		return err
+	if err = f.Write(w); err != nil {
+		return
 	}
 
 	// 加入到上下文
@@ -102,8 +97,7 @@ func ExportByStructs(ctx context.Context, tags []string, list interface{}, fileN
 		Timestamp: time.Now().Unix(),
 		TraceID:   gctx.CtxId(ctx),
 	})
-
-	return nil
+	return
 }
 
 // letter 生成完整的表头

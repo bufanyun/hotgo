@@ -33,7 +33,7 @@ func (r *RedisMq) SendByteMsg(topic string, body []byte) (mqMsg MqMsg, err error
 	if r.poolName == "" {
 		return mqMsg, gerror.New("RedisMq producer not register")
 	}
-	
+
 	if topic == "" {
 		return mqMsg, gerror.New("RedisMq topic is empty")
 	}
@@ -213,7 +213,7 @@ func getRandMsgId() string {
 }
 
 func (r *RedisMq) loopReadDelayQueue(key string) (resCh chan MqMsg, errCh chan error) {
-	resCh = make(chan MqMsg, 0)
+	resCh = make(chan MqMsg)
 	errCh = make(chan error, 1)
 
 	go func() {
@@ -245,8 +245,8 @@ func (r *RedisMq) loopReadDelayQueue(key string) (resCh chan MqMsg, errCh chan e
 						errCh <- err
 						return
 					} else if pop.IsEmpty() {
-						conn.ZRem(ctx, key, listK)
-						conn.Del(ctx, listK)
+						_, _ = conn.ZRem(ctx, key, listK)
+						_, _ = conn.Del(ctx, listK)
 						break
 					} else {
 						var mqMsg MqMsg

@@ -24,16 +24,16 @@ const (
 )
 
 const (
-	OrderStatusALL           int64 = -1 // 全部状态
-	OrderStatusNotPay              = 1  // 待付款
-	OrderStatusPay                 = 2  // 已付款
-	OrderStatusShipments           = 3  // 已发货
-	OrderStatusDone                = 4  // 已完成
-	OrderStatusClose               = 5  // 已关闭
-	OrderStatusReturnRequest       = 6  // 申请退款
-	OrderStatusReturning           = 7  // 退款中
-	OrderStatusReturned            = 8  // 已退款
-	OrderStatusReturnReject        = 9  // 拒绝退款
+	OrderStatusALL           = -1 // 全部状态
+	OrderStatusNotPay        = 1  // 待付款
+	OrderStatusPay           = 2  // 已付款
+	OrderStatusShipments     = 3  // 已发货
+	OrderStatusDone          = 4  // 已完成
+	OrderStatusClose         = 5  // 已关闭
+	OrderStatusReturnRequest = 6  // 申请退款
+	OrderStatusReturning     = 7  // 退款中
+	OrderStatusReturned      = 8  // 已退款
+	OrderStatusReturnReject  = 9  // 拒绝退款
 )
 
 var OrderStatusSlice = []int64{

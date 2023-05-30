@@ -87,6 +87,10 @@ func (s *sSysCurdDemo) List(ctx context.Context, in sysin.CurdDemoListInp) (list
 		{Dao: dao.TestCategory, Alias: "testCategory"},
 	})
 
+	if err != nil {
+		return
+	}
+
 	if err = mod.Fields(fields).Page(in.Page, in.PerPage).OrderAsc(dao.SysGenCurdDemo.Columns().Sort).OrderDesc(dao.SysGenCurdDemo.Columns().Id).Scan(&list); err != nil {
 		err = gerror.Wrap(err, "获取生成演示列表失败，请稍后重试！")
 		return

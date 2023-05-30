@@ -61,7 +61,7 @@ func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (
 		return
 	}
 
-	for conn, _ := range c.wsManager.GetClients() {
+	for conn := range c.wsManager.GetClients() {
 		if conn.SendClose || conn.User == nil {
 			continue
 		}

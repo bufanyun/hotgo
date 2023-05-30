@@ -89,7 +89,7 @@ func GetModule(name string) Module {
 // GetSkeletons 获取所有模块骨架
 func GetSkeletons() (list []*Skeleton) {
 	var keys []string
-	for k, _ := range modules {
+	for k := range modules {
 		keys = append(keys, k)
 	}
 

@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package tree
 
 import (
@@ -53,8 +52,6 @@ func GetIds(tree string) (ids []int64) {
 
 	return
 }
-
-/////////////////////////// 转换类
 
 // GenTree 生成关系树
 func GenTree(menus []map[string]interface{}) (realMenu []map[string]interface{}) {

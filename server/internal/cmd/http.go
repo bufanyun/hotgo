@@ -79,20 +79,18 @@ var (
 
 			// 信号监听
 			signalListen(ctx, signalHandlerForOverall)
+
 			go func() {
-				select {
-				case <-serverCloseSignal:
-					websocket.Stop()
-					service.TCPServer().Stop(ctx)
-					s.Shutdown() // 主服务建议放在最后一个关闭
-					g.Log().Debug(ctx, "http successfully closed ..")
-					serverWg.Done()
-				}
+				<-serverCloseSignal
+				websocket.Stop()
+				service.TCPServer().Stop(ctx)
+				_ = s.Shutdown() // 主服务建议放在最后一个关闭
+				g.Log().Debug(ctx, "http successfully closed ..")
+				serverWg.Done()
 			}()
 
 			// Just run the server.
 			s.Run()
-
 			return
 		},
 	}

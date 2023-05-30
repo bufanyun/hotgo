@@ -49,7 +49,6 @@ type MonitorHead struct {
 // RunInfo 运行信息
 func (c *cMonitor) RunInfo(client *websocket.Client, req *websocket.WRequest) {
 	var (
-		data     = g.Map{}
 		meta     = service.AdminMonitor().GetMeta(client.Context())
 		mHost, _ = host.Info()
 		pwd, _   = os.Getwd()
@@ -58,7 +57,7 @@ func (c *cMonitor) RunInfo(client *websocket.Client, req *websocket.WRequest) {
 
 	runtime.ReadMemStats(&gm)
 
-	data = g.Map{
+	data := g.Map{
 		// 服务器信息
 		"hostname":    mHost.Hostname,
 		"os":          mHost.OS,
@@ -107,7 +106,6 @@ func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
 		mDisk, diskErr       = disk.Usage("/")
 		mProcess, ProcessErr = process.Pids()
 		mLoadAvg             = new(model.LoadAvgStats)
-		data                 = g.Map{}
 		monitorHeads         []MonitorHead
 		nets                 []NetC
 		meta                 = service.AdminMonitor().GetMeta(client.Context())
@@ -193,11 +191,9 @@ func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
 		})
 	}
 
-	data = g.Map{
+	websocket.SendSuccess(client, req.Event, g.Map{
 		"head": monitorHeads,
 		"load": meta.LoadAvg,
 		"net":  nets,
-	}
-
-	websocket.SendSuccess(client, req.Event, data)
+	})
 }

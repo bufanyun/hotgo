@@ -66,5 +66,4 @@ func SetAdapter(ctx context.Context) {
 	// 通用缓存
 	cache = gcache.New()
 	cache.SetAdapter(adapter)
-	return
 }

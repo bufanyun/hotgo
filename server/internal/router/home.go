@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package router
 
 import (
@@ -19,7 +18,6 @@ func Home(ctx context.Context, group *ghttp.RouterGroup) {
 	// 注册首页路由
 	group.ALL("/", func(r *ghttp.Request) {
 		_, _ = base.Site.Index(r.Context(), &api.SiteIndexReq{})
-		return
 	})
 
 	prefix := g.Cfg().MustGet(ctx, "router.home.prefix", "/home")

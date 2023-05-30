@@ -80,10 +80,10 @@ func (s *sSysAddons) List(ctx context.Context, in sysin.AddonsListInp) (list []*
 		}
 
 		if row.Skeleton.Logo == "" {
-			row.Skeleton.Logo, _ = consts.AddonsGroupIconMap[row.Skeleton.Group]
+			row.Skeleton.Logo = consts.AddonsGroupIconMap[row.Skeleton.Group]
 		}
 
-		row.GroupName, _ = consts.AddonsGroupNameMap[row.Skeleton.Group]
+		row.GroupName = consts.AddonsGroupNameMap[row.Skeleton.Group]
 
 		list = append(list, row)
 		i++

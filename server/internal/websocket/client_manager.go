@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package websocket
 
 import (
@@ -79,12 +78,10 @@ func (manager *ClientManager) ClientsRange(f func(client *Client, value bool) (r
 	manager.ClientsLock.RLock()
 	defer manager.ClientsLock.RUnlock()
 	for key, value := range manager.Clients {
-		result := f(key, value)
-		if result == false {
+		if !f(key, value) {
 			return
 		}
 	}
-	return
 }
 
 // GetClientsLen 获取客户端总数
@@ -104,14 +101,12 @@ func (manager *ClientManager) AddClients(client *Client) {
 func (manager *ClientManager) DelClients(client *Client) {
 	manager.ClientsLock.Lock()
 	defer manager.ClientsLock.Unlock()
-	if _, ok := manager.Clients[client]; ok {
-		delete(manager.Clients, client)
-	}
+	delete(manager.Clients, client)
 }
 
 // GetClient 通过socket ID获取客户端的连接
 func (manager *ClientManager) GetClient(ID string) (client *Client) {
-	for c, _ := range manager.Clients {
+	for c := range manager.Clients {
 		if c.ID == ID {
 			return c
 		}
@@ -187,7 +182,7 @@ func (manager *ClientManager) EventUnregister(client *Client) {
 	manager.DelClients(client)
 	// 删除用户连接
 	deleteResult := manager.DelUsers(client)
-	if deleteResult == false {
+	if !deleteResult {
 		// 不是当前连接的客户端
 		return
 	}
@@ -202,7 +197,7 @@ func (manager *ClientManager) clearTimeoutConnections() {
 	for client := range clients {
 		if client.IsHeartbeatTimeout(currentTime) {
 			//fmt.Println("心跳时间超时 关闭连接", client.Addr, client.UserId, client.LoginTime, client.HeartbeatTime)
-			client.Socket.Close()
+			_ = client.Socket.Close()
 		}
 	}
 }
@@ -224,7 +219,7 @@ func (manager *ClientManager) ping() {
 	//	SendToAll(res)
 	//})
 	// 定时任务，清理超时连接
-	gcron.Add(ctxManager, "*/30 * * * * *", func(ctx context.Context) {
+	_, _ = gcron.Add(ctxManager, "*/30 * * * * *", func(ctx context.Context) {
 		manager.clearTimeoutConnections()
 	})
 }

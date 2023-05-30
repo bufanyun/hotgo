@@ -27,7 +27,6 @@ func IpFilterStrategy(originIp string) (list map[string]struct{}) {
 				list[ip] = struct{}{}
 			}
 		}
-
 		return
 	}
 
@@ -51,7 +50,6 @@ func IpFilterStrategy(originIp string) (list map[string]struct{}) {
 		for i := index; i <= 254; i++ {
 			list[prefix+gconv.String(i)] = struct{}{}
 		}
-
 		return
 	}
 
@@ -97,6 +95,5 @@ func IpFilterStrategy(originIp string) (list map[string]struct{}) {
 		list[originIp] = struct{}{}
 		return
 	}
-
 	return list
 }

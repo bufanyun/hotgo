@@ -58,10 +58,10 @@ func consumerListen(ctx context.Context, job consumerStrategy) {
 	if listenErr := consumer.ListenReceiveMsgDo(topic, func(mqMsg MqMsg) {
 		err = job.Handle(ctx, mqMsg)
 
-		if err != nil {
-			// 遇到错误，重新加入到队列
-			//queue.Push(topic, mqMsg.Body)
-		}
+		//if err != nil {
+		//	// 遇到错误，重新加入到队列
+		//	//queue.Push(topic, mqMsg.Body)
+		//}
 
 		// 记录消费队列日志
 		ConsumerLog(ctx, topic, mqMsg, err)

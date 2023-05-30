@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -119,7 +118,7 @@ func (r *reader) close() {
 func (r *reader) sync() {
 	name := path.Join(r.config.Path, indexFile)
 	data, _ := json.Marshal(&r.checkpoint)
-	_ = ioutil.WriteFile(name, data, filePerm)
+	_ = os.WriteFile(name, data, filePerm)
 }
 
 // restore index and offset
@@ -131,7 +130,7 @@ func (r *reader) restore() (err error) {
 		r.sync()
 	}
 
-	data, _ := ioutil.ReadFile(name)
+	data, _ := os.ReadFile(name)
 
 	_ = json.Unmarshal(data, &r.checkpoint)
 	r.index, r.offset = r.checkpoint.Index, r.checkpoint.Offset

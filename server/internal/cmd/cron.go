@@ -29,14 +29,12 @@ var (
 
 			// 信号监听
 			signalListen(ctx, signalHandlerForOverall)
-			select {
-			case <-serverCloseSignal:
-				service.CronClient().Stop(ctx)
-				crons.StopALL()
-				g.Log().Debug(ctx, "cron successfully closed ..")
-				serverWg.Done()
-			}
 
+			<-serverCloseSignal
+			service.CronClient().Stop(ctx)
+			crons.StopALL()
+			g.Log().Debug(ctx, "cron successfully closed ..")
+			serverWg.Done()
 			return
 		},
 	}

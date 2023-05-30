@@ -44,7 +44,7 @@ func (c *cCronGroup) Edit(ctx context.Context, req *cron.GroupEditReq) (res *cro
 	}
 
 	err = service.SysCronGroup().Edit(ctx, in)
-	return res, nil
+	return
 }
 
 // MaxSort 最大排序
@@ -103,7 +103,7 @@ func (c *cCronGroup) Status(ctx context.Context, req *cron.GroupStatusReq) (res 
 	}
 
 	err = service.SysCronGroup().Status(ctx, in)
-	return res, nil
+	return
 }
 
 // Select 选项
