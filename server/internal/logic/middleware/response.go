@@ -101,9 +101,13 @@ func responseJson(r *ghttp.Request) {
 
 	if err = r.GetError(); err != nil {
 		// 记录到自定义错误日志文件
-		g.Log().Stdout(false).Printf(ctx, "exception:%v", err)
-
 		code = gerror.Code(err).Code()
+
+		if code == gcode.CodeNil.Code() {
+			g.Log().Stdout(false).Printf(ctx, "exception:%v", err)
+		} else {
+			g.Log().Errorf(ctx, "exception:%v", err)
+		}
 
 		// 是否输出错误到页面
 		if g.Cfg().MustGet(ctx, "hotgo.debug", true).Bool() {

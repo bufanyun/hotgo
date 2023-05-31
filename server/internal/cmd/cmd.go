@@ -59,7 +59,7 @@ var (
 				var cmd = server
 				simple.SafeGo(ctx, func(ctx context.Context) {
 					if err := cmd.Func(ctx, parser); err != nil {
-						g.Log().Fatal(ctx, "%v start fail:", cmd.Name, err)
+						g.Log().Fatalf(ctx, "%v start fail:%v", cmd.Name, err)
 					}
 				})
 			}
