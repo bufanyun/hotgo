@@ -7,6 +7,7 @@ package useragent
 
 import (
 	"fmt"
+	"github.com/gogf/gf/v2/text/gstr"
 	"regexp"
 	"strings"
 )
@@ -18,7 +19,7 @@ func GetOs(userAgent string) string {
 		return osName
 	}
 
-	strRe, _ := regexp.Compile(`(?i:((.*?)))`)
+	strRe, _ := regexp.Compile(`(?i:\((.*?)\))`)
 	userAgent = strRe.FindString(userAgent)
 
 	levelNames := ":micromessenger:dart:Windows NT:Windows Mobile:Windows Phone:Windows Phone OS:Macintosh|Macintosh:Mac OS:CrOS|CrOS:iPhone OS:iPad|iPad:OS:Android:Linux:blackberry:hpwOS:Series:Symbian:PalmOS:SymbianOS:J2ME:Sailfish:Bada:MeeGo:webOS|hpwOS:Maemo:"
@@ -41,9 +42,8 @@ func GetOs(userAgent string) string {
 			} else if strings.Contains(name, s) {
 				name = strings.TrimSpace(s)
 			} else if !strings.Contains(s, name) {
-				if strings.Contains(name, "iPhone") ||
-					strings.Contains(name, "iPad") {
-					s = strings.Trim(s, "Mac OS X")
+				if strings.Contains(name, "iPhone") || strings.Contains(name, "iPad") {
+					s = gstr.Trim(s, "Mac OS X")
 				}
 
 				if s != "" {

@@ -15,12 +15,12 @@ import (
 
 // Init 初始化上下文对象指针到上下文对象中，以便后续的请求流程中可以修改
 func Init(r *ghttp.Request, customCtx *model.Context) {
-	r.SetCtxVar(consts.ContextKey, customCtx)
+	r.SetCtxVar(consts.ContextHTTPKey, customCtx)
 }
 
 // Get 获得上下文变量，如果没有设置，那么返回nil
 func Get(ctx context.Context) *model.Context {
-	value := ctx.Value(consts.ContextKey)
+	value := ctx.Value(consts.ContextHTTPKey)
 	if value == nil {
 		return nil
 	}

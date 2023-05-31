@@ -121,7 +121,6 @@ func (s *sAdminCash) List(ctx context.Context, in adminin.CashListInp) (list []*
 			v.MemberUser = member.Username
 		}
 	}
-
 	return
 }
 
@@ -250,7 +249,6 @@ func (s *sAdminCash) Apply(ctx context.Context, in adminin.CashApplyInp) (err er
 		err = gerror.Newf("申请提现失败, %+v", err)
 		return
 	}
-
 	return
 }
 

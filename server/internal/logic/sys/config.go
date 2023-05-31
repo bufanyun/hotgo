@@ -25,33 +25,6 @@ import (
 	"hotgo/utility/simple"
 )
 
-// MaskDemoField 演示环境下需要隐藏的配置
-var MaskDemoField = []string{
-	// 邮箱
-	"smtpUser", "smtpPass",
-
-	// 云存储
-	"uploadUCloudPublicKey", "uploadUCloudPrivateKey",
-	"uploadCosSecretId", "uploadCosSecretKey",
-	"uploadOssSecretId", "uploadOssSecretKey",
-	"uploadQiNiuAccessKey", "uploadQiNiuSecretKey",
-
-	// 地图
-	"geoAmapWebKey",
-
-	// 短信
-	"smsAliYunAccessKeyID", "smsAliYunAccessKeySecret",
-	"smsTencentSecretId", "smsTencentSecretKey",
-
-	// 支付
-	"payWxPayMchId", "payWxPaySerialNo", "payWxPayAPIv3Key",
-	"payWxPayPrivateKey", "payQQPayMchId", "payQQPayApiKey",
-
-	// 微信
-	"officialAccountAppSecret", "officialAccountToken", "officialAccountEncodingAESKey",
-	"openPlatformAppSecret", "openPlatformToken", "openPlatformEncodingAESKey",
-}
-
 type sSysConfig struct{}
 
 func NewSysConfig() *sSysConfig {
