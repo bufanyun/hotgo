@@ -1,0 +1,3 @@
+run:
+  skip-dirs: # 设置要忽略的目录
+    - internal/library/hggen/internal

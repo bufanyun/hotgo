@@ -51,7 +51,6 @@ func WalkDir(dirname string) (error, []fileInfo) {
 			fileInfos = append(fileInfos, fi) //slice 中添加成员
 		}
 	}
-
 	return nil, fileInfos
 }
 
@@ -64,7 +63,6 @@ func DirSize(dirname string) string {
 	for _, n := range files {
 		ss += n.size
 	}
-
 	return format.FileSize(ss)
 }
 

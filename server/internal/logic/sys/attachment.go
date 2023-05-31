@@ -144,7 +144,6 @@ func (s *sSysAttachment) List(ctx context.Context, in sysin.AttachmentListInp) (
 		v.SizeFormat = format.FileSize(v.Size)
 		v.FileUrl = service.CommonUpload().LastUrl(ctx, conf, v.FileUrl, v.Drive)
 	}
-
 	return
 }
 

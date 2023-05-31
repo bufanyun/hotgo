@@ -47,7 +47,6 @@ func DecryptText(text string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	return string(str), nil
 }
 

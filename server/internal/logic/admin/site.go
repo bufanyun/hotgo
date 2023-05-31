@@ -260,6 +260,5 @@ func (s *sAdminSite) handleLogin(ctx context.Context, mb *entity.AdminMember) (r
 		Token:    loginToken,
 		Expires:  expires,
 	}
-
 	return
 }

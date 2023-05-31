@@ -32,17 +32,6 @@ var (
 	localCronClient ICronClient
 )
 
-func AuthClient() IAuthClient {
-	if localAuthClient == nil {
-		panic("implement not found for interface IAuthClient, forgot register?")
-	}
-	return localAuthClient
-}
-
-func RegisterAuthClient(i IAuthClient) {
-	localAuthClient = i
-}
-
 func CronClient() ICronClient {
 	if localCronClient == nil {
 		panic("implement not found for interface ICronClient, forgot register?")
@@ -52,4 +41,15 @@ func CronClient() ICronClient {
 
 func RegisterCronClient(i ICronClient) {
 	localCronClient = i
+}
+
+func AuthClient() IAuthClient {
+	if localAuthClient == nil {
+		panic("implement not found for interface IAuthClient, forgot register?")
+	}
+	return localAuthClient
+}
+
+func RegisterAuthClient(i IAuthClient) {
+	localAuthClient = i
 }

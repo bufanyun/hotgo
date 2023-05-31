@@ -133,15 +133,10 @@ func Ext(baseName string) string {
 }
 
 // UploadFileByte 获取上传文件的byte
-func UploadFileByte(file *ghttp.UploadFile) (b []byte, err error) {
+func UploadFileByte(file *ghttp.UploadFile) ([]byte, error) {
 	open, err := file.Open()
 	if err != nil {
-		return
+		return nil, err
 	}
-	all, err := io.ReadAll(open)
-	if err != nil {
-		return
-	}
-
-	return all, nil
+	return io.ReadAll(open)
 }

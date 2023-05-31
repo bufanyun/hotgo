@@ -291,7 +291,8 @@ func (s *sSysGenCodes) Preview(ctx context.Context, in sysin.GenCodesPreviewInp)
 // Build 提交生成
 func (s *sSysGenCodes) Build(ctx context.Context, in sysin.GenCodesBuildInp) (err error) {
 	// 先保存配置
-	if _, err = s.Edit(ctx, sysin.GenCodesEditInp{SysGenCodes: in.SysGenCodes}); err != nil {
+	ein := in.SysGenCodes
+	if _, err = s.Edit(ctx, sysin.GenCodesEditInp{SysGenCodes: ein}); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
