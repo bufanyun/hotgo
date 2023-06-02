@@ -8,35 +8,40 @@ package useragent
 import (
 	"fmt"
 	"github.com/gogf/gf/v2/text/gstr"
+	"hotgo/internal/consts"
 	"regexp"
 	"strings"
 )
 
 // GetOs 获取OS名称
 func GetOs(userAgent string) string {
-	osName := "Unknown"
+	osName := consts.Unknown
 	if userAgent == "" {
 		return osName
 	}
 
-	strRe, _ := regexp.Compile(`(?i:\((.*?)\))`)
-	userAgent = strRe.FindString(userAgent)
+	var (
+		strRe, _   = regexp.Compile(`(?i:\((.*?)\))`)
+		levelNames = ":micromessenger:dart:Windows NT:Windows Mobile:Windows Phone:Windows Phone OS:Macintosh|Macintosh:Mac OS:CrOS|CrOS:iPhone OS:iPad|iPad:OS:Android:Linux:blackberry:hpwOS:Series:Symbian:PalmOS:SymbianOS:J2ME:Sailfish:Bada:MeeGo:webOS|hpwOS:Maemo:"
+		namesArr   = strings.Split(strings.Trim(levelNames, ":"), ":")
+		regStrArr  = make([]string, len(namesArr))
+	)
 
-	levelNames := ":micromessenger:dart:Windows NT:Windows Mobile:Windows Phone:Windows Phone OS:Macintosh|Macintosh:Mac OS:CrOS|CrOS:iPhone OS:iPad|iPad:OS:Android:Linux:blackberry:hpwOS:Series:Symbian:PalmOS:SymbianOS:J2ME:Sailfish:Bada:MeeGo:webOS|hpwOS:Maemo:"
-	var regStrArr []string
-	namesArr := strings.Split(strings.Trim(levelNames, ":"), ":")
-	for _, name := range namesArr {
-		regStrArr = append(regStrArr, fmt.Sprintf("(%s[\\s?\\/XxSs0-9_.]+)", name))
+	for k, name := range namesArr {
+		regStrArr[k] = fmt.Sprintf("(%s[\\s?\\/XxSs0-9_.]+)", name)
 	}
-	regexpStr := fmt.Sprintf("(?i:%s)", strings.Join(regStrArr, "|"))
-	nameRe, _ := regexp.Compile(regexpStr)
 
-	names := nameRe.FindAllString(userAgent, -1)
-	name := ""
+	userAgent = strRe.FindString(userAgent)
+	var (
+		nameRe, _ = regexp.Compile(fmt.Sprintf("(?i:%s)", strings.Join(regStrArr, "|")))
+		names     = nameRe.FindAllString(userAgent, -1)
+		name      = ""
+	)
+
 	for _, s := range names {
-		if name == "" {
+		if len(name) == 0 {
 			name = strings.TrimSpace(s)
-		} else if len(name) > 0 {
+		} else {
 			if strings.Contains(name, "Macintosh") && s != "" {
 				name = strings.TrimSpace(s)
 			} else if strings.Contains(name, s) {
@@ -62,30 +67,32 @@ func GetOs(userAgent string) string {
 	if name != "" {
 		osName = name
 	}
-
 	return osName
 }
 
 // GetBrowser 获取浏览器名称
 func GetBrowser(userAgent string) string {
-	deviceName := "Unknown"
+	var (
+		deviceName = consts.Unknown
+		levelNames = ":VivoBrowser:QQDownload:QQBrowser:QQ:MQQBrowser:MicroMessenger:TencentTraveler:LBBROWSER:TaoBrowser:BrowserNG:UCWEB:TwonkyBeamBrowser:NokiaBrowser:OviBrowser:NF-Browser:OneBrowser:Obigo:DiigoBrowser:baidubrowser:baiduboxapp:xiaomi:Redmi:MI:Lumia:Micromax:MSIEMobile:IEMobile:EdgiOS:Yandex:Mercury:Openwave:TouchPad:UBrowser:Presto:Maxthon:MetaSr:Trident:Opera:IEMobile:Edge:Chrome:Chromium:OPR:CriOS:Firefox:FxiOS:fennec:CrMo:Safari:Nexus One:Nexus S:Nexus:Blazer:teashark:bolt:HTC:Dell:Motorola:Samsung:LG:Sony:SonyST:SonyLT:SonyEricsson:Asus:Palm:Vertu:Pantech:Fly:Wiko:i-mobile:Alcatel:Nintendo:Amoi:INQ:ONEPLUS:Tapatalk:PDA:Novarra-Vision:NetFront:Minimo:FlyFlow:Dolfin:Nokia:Series:AppleWebKit:Mobile:Mozilla:Version:"
+		namesArr   = strings.Split(strings.Trim(levelNames, ":"), ":")
+		regStrArr  []string
+	)
 
-	levelNames := ":VivoBrowser:QQDownload:QQBrowser:QQ:MQQBrowser:MicroMessenger:TencentTraveler:LBBROWSER:TaoBrowser:BrowserNG:UCWEB:TwonkyBeamBrowser:NokiaBrowser:OviBrowser:NF-Browser:OneBrowser:Obigo:DiigoBrowser:baidubrowser:baiduboxapp:xiaomi:Redmi:MI:Lumia:Micromax:MSIEMobile:IEMobile:EdgiOS:Yandex:Mercury:Openwave:TouchPad:UBrowser:Presto:Maxthon:MetaSr:Trident:Opera:IEMobile:Edge:Chrome:Chromium:OPR:CriOS:Firefox:FxiOS:fennec:CrMo:Safari:Nexus One:Nexus S:Nexus:Blazer:teashark:bolt:HTC:Dell:Motorola:Samsung:LG:Sony:SonyST:SonyLT:SonyEricsson:Asus:Palm:Vertu:Pantech:Fly:Wiko:i-mobile:Alcatel:Nintendo:Amoi:INQ:ONEPLUS:Tapatalk:PDA:Novarra-Vision:NetFront:Minimo:FlyFlow:Dolfin:Nokia:Series:AppleWebKit:Mobile:Mozilla:Version:"
-
-	var regStrArr []string
-	namesArr := strings.Split(strings.Trim(levelNames, ":"), ":")
 	for _, name := range namesArr {
 		regStrArr = append(regStrArr, fmt.Sprintf("(%s[\\s?\\/0-9.]+)", name))
 	}
-	regexpStr := fmt.Sprintf("(?i:%s)", strings.Join(regStrArr, "|"))
-	nameRe, _ := regexp.Compile(regexpStr)
-	names := nameRe.FindAllString(userAgent, -1)
 
-	level := 0
+	var (
+		regexpStr = fmt.Sprintf("(?i:%s)", strings.Join(regStrArr, "|"))
+		nameRe, _ = regexp.Compile(regexpStr)
+		names     = nameRe.FindAllString(userAgent, -1)
+		level     = 0
+	)
+
 	for _, name := range names {
 		replaceRe, _ := regexp.Compile(`(?i:[\s?\/0-9.]+)`)
-		n := replaceRe.ReplaceAllString(name, "")
-		l := strings.Index(levelNames, fmt.Sprintf(":%s:", n))
+		l := strings.Index(levelNames, fmt.Sprintf(":%s:", replaceRe.ReplaceAllString(name, "")))
 		if level == 0 {
 			deviceName = strings.TrimSpace(name)
 		}
@@ -95,7 +102,6 @@ func GetBrowser(userAgent string) string {
 			deviceName = strings.TrimSpace(name)
 		}
 	}
-
 	return deviceName
 }
 
@@ -119,6 +125,5 @@ func getWinOsNameWithWinNT(sName string) string {
 			break
 		}
 	}
-
 	return osName
 }

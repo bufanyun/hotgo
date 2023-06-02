@@ -17,6 +17,7 @@ import (
 	"hotgo/utility/convert"
 )
 
+// onServerLogin 处理客户端登录
 func (server *Server) onServerLogin(ctx context.Context, args ...interface{}) {
 	var (
 		in     = new(msgin.ServerLogin)
@@ -137,6 +138,7 @@ func (server *Server) onServerLogin(ctx context.Context, args ...interface{}) {
 	_ = server.Write(user.Conn, res)
 }
 
+// onServerHeartbeat 处理客户端心跳
 func (server *Server) onServerHeartbeat(ctx context.Context, args ...interface{}) {
 	var (
 		in  *msgin.ServerHeartbeat

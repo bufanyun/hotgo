@@ -44,7 +44,6 @@ func New(name ...string) PayClient {
 	default:
 		panic(fmt.Sprintf("暂不支持的支付方式:%v", payType))
 	}
-
 	return client
 }
 

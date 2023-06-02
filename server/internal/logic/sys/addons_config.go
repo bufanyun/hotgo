@@ -54,8 +54,8 @@ func (s *sSysAddonsConfig) GetConfigByGroup(ctx context.Context, in sysin.GetAdd
 		Scan(&models); err != nil {
 		return nil, err
 	}
-	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false)
 
+	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false)
 	if len(models) > 0 {
 		res = new(sysin.GetAddonsConfigModel)
 		res.List = make(g.Map, len(models))
@@ -71,7 +71,6 @@ func (s *sSysAddonsConfig) GetConfigByGroup(ctx context.Context, in sysin.GetAdd
 			}
 		}
 	}
-
 	return
 }
 
@@ -105,10 +104,10 @@ func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in sysin.Upd
 		Where("addon_name", in.AddonName).
 		Where("group", in.Group).
 		Scan(&models); err != nil {
-		return err
+		return
 	}
 
-	err = dao.SysAddonsConfig.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+	err = dao.SysAddonsConfig.Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
 		for k, v := range in.List {
 			row := s.getConfigByKey(k, models)
 			// 新增
@@ -130,20 +129,15 @@ func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in sysin.Upd
 			}
 
 			// 更新
-			_, err = dao.SysAddonsConfig.Ctx(ctx).Where("id", row.Id).Data(g.Map{"value": v, "updated_at": gtime.Now()}).Update()
-			if err != nil {
+			if _, err = dao.SysAddonsConfig.Ctx(ctx).Where("id", row.Id).Data(g.Map{"value": v, "updated_at": gtime.Now()}).Update(); err != nil {
 				err = gerror.Wrap(err, consts.ErrorORM)
-				return err
+				return
 			}
 		}
 
-		return nil
+		return
 	})
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return
 }
 
 func (s *sSysAddonsConfig) getConfigByKey(key string, models []*entity.SysAddonsConfig) *entity.SysAddonsConfig {
@@ -156,6 +150,5 @@ func (s *sSysAddonsConfig) getConfigByKey(key string, models []*entity.SysAddons
 			return v
 		}
 	}
-
 	return nil
 }

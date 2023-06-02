@@ -57,7 +57,6 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 		g.Log().Infof(ctx, "admin Verify Enforce  err:%+v", err)
 		return false
 	}
-
 	return ok
 }
 
@@ -102,7 +101,6 @@ func (s *sAdminRole) GetName(ctx context.Context, id int64) (name string, err er
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
-
 	return r.String(), nil
 }
 
@@ -148,7 +146,7 @@ func (s *sAdminRole) UpdatePermissions(ctx context.Context, in adminin.UpdatePer
 		}
 
 		// 去重
-		in.MenuIds = convert.UniqueSliceInt64(in.MenuIds)
+		in.MenuIds = convert.UniqueSlice(in.MenuIds)
 
 		list := make(g.List, 0, len(in.MenuIds))
 		for _, v := range in.MenuIds {
@@ -169,7 +167,6 @@ func (s *sAdminRole) UpdatePermissions(ctx context.Context, in adminin.UpdatePer
 	if err != nil {
 		return
 	}
-
 	return casbin.Refresh(ctx)
 }
 
@@ -296,19 +293,18 @@ func (s *sAdminRole) DataScopeEdit(ctx context.Context, in *adminin.DataScopeEdi
 		return gerror.New("超管角色拥有全部权限，无需修改！")
 	}
 
-	if in.DataScope == consts.RoleDataDeptCustom && len(convert.UniqueSliceInt64(in.CustomDept)) == 0 {
+	if in.DataScope == consts.RoleDataDeptCustom && len(convert.UniqueSlice(in.CustomDept)) == 0 {
 		return gerror.New("自定义权限必须配置自定义部门！")
 	}
 
 	models.DataScope = in.DataScope
-	models.CustomDept = gjson.New(convert.UniqueSliceInt64(in.CustomDept))
+	models.CustomDept = gjson.New(convert.UniqueSlice(in.CustomDept))
 
 	_, err = dao.AdminRole.Ctx(ctx).
 		Fields(dao.AdminRole.Columns().DataScope, dao.AdminRole.Columns().CustomDept).
 		Where("id", in.Id).
 		Data(models).
 		Update()
-
 	return
 }
 

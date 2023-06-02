@@ -198,7 +198,7 @@ func (s *sSysCurdDemo) Switch(ctx context.Context, in sysin.CurdDemoSwitchInp) (
 		// ...
 	}
 
-	if !validate.InSliceString(fields, in.Key) {
+	if !validate.InSlice(fields, in.Key) {
 		err = gerror.New("开关键名不在白名单")
 		return
 	}

@@ -17,23 +17,21 @@ var (
 	fieldTags = []string{"json"}                      // 实体字段名称映射
 )
 
-// UniqueSliceInt64 切片去重
-func UniqueSliceInt64(languages []int64) []int64 {
-	result := make([]int64, 0, len(languages))
-	temp := map[int64]struct{}{}
-	for _, item := range languages {
-		if _, ok := temp[item]; !ok {
-			temp[item] = struct{}{}
-			result = append(result, item)
-		}
+// GetMapKeys 获取map的所有key
+func GetMapKeys[K comparable](m map[K]any) []K {
+	j := 0
+	keys := make([]K, len(m))
+	for k := range m {
+		keys[j] = k
+		j++
 	}
-	return result
+	return keys
 }
 
-// UniqueSliceString 切片去重
-func UniqueSliceString(languages []string) []string {
-	result := make([]string, 0, len(languages))
-	temp := map[string]struct{}{}
+// UniqueSlice 切片去重
+func UniqueSlice[K comparable](languages []K) []K {
+	result := make([]K, 0, len(languages))
+	temp := map[K]struct{}{}
 	for _, item := range languages {
 		if _, ok := temp[item]; !ok {
 			temp[item] = struct{}{}
@@ -121,19 +119,19 @@ func reflectTag(reflectType reflect.Type, filterTags []string, tags []string) ([
 
 // reflectTagName 解析实体中的描述标签，优先级：description > dc > json > Name
 func reflectTagName(field reflect.StructField, filterTags []string, isDef bool) string {
-	if validate.InSliceString(filterTags, "description") {
+	if validate.InSlice(filterTags, "description") {
 		if description, ok := field.Tag.Lookup("description"); ok && description != "" {
 			return description
 		}
 	}
 
-	if validate.InSliceString(filterTags, "dc") {
+	if validate.InSlice(filterTags, "dc") {
 		if dc, ok := field.Tag.Lookup("dc"); ok && dc != "" {
 			return dc
 		}
 	}
 
-	if validate.InSliceString(filterTags, "json") {
+	if validate.InSlice(filterTags, "json") {
 		if jsonName, ok := field.Tag.Lookup("json"); ok && jsonName != "" {
 			return jsonName
 		}

@@ -44,7 +44,6 @@ func (s *sSysDictData) Edit(ctx context.Context, in sysin.DictDataEditInp) (err 
 			err = gerror.Wrap(err, consts.ErrorORM)
 			return err
 		}
-
 		return nil
 	}
 

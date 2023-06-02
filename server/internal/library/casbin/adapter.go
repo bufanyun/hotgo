@@ -104,21 +104,18 @@ func (a *adapter) model() *gdb.Model {
 // create a policy table when it's not exists.
 func (a *adapter) createPolicyTable() (err error) {
 	_, err = a.db.Exec(context.TODO(), fmt.Sprintf(createPolicyTableSql, a.table))
-
 	return
 }
 
 // drop policy table from the storage.
 func (a *adapter) dropPolicyTable() (err error) {
 	_, err = a.db.Exec(context.TODO(), fmt.Sprintf(dropPolicyTableSql, a.table))
-
 	return
 }
 
 // LoadPolicy loads all policy rules from the storage.
 func (a *adapter) LoadPolicy(model model.Model) (err error) {
 	var rules []policyRule
-
 	if err = a.model().Scan(&rules); err != nil {
 		return
 	}
@@ -126,7 +123,6 @@ func (a *adapter) LoadPolicy(model model.Model) (err error) {
 	for _, rule := range rules {
 		a.loadPolicyRule(rule, model)
 	}
-
 	return
 }
 
@@ -159,14 +155,12 @@ func (a *adapter) SavePolicy(model model.Model) (err error) {
 			return
 		}
 	}
-
 	return
 }
 
 // AddPolicy adds a policy rule to the storage.
 func (a *adapter) AddPolicy(sec string, ptype string, rule []string) (err error) {
 	_, err = a.model().Insert(a.buildPolicyRule(ptype, rule))
-
 	return
 }
 
@@ -183,7 +177,6 @@ func (a *adapter) AddPolicies(sec string, ptype string, rules [][]string) (err e
 	}
 
 	_, err = a.model().Insert(policyRules)
-
 	return
 }
 
@@ -228,14 +221,12 @@ func (a *adapter) RemovePolicies(sec string, ptype string, rules [][]string) (er
 	}
 
 	_, err = db.Delete()
-
 	return
 }
 
 // UpdatePolicy updates a policy rule from storage.
 func (a *adapter) UpdatePolicy(sec string, ptype string, oldRule, newRule []string) (err error) {
 	_, err = a.model().Update(a.buildPolicyRule(ptype, newRule), a.buildPolicyRule(ptype, oldRule))
-
 	return
 }
 
@@ -244,18 +235,14 @@ func (a *adapter) UpdatePolicies(sec string, ptype string, oldRules, newRules []
 	if len(oldRules) == 0 || len(newRules) == 0 {
 		return
 	}
-
-	err = a.db.Transaction(context.TODO(), func(ctx context.Context, tx gdb.TX) error {
+	return a.db.Transaction(context.TODO(), func(ctx context.Context, tx gdb.TX) error {
 		for i := 0; i < int(math.Min(float64(len(oldRules)), float64(len(newRules)))); i++ {
 			if _, err = tx.Model(a.table).Update(a.buildPolicyRule(ptype, newRules[i]), a.buildPolicyRule(ptype, oldRules[i])); err != nil {
 				return err
 			}
 		}
-
 		return nil
 	})
-
-	return
 }
 
 // 加载策略规则
@@ -285,7 +272,6 @@ func (a *adapter) loadPolicyRule(rule policyRule, model model.Model) {
 	if rule.V5 != "" {
 		ruleText += ", " + rule.V5
 	}
-
 	if err := persist.LoadPolicyLine(ruleText, model); err != nil {
 		panic(err)
 	}
@@ -318,6 +304,5 @@ func (a *adapter) buildPolicyRule(ptype string, data []string) policyRule {
 	if len(data) > 5 {
 		rule.V5 = data[5]
 	}
-
 	return rule
 }

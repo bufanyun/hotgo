@@ -93,7 +93,6 @@ func (h *aliPay) Notify(ctx context.Context, in payin.NotifyInp) (res *payin.Not
 	res.OutTradeNo = notify.OutTradeNo
 	res.PayAt = notify.GmtPayment
 	res.ActualAmount = gconv.Float64(notify.ReceiptAmount)
-
 	return
 }
 
@@ -115,7 +114,6 @@ func (h *aliPay) CreateOrder(ctx context.Context, in payin.CreateOrderInp) (res 
 	default:
 		err = gerror.Newf("暂未支持的交易方式：%v", in.Pay.TradeType)
 	}
-
 	return
 }
 

@@ -22,41 +22,42 @@ import (
 
 // ClientConfig 客户端配置
 type ClientConfig struct {
-	Addr            string
-	Auth            *AuthMeta
-	Timeout         time.Duration
-	ConnectInterval time.Duration
-	MaxConnectCount uint
-	ConnectCount    uint
-	AutoReconnect   bool
-	LoginEvent      CallbackEvent
-	CloseEvent      CallbackEvent
+	Addr            string        // 连接地址
+	Auth            *AuthMeta     // 认证元数据
+	Timeout         time.Duration // 连接超时时间
+	ConnectInterval time.Duration // 重连时间间隔
+	MaxConnectCount uint          // 最大重连次数，0不限次数
+	ConnectCount    uint          // 已重连次数
+	AutoReconnect   bool          // 是否开启自动重连
+	LoginEvent      CallbackEvent // 登录成功事件
+	CloseEvent      CallbackEvent // 连接关闭事件
 }
 
 // Client 客户端
 type Client struct {
-	Ctx             context.Context
-	Logger          *glog.Logger
-	IsLogin         bool // 是否已登录
-	addr            string
-	auth            *AuthMeta
-	rpc             *Rpc
-	timeout         time.Duration
-	connectInterval time.Duration
-	maxConnectCount uint
-	connectCount    uint
-	autoReconnect   bool
-	loginEvent      CallbackEvent
-	closeEvent      CallbackEvent
-	sync.Mutex
-	heartbeat int64
-	routers   map[string]RouterHandler
-	conn      *gtcp.Conn
-	wg        sync.WaitGroup
-	closeFlag bool // 关闭标签，关闭以后可以重连
-	stopFlag  bool // 停止标签，停止以后不能重连
+	Ctx             context.Context          // 上下文
+	Logger          *glog.Logger             // 日志处理器
+	IsLogin         bool                     // 是否已登录
+	addr            string                   // 连接地址
+	auth            *AuthMeta                // 认证元数据
+	rpc             *Rpc                     // rpc协议支持
+	timeout         time.Duration            // 连接超时时间
+	connectInterval time.Duration            // 重连时间间隔
+	maxConnectCount uint                     // 最大重连次数，0不限次数
+	connectCount    uint                     // 已重连次数
+	autoReconnect   bool                     // 是否开启自动重连
+	loginEvent      CallbackEvent            // 登录成功事件
+	closeEvent      CallbackEvent            // 连接关闭事件
+	sync.Mutex                               // 状态锁
+	heartbeat       int64                    // 心跳
+	routers         map[string]RouterHandler // 已注册的路由
+	conn            *gtcp.Conn               // 连接对象
+	wg              sync.WaitGroup           // 状态控制
+	closeFlag       bool                     // 关闭标签，关闭以后可以重连
+	stopFlag        bool                     // 停止标签，停止以后不能重连
 }
 
+// NewClient 初始化一个tcp客户端
 func NewClient(config *ClientConfig) (client *Client, err error) {
 	client = new(Client)
 
@@ -110,7 +111,7 @@ func NewClient(config *ClientConfig) (client *Client, err error) {
 	return
 }
 
-// Start 启动
+// Start 启动tcp连接
 func (client *Client) Start() (err error) {
 	client.Lock()
 	defer client.Unlock()
@@ -133,7 +134,6 @@ func (client *Client) Start() (err error) {
 	simple.SafeGo(client.Ctx, func(ctx context.Context) {
 		client.connect()
 	})
-
 	return
 }
 
@@ -165,6 +165,7 @@ func (client *Client) RegisterRouter(routers map[string]RouterHandler) (err erro
 	return
 }
 
+// dial
 func (client *Client) dial() *gtcp.Conn {
 	for {
 		conn, err := gtcp.NewConn(client.addr, client.timeout)
@@ -218,6 +219,7 @@ reconnect:
 	client.startCron()
 }
 
+// read
 func (client *Client) read() {
 	simple.SafeGo(client.Ctx, func(ctx context.Context) {
 		defer func() {
@@ -347,7 +349,6 @@ func (client *Client) Write(data interface{}) error {
 		return gerror.Newf("client json message pointer required: %+v", data)
 	}
 	msg := &Message{Router: msgType.Elem().Name(), Data: data}
-
 	return SendPkg(client.conn, msg)
 }
 
@@ -379,7 +380,6 @@ func (client *Client) RpcRequest(ctx context.Context, data interface{}) (res int
 		err = gerror.New("traceID is required")
 		return
 	}
-
 	return client.rpc.Request(key, func() {
 		_ = client.Write(data)
 	})

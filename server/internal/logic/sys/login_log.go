@@ -107,7 +107,6 @@ func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list
 		v.Os = useragent.GetOs(v.SysLogUserAgent)
 		v.Browser = useragent.GetBrowser(v.SysLogUserAgent)
 	}
-
 	return
 }
 

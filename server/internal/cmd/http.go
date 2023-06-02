@@ -21,7 +21,7 @@ var (
 	Http = &gcmd.Command{
 		Name:  "http",
 		Usage: "http",
-		Brief: "HTTP服务",
+		Brief: "HTTP服务，也可以称为主服务，包含http、websocket、tcpserver多个可对外服务",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			// 加载权限
 			casbin.InitEnforcer(ctx)
@@ -32,6 +32,7 @@ var (
 			s.BindStatusHandler(404, func(r *ghttp.Request) {
 				r.Response.Writeln("404 - 你似乎来到了没有知识存在的荒原…")
 			})
+
 			s.BindStatusHandler(403, func(r *ghttp.Request) {
 				r.Response.Writeln("403 - 网站拒绝显示此网页")
 			})

@@ -37,6 +37,7 @@ func (client *Client) serverLogin() {
 	}
 }
 
+// onResponseServerLogin 接收服务登陆响应结果
 func (client *Client) onResponseServerLogin(ctx context.Context, args ...interface{}) {
 	var in *msgin.ResponseServerLogin
 	if err := gconv.Scan(args[0], &in); err != nil {
@@ -58,6 +59,7 @@ func (client *Client) onResponseServerLogin(ctx context.Context, args ...interfa
 	}
 }
 
+// onResponseServerHeartbeat 接收心跳响应结果
 func (client *Client) onResponseServerHeartbeat(ctx context.Context, args ...interface{}) {
 	var in *msgin.ResponseServerHeartbeat
 	if err := gconv.Scan(args[0], &in); err != nil {

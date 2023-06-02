@@ -14,8 +14,10 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 )
 
-var GoPool = grpool.New(100)
+// GoPool 初始化一个协程池，用于处理消息处理
+var GoPool = grpool.New(20)
 
+// RouterHandler 路由消息处理器
 type RouterHandler func(ctx context.Context, args ...interface{})
 
 // Message 路由消息
@@ -24,6 +26,7 @@ type Message struct {
 	Data   interface{} `json:"data"`
 }
 
+// SendPkg 打包发送的数据包
 func SendPkg(conn *gtcp.Conn, message *Message) error {
 	b, err := json.Marshal(message)
 	if err != nil {
@@ -32,6 +35,7 @@ func SendPkg(conn *gtcp.Conn, message *Message) error {
 	return conn.SendPkg(b)
 }
 
+// RecvPkg 解包
 func RecvPkg(conn *gtcp.Conn) (*Message, error) {
 	if data, err := conn.RecvPkg(); err != nil {
 		return nil, err
@@ -58,7 +62,6 @@ func MsgPkg(data interface{}, auth *AuthMeta, traceID string) string {
 	if msg == nil {
 		return ""
 	}
-
 	return msg.TraceID
 }
 
