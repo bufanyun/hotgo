@@ -307,6 +307,6 @@ func (s *sAdminMenu) LoginPermissions(ctx context.Context, memberId int64) (list
 		}
 	}
 
-	lists = convert.UniqueSliceString(lists)
+	lists = convert.UniqueSlice(lists)
 	return
 }

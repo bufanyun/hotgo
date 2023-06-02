@@ -1,9 +1,9 @@
-// Package file
+// Package storager
 // @Link  https://github.com/bufanyun/hotgo
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-package file
+package storager
 
 import (
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -14,7 +14,7 @@ import (
 	"path"
 )
 
-// 文件分类
+// 文件归属分类
 const (
 	KindImg   = "images"   // 图片
 	KindDoc   = "document" // 文档
@@ -82,6 +82,24 @@ var (
 // IsImgType 判断是否为图片
 func IsImgType(ext string) bool {
 	_, ok := imgType[ext]
+	return ok
+}
+
+// IsDocType 判断是否为文档
+func IsDocType(ext string) bool {
+	_, ok := docType[ext]
+	return ok
+}
+
+// IsAudioType 判断是否为音频
+func IsAudioType(ext string) bool {
+	_, ok := audioType[ext]
+	return ok
+}
+
+// IsVideoType 判断是否为视频
+func IsVideoType(ext string) bool {
+	_, ok := videoType[ext]
 	return ok
 }
 

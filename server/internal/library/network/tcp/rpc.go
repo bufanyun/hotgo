@@ -22,6 +22,7 @@ type Rpc struct {
 	callbacks map[string]RpcRespFunc
 }
 
+// RpcResp 响应结构
 type RpcResp struct {
 	res interface{}
 	err error
@@ -29,6 +30,7 @@ type RpcResp struct {
 
 type RpcRespFunc func(resp interface{}, err error)
 
+// NewRpc 初始化一个rpc协议
 func NewRpc(ctx context.Context) *Rpc {
 	return &Rpc{
 		ctx:       ctx,
@@ -57,7 +59,6 @@ func (r *Rpc) HandleMsg(ctx context.Context, cancel context.CancelFunc, data int
 		})
 		return true
 	}
-
 	return false
 }
 
@@ -99,7 +100,7 @@ func (r *Rpc) Request(callId string, send func()) (res interface{}, err error) {
 
 	<-waitCh
 	select {
-	case <-time.After(consts.TCPRpcTimeout):
+	case <-time.After(time.Second * consts.TCPRpcTimeout):
 		err = gerror.New("rpc response timeout")
 		return
 	case got := <-resCh:

@@ -33,7 +33,6 @@ func Dao(ctx context.Context) (err error) {
 		}
 		gendao.DoGenDaoForArray(ctx, inp)
 	}
-
 	return
 }
 
@@ -126,7 +125,6 @@ func TableSelects(ctx context.Context, in sysin.GenCodesSelectsInp) (res *sysin.
 	}
 
 	res.Addons = addons.ModuleSelect()
-
 	return
 }
 
@@ -163,7 +161,6 @@ func GenTypeSelect(ctx context.Context) (res sysin.GenTypeSelects, err error) {
 		res = append(res, row)
 	}
 	sort.Sort(res)
-
 	return
 }
 

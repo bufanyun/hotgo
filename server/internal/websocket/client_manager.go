@@ -289,7 +289,6 @@ func (manager *ClientManager) start() {
 			g.Log().Info(ctxManager, "websocket closeSignal quit..")
 			return
 		}
-
 	}
 }
 

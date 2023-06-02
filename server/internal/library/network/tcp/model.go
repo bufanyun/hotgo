@@ -19,6 +19,7 @@ type AuthMeta struct {
 	EndAt     *gtime.Time `json:"-"`
 }
 
+// Context tcp上下文
 type Context struct {
 	Conn    *gtcp.Conn `json:"conn"`
 	Auth    *AuthMeta  `json:"auth"`    // 认证元数据

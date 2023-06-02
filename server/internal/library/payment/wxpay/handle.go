@@ -105,7 +105,6 @@ func (h *wxPay) Notify(ctx context.Context, in payin.NotifyInp) (res *payin.Noti
 	res.OutTradeNo = notify.OutTradeNo
 	res.PayAt = gtime.New(notify.SuccessTime)
 	res.ActualAmount = float64(notify.Amount.PayerTotal / 100) // 转为元，和系统内保持一至
-
 	return
 }
 
@@ -121,7 +120,6 @@ func (h *wxPay) CreateOrder(ctx context.Context, in payin.CreateOrderInp) (res *
 	default:
 		err = gerror.Newf("暂未支持的交易方式：%v", in.Pay.TradeType)
 	}
-
 	return
 }
 

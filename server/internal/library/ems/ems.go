@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package ems
 
 import (
@@ -47,6 +46,5 @@ func sendToMail(config *model.EmailConfig, to, subject, body, mailType string) e
 	}
 
 	msg := []byte("To: " + to + "\r\nFrom: " + config.SendName + "<" + config.User + ">" + "\r\nSubject: " + subject + "\r\n" + contentType + "\r\n\r\n" + body)
-
 	return smtp.SendMail(config.Addr, auth, config.User, sendTo, msg)
 }

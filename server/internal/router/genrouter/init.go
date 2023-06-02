@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package genrouter
 
 import (
@@ -14,7 +13,7 @@ import (
 )
 
 var (
-	NoLogin             []interface{} // 无需登录
+	NoLoginRouter       []interface{} // 无需登录
 	LoginRequiredRouter []interface{} // 需要登录
 )
 
@@ -22,8 +21,8 @@ var (
 func Register(ctx context.Context, group *ghttp.RouterGroup) {
 	prefix := g.Cfg().MustGet(ctx, "router.admin.prefix", "/admin")
 	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
-		if len(NoLogin) > 0 {
-			group.Bind(NoLogin...)
+		if len(NoLoginRouter) > 0 {
+			group.Bind(NoLoginRouter...)
 		}
 		group.Middleware(service.Middleware().AdminAuth)
 		if len(LoginRequiredRouter) > 0 {

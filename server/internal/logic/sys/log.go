@@ -230,7 +230,6 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 		Status:     consts.StatusEnabled,
 		TakeUpTime: takeUpTime,
 	}
-
 	return data
 }
 
@@ -241,8 +240,7 @@ func (s *sSysLog) View(ctx context.Context, in sysin.LogViewInp) (res *sysin.Log
 		return
 	}
 
-	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false)
-	if isDemo.Bool() {
+	if g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool() {
 		res.HeaderData = gjson.New(`{
 		   "none": [
 		       "` + consts.DemoTips + `"
@@ -364,6 +362,5 @@ func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.
 		}
 
 	}
-
 	return
 }

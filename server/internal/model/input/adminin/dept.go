@@ -124,7 +124,7 @@ func (in *DeptStatusInp) Filter(ctx context.Context) (err error) {
 		return
 	}
 
-	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
+	if !validate.InSlice(consts.StatusSlice, in.Status) {
 		err = gerror.New("状态不正确")
 		return
 	}

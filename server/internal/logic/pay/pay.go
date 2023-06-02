@@ -138,7 +138,7 @@ func (s *sPay) Status(ctx context.Context, in payin.PayStatusInp) (err error) {
 		return
 	}
 
-	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
+	if !validate.InSlice(consts.StatusSlice, in.Status) {
 		err = gerror.New("状态不正确")
 		return
 	}

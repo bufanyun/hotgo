@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sysin
 
 import (
@@ -53,7 +52,6 @@ func (in *TableEditInp) Filter(ctx context.Context) (err error) {
 	if err := g.Validator().Rules("float|between:0,5").Messages("请输入一个浮点数|推荐星只能是0~5星").Data(in.Star).Run(ctx); err != nil {
 		return err.Current()
 	}
-
 	return
 }
 

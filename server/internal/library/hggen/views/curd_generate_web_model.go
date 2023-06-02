@@ -81,7 +81,7 @@ func (l *gCurd) generateWebModelDictOptions(ctx context.Context, in *CurdPreview
 		}
 	}
 
-	dictTypeIds = convert.UniqueSliceInt64(dictTypeIds)
+	dictTypeIds = convert.UniqueSlice(dictTypeIds)
 	if len(dictTypeIds) == 0 {
 		options["has"] = false
 		return options, nil

@@ -66,7 +66,6 @@ func GetUser(ctx context.Context) *model.Identity {
 	if c == nil {
 		return nil
 	}
-
 	return c.User
 }
 

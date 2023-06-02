@@ -23,10 +23,8 @@ func Tpl(name, tpl string) string {
 // 最终效果：/应用名称/插件模块名称/xxx/xxx。如果你不喜欢现在的路由风格，可以自行调整
 func RouterPrefix(ctx context.Context, app, name string) string {
 	var prefix = "/"
-
 	if app != "" {
 		prefix = g.Cfg().MustGet(ctx, "router."+app+".prefix", "/"+app+"").String()
 	}
-
 	return prefix + "/" + name
 }

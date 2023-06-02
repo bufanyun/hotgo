@@ -13,16 +13,19 @@ import (
 	"hotgo/internal/consts"
 )
 
+// getCronKey 生成服务端定时任务名称
 func (server *Server) getCronKey(s string) string {
 	return fmt.Sprintf("tcp.server_%s_%s", s, server.name)
 }
 
+// stopCron 停止定时任务
 func (server *Server) stopCron() {
 	for _, v := range gcron.Entries() {
 		gcron.Remove(v.Name)
 	}
 }
 
+// startCron 启动定时任务
 func (server *Server) startCron() {
 	// 心跳超时检查
 	if gcron.Search(server.getCronKey(consts.TCPCronHeartbeatVerify)) == nil {
@@ -31,7 +34,7 @@ func (server *Server) startCron() {
 				return
 			}
 			for _, client := range server.clients {
-				if client.heartbeat < gtime.Timestamp()-300 {
+				if client.heartbeat < gtime.Timestamp()-consts.TCPHeartbeatTimeout {
 					_ = client.Conn.Close()
 					server.Logger.Debugf(server.Ctx, "client heartbeat timeout, close conn. auth:%+v", client.Auth)
 				}

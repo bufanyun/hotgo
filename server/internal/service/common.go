@@ -7,7 +7,6 @@ package service
 
 import (
 	"context"
-	"hotgo/internal/model"
 	"hotgo/internal/model/input/commonin"
 	"hotgo/internal/model/input/sysin"
 
@@ -16,15 +15,8 @@ import (
 
 type (
 	ICommonUpload interface {
-		UploadFile(ctx context.Context, file *ghttp.UploadFile) (result *sysin.AttachmentListModel, err error)
-		UploadImage(ctx context.Context, file *ghttp.UploadFile) (result *sysin.AttachmentListModel, err error)
-		UploadLocal(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
-		UploadUCloud(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
-		UploadCOS(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
-		UploadOSS(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
-		UploadQiNiu(ctx context.Context, conf *model.UploadConfig, file *ghttp.UploadFile, meta *sysin.UploadFileMeta) (result *sysin.AttachmentListModel, err error)
-		LastUrl(ctx context.Context, conf *model.UploadConfig, fullPath, drive string) string
-		HasFile(ctx context.Context, md5 string) (res *sysin.AttachmentListModel, err error)
+		UploadFile(ctx context.Context, file *ghttp.UploadFile) (res *sysin.AttachmentListModel, err error)
+		UploadImage(ctx context.Context, file *ghttp.UploadFile) (res *sysin.AttachmentListModel, err error)
 	}
 	ICommonWechat interface {
 		Authorize(ctx context.Context, in commonin.WechatAuthorizeInp) (res *commonin.WechatAuthorizeModel, err error)

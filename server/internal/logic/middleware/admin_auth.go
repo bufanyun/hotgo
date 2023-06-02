@@ -32,7 +32,6 @@ func (s *sMiddleware) AdminAuth(r *ghttp.Request) {
 
 	// 将用户信息传递到上下文中
 	if err := deliverUserContext(r); err != nil {
-		g.Log().Warningf(ctx, "deliverUserContext err:%+v", err)
 		response.JsonExit(r, gcode.CodeNotAuthorized.Code(), err.Error())
 		return
 	}

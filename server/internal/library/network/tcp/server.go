@@ -19,35 +19,38 @@ import (
 	"time"
 )
 
+// ClientConn 连接到tcp服务器的客户端对象
 type ClientConn struct {
-	Conn      *gtcp.Conn
-	Auth      *AuthMeta
-	heartbeat int64
+	Conn      *gtcp.Conn // 连接对象
+	Auth      *AuthMeta  // 认证元数据
+	heartbeat int64      // 心跳
 }
 
+// ServerConfig tcp服务器配置
 type ServerConfig struct {
 	Name string // 服务名称
 	Addr string // 监听地址
 }
 
+// Server tcp服务器对象结构
 type Server struct {
-	Ctx          context.Context
-	Logger       *glog.Logger
-	addr         string
-	name         string
-	rpc          *Rpc
-	ln           *gtcp.Server
-	wgLn         sync.WaitGroup
-	mutex        sync.Mutex
-	closeFlag    bool
-	clients      map[string]*ClientConn // 已登录的认证客户端
-	mutexConns   sync.Mutex
-	wgConns      sync.WaitGroup
-	cronRouters  map[string]RouterHandler // 路由
-	queueRouters map[string]RouterHandler
-	authRouters  map[string]RouterHandler
+	Ctx          context.Context          // 上下文
+	Logger       *glog.Logger             // 日志处理器
+	addr         string                   // 连接地址
+	name         string                   // 服务器名称
+	rpc          *Rpc                     // rpc协议
+	ln           *gtcp.Server             // tcp服务器
+	wgLn         sync.WaitGroup           // 状态控制，主要用于tcp服务器能够按流程启动退出
+	mutex        sync.Mutex               // 服务器状态锁
+	closeFlag    bool                     // 服务关闭标签
+	clients      map[string]*ClientConn   // 已登录的认证客户端
+	mutexConns   sync.Mutex               // 连接锁，主要用于客户端上下线
+	cronRouters  map[string]RouterHandler // 定时任务路由
+	queueRouters map[string]RouterHandler // 队列路由
+	authRouters  map[string]RouterHandler // 任务路由
 }
 
+// NewServer 初始一个tcp服务器对象
 func NewServer(config *ServerConfig) (server *Server, err error) {
 	if config == nil {
 		err = gerror.New("config is nil")
@@ -84,6 +87,7 @@ func NewServer(config *ServerConfig) (server *Server, err error) {
 	return
 }
 
+// accept
 func (server *Server) accept(conn *gtcp.Conn) {
 	defer func() {
 		server.mutexConns.Lock()
@@ -262,6 +266,7 @@ func (server *Server) RegisterQueueRouter(routers map[string]RouterHandler) {
 	}
 }
 
+// Listen 监听服务
 func (server *Server) Listen() (err error) {
 	server.wgLn.Add(1)
 	defer server.wgLn.Done()
@@ -283,7 +288,6 @@ func (server *Server) Close() {
 	}
 	server.clients = nil
 	server.mutexConns.Unlock()
-	server.wgConns.Wait()
 
 	if server.ln != nil {
 		_ = server.ln.Close()

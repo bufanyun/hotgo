@@ -91,7 +91,6 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 	if err = gfile.PutContents(webViewsPath+"/config/system.vue", gstr.ReplaceByMap(webConfigSystem, replaces)); err != nil {
 		return
 	}
-
 	return
 }
 

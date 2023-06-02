@@ -12,26 +12,32 @@ build:
 	@cd ../web && yarn build && \cp -rf ./dist/*  ../server$(ADMIN_RESOURCE_PATH)
 	@echo "y" | gf build
 
+
 # 通过热编译启动所有服务
 .PHONY: all
 all:
 	gf run main.go --args "all"
 
+
 .PHONY: http
 http:
 	gf run main.go --args "http"
+
 
 .PHONY: queue
 queue:
 	gf run main.go --args "queue"
 
+
 .PHONY: cron
 cron:
 	gf run main.go --args "cron"
 
+
 .PHONY: auth
 auth:
 	gf run main.go --args "auth"
+
 
 # 启动web服务
 .PHONY: web
@@ -44,10 +50,19 @@ web:
 refresh:
 	@go run main.go tools -m=casbin -a1=refresh
 
+
 # 清理casbin权限
 .PHONY: clear
 clear:
 	@go run main.go tools -m=casbin -a1=clear
+
+
+# 运行代码质量分析工具
+# https://github.com/ywanbing/golangci
+.PHONY: ci
+ci:
+	golangci-lint run
+
 
 .PHONY: killmain
 killmain:
@@ -79,10 +94,12 @@ cli.install:
 dao: cli.install
 	@gf gen dao
 
+
 # Generate Go files for Service.
 .PHONY: service
 service: cli.install
 	@gf gen service
+
 
 # Build image, deploy image and yaml to current kubectl environment and make port forward to local machine.
 .PHONY: start
@@ -91,6 +108,7 @@ start:
 	make image; \
 	make deploy; \
 	make port;
+
 
 # Build docker image.
 .PHONY: image

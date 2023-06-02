@@ -141,6 +141,5 @@ func ModuleSelect() form.Selects {
 			Name:  skeleton.Label,
 		})
 	}
-
 	return lst
 }

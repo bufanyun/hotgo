@@ -75,7 +75,6 @@ func (h *qqPay) Notify(ctx context.Context, in payin.NotifyInp) (res *payin.Noti
 	res.OutTradeNo = notify.OutTradeNo
 	res.PayAt = gtime.New(notify.TimeEnd)
 	res.ActualAmount = gconv.Float64(notify.CouponFee) / 100 // 用户本次交易中，实际支付的金额 转为元，和系统内保持一至
-
 	return
 }
 
@@ -119,7 +118,6 @@ func (h *qqPay) CreateOrder(ctx context.Context, in payin.CreateOrderInp) (res *
 	default:
 		err = gerror.Newf("暂未支持的交易方式：%v", in.Pay.TradeType)
 	}
-
 	return
 }
 

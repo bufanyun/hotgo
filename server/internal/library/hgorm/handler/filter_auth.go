@@ -38,7 +38,6 @@ func FilterAuth(m *gdb.Model) *gdb.Model {
 	if !needAuth {
 		return m
 	}
-
 	return m.Handler(FilterAuthWithField(filterField))
 }
 

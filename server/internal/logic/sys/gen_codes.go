@@ -110,7 +110,7 @@ func (s *sSysGenCodes) Status(ctx context.Context, in sysin.GenCodesStatusInp) (
 		return
 	}
 
-	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
+	if !validate.InSlice(consts.StatusSlice, in.Status) {
 		err = gerror.New("状态不正确")
 		return
 	}
@@ -274,7 +274,6 @@ func (s *sSysGenCodes) ColumnSelect(ctx context.Context, in sysin.GenCodesColumn
 		res[k].Name = fmt.Sprintf("%s (%s)", v.Value, v.Label)
 		res[k].Label = res[k].Name
 	}
-
 	return
 }
 
@@ -306,6 +305,5 @@ func (s *sSysGenCodes) Build(ctx context.Context, in sysin.GenCodesBuildInp) (er
 		_ = s.Status(ctx, sysin.GenCodesStatusInp{Id: in.Id, Status: consts.GenCodesStatusFail})
 		return err
 	}
-
 	return
 }

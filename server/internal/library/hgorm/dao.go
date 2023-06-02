@@ -108,8 +108,7 @@ func GenJoinSelect(ctx context.Context, entity interface{}, masterDao interface{
 			continue
 		}
 	}
-
-	return gstr.Implode(",", convert.UniqueSliceString(tmpFields)), nil
+	return gstr.Implode(",", convert.UniqueSlice(tmpFields)), nil
 }
 
 // GenSelect 生成select
@@ -144,8 +143,7 @@ func GenSelect(ctx context.Context, entity interface{}, dao interface{}) (allFie
 			continue
 		}
 	}
-
-	return gstr.Implode(",", convert.UniqueSliceString(tmpFields)), nil
+	return gstr.Implode(",", convert.UniqueSlice(tmpFields)), nil
 }
 
 // GetPkField 获取dao实例中的主键名称
@@ -163,7 +161,6 @@ func GetPkField(ctx context.Context, dao daoInstance) (string, error) {
 			return field.Name, nil
 		}
 	}
-
 	return "", errors.New("no primary key")
 }
 

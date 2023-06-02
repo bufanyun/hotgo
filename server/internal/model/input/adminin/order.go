@@ -25,7 +25,7 @@ type OrderAcceptRefundInp struct {
 }
 
 func (in *OrderAcceptRefundInp) Filter(ctx context.Context) (err error) {
-	if !validate.InSliceInt64(consts.OrderStatusSlice, in.Status) {
+	if !validate.InSlice(consts.OrderStatusSlice, in.Status) {
 		err = gerror.Newf("订单状态不正确")
 		return
 	}

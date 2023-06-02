@@ -12,12 +12,6 @@ import (
 	"path/filepath"
 )
 
-const ( //文件大小单位
-	_  = iota
-	KB = 1 << (10 * iota)
-	MB
-)
-
 type fileInfo struct { //文件信息
 	name string
 	size int64

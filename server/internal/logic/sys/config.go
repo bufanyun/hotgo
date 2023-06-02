@@ -16,6 +16,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/payment"
+	"hotgo/internal/library/storager"
 	"hotgo/internal/library/token"
 	"hotgo/internal/library/wechat"
 	"hotgo/internal/model"
@@ -35,6 +36,7 @@ func init() {
 	service.RegisterSysConfig(NewSysConfig())
 }
 
+// InitConfig 初始化一些系统启动就需要用到的配置
 func (s *sSysConfig) InitConfig(ctx context.Context) {
 	wx, err := s.GetWechat(ctx)
 	if err != nil {
@@ -48,12 +50,17 @@ func (s *sSysConfig) InitConfig(ctx context.Context) {
 	}
 	payment.SetConfig(pay)
 
+	upload, err := s.GetUpload(ctx)
+	if err != nil {
+		g.Log().Fatalf(ctx, "init upload conifg fail：%+v", err)
+	}
+	storager.SetConfig(upload)
+
 	tk, err := s.GetLoadToken(ctx)
 	if err != nil {
 		g.Log().Fatalf(ctx, "init token conifg fail：%+v", err)
 	}
 	token.SetConfig(tk)
-
 }
 
 // GetLogin 获取登录配置
@@ -267,7 +274,6 @@ func (s *sSysConfig) UpdateConfigByGroup(ctx context.Context, in sysin.UpdateCon
 
 		return s.syncUpdate(ctx, in)
 	})
-
 	return
 }
 
@@ -281,7 +287,6 @@ func (s *sSysConfig) getConfigByKey(key string, models []*entity.SysConfig) *ent
 			return v
 		}
 	}
-
 	return nil
 }
 
@@ -297,6 +302,11 @@ func (s *sSysConfig) syncUpdate(ctx context.Context, in sysin.UpdateConfigInp) (
 		pay, err := s.GetPay(ctx)
 		if err == nil {
 			payment.SetConfig(pay)
+		}
+	case "upload":
+		upload, err := s.GetUpload(ctx)
+		if err == nil {
+			storager.SetConfig(upload)
 		}
 	}
 

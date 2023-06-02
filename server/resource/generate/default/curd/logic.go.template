@@ -159,7 +159,7 @@ func (s *s@{.servFunName}) Switch(ctx context.Context, in @{.templateGroup}in.@{
 		// ...
 	}
 
-	if !validate.InSliceString(fields, in.Key) {
+	if !validate.InSlice(fields, in.Key) {
 		err = gerror.New("开关键名不在白名单")
 		return
 	}

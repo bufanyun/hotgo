@@ -52,7 +52,6 @@ func ParseSimpleRegion(ctx context.Context, id int64, spilt ...string) (string, 
 		}
 		return ParseRegion(ctx, ids[0], ids[1], id, spilt...)
 	}
-
 	return "", gerror.New("currently, it is only supported to regional areas")
 }
 
@@ -104,6 +103,5 @@ func ParseRegion(ctx context.Context, province int64, city int64, county int64, 
 	if province > 0 && city > 0 {
 		return provinceName.String() + sp + cityName.String(), nil
 	}
-
 	return provinceName.String(), nil
 }

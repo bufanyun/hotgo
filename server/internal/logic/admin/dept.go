@@ -223,8 +223,8 @@ func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (res *adm
 	}
 
 	if len(ids) > 0 {
-		ids = convert.UniqueSliceInt64(ids)
-		pids = convert.UniqueSliceInt64(pids)
+		ids = convert.UniqueSlice(ids)
+		pids = convert.UniqueSlice(pids)
 		mod = mod.Wheref(`id in (?) or pid in (?)`, ids, pids)
 	}
 

@@ -69,5 +69,4 @@ func consumerListen(ctx context.Context, job consumerStrategy) {
 	}); listenErr != nil {
 		g.Log().Fatalf(ctx, "消费队列：%s 监听失败, err:%+v", topic, listenErr)
 	}
-
 }

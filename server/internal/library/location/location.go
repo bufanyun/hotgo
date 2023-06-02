@@ -72,20 +72,19 @@ func WhoisLocation(ctx context.Context, ip string) (*IpLocationData, error) {
 		return nil, err
 	}
 
-	var whoisData *WhoisRegionData
-	if err = gconv.Struct([]byte(str), &whoisData); err != nil {
+	var who *WhoisRegionData
+	if err = gconv.Struct([]byte(str), &who); err != nil {
 		return nil, err
 	}
-
 	return &IpLocationData{
-		Ip:           whoisData.Ip,
-		Region:       whoisData.Addr,
-		Province:     whoisData.Pro,
-		ProvinceCode: gconv.Int64(whoisData.ProCode),
-		City:         whoisData.City,
-		CityCode:     gconv.Int64(whoisData.CityCode),
-		Area:         whoisData.Region,
-		AreaCode:     gconv.Int64(whoisData.RegionCode),
+		Ip:           who.Ip,
+		Region:       who.Addr,
+		Province:     who.Pro,
+		ProvinceCode: gconv.Int64(who.ProCode),
+		City:         who.City,
+		CityCode:     gconv.Int64(who.CityCode),
+		Area:         who.Region,
+		AreaCode:     gconv.Int64(who.RegionCode),
 	}, nil
 }
 
@@ -159,7 +158,6 @@ func GetLocation(ctx context.Context, ip string) (data *IpLocationData, err erro
 		}
 		cacheMap.Set(ip, data)
 	}
-
 	return
 }
 
@@ -234,6 +232,5 @@ func GetClientIp(r *ghttp.Request) string {
 	if gstr.Contains(ip, ", ") {
 		ip = gstr.StrTillEx(ip, ", ")
 	}
-
 	return ip
 }

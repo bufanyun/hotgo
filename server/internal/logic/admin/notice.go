@@ -124,7 +124,7 @@ func (s *sAdminNotice) Status(ctx context.Context, in adminin.NoticeStatusInp) (
 		return
 	}
 
-	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
+	if !validate.InSlice(consts.StatusSlice, in.Status) {
 		err = gerror.New("状态不正确")
 		return
 	}
@@ -322,16 +322,14 @@ func (s *sAdminNotice) UnreadCount(ctx context.Context, in adminin.NoticeUnreadC
 
 // messageIds 获取我的消息所有的消息ID
 func (s *sAdminNotice) messageIds(ctx context.Context, memberId int64) (ids []int64, err error) {
-	mod := s.Model(ctx, &handler.Option{FilterAuth: false}).
+	array, err := s.Model(ctx, &handler.Option{FilterAuth: false}).
 		Fields("id").
 		Where("status", consts.StatusEnabled).
 		Where("(`type` IN(?) OR (`type` = ? and JSON_CONTAINS(`receiver`,'"+gconv.String(memberId)+"')))",
 			[]int{consts.NoticeTypeNotify, consts.NoticeTypeNotice}, consts.NoticeTypeLetter,
-		)
-
-	array, err := mod.Array()
+		).Array()
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	for _, v := range array {
@@ -351,14 +349,15 @@ func (s *sAdminNotice) UpRead(ctx context.Context, in adminin.NoticeUpReadInp) (
 		err = gerror.New("获取用户信息失败！")
 		return
 	}
+
 	if err = dao.AdminNotice.Ctx(ctx).Where("id", in.Id).Scan(&data); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
+		return
 	}
+
 	if data == nil {
 		return gerror.New("公告不存在")
 	}
-
 	return s.updatedReadClicks(ctx, in.Id, memberId)
 }
 
@@ -408,13 +407,12 @@ func (s *sAdminNotice) ReadAll(ctx context.Context, in adminin.NoticeReadAllInp)
 	}
 
 	for _, messageId := range messageIds {
-		if !validate.InSliceInt64(readIds, messageId) {
+		if !validate.InSlice(readIds, messageId) {
 			if err = s.updatedReadClicks(ctx, messageId, memberId); err != nil {
 				return
 			}
 		}
 	}
-
 	return
 }
 
@@ -435,7 +433,7 @@ func (s *sAdminNotice) updatedReadClicks(ctx context.Context, noticeId, memberId
 		_, err = dao.AdminNoticeRead.Ctx(ctx).Data(entity.AdminNoticeRead{NoticeId: noticeId, MemberId: memberId}).Insert()
 		return
 	}
-	_, err = dao.AdminNoticeRead.Ctx(ctx).Where(dao.AdminNoticeRead.Columns().Id, models.Id).Increment("clicks", 1)
+	_, err = dao.AdminNoticeRead.Ctx(ctx).Where(dao.AdminNoticeRead.Columns().Id, models.Id).Increment(dao.AdminNoticeRead.Columns().Clicks, 1)
 	return
 }
 

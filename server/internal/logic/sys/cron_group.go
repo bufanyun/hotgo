@@ -46,7 +46,6 @@ func (s *sSysCronGroup) Edit(ctx context.Context, in sysin.CronGroupEditInp) (er
 	if _, err = dao.SysCronGroup.Ctx(ctx).Fields(sysin.CronGroupInsertFields{}).Data(in).Insert(); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 	}
-
 	return
 }
 

@@ -189,7 +189,7 @@ func (s *sSysTable) Status(ctx context.Context, in sysin.TableStatusInp) (err er
 		return
 	}
 
-	if !validate.InSliceInt(consts.StatusSlice, in.Status) {
+	if !validate.InSlice(consts.StatusSlice, in.Status) {
 		err = gerror.New("状态不正确")
 		return
 	}
@@ -209,7 +209,7 @@ func (s *sSysTable) Switch(ctx context.Context, in sysin.TableSwitchInp) (err er
 		// ...
 	}
 
-	if !validate.InSliceString(fields, in.Key) {
+	if !validate.InSlice(fields, in.Key) {
 		err = gerror.New("开关键名不在白名单")
 		return
 	}

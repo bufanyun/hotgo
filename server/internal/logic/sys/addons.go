@@ -90,7 +90,6 @@ func (s *sSysAddons) List(ctx context.Context, in sysin.AddonsListInp) (list []*
 	}
 
 	totalCount = len(sks)
-
 	return
 }
 
@@ -129,7 +128,6 @@ func (s *sSysAddons) Build(ctx context.Context, in sysin.AddonsBuildInp) (err er
 		err = gerror.New("没有找到有效的生成或插件配置，请检查配置文件是否正常")
 		return
 	}
-
 	return addons.Build(ctx, in.Skeleton, genConfig.Addon)
 }
 
