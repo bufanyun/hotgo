@@ -3,17 +3,16 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package crons
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
+	"hotgo/internal/library/cron"
 	"time"
 )
 
 func init() {
-	cronList = append(cronList, Test)
+	cron.Register(Test)
 }
 
 // Test 测试任务（无参数）
@@ -29,5 +28,5 @@ func (c *cTest) GetName() string {
 
 // Execute 执行任务
 func (c *cTest) Execute(ctx context.Context) {
-	g.Log().Infof(ctx, "cron test Execute:%v", time.Now())
+	cron.Logger().Infof(ctx, "cron test Execute:%v", time.Now())
 }

@@ -15,6 +15,7 @@ type OfflineReq struct {
 	g.Meta `path:"/monitor/offline" method:"post" tags:"在线用户" summary:"下线用户"`
 	Id     string `json:"id" v:"required#SID不能为空" description:"SID"`
 }
+
 type OfflineRes struct{}
 
 // OnlineListReq 获取在线用户列表
@@ -37,6 +38,7 @@ type OnlineViewReq struct {
 	g.Meta `path:"/monitor/onlineView" method:"get" tags:"在线用户" summary:"获取指定用户信息"`
 	Id     string `json:"id" v:"required#SID不能为空" description:"SID"`
 }
+
 type OnlineViewRes struct {
 	*OnlineModel
 }

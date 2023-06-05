@@ -10,8 +10,11 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
+	"hotgo/internal/consts"
 	"hotgo/internal/library/addons"
 	"hotgo/internal/library/casbin"
+	"hotgo/internal/library/hggen"
+	"hotgo/internal/library/payment"
 	"hotgo/internal/router"
 	"hotgo/internal/service"
 	"hotgo/internal/websocket"
@@ -23,9 +26,7 @@ var (
 		Usage: "http",
 		Brief: "HTTP服务，也可以称为主服务，包含http、websocket、tcpserver多个可对外服务",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			// 加载权限
-			casbin.InitEnforcer(ctx)
-
+			// 初始化http服务
 			s := g.Server()
 
 			// 错误状态码接管
@@ -47,7 +48,7 @@ var (
 
 				// 注册全局中间件
 				group.Middleware(
-					service.Middleware().Ctx, //必须第一个加载
+					service.Middleware().Ctx, // 必须第一个加载
 					service.Middleware().CORS,
 					service.Middleware().Blacklist,
 					service.Middleware().DemoLimit,
@@ -70,11 +71,25 @@ var (
 				addons.RegisterModulesRouter(ctx, group)
 			})
 
+			// 初始化casbin权限
+			casbin.InitEnforcer(ctx)
+
+			// 初始化生成代码配置
+			hggen.InIt(ctx)
+
 			// 启动tcp服务
 			service.TCPServer().Start(ctx)
 
-			// https
-			setSSL(ctx, s)
+			// 启动服务监控
+			service.AdminMonitor().StartMonitor(ctx)
+
+			// 加载ip访问黑名单
+			service.SysBlacklist().Load(ctx)
+
+			// 注册支付成功回调方法
+			payment.RegisterNotifyCallMap(map[string]payment.NotifyCallFunc{
+				consts.OrderGroupAdminOrder: service.AdminOrder().PayNotify, // 后台充值订单
+			})
 
 			serverWg.Add(1)
 
@@ -96,13 +111,3 @@ var (
 		},
 	}
 )
-
-func setSSL(ctx context.Context, s *ghttp.Server) {
-	config, err := service.SysConfig().GetLoadSSL(ctx)
-	if err != nil {
-		g.Log().Fatal(ctx, "ssl配置获取失败：err:%+v", err)
-	}
-	if config != nil && config.Switch {
-		s.EnableHTTPS(config.CrtPath, config.KeyPath)
-	}
-}

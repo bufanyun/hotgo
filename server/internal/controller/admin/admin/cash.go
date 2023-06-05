@@ -50,7 +50,6 @@ func (c *cCash) List(ctx context.Context, req *cash.ListReq) (res *cash.ListRes,
 	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
 	res.Page = req.Page
 	res.PerPage = req.PerPage
-
 	return
 }
 

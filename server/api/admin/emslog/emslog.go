@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package emslog
 
 import (
@@ -28,6 +27,7 @@ type ViewReq struct {
 	g.Meta `path:"/emsLog/view" method:"get" tags:"邮件记录" summary:"获取指定信息"`
 	sysin.EmsLogViewInp
 }
+
 type ViewRes struct {
 	*sysin.EmsLogViewModel
 }
@@ -37,6 +37,7 @@ type EditReq struct {
 	g.Meta `path:"/emsLog/edit" method:"post" tags:"邮件记录" summary:"修改/新增邮件记录"`
 	sysin.EmsLogEditInp
 }
+
 type EditRes struct{}
 
 // DeleteReq 删除
@@ -44,6 +45,7 @@ type DeleteReq struct {
 	g.Meta `path:"/emsLog/delete" method:"post" tags:"邮件记录" summary:"删除邮件记录"`
 	sysin.EmsLogDeleteInp
 }
+
 type DeleteRes struct{}
 
 // StatusReq 更新状态
@@ -51,6 +53,7 @@ type StatusReq struct {
 	g.Meta `path:"/emsLog/status" method:"post" tags:"邮件记录" summary:"更新邮件记录状态"`
 	sysin.EmsLogStatusInp
 }
+
 type StatusRes struct{}
 
 // SendTestReq 更新状态
@@ -58,4 +61,5 @@ type SendTestReq struct {
 	g.Meta `path:"/emsLog/sendTest" method:"post" tags:"邮件记录" summary:"发送测试邮件"`
 	sysin.SendEmsInp
 }
+
 type SendTestRes struct{}

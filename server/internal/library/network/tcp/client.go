@@ -7,7 +7,6 @@ package tcp
 
 import (
 	"context"
-	"fmt"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/gtcp"
@@ -87,13 +86,7 @@ func NewClient(config *ClientConfig) (client *Client, err error) {
 	client.auth = config.Auth
 	client.loginEvent = config.LoginEvent
 	client.closeEvent = config.CloseEvent
-
-	logger := glog.New()
-	path := g.Cfg().MustGet(client.Ctx, "logger.path", "logs/logger").String()
-	if err = logger.SetPath(fmt.Sprintf("%s/tcp.client/%s.%s", path, config.Auth.Group, config.Auth.Name)); err != nil {
-		return
-	}
-	client.Logger = logger
+	client.Logger = g.Log("tcpClient")
 
 	if config.ConnectInterval <= 0 {
 		client.connectInterval = 5 * time.Second

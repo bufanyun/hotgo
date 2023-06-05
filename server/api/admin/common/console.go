@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package common
 
 import "github.com/gogf/gf/v2/frame/g"
@@ -12,6 +11,7 @@ import "github.com/gogf/gf/v2/frame/g"
 type ConsoleStatReq struct {
 	g.Meta `path:"/console/stat" method:"get" tags:"控制台" summary:"综合数据统计"`
 }
+
 type ConsoleStatRes struct {
 	Visits struct {
 		DayVisits float64 `json:"dayVisits"`

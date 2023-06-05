@@ -18,6 +18,8 @@ type cConsole struct{}
 func (c *cConsole) Stat(_ context.Context, _ *common.ConsoleStatReq) (res *common.ConsoleStatRes, err error) {
 	res = new(common.ConsoleStatRes)
 
+	// 此处均为模拟数据，可以根据实际业务情况替换成真实数据
+
 	res.Visits.DayVisits = 12010
 	res.Visits.Rise = 13501
 	res.Visits.Decline = 10502

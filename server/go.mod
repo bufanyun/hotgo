@@ -11,7 +11,6 @@ require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
 	github.com/apache/rocketmq-client-go/v2 v2.1.0
 	github.com/casbin/casbin/v2 v2.55.0
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/forgoer/openssl v1.4.0
 	github.com/go-pay/gopay v1.5.91
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.4.1

@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package log
 
 import (
@@ -16,6 +15,7 @@ import (
 type ClearReq struct {
 	g.Meta `path:"/log/clear" method:"post" tags:"日志" summary:"清空日志"`
 }
+
 type ClearRes struct{}
 
 // ExportReq 导出
@@ -31,6 +31,7 @@ type ExportReq struct {
 	Ip         string `json:"ip"   dc:"访问IP"`
 	ErrorCode  string `json:"error_code"   dc:"状态码"`
 }
+
 type ExportRes struct{}
 
 // ListReq 获取菜单列表
@@ -58,6 +59,7 @@ type DeleteReq struct {
 	g.Meta `path:"/log/delete" method:"post" tags:"日志" summary:"删除日志"`
 	Id     interface{} `json:"id" v:"required#日志ID不能为空" description:"日志ID"`
 }
+
 type DeleteRes struct{}
 
 // ViewReq 获取指定信息
@@ -65,6 +67,7 @@ type ViewReq struct {
 	g.Meta `path:"/log/view" method:"get" tags:"日志" summary:"获取指定信息"`
 	Id     string `json:"id" v:"required#日志ID不能为空" description:"日志ID"`
 }
+
 type ViewRes struct {
 	*sysin.LogViewModel
 }

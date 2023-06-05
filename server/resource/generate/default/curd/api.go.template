@@ -49,6 +49,7 @@ type EditReq struct {
 	g.Meta `path:"/@{.varName | LcFirst}/edit" method:"post" tags:"@{.tableComment}" summary:"修改/新增@{.tableComment}"`
 	@{.templateGroup}in.@{.varName}EditInp
 }
+
 type EditRes struct{}
 @{end}
 @{ if eq .options.Step.HasDel true }

@@ -23,7 +23,6 @@ import (
 	"hotgo/utility/format"
 	"os"
 	"runtime"
-	"strconv"
 	"time"
 )
 
@@ -77,8 +76,8 @@ func (c *cMonitor) RunInfo(client *websocket.Client, req *websocket.WRequest) {
 		"goSize":    file.DirSize(pwd),
 	}
 
-	isDemo := g.Cfg().MustGet(client.Context(), "hotgo.isDemo", false)
-	if isDemo.Bool() {
+	isDemo := g.Cfg().MustGet(client.Context(), "hotgo.isDemo", false).Bool()
+	if isDemo {
 		data["rootPath"] = consts.DemoTips
 		data["pwd"] = consts.DemoTips
 		data["intranet_ip"] = consts.DemoTips
@@ -104,7 +103,7 @@ func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
 		mMem, memErr         = mem.VirtualMemory()
 		mMemUsed             float64
 		mDisk, diskErr       = disk.Usage("/")
-		mProcess, ProcessErr = process.Pids()
+		mProcess, processErr = process.Pids()
 		mLoadAvg             = new(model.LoadAvgStats)
 		monitorHeads         []MonitorHead
 		nets                 []NetC
@@ -112,32 +111,32 @@ func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
 	)
 
 	if cpuErr != nil {
-		g.Log().Infof(client.Context(), "read CPU info fail:%+v", cpuErr)
+		g.Log().Warningf(client.Context(), "read CPU info fail:%+v", cpuErr)
 		mCpu = []cpu.InfoStat{{VendorID: "", ModelName: ""}}
 	}
 
 	if memErr != nil {
-		g.Log().Infof(client.Context(), "read mem info fail:%+v", memErr)
+		g.Log().Warningf(client.Context(), "read mem info fail:%+v", memErr)
 		mMem = new(mem.VirtualMemoryStat)
 	}
 
 	if diskErr != nil {
-		g.Log().Infof(client.Context(), "read disk info fail:%+v", diskErr)
+		g.Log().Warningf(client.Context(), "read disk info fail:%+v", diskErr)
 		mDisk = new(disk.UsageStat)
 	}
 
-	if ProcessErr != nil {
-		g.Log().Infof(client.Context(), "read process.Pids fail:%+v", ProcessErr)
+	if processErr != nil {
+		g.Log().Warningf(client.Context(), "read process.Pids fail:%+v", processErr)
 	}
 
 	// cpu使用率
 	cu, err := cpu.Percent(time.Second, false)
 	if err == nil {
-		mCpuUsed, _ = strconv.ParseFloat(fmt.Sprintf("%.2f", cu[0]), 64)
+		mCpuUsed = gconv.Float64(fmt.Sprintf("%.2f", cu[0]))
 	}
 
 	// 内存使用率
-	mMemUsed, _ = strconv.ParseFloat(fmt.Sprintf("%.2f", mMem.UsedPercent), 64)
+	mMemUsed = gconv.Float64(fmt.Sprintf("%.2f", mMem.UsedPercent))
 
 	// 负载
 	if len(meta.LoadAvg) > 0 {

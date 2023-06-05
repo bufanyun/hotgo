@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gfile"
 	"hotgo/internal/library/queue/disk"
 	"sync"
@@ -45,7 +44,7 @@ func (q *DiskConsumerMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg M
 			if index, offset, data, err := queue.Read(); err == nil {
 				var mqMsg MqMsg
 				if err = json.Unmarshal(data, &mqMsg); err != nil {
-					g.Log().Warningf(ctx, "disk.ListenReceiveMsgDo Unmarshal err:%+v, topic：%v, data:%+v .", err, topic, string(data))
+					Logger().Warningf(ctx, "disk.ListenReceiveMsgDo Unmarshal err:%+v, topic：%v, data:%+v .", err, topic, string(data))
 					continue
 				}
 				if mqMsg.MsgId != "" {
@@ -130,14 +129,14 @@ func NewDiskQueue(topic string, config *disk.Config) *disk.Queue {
 
 	if !gfile.Exists(conf.Path) {
 		if err := gfile.Mkdir(conf.Path); err != nil {
-			g.Log().Errorf(ctx, "NewDiskQueue Failed to create the cache directory. Procedure, err:%+v", err)
+			Logger().Errorf(ctx, "NewDiskQueue Failed to create the cache directory. Procedure, err:%+v", err)
 			return nil
 		}
 	}
 
 	queue, err := disk.New(conf)
 	if err != nil {
-		g.Log().Errorf(ctx, "NewDiskQueue err:%v", err)
+		Logger().Errorf(ctx, "NewDiskQueue err:%v", err)
 		return nil
 	}
 	return queue

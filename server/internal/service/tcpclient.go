@@ -28,8 +28,8 @@ type (
 )
 
 var (
-	localCronClient ICronClient
 	localAuthClient IAuthClient
+	localCronClient ICronClient
 )
 
 func AuthClient() IAuthClient {

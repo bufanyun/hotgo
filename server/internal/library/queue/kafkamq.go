@@ -71,7 +71,6 @@ func (r *KafkaMq) SendByteMsg(topic string, body []byte) (mqMsg MqMsg, err error
 	case <-sendCtx.Done():
 		return mqMsg, gerror.New("send mqMst timeout")
 	}
-
 	return mqMsg, nil
 }
 
@@ -95,11 +94,11 @@ func (r *KafkaMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) 
 	go func(consumerCtx context.Context) {
 		for {
 			if err = r.consumerIns.Consume(consumerCtx, []string{topic}, &consumer); err != nil {
-				g.Log().Fatalf(ctx, "kafka Error from consumer, err%+v", err)
+				Logger().Fatalf(ctx, "kafka Error from consumer, err%+v", err)
 			}
 
 			if consumerCtx.Err() != nil {
-				g.Log().Debugf(ctx, fmt.Sprintf("kafka consoumer stop : %v", consumerCtx.Err()))
+				Logger().Debugf(ctx, fmt.Sprintf("kafka consoumer stop : %v", consumerCtx.Err()))
 				return
 			}
 			consumer.ready = make(chan bool)
@@ -108,13 +107,13 @@ func (r *KafkaMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) 
 
 	// await till the consumer has been set up
 	<-consumer.ready
-	g.Log().Debug(ctx, "kafka consumer up and running!...")
+	Logger().Debug(ctx, "kafka consumer up and running!...")
 
 	gproc.AddSigHandlerShutdown(func(sig os.Signal) {
-		g.Log().Debug(ctx, "kafka consumer close...")
+		Logger().Debug(ctx, "kafka consumer close...")
 		cancel()
 		if err = r.consumerIns.Close(); err != nil {
-			g.Log().Fatalf(ctx, "kafka Error closing client, err:%+v", err)
+			Logger().Fatalf(ctx, "kafka Error closing client, err:%+v", err)
 		}
 	})
 	return
@@ -256,6 +255,5 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 		})
 		session.MarkMessage(message, "")
 	}
-
 	return nil
 }

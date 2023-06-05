@@ -25,6 +25,7 @@ type ListRes struct {
 type SelectsReq struct {
 	g.Meta `path:"/addons/selects" method:"get" tags:"插件管理" summary:"生成入口选项"`
 }
+
 type SelectsRes struct {
 	*sysin.AddonsSelectsModel
 }
@@ -34,6 +35,7 @@ type BuildReq struct {
 	g.Meta `path:"/addons/build" method:"post" tags:"插件管理" summary:"提交生成"`
 	sysin.AddonsBuildInp
 }
+
 type BuildRes struct {
 }
 
@@ -42,6 +44,7 @@ type InstallReq struct {
 	g.Meta `path:"/addons/install" method:"post" tags:"插件管理" summary:"安装模块"`
 	sysin.AddonsInstallInp
 }
+
 type InstallRes struct {
 }
 
@@ -50,6 +53,7 @@ type UpgradeReq struct {
 	g.Meta `path:"/addons/upgrade" method:"post" tags:"插件管理" summary:"更新模块"`
 	sysin.AddonsUpgradeInp
 }
+
 type UpgradeRes struct {
 }
 
@@ -58,5 +62,6 @@ type UnInstallReq struct {
 	g.Meta `path:"/addons/uninstall" method:"post" tags:"插件管理" summary:"卸载模块"`
 	sysin.AddonsUnInstallInp
 }
+
 type UnInstallRes struct {
 }

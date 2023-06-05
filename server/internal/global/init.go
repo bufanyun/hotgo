@@ -18,7 +18,6 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/cache"
-	"hotgo/internal/library/hggen"
 	"hotgo/internal/library/queue"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/service"
@@ -47,22 +46,12 @@ func Init(ctx context.Context) {
 	// 设置缓存适配器
 	cache.SetAdapter(ctx)
 
-	// 启动服务监控
-	service.AdminMonitor().StartMonitor(ctx)
-
-	// 加载ip访问黑名单
-	service.SysBlacklist().Load(ctx)
-
 	// 初始化功能库配置
 	service.SysConfig().InitConfig(ctx)
-
-	// 注册支付成功回调方法
-	payNotifyCall()
-
-	// 初始化生成代码配置
-	hggen.InIt(ctx)
 }
 
+// LoggingServeLogHandler 服务日志处理
+// 需要将异常日志保存到服务日志时可以通过SetHandlers设置此方法
 func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 	in.Next(ctx)
 
@@ -120,6 +109,6 @@ func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 	})
 
 	if err != nil {
-		g.Log("serveLog").Errorf(ctx, "LoggingServeLogHandler err:%+v", err)
+		g.Dump("LoggingServeLogHandler err:%+v", err)
 	}
 }

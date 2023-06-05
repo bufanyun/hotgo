@@ -29,6 +29,13 @@ func RegisterNotifyCall(group string, f NotifyCallFunc) {
 	notifyCall[group] = f
 }
 
+// RegisterNotifyCallMap 注册支付成功回调方法
+func RegisterNotifyCallMap(calls map[string]NotifyCallFunc) {
+	for group, f := range calls {
+		RegisterNotifyCall(group, f)
+	}
+}
+
 // NotifyCall 执行订单分组的异步回调
 func NotifyCall(ctx context.Context, in payin.NotifyCallFuncInp) {
 	f, ok := notifyCall[in.Pay.OrderGroup]

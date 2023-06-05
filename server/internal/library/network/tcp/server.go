@@ -7,7 +7,6 @@ package tcp
 
 import (
 	"context"
-	"fmt"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/gtcp"
@@ -73,17 +72,10 @@ func NewServer(config *ServerConfig) (server *Server, err error) {
 	server.ln = gtcp.NewServer(server.addr, server.accept, config.Name)
 	server.clients = make(map[string]*ClientConn)
 	server.closeFlag = false
-
-	logger := glog.New()
-	path := g.Cfg().MustGet(server.Ctx, "logger.path", "logs/logger").String()
-	if err = logger.SetPath(fmt.Sprintf("%s/tcp.server/%s", path, config.Name)); err != nil {
-		return
-	}
-	server.Logger = logger
+	server.Logger = g.Log("tcpServer")
 	server.rpc = NewRpc(server.Ctx)
 
 	server.startCron()
-
 	return
 }
 

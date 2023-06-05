@@ -33,6 +33,7 @@ type ApplyRefundRes struct {
 type OptionReq struct {
 	g.Meta `path:"/order/option" method:"get" summary:"充值订单" tags:"获取订单状态选项"`
 }
+
 type OptionRes struct {
 	Status             []g.Map `json:"status"   dc:"订单状态"`
 	AcceptRefundStatus []g.Map `json:"acceptRefundStatus"   dc:"订单退款受理状态"`
@@ -83,6 +84,7 @@ type EditReq struct {
 	g.Meta `path:"/order/edit" method:"post" tags:"充值订单" summary:"修改/新增充值订单"`
 	adminin.OrderEditInp
 }
+
 type EditRes struct{}
 
 // DeleteReq 删除充值订单

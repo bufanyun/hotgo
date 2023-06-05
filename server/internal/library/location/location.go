@@ -99,17 +99,14 @@ func Cz88Find(ctx context.Context, ip string) (*IpLocationData, error) {
 	if detail == nil {
 		return nil, fmt.Errorf("no ip data is queried. procedure:%v", ip)
 	}
-
-	locationData := &IpLocationData{
+	return &IpLocationData{
 		Ip:       ip,
 		Country:  detail.Country,
 		Region:   detail.Region,
 		Province: detail.Province,
 		City:     detail.City,
 		Area:     detail.County,
-	}
-
-	return locationData, nil
+	}, nil
 }
 
 // IsJurisByIpTitle 判断地区名称是否为直辖市

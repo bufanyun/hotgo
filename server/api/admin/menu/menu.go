@@ -16,6 +16,7 @@ type MaxSortReq struct {
 	g.Meta `path:"/menu/maxSort" method:"get" tags:"菜单" summary:"菜单最大排序"`
 	Id     int64 `json:"id" dc:"菜单ID"`
 }
+
 type MaxSortRes struct {
 	Sort int `json:"sort" dc:"排序"`
 }
@@ -26,6 +27,7 @@ type CodeUniqueReq struct {
 	Code   string `json:"code" v:"required#菜单编码不能为空"  dc:"菜单编码"`
 	Id     int64  `json:"id" dc:"菜单ID"`
 }
+
 type CodeUniqueRes struct {
 	IsUnique bool `json:"is_unique" dc:"是否唯一"`
 }
@@ -36,6 +38,7 @@ type NameUniqueReq struct {
 	Name   string `json:"name" v:"required#菜单名称不能为空"  dc:"菜单名称"`
 	Id     int64  `json:"id" dc:"菜单ID"`
 }
+
 type NameUniqueRes struct {
 	IsUnique bool `json:"is_unique" dc:"是否唯一"`
 }
@@ -45,6 +48,7 @@ type EditReq struct {
 	g.Meta `path:"/menu/edit" method:"post" tags:"菜单" summary:"修改/新增菜单"`
 	entity.AdminMenu
 }
+
 type EditRes struct{}
 
 // DeleteReq 删除菜单
@@ -52,6 +56,7 @@ type DeleteReq struct {
 	g.Meta `path:"/menu/delete" method:"post" tags:"菜单" summary:"删除菜单"`
 	Id     interface{} `json:"id" v:"required#菜单ID不能为空" dc:"菜单ID"`
 }
+
 type DeleteRes struct{}
 
 // ViewReq 获取指定菜单信息
@@ -59,6 +64,7 @@ type ViewReq struct {
 	g.Meta `path:"/menu/view" method:"get" tags:"菜单" summary:"获取指定菜单信息"`
 	Id     string `json:"id" v:"required#菜单ID不能为空" dc:"菜单ID"`
 }
+
 type ViewRes struct {
 	*entity.AdminMenu
 }

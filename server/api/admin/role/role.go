@@ -78,6 +78,7 @@ type EditReq struct {
 	g.Meta `path:"/role/edit" method:"post" tags:"角色" summary:"修改/新增角色"`
 	adminin.RoleEditInp
 }
+
 type EditRes struct{}
 
 // DeleteReq 删除角色
@@ -85,12 +86,14 @@ type DeleteReq struct {
 	g.Meta `path:"/role/delete" method:"post" tags:"角色" summary:"删除角色"`
 	adminin.RoleDeleteInp
 }
+
 type DeleteRes struct{}
 
 // DataScopeSelectReq 获取数据权限选项
 type DataScopeSelectReq struct {
 	g.Meta `path:"/role/dataScope/select" method:"get" summary:"角色" tags:"获取数据权限选项"`
 }
+
 type DataScopeSelectRes struct {
 	List form.Selects `json:"list" dc:"数据选项"`
 }
@@ -100,4 +103,5 @@ type DataScopeEditReq struct {
 	g.Meta `path:"/role/dataScope/edit" method:"post" tags:"角色" summary:"修改指定角色的数据权限"`
 	adminin.DataScopeEditInp
 }
+
 type DataScopeEditRes struct{}

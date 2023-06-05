@@ -16,6 +16,7 @@ type GetReq struct {
 	Group  string `json:"group" dc:"分组名称" v:"required#分组名称不能为空" `
 	g.Meta `path:"/config/get" method:"get" tags:"配置" summary:"获取指定分组的配置"`
 }
+
 type GetRes struct {
 	*sysin.GetConfigModel
 }
@@ -26,6 +27,7 @@ type UpdateReq struct {
 	List   g.Map  `json:"list" dc:"更新配置列表" `
 	g.Meta `path:"/config/update" method:"post" tags:"配置" summary:"获取指定分组的配置"`
 }
+
 type UpdateRes struct {
 }
 
@@ -33,12 +35,14 @@ type UpdateRes struct {
 type TypeSelectReq struct {
 	g.Meta `path:"/config/typeSelect" method:"get" tags:"配置" summary:"数据类型选项"`
 }
+
 type TypeSelectRes []form.Select
 
 // GetCashReq 获取提现配置
 type GetCashReq struct {
 	g.Meta `path:"/config/getCash" method:"get" tags:"配置" summary:"获取提现配置"`
 }
+
 type GetCashRes struct {
 	*sysin.GetConfigModel
 }

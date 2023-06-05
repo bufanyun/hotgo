@@ -33,6 +33,5 @@ func New(name ...string) Drive {
 	default:
 		panic(fmt.Sprintf("暂不支持短信驱动:%v", instanceName))
 	}
-
 	return drive
 }

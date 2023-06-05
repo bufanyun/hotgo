@@ -37,7 +37,6 @@ func (c *cNotify) WxPay(ctx context.Context, _ *pay.NotifyWxPayReq) (res *pay.No
 	}
 
 	res = &pay.NotifyWxPayRes{PayType: consts.PayTypeWxPay, Code: "SUCCESS", Message: "收单成功"}
-
 	return
 }
 

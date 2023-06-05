@@ -2,7 +2,6 @@ package queue
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
 	"sync"
 )
 
@@ -28,7 +27,7 @@ func RegisterConsumer(cs consumerStrategy) {
 	defer consumers.Unlock()
 	topic := cs.GetTopic()
 	if _, ok := consumers.list[topic]; ok {
-		g.Log().Debugf(ctx, "queue.RegisterConsumer topic:%v duplicate registration.", topic)
+		Logger().Debugf(ctx, "queue.RegisterConsumer topic:%v duplicate registration.", topic)
 		return
 	}
 	consumers.list[topic] = cs
@@ -51,7 +50,7 @@ func consumerListen(ctx context.Context, job consumerStrategy) {
 	)
 
 	if err != nil {
-		g.Log().Fatalf(ctx, "InstanceConsumer %s err:%+v", topic, err)
+		Logger().Fatalf(ctx, "InstanceConsumer %s err:%+v", topic, err)
 		return
 	}
 
@@ -67,6 +66,6 @@ func consumerListen(ctx context.Context, job consumerStrategy) {
 		ConsumerLog(ctx, topic, mqMsg, err)
 
 	}); listenErr != nil {
-		g.Log().Fatalf(ctx, "消费队列：%s 监听失败, err:%+v", topic, listenErr)
+		Logger().Fatalf(ctx, "消费队列：%s 监听失败, err:%+v", topic, listenErr)
 	}
 }

@@ -11,11 +11,12 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/cron"
 	"hotgo/internal/service"
 )
 
 func init() {
-	cronList = append(cronList, CloseOrder)
+	cron.Register(CloseOrder)
 }
 
 // CloseOrder 取消过期订单
@@ -38,6 +39,6 @@ func (c *cCloseOrder) Execute(ctx context.Context) {
 			dao.AdminOrder.Columns().Status: consts.OrderStatusClose,
 		}).Update()
 	if err != nil {
-		g.Log().Warning(ctx, "cron CloseOrder Execute err:%+v", err)
+		cron.Logger().Warning(ctx, "cron CloseOrder Execute err:%+v", err)
 	}
 }

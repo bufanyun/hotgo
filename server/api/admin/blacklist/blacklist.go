@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package blacklist
 
 import (
@@ -33,6 +32,7 @@ type ViewReq struct {
 	Id     int64 `json:"id" v:"required#黑名单ID不能为空" dc:"黑名单ID"`
 	g.Meta `path:"/blacklist/view" method:"get" tags:"黑名单" summary:"获取指定信息"`
 }
+
 type ViewRes struct {
 	*sysin.BlacklistViewModel
 }
@@ -42,6 +42,7 @@ type EditReq struct {
 	entity.SysBlacklist
 	g.Meta `path:"/blacklist/edit" method:"post" tags:"黑名单" summary:"修改/新增黑名单"`
 }
+
 type EditRes struct{}
 
 // DeleteReq 删除
@@ -49,6 +50,7 @@ type DeleteReq struct {
 	Id     interface{} `json:"id" v:"required#黑名单ID不能为空" dc:"黑名单ID"`
 	g.Meta `path:"/blacklist/delete" method:"post" tags:"黑名单" summary:"删除黑名单"`
 }
+
 type DeleteRes struct{}
 
 // MaxSortReq 最大排序
@@ -56,6 +58,7 @@ type MaxSortReq struct {
 	Id     int64 `json:"id" dc:"黑名单ID"`
 	g.Meta `path:"/blacklist/maxSort" method:"get" tags:"黑名单" summary:"黑名单最大排序"`
 }
+
 type MaxSortRes struct {
 	Sort int `json:"sort" dc:"排序"`
 }
@@ -65,4 +68,5 @@ type StatusReq struct {
 	entity.SysBlacklist
 	g.Meta `path:"/blacklist/status" method:"post" tags:"黑名单" summary:"更新黑名单状态"`
 }
+
 type StatusRes struct{}

@@ -6,11 +6,6 @@ hotgo:
   ipMethod: "whois"
   # 是否为演示系统 false|true
   isDemo: false
-  # https
-  ssl:
-    switch: false                                   # 是否开启https访问，需要配置sslCrtPath、sslKeyPath证书夹
-    crtPath: "storage/cert/ssl/server.crt"          # 证书路径
-    keyPath: "storage/cert/ssl/server.key"          # 密钥路径
   # 全局请求日志
   log:
     switch: true                                    # 日志开关，默认为true
@@ -44,11 +39,19 @@ server:
   errorLogPattern: "error/{Y-m-d}.log"        # 异常错误日志文件格式。默认为"error-{Ymd}.log"
   accessLogEnabled: true                      # 是否记录访问日志。默认为false
   accessLogPattern: "access/{Y-m-d}.log"      # 访问日志文件格式。默认为"access-{Ymd}.log"
+  maxHeaderBytes: "100KB"                     # 请求头大小限制，请求头包括客户端提交的Cookie数据，默认设置为100KB
+  clientMaxBodySize: "200MB"                  # 客户端提交的Body大小限制，同时也影响文件上传大小，默认设置为200MB
   serverAgent: "HG HTTP Server"
-
   # PProf配置
   pprofEnabled: true                          # 是否开启PProf性能调试特性。默认为false
   pprofPattern: "/pprof"                      # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
+  # 服务日志配置
+  logger:
+    level: "all"
+    flags: 42
+    rotateExpire: "7d"                      # 日志保留天数
+    rotateBackupLimit: 2                    # 最大备份数量
+    rotateBackupCompress: 2                 # 日志文件压缩级别，0-9,9最高
 
 
 tcp:
@@ -73,17 +76,39 @@ tcp:
       secretKey: "123456"                                           # 密钥
 
 
-# Global logging.
-logger:
+# 统一默认日志配置
+defaultLogger: &defaultLogger
   level: "all"
   flags: 42
-  path: "logs/logger"                     # 日志文件路径。默认为空，表示关闭，仅输出到终端
   file: "{Y-m-d}.log"                     # 日志文件格式。默认为"{Y-m-d}.log"
   stdoutColorDisabled: false              # 关闭终端的颜色打印。默认开启
   writerColorEnable: false                # 日志文件是否带上颜色。默认false，表示不带颜色
   rotateExpire: "7d"                      # 日志保留天数
   rotateBackupLimit: 2                    # 最大备份数量
   rotateBackupCompress: 2                 # 日志文件压缩级别，0-9,9最高
+
+
+# 日志配置
+logger:
+  # 全局日志：g.Log()
+  path: "logs/logger"                       # 日志文件路径。默认为空，表示关闭，仅输出到终端
+  <<: *defaultLogger
+  # 定时任务：g.Log("cron")
+  cron:
+    path: "logs/cron"                       # 日志文件路径。默认为空，表示关闭，仅输出到终端
+    <<: *defaultLogger
+  # 消息队列：g.Log("cron")
+  queue:
+    path: "logs/queue"                      # 日志文件路径。默认为空，表示关闭，仅输出到终端
+    <<: *defaultLogger
+  # tcp服务器：g.Log("tcpServer")
+  tcpServer:
+    path: "logs/tcpServer"                  # 日志文件路径。默认为空，表示关闭，仅输出到终端
+    <<: *defaultLogger
+  # tcp客户端：g.Log("tcpClient")
+  tcpClient:
+    path: "logs/tcpClient"                  # 日志文件路径。默认为空，表示关闭，仅输出到终端
+    <<: *defaultLogger
 
 
 # 模板配置
@@ -130,8 +155,8 @@ router:
     prefix: "/api"
     # 不需要验证登录的路由地址
     exceptPath: []
-  # ws
-  ws:
+  # websocket
+  websocket:
     # 前缀
     prefix: "/socket"
     # 不需要验证登录的路由地址

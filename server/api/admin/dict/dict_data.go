@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package dict
 
 import (
@@ -27,6 +26,7 @@ type DataDeleteReq struct {
 	Id     interface{} `json:"id" v:"required#字典数据ID不能为空" dc:"字典数据ID"`
 	g.Meta `path:"/dictData/delete" method:"post" tags:"字典数据" summary:"删除字典数据"`
 }
+
 type DataDeleteRes struct{}
 
 // DataListReq 查询列表
@@ -49,10 +49,12 @@ type DataSelectReq struct {
 	g.Meta `path:"/dictData/option/{Type}" method:"get" summary:"字典数据" tags:"获取指定字典选项"`
 	Type   string `in:"path" v:"required#字典类型不能为空" dc:"字典类型"`
 }
+
 type DataSelectRes sysin.DataSelectModel
 
 type DataSelectsReq struct {
 	g.Meta `path:"/dictData/options" method:"get" summary:"字典数据" tags:"获取多个字典选项"`
 	Types  []string `json:"types"`
 }
+
 type DataSelectsRes map[string]sysin.DataSelectModel
