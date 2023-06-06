@@ -15,7 +15,8 @@ require (
 	github.com/go-pay/gopay v1.5.91
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.4.1
 	github.com/gogf/gf/contrib/nosql/redis/v2 v2.4.1
-	github.com/gogf/gf/v2 v2.4.1
+	github.com/gogf/gf/contrib/trace/jaeger/v2 v2.4.2
+	github.com/gogf/gf/v2 v2.4.2
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/kayon/iploc v0.0.0-20200312105652-bda3e968a794
@@ -108,6 +109,7 @@ require (
 	github.com/xuri/nfp v0.0.0-20220409054826-5e722a1d9e22 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.opentelemetry.io/otel v1.15.1 // indirect
+	go.opentelemetry.io/otel/exporters/jaeger v1.7.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.15.1 // indirect
 	go.opentelemetry.io/otel/trace v1.15.1 // indirect
 	go.uber.org/atomic v1.7.0 // indirect

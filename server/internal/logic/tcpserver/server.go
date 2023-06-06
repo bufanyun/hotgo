@@ -26,7 +26,7 @@ func (s *sTCPServer) Start(ctx context.Context) {
 		g.Log().Debug(ctx, "TCPServer start..")
 
 		server, err := tcp.NewServer(&tcp.ServerConfig{
-			Name: "hotgo",
+			Name: simple.AppName(ctx),
 			Addr: g.Cfg().MustGet(ctx, "tcp.server.address").String(),
 		})
 

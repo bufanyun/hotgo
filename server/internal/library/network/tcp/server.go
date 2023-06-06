@@ -13,6 +13,7 @@ import (
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/glog"
 	"hotgo/internal/consts"
+	"hotgo/utility/simple"
 	"reflect"
 	"sync"
 	"time"
@@ -61,12 +62,13 @@ func NewServer(config *ServerConfig) (server *Server, err error) {
 		return
 	}
 
-	if config.Name == "" {
-		config.Name = "hotgo"
-	}
-
 	server = new(Server)
 	server.Ctx = gctx.New()
+
+	if config.Name == "" {
+		config.Name = simple.AppName(server.Ctx)
+	}
+	
 	server.addr = config.Addr
 	server.name = config.Name
 	server.ln = gtcp.NewServer(server.addr, server.accept, config.Name)

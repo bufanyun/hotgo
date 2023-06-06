@@ -8,6 +8,7 @@ package global
 import (
 	"context"
 	"fmt"
+	"github.com/gogf/gf/contrib/trace/jaeger/v2"
 	"github.com/gogf/gf/v2"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
@@ -22,6 +23,7 @@ import (
 	"hotgo/internal/model/entity"
 	"hotgo/internal/service"
 	"hotgo/utility/charset"
+	"hotgo/utility/simple"
 	"strings"
 )
 
@@ -42,6 +44,9 @@ func Init(ctx context.Context) {
 
 	RootPtah = gfile.Pwd()
 	fmt.Printf("欢迎使用HotGo！\r\n当前运行环境：%v, 运行根路径为：%v \r\nHotGo版本：v%v, gf版本：%v \n", SysType, RootPtah, consts.VersionApp, gf.VERSION)
+
+	// 初始化链路追踪
+	InitTrace(ctx)
 
 	// 设置缓存适配器
 	cache.SetAdapter(ctx)
@@ -111,4 +116,21 @@ func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 	if err != nil {
 		g.Dump("LoggingServeLogHandler err:%+v", err)
 	}
+}
+
+// InitTrace 初始化链路追踪
+func InitTrace(ctx context.Context) {
+	if !g.Cfg().MustGet(ctx, "jaeger.switch").Bool() {
+		return
+	}
+
+	tp, err := jaeger.Init(simple.AppName(ctx), g.Cfg().MustGet(ctx, "jaeger.endpoint").String())
+	if err != nil {
+		g.Log().Fatal(ctx, err)
+	}
+
+	simple.Event().Register(consts.EventServerClose, func(ctx context.Context, args ...interface{}) {
+		_ = tp.Shutdown(ctx)
+		g.Log().Debug(ctx, "jaeger closed ..")
+	})
 }

@@ -1,3 +1,7 @@
+# 应用名称
+appName: "hotgo"
+
+
 # hotgo配置
 hotgo:
   # debug开关，开启后接口出现错误时会向前端输出堆栈信息，默认为true
@@ -229,6 +233,12 @@ database:
     link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
     debug: true
     Prefix: "hg_"
+
+
+# 链路追踪
+jaeger:
+  switch: false                                    # 链路追踪开关，默认为false
+  endpoint: "127.0.0.1:6831"                       # jaeger-agent上报地址
 
 
 # 生成代码

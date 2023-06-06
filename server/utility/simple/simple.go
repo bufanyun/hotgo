@@ -18,6 +18,11 @@ import (
 	"hotgo/utility/encrypt"
 )
 
+// AppName 应用名称
+func AppName(ctx context.Context) string {
+	return g.Cfg().MustGet(ctx, "appName", "hotgo").String()
+}
+
 // FilterMaskDemo 过滤演示环境下的配置隐藏字段
 func FilterMaskDemo(ctx context.Context, src g.Map) g.Map {
 	if src == nil {

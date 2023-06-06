@@ -48,11 +48,11 @@ var (
 
 				// 注册全局中间件
 				group.Middleware(
-					service.Middleware().Ctx, // 必须第一个加载
-					service.Middleware().CORS,
-					service.Middleware().Blacklist,
-					service.Middleware().DemoLimit,
-					service.Middleware().ResponseHandler,
+					service.Middleware().Ctx,             // 初始化请求上下文，一般需要第一个进行加载，后续中间件存在依赖关系
+					service.Middleware().CORS,            // 跨域中间件，自动处理跨域问题
+					service.Middleware().Blacklist,       // IP黑名单中间件，如果请求IP被后台拉黑，所有请求将被拒绝
+					service.Middleware().DemoLimit,       // 演示系統操作限制，当开启演示模式时，所有POST请求将被拒绝
+					service.Middleware().ResponseHandler, // HTTP响应预处理，在业务处理完成后，对响应结果进行格式化和错误过滤，将处理后的数据发送给请求方
 				)
 
 				// 注册后台路由
@@ -98,9 +98,9 @@ var (
 
 			go func() {
 				<-serverCloseSignal
-				websocket.Stop()
-				service.TCPServer().Stop(ctx)
-				_ = s.Shutdown() // 主服务建议放在最后一个关闭
+				websocket.Stop()              // 关闭websocket
+				service.TCPServer().Stop(ctx) // 关闭tcp服务器
+				_ = s.Shutdown()              // 关闭http服务，主服务建议放在最后一个关闭
 				g.Log().Debug(ctx, "http successfully closed ..")
 				serverWg.Done()
 			}()

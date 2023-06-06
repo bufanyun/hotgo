@@ -11,8 +11,8 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/gproc"
-	"os"
+	"hotgo/internal/consts"
+	"hotgo/utility/simple"
 	"time"
 )
 
@@ -109,7 +109,7 @@ func (r *KafkaMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) 
 	<-consumer.ready
 	Logger().Debug(ctx, "kafka consumer up and running!...")
 
-	gproc.AddSigHandlerShutdown(func(sig os.Signal) {
+	simple.Event().Register(consts.EventServerClose, func(ctx context.Context, args ...interface{}) {
 		Logger().Debug(ctx, "kafka consumer close...")
 		cancel()
 		if err = r.consumerIns.Close(); err != nil {
@@ -202,7 +202,7 @@ func doRegisterKafkaProducer(connOpt KafkaConfig, mqIns *KafkaMq) (err error) {
 		return
 	}
 
-	gproc.AddSigHandlerShutdown(func(sig os.Signal) {
+	simple.Event().Register(consts.EventServerClose, func(ctx context.Context, args ...interface{}) {
 		g.Log().Debug(ctx, "kafka producer AsyncClose...")
 		mqIns.producerIns.AsyncClose()
 	})

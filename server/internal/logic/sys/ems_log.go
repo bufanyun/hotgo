@@ -25,6 +25,7 @@ import (
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/charset"
+	"hotgo/utility/simple"
 	"hotgo/utility/useragent"
 	"hotgo/utility/validate"
 	"time"
@@ -171,7 +172,7 @@ func (s *sSysEmsLog) Send(ctx context.Context, in sysin.SendEmsInp) (err error) 
 
 	subject, ok := consts.EmsSubjectMap[in.Event]
 	if !ok {
-		subject = "HotGo"
+		subject = simple.AppName(ctx)
 	}
 
 	err = ems.Send(config, in.Email, subject, in.Content)
@@ -235,7 +236,7 @@ func (s *sSysEmsLog) newView(ctx context.Context, in sysin.SendEmsInp, config *m
 
 	if basic == nil {
 		basic = new(model.BasicConfig)
-		basic.Name = "HotGo"
+		basic.Name = simple.AppName(ctx)
 		basic.Domain = "https://hotgo.facms.cn"
 		basic.Logo = "http://bufanyun.cn-bj.ufileos.com/haoka/attachment/images/2023-02-04/cq9kf7s66jt7hkpvbh.png"
 		basic.SystemOpen = true
