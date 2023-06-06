@@ -7,8 +7,8 @@ package cmd
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcmd"
+	"hotgo/internal/global"
 	"hotgo/internal/library/queue"
 	"hotgo/utility/simple"
 )
@@ -19,10 +19,13 @@ var (
 		Brief:       "消息队列",
 		Description: ``,
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+			// 服务日志处理
+			queue.Logger().SetHandlers(global.LoggingServeLogHandler)
+
 			simple.SafeGo(ctx, func(ctx context.Context) {
-				g.Log().Debug(ctx, "start queue consumer..")
+				queue.Logger().Debug(ctx, "start queue consumer..")
 				queue.StartConsumersListener(ctx)
-				g.Log().Debug(ctx, "start queue consumer success..")
+				queue.Logger().Debug(ctx, "start queue consumer success..")
 			})
 
 			serverWg.Add(1)
@@ -31,7 +34,7 @@ var (
 			signalListen(ctx, signalHandlerForOverall)
 
 			<-serverCloseSignal
-			g.Log().Debug(ctx, "queue successfully closed ..")
+			queue.Logger().Debug(ctx, "queue successfully closed ..")
 			serverWg.Done()
 			return
 		},

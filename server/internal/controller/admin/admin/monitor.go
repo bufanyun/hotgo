@@ -41,7 +41,6 @@ func (c *cMonitor) Offline(ctx context.Context, req *monitor.OfflineReq) (res *m
 		websocket.SendSuccess(client, "kick")
 		websocket.Close(client)
 	})
-
 	return
 }
 
@@ -94,18 +93,17 @@ func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (
 	res.PerPage = req.PerPage
 
 	sort.Sort(monitor.OnlineModels(clients))
-	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false)
+	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool()
 	_, perPage, offset := form.CalPage(ctx, req.Page, req.PerPage)
 
 	for k, v := range clients {
 		if k >= offset && i <= perPage {
-			if isDemo.Bool() {
+			if isDemo {
 				v.Addr = consts.DemoTips
 			}
 			res.List = append(res.List, v)
 			i++
 		}
 	}
-
 	return
 }

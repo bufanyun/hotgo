@@ -31,6 +31,7 @@ type ViewReq struct {
 	Id     int64 `json:"id" v:"required#附件ID不能为空" dc:"附件ID"`
 	g.Meta `path:"/attachment/view" method:"get" tags:"附件" summary:"获取指定附件信息"`
 }
+
 type ViewRes struct {
 	*sysin.AttachmentViewModel
 }
@@ -40,4 +41,5 @@ type DeleteReq struct {
 	Id     interface{} `json:"id" v:"required#附件ID不能为空" dc:"附件ID"`
 	g.Meta `path:"/attachment/delete" method:"post" tags:"附件" summary:"删除附件"`
 }
+
 type DeleteRes struct{}

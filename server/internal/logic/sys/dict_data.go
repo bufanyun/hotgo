@@ -31,7 +31,6 @@ func (s *sSysDictData) Delete(ctx context.Context, in sysin.DictDataDeleteInp) e
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
-
 	return nil
 }
 
@@ -110,7 +109,6 @@ func (s *sSysDictData) List(ctx context.Context, in sysin.DictDataListInp) (list
 	for _, v := range list {
 		v.TypeID, _ = dao.SysDictType.GetId(ctx, v.Type)
 	}
-
 	return list, totalCount, err
 }
 

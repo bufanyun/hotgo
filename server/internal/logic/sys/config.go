@@ -172,12 +172,6 @@ func (s *sSysConfig) GetLoadToken(ctx context.Context) (conf *model.TokenConfig,
 	return
 }
 
-// GetLoadSSL 获取本地日志配置
-func (s *sSysConfig) GetLoadSSL(ctx context.Context) (conf *model.SSLConfig, err error) {
-	err = g.Cfg().MustGet(ctx, "hotgo.ssl").Scan(&conf)
-	return
-}
-
 // GetLoadLog 获取本地日志配置
 func (s *sSysConfig) GetLoadLog(ctx context.Context) (conf *model.LogConfig, err error) {
 	err = g.Cfg().MustGet(ctx, "hotgo.log").Scan(&conf)

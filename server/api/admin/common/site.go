@@ -15,6 +15,7 @@ import (
 type LoginLogoutReq struct {
 	g.Meta `path:"/site/logout" method:"post" tags:"后台基础" summary:"注销登录"`
 }
+
 type LoginLogoutRes struct{}
 
 // RegisterReq 提交账号注册
@@ -22,6 +23,7 @@ type RegisterReq struct {
 	g.Meta `path:"/site/register" method:"post" tags:"后台基础" summary:"账号注册"`
 	adminin.RegisterInp
 }
+
 type RegisterRes struct {
 	*adminin.LoginModel
 }
@@ -30,6 +32,7 @@ type RegisterRes struct {
 type LoginCaptchaReq struct {
 	g.Meta `path:"/site/captcha" method:"get" tags:"后台基础" summary:"获取登录验证码"`
 }
+
 type LoginCaptchaRes struct {
 	Cid    string `json:"cid" dc:"验证码ID"`
 	Base64 string `json:"base64" dc:"验证码"`
@@ -40,6 +43,7 @@ type AccountLoginReq struct {
 	g.Meta `path:"/site/accountLogin" method:"post" tags:"后台基础" summary:"账号登录"`
 	adminin.AccountLoginInp
 }
+
 type AccountLoginRes struct {
 	*adminin.LoginModel
 }
@@ -49,6 +53,7 @@ type MobileLoginReq struct {
 	g.Meta `path:"/site/mobileLogin" method:"post" tags:"后台基础" summary:"手机号登录"`
 	adminin.MobileLoginInp
 }
+
 type MobileLoginRes struct {
 	*adminin.LoginModel
 }
@@ -57,6 +62,7 @@ type MobileLoginRes struct {
 type SiteConfigReq struct {
 	g.Meta `path:"/site/config" method:"get" tags:"后台基础" summary:"获取配置"`
 }
+
 type SiteConfigRes struct {
 	Version string `json:"version"        dc:"系统版本"`
 	WsAddr  string `json:"wsAddr"         dc:"客户端websocket地址"`
@@ -68,6 +74,7 @@ type SiteConfigRes struct {
 type SiteLoginConfigReq struct {
 	g.Meta `path:"/site/loginConfig" method:"get" tags:"后台基础" summary:"获取登录配置"`
 }
+
 type SiteLoginConfigRes struct {
 	*model.LoginConfig
 }
@@ -76,4 +83,5 @@ type SiteLoginConfigRes struct {
 type SitePingReq struct {
 	g.Meta `path:"/site/ping" method:"get" tags:"后台基础" summary:"ping"`
 }
+
 type SitePingRes struct{}

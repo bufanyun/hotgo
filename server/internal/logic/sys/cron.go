@@ -12,8 +12,8 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
 	"hotgo/internal/consts"
-	"hotgo/internal/crons"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/cron"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
@@ -39,12 +39,12 @@ func (s *sSysCron) StartCron(ctx context.Context) {
 		Where("status", consts.StatusEnabled).
 		Order("sort asc,id desc").
 		Scan(&list); err != nil {
-		g.Log().Fatalf(ctx, "定时任务获取失败, err . %v", err)
+		cron.Logger().Fatalf(ctx, "定时任务获取失败, err . %v", err)
 		return
 	}
 
-	if err := crons.StartALL(list); err != nil {
-		g.Log().Fatalf(ctx, "定时任务启动失败, err . %v", err)
+	if err := cron.StartALL(list); err != nil {
+		cron.Logger().Fatalf(ctx, "定时任务启动失败, err . %v", err)
 		return
 	}
 }
@@ -66,7 +66,7 @@ func (s *sSysCron) Delete(ctx context.Context, in sysin.CronDeleteInp) (err erro
 		if _, err = dao.SysCron.Ctx(ctx).Where("id", in.Id).Delete(); err != nil {
 			return
 		}
-		return crons.Delete(models)
+		return cron.Delete(models)
 	})
 	return
 }
@@ -84,7 +84,7 @@ func (s *sSysCron) Edit(ctx context.Context, in sysin.CronEditInp) (err error) {
 			return
 		}
 		simple.SafeGo(ctx, func(ctx context.Context) {
-			_ = crons.RefreshStatus(&in.SysCron)
+			_ = cron.RefreshStatus(&in.SysCron)
 		})
 		return
 	}
@@ -128,7 +128,7 @@ func (s *sSysCron) Status(ctx context.Context, in sysin.CronStatusInp) (err erro
 
 	models.Status = in.Status
 	simple.SafeGo(ctx, func(ctx context.Context) {
-		_ = crons.RefreshStatus(models)
+		_ = cron.RefreshStatus(models)
 	})
 	return
 }
@@ -201,5 +201,5 @@ func (s *sSysCron) OnlineExec(ctx context.Context, in sysin.OnlineExecInp) (err 
 	}
 
 	newCtx := context.WithValue(gctx.New(), consts.ContextKeyCronArgs, strings.Split(data.Params, consts.CronSplitStr))
-	return crons.Once(newCtx, data)
+	return cron.Once(newCtx, data)
 }

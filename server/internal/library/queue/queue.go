@@ -79,7 +79,7 @@ func init() {
 	mqProducerInstanceMap = make(map[string]MqProducer)
 	mqConsumerInstanceMap = make(map[string]MqConsumer)
 	if err := g.Cfg().MustGet(ctx, "queue").Scan(&config); err != nil {
-		g.Log().Warningf(ctx, "queue init err:%+v", err)
+		Logger().Warningf(ctx, "queue init err:%+v", err)
 	}
 }
 
@@ -207,7 +207,6 @@ func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 	mutex.Lock()
 	defer mutex.Unlock()
 	mqConsumerInstanceMap[groupName] = mqClient
-
 	return
 }
 

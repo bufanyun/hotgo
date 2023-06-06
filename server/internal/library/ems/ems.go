@@ -19,10 +19,10 @@ func Send(config *model.EmailConfig, to string, subject string, body string) err
 }
 
 func sendToMail(config *model.EmailConfig, to, subject, body, mailType string) error {
-
 	if config == nil {
 		return gerror.New("邮件配置不能为空")
 	}
+
 	var (
 		contentType string
 		auth        = smtp.PlainAuth("", config.User, config.Password, config.Host)

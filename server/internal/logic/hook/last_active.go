@@ -55,7 +55,6 @@ func allow(memberId int64) bool {
 		v.lastSeen = gtime.Now()
 		return true
 	}
-
 	return false
 }
 

@@ -21,11 +21,6 @@ func JsonExit(r *ghttp.Request, code int, message string, data ...interface{}) {
 }
 
 // RJson 标准返回结果数据结构封装
-// @Description: 返回固定数据结构的JSON
-// @param r
-// @param code 状态码(200:成功,302跳转，和http请求状态码一至)
-// @param message 请求结果信息
-// @param data 请求结果,根据不同接口返回结果的数据结构不同
 func RJson(r *ghttp.Request, code int, message string, data ...interface{}) {
 	responseData := interface{}(nil)
 	if len(data) > 0 {

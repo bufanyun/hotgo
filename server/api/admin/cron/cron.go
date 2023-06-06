@@ -27,6 +27,7 @@ type ViewReq struct {
 	g.Meta `path:"/cron/view" method:"get" tags:"定时任务" summary:"获取指定信息"`
 	sysin.CronViewInp
 }
+
 type ViewRes struct {
 	*sysin.CronViewModel
 }
@@ -36,6 +37,7 @@ type EditReq struct {
 	g.Meta `path:"/cron/edit" method:"post" tags:"定时任务" summary:"修改/新增定时任务"`
 	sysin.CronEditInp
 }
+
 type EditRes struct {
 	*sysin.CronEditModel
 }
@@ -45,6 +47,7 @@ type DeleteReq struct {
 	g.Meta `path:"/cron/delete" method:"post" tags:"定时任务" summary:"删除定时任务"`
 	sysin.CronDeleteInp
 }
+
 type DeleteRes struct {
 	*sysin.CronDeleteModel
 }
@@ -54,6 +57,7 @@ type MaxSortReq struct {
 	g.Meta `path:"/cron/maxSort" method:"get" tags:"定时任务" summary:"定时任务最大排序"`
 	sysin.CronMaxSortInp
 }
+
 type MaxSortRes struct {
 	*sysin.CronMaxSortModel
 }
@@ -63,6 +67,7 @@ type StatusReq struct {
 	g.Meta `path:"/cron/status" method:"post" tags:"定时任务" summary:"更新定时任务状态"`
 	sysin.CronStatusInp
 }
+
 type StatusRes struct {
 	*sysin.CronStatusModel
 }
@@ -72,6 +77,7 @@ type OnlineExecReq struct {
 	g.Meta `path:"/cron/onlineExec" method:"post" tags:"定时任务" summary:"在线执行"`
 	sysin.OnlineExecInp
 }
+
 type OnlineExecRes struct {
 	*sysin.OnlineExecModel
 }

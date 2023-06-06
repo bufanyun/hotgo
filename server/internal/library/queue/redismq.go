@@ -148,7 +148,7 @@ func (r *RedisMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) 
 		}
 		for err = range errCh {
 			if err != nil && err != context.Canceled && err != context.DeadlineExceeded {
-				g.Log().Infof(ctx, "ListenReceiveMsgDo Delay topic:%v, err:%+v", topic, err)
+				Logger().Infof(ctx, "ListenReceiveMsgDo Delay topic:%v, err:%+v", topic, err)
 			}
 		}
 	}()
@@ -166,7 +166,7 @@ func (r *RedisMq) loopReadQueue(key string) (mqMsgList []MqMsg) {
 	for {
 		data, err := conn.Do(ctx, "RPOP", key)
 		if err != nil {
-			g.Log().Warningf(ctx, "loopReadQueue redis RPOP err:%+v", err)
+			Logger().Warningf(ctx, "loopReadQueue redis RPOP err:%+v", err)
 			break
 		}
 
@@ -176,7 +176,7 @@ func (r *RedisMq) loopReadQueue(key string) (mqMsgList []MqMsg) {
 
 		var mqMsg MqMsg
 		if err = data.Scan(&mqMsg); err != nil {
-			g.Log().Warningf(ctx, "loopReadQueue Scan err:%+v", err)
+			Logger().Warningf(ctx, "loopReadQueue Scan err:%+v", err)
 			break
 		}
 

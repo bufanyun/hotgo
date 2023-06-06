@@ -27,6 +27,7 @@ type ViewReq struct {
 	g.Meta `path:"/cash/view" method:"get" tags:"提现" summary:"获取指定信息"`
 	adminin.CashViewInp
 }
+
 type ViewRes struct {
 	*adminin.CashViewModel
 }
@@ -36,6 +37,7 @@ type ApplyReq struct {
 	Money  float64 `json:"money"     description:"提现金额"`
 	g.Meta `path:"/cash/apply" method:"post" tags:"提现" summary:"申请提现"`
 }
+
 type ApplyRes struct{}
 
 // PaymentReq 提现打款处理
@@ -45,4 +47,5 @@ type PaymentReq struct {
 	Msg    string `json:"msg"       description:"处理结果"`
 	g.Meta `path:"/cash/payment" method:"post" tags:"提现" summary:"提现打款处理"`
 }
+
 type PaymentRes struct{}

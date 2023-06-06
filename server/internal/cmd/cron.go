@@ -7,9 +7,9 @@ package cmd
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcmd"
-	"hotgo/internal/crons"
+	"hotgo/internal/global"
+	"hotgo/internal/library/cron"
 	"hotgo/internal/service"
 )
 
@@ -19,6 +19,9 @@ var (
 		Brief:       "定时任务，用来部署一些可独立运行的定时任务，通过tcp方式和后台保持长连接通讯，动态调整任务属性。",
 		Description: ``,
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+			// 服务日志处理
+			cron.Logger().SetHandlers(global.LoggingServeLogHandler)
+
 			// 启动定时任务
 			service.SysCron().StartCron(ctx)
 
@@ -32,8 +35,8 @@ var (
 
 			<-serverCloseSignal
 			service.CronClient().Stop(ctx)
-			crons.StopALL()
-			g.Log().Debug(ctx, "cron successfully closed ..")
+			cron.StopALL()
+			cron.Logger().Debug(ctx, "cron successfully closed ..")
 			serverWg.Done()
 			return
 		},

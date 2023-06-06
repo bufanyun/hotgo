@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package common
 
 import (
@@ -15,6 +14,7 @@ type SendTestEmailReq struct {
 	To     string `json:"to" v:"required#接收者邮件不能为空" dc:"接收者邮件，多个用;隔开"`
 	g.Meta `path:"/ems/sendTest" tags:"邮件" method:"post" summary:"发送测试邮件"`
 }
+
 type SendTestEmailRes struct {
 }
 
@@ -22,5 +22,6 @@ type SendTestEmailRes struct {
 type SendBindEmsReq struct {
 	g.Meta `path:"/ems/sendBind" tags:"邮件" method:"post" summary:"发送换绑邮件"`
 }
+
 type SendBindEmsRes struct {
 }

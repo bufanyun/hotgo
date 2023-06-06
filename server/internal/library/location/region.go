@@ -8,12 +8,17 @@ package location
 import (
 	"context"
 	"github.com/gogf/gf/v2/container/gvar"
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/consts"
 	"hotgo/internal/model/entity"
 	"hotgo/utility/tree"
 )
+
+func GetModel(ctx context.Context) *gdb.Model {
+	return g.Model("sys_provinces").Ctx(ctx)
+}
 
 // ParseSimpleRegion 通过地区ID解析地区名称，自动加入上级地区
 func ParseSimpleRegion(ctx context.Context, id int64, spilt ...string) (string, error) {
@@ -25,7 +30,7 @@ func ParseSimpleRegion(ctx context.Context, id int64, spilt ...string) (string, 
 		err    error
 	)
 
-	if err = g.Model("sys_provinces").Ctx(ctx).Fields("title,level,tree").Where("id", id).Scan(&models); err != nil {
+	if err = GetModel(ctx).Fields("title,level,tree").Where("id", id).Scan(&models); err != nil {
 		return "", err
 	}
 
@@ -71,14 +76,14 @@ func ParseRegion(ctx context.Context, province int64, city int64, county int64, 
 	}
 
 	if province > 0 && province < 999999 {
-		provinceName, err = g.Model("sys_provinces").Ctx(ctx).Where("id", province).Fields("title").Value()
+		provinceName, err = GetModel(ctx).Where("id", province).Fields("title").Value()
 		if err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
 			return "", err
 		}
 
 		if city > 0 {
-			cityName, err = g.Model("sys_provinces").Ctx(ctx).Where("id", city).Fields("title").Value()
+			cityName, err = GetModel(ctx).Where("id", city).Fields("title").Value()
 			if err != nil {
 				err = gerror.Wrap(err, consts.ErrorORM)
 				return "", err
@@ -86,7 +91,7 @@ func ParseRegion(ctx context.Context, province int64, city int64, county int64, 
 		}
 
 		if county > 0 {
-			countyName, err = g.Model("sys_provinces").Ctx(ctx).Where("id", county).Fields("title").Value()
+			countyName, err = GetModel(ctx).Where("id", county).Fields("title").Value()
 			if err != nil {
 				err = gerror.Wrap(err, consts.ErrorORM)
 				return "", err

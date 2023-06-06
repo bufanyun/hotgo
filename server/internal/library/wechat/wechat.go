@@ -68,7 +68,6 @@ func GetOpenUserAccessToken(ctx context.Context, code string) (accessToken offic
 		err = gerror.Newf("GetOpenUserAccessToken err:%+v", accessToken.ErrMsg)
 		return
 	}
-
 	return
 }
 
@@ -98,7 +97,6 @@ func GetUserAccessToken(ctx context.Context, code string) (accessToken officialO
 		err = gerror.Newf("GetUserAccessToken err:%+v", accessToken.ErrMsg)
 		return
 	}
-
 	return
 }
 

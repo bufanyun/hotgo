@@ -7,7 +7,6 @@ package cron
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
-	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 )
@@ -28,6 +27,7 @@ type GroupViewReq struct {
 	g.Meta `path:"/cronGroup/view" method:"get" tags:"定时任务分组" summary:"获取指定信息"`
 	sysin.CronGroupViewInp
 }
+
 type GroupViewRes struct {
 	*sysin.CronGroupViewModel
 }
@@ -37,6 +37,7 @@ type GroupEditReq struct {
 	g.Meta `path:"/cronGroup/edit" method:"post" tags:"定时任务分组" summary:"修改/新增定时任务分组"`
 	sysin.CronGroupEditInp
 }
+
 type GroupEditRes struct {
 	*sysin.CronGroupEditModel
 }
@@ -46,6 +47,7 @@ type GroupDeleteReq struct {
 	g.Meta `path:"/cronGroup/delete" method:"post" tags:"定时任务分组" summary:"删除定时任务分组"`
 	sysin.CronGroupDeleteInp
 }
+
 type GroupDeleteRes struct {
 	*sysin.CronGroupDeleteModel
 }
@@ -55,16 +57,17 @@ type GroupMaxSortReq struct {
 	g.Meta `path:"/cronGroup/maxSort" method:"get" tags:"定时任务分组" summary:"定时任务分组最大排序"`
 	sysin.CronGroupMaxSortInp
 }
+
 type GroupMaxSortRes struct {
 	*sysin.CronGroupMaxSortModel
 }
 
 // GroupStatusReq 更新状态
 type GroupStatusReq struct {
-	entity.SysCronGroup
 	g.Meta `path:"/cronGroup/status" method:"post" tags:"定时任务分组" summary:"更新定时任务分组状态"`
 	sysin.CronGroupStatusInp
 }
+
 type GroupStatusRes struct {
 	*sysin.CronGroupStatusModel
 }

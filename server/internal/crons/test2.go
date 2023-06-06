@@ -3,18 +3,17 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package crons
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/consts"
+	"hotgo/internal/library/cron"
 	"time"
 )
 
 func init() {
-	cronList = append(cronList, Test2)
+	cron.Register(Test2)
 }
 
 // Test2 测试2任务（带参数）
@@ -32,11 +31,11 @@ func (c *cTest2) GetName() string {
 func (c *cTest2) Execute(ctx context.Context) {
 	args, ok := ctx.Value(consts.ContextKeyCronArgs).([]string)
 	if !ok {
-		g.Log().Warning(ctx, "参数解析失败!")
+		cron.Logger().Warning(ctx, "参数解析失败!")
 		return
 	}
 	if len(args) != 3 {
-		g.Log().Warning(ctx, "test2 传入参数不正确!")
+		cron.Logger().Warning(ctx, "test2 传入参数不正确!")
 		return
 	}
 
@@ -46,5 +45,5 @@ func (c *cTest2) Execute(ctx context.Context) {
 		msg  = args[2]
 	)
 
-	g.Log().Infof(ctx, "cron test2 Execute:%v, name:%v, age:%v, msg:%v", time.Now(), name, age, msg)
+	cron.Logger().Infof(ctx, "cron test2 Execute:%v, name:%v, age:%v, msg:%v", time.Now(), name, age, msg)
 }

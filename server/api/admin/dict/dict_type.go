@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package dict
 
 import (
@@ -16,6 +15,7 @@ import (
 type TypeTreeReq struct {
 	g.Meta `path:"/dictType/tree" tags:"字典类型" method:"get" summary:"字典类型树列表"`
 }
+
 type TypeTreeRes struct {
 	List []*sysin.DictTypeTree `json:"list"   dc:"数据列表"`
 }
@@ -33,4 +33,5 @@ type TypeDeleteReq struct {
 	Id     interface{} `json:"id" v:"required#字典类型ID不能为空" dc:"字典类型ID"`
 	g.Meta `path:"/dictType/delete" method:"post" tags:"字典类型" summary:"删除字典类型"`
 }
+
 type TypeDeleteRes struct{}

@@ -81,7 +81,6 @@ func Login(ctx context.Context, user *model.Identity) (string, int64, error) {
 	if err = cache.Instance().Set(ctx, bindKey, tokenKey, duration); err != nil {
 		return "", 0, err
 	}
-
 	return header, config.Expires, nil
 }
 
@@ -270,7 +269,6 @@ func parseToken(ctx context.Context, header string) (*Claims, error) {
 	if !ok {
 		return nil, errorLogin
 	}
-
 	return claims, nil
 }
 
@@ -283,7 +281,6 @@ func GetAuthorization(r *ghttp.Request) string {
 	if authorization == "" {
 		return r.Get("authorization").String()
 	}
-
 	return gstr.Replace(authorization, "Bearer ", "")
 }
 
