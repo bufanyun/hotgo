@@ -14,8 +14,8 @@ type sEvent struct {
 
 var event *sEvent
 
-// InstanceEvent 事件实例
-func InstanceEvent() *sEvent {
+// Event 事件实例
+func Event() *sEvent {
 	if event == nil {
 		event = &sEvent{
 			list: make(map[string][]EventFunc),

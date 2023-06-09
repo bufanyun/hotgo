@@ -12,6 +12,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/model"
 	"hotgo/internal/service"
+	"hotgo/utility/simple"
 )
 
 // Site 基础
@@ -21,7 +22,7 @@ type cSite struct{}
 
 func (a *cSite) Index(ctx context.Context, _ *base.SiteIndexReq) (res *base.SiteIndexRes, err error) {
 	service.View().Render(ctx, model.View{Data: g.Map{
-		"name":    "HotGo",
+		"name":    simple.AppName(ctx),
 		"version": consts.VersionApp,
 		"debug":   g.Cfg().MustGet(ctx, "hotgo.debug", true),
 	}})
