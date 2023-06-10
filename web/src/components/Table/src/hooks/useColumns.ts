@@ -92,10 +92,17 @@ export function useColumns(propsRef: ComputedRef<BasicTableProps>) {
   function handleActionColumn(propsRef: ComputedRef<BasicTableProps>, columns: BasicColumn[]) {
     const { actionColumn } = unref(propsRef);
     if (!actionColumn) return;
-    !columns.find((col) => col.key === 'action') &&
-      columns.push({
-        ...(actionColumn as any),
-      });
+    if (!columns.find((col) => col.key === 'action')) {
+      if ((actionColumn as any).fixed && (actionColumn as any).fixed === 'left') {
+        columns.unshift({
+          ...(actionColumn as any),
+        });
+      } else {
+        columns.push({
+          ...(actionColumn as any),
+        });
+      }
+    }
   }
 
   //设置
