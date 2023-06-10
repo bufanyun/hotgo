@@ -58,10 +58,9 @@
 
 <script lang="ts" setup>
   import { onMounted, ref } from 'vue';
-  import { MessageRow, parseMessage } from '@/enums/systemMessageEnum';
-  import { getIcon } from '@/enums/systemMessageEnum';
+  import { getIcon, MessageRow, parseMessage } from '@/enums/systemMessageEnum';
   import { MessageList, UpRead } from '@/api/apply/notice';
-  import { debounce } from 'throttle-debounce';
+  import { debounce } from 'lodash-es';
   import { notificationStoreWidthOut } from '@/store/modules/notification';
 
   interface Props {
@@ -120,9 +119,9 @@
       });
   }
 
-  const debounceCallback = debounce(1000, function () {
+  const debounceCallback = debounce(function () {
     notificationStore.pullMessages();
-  });
+  }, 1000);
 
   function getBadgePops(item: MessageRow) {
     if (item.isRead) {
@@ -130,6 +129,7 @@
     }
     return { dot: true, processing: true, offset: [-2, 2] };
   }
+
   function onUpdatePage(page: number) {
     dataSource.value.page = page;
     loadDataSource();
