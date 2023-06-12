@@ -7,9 +7,10 @@ package genrouter
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"hotgo/internal/consts"
 	"hotgo/internal/service"
+	"hotgo/utility/simple"
 )
 
 var (
@@ -19,8 +20,7 @@ var (
 
 // Register 注册通过代码生成的后台路由
 func Register(ctx context.Context, group *ghttp.RouterGroup) {
-	prefix := g.Cfg().MustGet(ctx, "router.admin.prefix", "/admin")
-	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
+	group.Group(simple.RouterPrefix(ctx, consts.AppAdmin), func(group *ghttp.RouterGroup) {
 		if len(NoLoginRouter) > 0 {
 			group.Bind(NoLoginRouter...)
 		}

@@ -7,19 +7,19 @@ package router
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"hotgo/internal/consts"
 	controller "hotgo/internal/controller/websocket"
 	"hotgo/internal/controller/websocket/handler/admin"
 	"hotgo/internal/controller/websocket/handler/common"
 	"hotgo/internal/service"
 	"hotgo/internal/websocket"
+	"hotgo/utility/simple"
 )
 
 // WebSocket ws路由配置
 func WebSocket(ctx context.Context, group *ghttp.RouterGroup) {
-	prefix := g.Cfg().MustGet(ctx, "router.ws.prefix", "/socket")
-	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
+	group.Group(simple.RouterPrefix(ctx, consts.AppWebSocket), func(group *ghttp.RouterGroup) {
 		group.Middleware()
 		group.Bind(
 			controller.Send, // 通过http发送ws消息。方便测试没有放权限中间件，实际使用时请自行调整

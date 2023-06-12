@@ -23,6 +23,11 @@ func AppName(ctx context.Context) string {
 	return g.Cfg().MustGet(ctx, "appName", "hotgo").String()
 }
 
+// RouterPrefix 获取应用路由前缀
+func RouterPrefix(ctx context.Context, app string) string {
+	return g.Cfg().MustGet(ctx, "router."+app+".prefix", "/"+app+"").String()
+}
+
 // FilterMaskDemo 过滤演示环境下的配置隐藏字段
 func FilterMaskDemo(ctx context.Context, src g.Map) g.Map {
 	if src == nil {
