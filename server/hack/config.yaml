@@ -13,6 +13,13 @@ gfcli:
     output: "./temp/hotgo"                 # 可执行文件生成路径
     extra: ""
 
+
+  docker:
+    build: "-a amd64 -s linux -p temp -ew"   # 构建参数
+    tagPrefixes:                             # 该docker的标记前缀，用于docker推送，请替换成你自己的
+      - ccr.ccs.tencentyun.com/bufanyun
+
+
   gen:
     dao:
       - link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
@@ -25,6 +32,7 @@ gfcli:
         jsonCase: "CamelLower"
         gJsonSupport: true
         clear: false
+
 
 #    service: # 生成业务配置
 #      srcFolder: "internal/logic"

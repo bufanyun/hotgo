@@ -110,22 +110,11 @@ start:
 	make port;
 
 
-# Build docker image.
+# Build docker image and commit to the repository.
+# example: make image tag=v0.0.1
 .PHONY: image
-image: cli.install
-	$(eval _TAG  = $(shell git log -1 --format="%cd.%h" --date=format:"%Y%m%d%H%M%S"))
-ifneq (, $(shell git status --porcelain 2>/dev/null))
-	$(eval _TAG  = $(_TAG).dirty)
-endif
-	$(eval _TAG  = $(if ${TAG},  ${TAG}, $(_TAG)))
-	$(eval _PUSH = $(if ${PUSH}, ${PUSH}, ))
-	@gf docker -p -b "-a amd64 -s linux -p temp" -t $(DOCKER_NAME):${_TAG};
-
-
-# Build docker image and automatically push to docker repo.
-.PHONY: image.push
-image.push:
-	@make image PUSH=-p;
+image:
+	@echo "y" | gf docker main.go -p -tn hotgo:$(tag)
 
 
 # Deploy image and yaml to current kubectl environment.
