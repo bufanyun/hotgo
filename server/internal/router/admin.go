@@ -7,14 +7,15 @@ package router
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"hotgo/internal/consts"
 	"hotgo/internal/controller/admin/admin"
 	"hotgo/internal/controller/admin/common"
 	"hotgo/internal/controller/admin/pay"
 	"hotgo/internal/controller/admin/sys"
 	"hotgo/internal/router/genrouter"
 	"hotgo/internal/service"
+	"hotgo/utility/simple"
 )
 
 func Admin(ctx context.Context, group *ghttp.RouterGroup) {
@@ -23,8 +24,7 @@ func Admin(ctx context.Context, group *ghttp.RouterGroup) {
 		r.Response.RedirectTo("/admin")
 	})
 
-	prefix := g.Cfg().MustGet(ctx, "router.admin.prefix", "/admin")
-	group.Group(prefix.String(), func(group *ghttp.RouterGroup) {
+	group.Group(simple.RouterPrefix(ctx, consts.AppAdmin), func(group *ghttp.RouterGroup) {
 		group.Bind(
 			common.Site, // 基础
 		)

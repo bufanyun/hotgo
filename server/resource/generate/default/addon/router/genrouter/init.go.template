@@ -8,7 +8,7 @@ package genrouter
 import (
 	"context"
 	"github.com/gogf/gf/v2/net/ghttp"
-	"hotgo/addons/hgexample/global"
+	"hotgo/addons/@{.name}/global"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/addons"
 	"hotgo/internal/service"
