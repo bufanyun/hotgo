@@ -6,6 +6,8 @@
 package service
 
 import (
+	"context"
+
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 
@@ -17,6 +19,9 @@ type (
 		CORS(r *ghttp.Request)
 		DemoLimit(r *ghttp.Request)
 		Addon(r *ghttp.Request)
+		DeliverUserContext(r *ghttp.Request) (err error)
+		IsExceptAuth(ctx context.Context, appName, path string) bool
+		IsExceptLogin(ctx context.Context, appName, path string) bool
 		Blacklist(r *ghttp.Request)
 		Develop(r *ghttp.Request)
 		ResponseHandler(r *ghttp.Request)
