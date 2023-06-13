@@ -12,8 +12,12 @@ import (
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/net/gtrace"
+	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/text/gstr"
+	"go.opentelemetry.io/otel/attribute"
 	"hotgo/internal/consts"
+	"hotgo/internal/global"
 	"hotgo/internal/library/addons"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/response"
@@ -53,6 +57,16 @@ func NewMiddleware() *sMiddleware {
 
 // Ctx 初始化请求上下文
 func (s *sMiddleware) Ctx(r *ghttp.Request) {
+	if global.JaegerSwitch {
+		ctx, span := gtrace.NewSpan(r.Context(), "middleware.ctx")
+		span.SetAttributes(attribute.KeyValue{
+			Key:   "traceID",
+			Value: attribute.StringValue(gctx.CtxId(ctx)),
+		})
+		span.End()
+		r.SetCtx(ctx)
+	}
+
 	contexts.Init(r, &model.Context{
 		Data:   make(g.Map),
 		Module: getModule(r.URL.Path),
@@ -73,7 +87,6 @@ func getModule(path string) (module string) {
 		module = consts.AppDefault
 		return
 	}
-
 	return slice[1]
 }
 
@@ -124,8 +137,8 @@ func (s *sMiddleware) Addon(r *ghttp.Request) {
 	r.Middleware.Next()
 }
 
-// deliverUserContext 将用户信息传递到上下文中
-func deliverUserContext(r *ghttp.Request) (err error) {
+// DeliverUserContext 将用户信息传递到上下文中
+func (s *sMiddleware) DeliverUserContext(r *ghttp.Request) (err error) {
 	user, err := token.ParseLoginUser(r)
 	if err != nil {
 		return
@@ -134,8 +147,8 @@ func deliverUserContext(r *ghttp.Request) (err error) {
 	return
 }
 
-// isExceptAuth 是否是不需要验证权限的路由地址
-func isExceptAuth(ctx context.Context, appName, path string) bool {
+// IsExceptAuth 是否是不需要验证权限的路由地址
+func (s *sMiddleware) IsExceptAuth(ctx context.Context, appName, path string) bool {
 	pathList := g.Cfg().MustGet(ctx, fmt.Sprintf("router.%v.exceptAuth", appName)).Strings()
 
 	for i := 0; i < len(pathList); i++ {
@@ -143,12 +156,11 @@ func isExceptAuth(ctx context.Context, appName, path string) bool {
 			return true
 		}
 	}
-
 	return false
 }
 
-// isExceptLogin 是否是不需要登录的路由地址
-func isExceptLogin(ctx context.Context, appName, path string) bool {
+// IsExceptLogin 是否是不需要登录的路由地址
+func (s *sMiddleware) IsExceptLogin(ctx context.Context, appName, path string) bool {
 	pathList := g.Cfg().MustGet(ctx, fmt.Sprintf("router.%v.exceptLogin", appName)).Strings()
 
 	for i := 0; i < len(pathList); i++ {
@@ -156,6 +168,5 @@ func isExceptLogin(ctx context.Context, appName, path string) bool {
 			return true
 		}
 	}
-
 	return false
 }

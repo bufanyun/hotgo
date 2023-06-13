@@ -16,4 +16,6 @@ var (
 	SysType = runtime.GOOS
 	// Blacklists 黑名单列表
 	Blacklists map[string]struct{}
+	// JaegerSwitch 链路追踪开关
+	JaegerSwitch bool
 )

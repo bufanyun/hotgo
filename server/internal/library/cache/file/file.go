@@ -209,8 +209,8 @@ func (c *AdapterFile) read(key string) (*fileContent, error) {
 
 // Has checks if the cached key exists into the File storage
 func (c *AdapterFile) Has(key string) bool {
-	_, err := c.read(key)
-	return err == nil
+	fc, err := c.read(key)
+	return err == nil && fc != nil
 }
 
 // Delete the cached key from File storage
@@ -237,11 +237,11 @@ func (c *AdapterFile) DeleteMulti(keys ...string) (err error) {
 func (c *AdapterFile) Fetch(key string) (interface{}, error) {
 	content, err := c.read(key)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	if content == nil {
-		return "", nil
+		return nil, nil
 	}
 
 	return content.Data, nil

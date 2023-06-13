@@ -34,7 +34,7 @@ func (r *Cache) SetCtx(ctx context.Context) {
 // Get 获取一个值
 func (r *Cache) Get(key string) interface{} {
 	get, err := r.cache.Get(r.ctx, key)
-	if err != nil {
+	if err != nil || get.IsNil() || get.IsEmpty() {
 		return nil
 	}
 	return get.Interface()

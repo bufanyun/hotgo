@@ -14,30 +14,30 @@ import (
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/response"
 	"hotgo/internal/service"
+	"hotgo/utility/simple"
 )
 
 // AdminAuth 后台鉴权中间件
 func (s *sMiddleware) AdminAuth(r *ghttp.Request) {
 	var (
-		ctx    = r.Context()
-		prefix = g.Cfg().MustGet(ctx, "router.admin.prefix", "/admin").String()
-		path   = gstr.Replace(r.URL.Path, prefix, "", 1)
+		ctx  = r.Context()
+		path = gstr.Replace(r.URL.Path, simple.RouterPrefix(ctx, consts.AppAdmin), "", 1)
 	)
 
 	// 不需要验证登录的路由地址
-	if isExceptLogin(ctx, consts.AppAdmin, path) {
+	if s.IsExceptLogin(ctx, consts.AppAdmin, path) {
 		r.Middleware.Next()
 		return
 	}
 
 	// 将用户信息传递到上下文中
-	if err := deliverUserContext(r); err != nil {
+	if err := s.DeliverUserContext(r); err != nil {
 		response.JsonExit(r, gcode.CodeNotAuthorized.Code(), err.Error())
 		return
 	}
 
 	// 不需要验证权限的路由地址
-	if isExceptAuth(ctx, consts.AppAdmin, path) {
+	if s.IsExceptAuth(ctx, consts.AppAdmin, path) {
 		r.Middleware.Next()
 		return
 	}

@@ -120,7 +120,8 @@ func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 
 // InitTrace 初始化链路追踪
 func InitTrace(ctx context.Context) {
-	if !g.Cfg().MustGet(ctx, "jaeger.switch").Bool() {
+	JaegerSwitch = g.Cfg().MustGet(ctx, "jaeger.switch").Bool()
+	if !JaegerSwitch {
 		return
 	}
 
