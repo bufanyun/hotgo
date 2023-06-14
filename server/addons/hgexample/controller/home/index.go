@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package home
 
 import (
@@ -11,7 +10,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/addons/hgexample/api/home/index"
-	"hotgo/addons/hgexample/global"
 	"hotgo/addons/hgexample/model/input/sysin"
 	"hotgo/addons/hgexample/service"
 	"hotgo/internal/model"
@@ -39,7 +37,7 @@ func (a *cIndex) Index(ctx context.Context, req *index.TestReq) (res *index.Test
 		return
 	}
 
-	isc.View().RenderTpl(ctx, global.Tpl("home/index.html"), model.View{Data: g.Map{
+	isc.View().RenderTpl(ctx, "home/index.html", model.View{Data: g.Map{
 		"name":   data.Name,
 		"module": data.Module,
 		"time":   data.Time,

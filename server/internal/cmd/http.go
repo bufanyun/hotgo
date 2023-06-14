@@ -71,6 +71,9 @@ var (
 				addons.RegisterModulesRouter(ctx, group)
 			})
 
+			// 设置插件静态目录映射
+			addons.AddStaticPath(ctx, s)
+
 			// 初始化casbin权限
 			casbin.InitEnforcer(ctx)
 

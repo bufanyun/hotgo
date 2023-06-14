@@ -2,7 +2,7 @@ package addons
 
 import (
 	"context"
-	"fmt"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
@@ -16,7 +16,6 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 	var (
 		buildPath    = "./" + consts.AddonsDir + "/" + sk.Name
 		modulesPath  = "./" + consts.AddonsDir + "/modules/" + sk.Name + ".go"
-		templatePath = gstr.Replace(conf.TemplatePath, "{$name}", sk.Name)
 		webApiPath   = gstr.Replace(conf.WebApiPath, "{$name}", sk.Name)
 		webViewsPath = gstr.Replace(conf.WebViewsPath, "{$name}", sk.Name)
 		replaces     = map[string]string{
@@ -31,7 +30,7 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 		}
 	)
 
-	if err = checkBuildDir(buildPath, modulesPath, templatePath, webApiPath, webViewsPath); err != nil {
+	if err = checkBuildDir(buildPath, modulesPath, webApiPath, webViewsPath); err != nil {
 		return
 	}
 
@@ -46,7 +45,7 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 
 	for _, path := range list {
 		if !gfile.IsReadable(path) {
-			err = fmt.Errorf("file：%v is unreadable, please check permissions", path)
+			err = gerror.Newf("file：%v is unreadable, please check permissions", path)
 			return
 		}
 
@@ -72,11 +71,6 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 		return
 	}
 
-	// home默认页面
-	if err = gfile.PutContents(templatePath+"/home/index.html", gstr.ReplaceByMap(homeLayout, replaces)); err != nil {
-		return
-	}
-
 	// webApi
 	if err = gfile.PutContents(webApiPath+"/config/index.ts", gstr.ReplaceByMap(webApiLayout, replaces)); err != nil {
 		return
@@ -94,15 +88,15 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 	return
 }
 
-func checkBuildDir(paths ...string) error {
+func checkBuildDir(paths ...string) (err error) {
 	if len(paths) == 0 {
-		return nil
+		return
 	}
 
 	for _, path := range paths {
 		if gfile.Exists(path) {
-			return fmt.Errorf("插件已存在，请换一个插件名称或者经确认无误后依次删除文件夹： [%v] 后重新生成", strings.Join(paths, "、\t"))
+			return gerror.Newf("插件已存在，请换一个插件名称或者经确认无误后依次删除文件夹： [%v] 后重新生成", strings.Join(paths, "、\t"))
 		}
 	}
-	return nil
+	return
 }

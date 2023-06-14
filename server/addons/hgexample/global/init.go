@@ -20,7 +20,3 @@ func GetSkeleton() *addons.Skeleton {
 	}
 	return skeleton
 }
-
-func Tpl(tpl string) string {
-	return addons.Tpl(skeleton.Name, tpl)
-}

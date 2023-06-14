@@ -11,6 +11,9 @@
         <n-tab-pane name="home" tab="前台页面">
           <Form path="/home/hgexample/index/test?name=HotGo" />
         </n-tab-pane>
+        <n-tab-pane name="static" tab="静态目录">
+          <Form path="/addons/hgexample/default" />
+        </n-tab-pane>
         <n-tab-pane name="websocket" tab="Websocket">
           <Form path="/socket/hgexample/index/test?name=HotGo" />
         </n-tab-pane>

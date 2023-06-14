@@ -12,15 +12,16 @@
 ```go
 // Skeleton 模块骨架
 type Skeleton struct {
-	Label       string `json:"label"`       // 标识
-	Name        string `json:"name"`        // 名称
-	Group       int    `json:"group"`       // 分组
-	Logo        string `json:"logo"`        // logo
-	Brief       string `json:"brief"`       // 简介
-	Description string `json:"description"` // 详细描述
-	Author      string `json:"author"`      // 作者
-	Version     string `json:"version"`     // 版本号
-	RootPath    string `json:"rootPath"`    // 根路径
+    Label       string      `json:"label"`       // 标识
+    Name        string      `json:"name"`        // 名称
+    Group       int         `json:"group"`       // 分组
+    Logo        string      `json:"logo"`        // logo
+    Brief       string      `json:"brief"`       // 简介
+    Description string      `json:"description"` // 详细描述
+    Author      string      `json:"author"`      // 作者
+    Version     string      `json:"version"`     // 版本号
+    RootPath    string      `json:"rootPath"`    // 根路径
+    View        *gview.View `json:"view"`        // 模板引擎
 }
 
 func (s *Skeleton) GetModule() Module {
@@ -79,26 +80,4 @@ func test(ctx context.Context)  {
 
 #### 插件路由规则
 - 如果你不喜欢现在的路由风格，可以自行调整。修改位置在：\server\internal\library\addons\addons.go的RouterPrefix方法。 
-- 调整后如web前端页面中有之前的路由风格也需同步修改。
-
-```go
-package main
-
-import (
-	"context"
-	"github.com/gogf/gf/v2/frame/g"
-	"hotgo/internal/consts"
-)
-
-// RouterPrefix 路由前缀
-// 最终效果：/应用名称/插件模块名称/xxx/xxx。如果你不喜欢现在的路由风格，可以自行调整
-func RouterPrefix(ctx context.Context, app, name string) string {
-	var prefix = "/"
-
-	if app != "" {
-		prefix = g.Cfg().MustGet(ctx, "router."+app+".prefix", "/"+app+"").String()
-	}
-
-	return prefix + "/" + name
-}
-```
+- 注意调整后如web前端页面中如有之前的路由风格也需同步修改。
