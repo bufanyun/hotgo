@@ -133,7 +133,23 @@ func (s *sMiddleware) Addon(r *ghttp.Request) {
 		return
 	}
 
-	contexts.SetAddonName(ctx, addons.GetModule(ss[0]).GetSkeleton().Name)
+	module := addons.GetModule(ss[0])
+	if module == nil {
+		g.Log().Warningf(ctx, "addon module = nil, name:%v", ss[0])
+		return
+	}
+
+	sk := module.GetSkeleton()
+	if sk == nil {
+		g.Log().Warningf(ctx, "addon skeleton = nil, name:%v", ss[0])
+		return
+	}
+
+	if sk.View != nil {
+		r.SetView(sk.View)
+	}
+
+	contexts.SetAddonName(ctx, sk.Name)
 	r.Middleware.Next()
 }
 

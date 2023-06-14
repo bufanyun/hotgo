@@ -9,8 +9,10 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gctx"
+	_ "hotgo/addons/@{.name}/crons"
 	"hotgo/addons/@{.name}/global"
 	_ "hotgo/addons/@{.name}/logic"
+	_ "hotgo/addons/@{.name}/queues"
 	"hotgo/addons/@{.name}/router"
 	"hotgo/internal/library/addons"
 	"hotgo/internal/service"
@@ -38,11 +40,9 @@ func newModule() {
 			Description: `@{.description}`,
 			Author:      `@{.author}`,
 			Version:     `@{.version}`, // 当该版本号高于已安装的版本号时，会提示可以更新
-			RootPath:    addons.GetModulePath("@{.name}"),
 		},
 		ctx: gctx.New(),
 	}
-
 	addons.RegisterModule(m)
 }
 

@@ -301,6 +301,5 @@ hggen:
   # 生成插件模块，通过后台创建新插件时使用的模板，允许自定义，可以参考default模板进行改造
   addon:
     srcPath: "./resource/generate/default/addon"                    # 生成模板路径
-    templatePath: "./resource/template/addons/{$name}"              # 页面模板路径
     webApiPath: "../web/src/api/addons/{$name}"                     # webApi生成路径
     webViewsPath: "../web/src/views/addons/{$name}"                 # web页面生成路径

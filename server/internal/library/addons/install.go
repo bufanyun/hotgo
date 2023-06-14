@@ -23,11 +23,12 @@ type InstallRecord struct {
 	UpdatedAt *gtime.Time `json:"updatedAt" description:"更新时间"`
 }
 
+func GetModel(ctx context.Context) *gdb.Model {
+	return g.Model("sys_addons_install").Ctx(ctx)
+}
+
 func ScanInstall(m Module) (record *InstallRecord, err error) {
-	err = g.Model("sys_addons_install").
-		Ctx(m.Ctx()).
-		Where("name", m.GetSkeleton().Name).
-		Scan(&record)
+	err = GetModel(m.Ctx()).Where("name", m.GetSkeleton().Name).Scan(&record)
 	return
 }
 
@@ -59,23 +60,14 @@ func Install(m Module) (err error) {
 		"version": m.GetSkeleton().Version,
 		"status":  consts.AddonsInstallStatusOk,
 	}
-
 	return g.DB().Transaction(m.Ctx(), func(ctx context.Context, tx gdb.TX) error {
 		if record != nil {
-			_, err = g.Model("sys_addons_install").
-				Ctx(m.Ctx()).
-				Where("id", record.Id).
-				Delete()
+			_, _ = GetModel(m.Ctx()).Where("id", record.Id).Delete()
 		}
-		_, err = g.Model("sys_addons_install").
-			Ctx(m.Ctx()).
-			Data(data).
-			Insert()
 
-		if err != nil {
+		if _, err = GetModel(m.Ctx()).Data(data).Insert(); err != nil {
 			return err
 		}
-
 		return m.Install(ctx)
 	})
 }
@@ -94,18 +86,10 @@ func Upgrade(m Module) (err error) {
 	data := g.Map{
 		"version": m.GetSkeleton().Version,
 	}
-
 	return g.DB().Transaction(m.Ctx(), func(ctx context.Context, tx gdb.TX) error {
-		_, err = g.Model("sys_addons_install").
-			Ctx(m.Ctx()).
-			Where("id", record.Id).
-			Data(data).
-			Update()
-
-		if err != nil {
+		if _, err = GetModel(m.Ctx()).Where("id", record.Id).Data(data).Update(); err != nil {
 			return err
 		}
-
 		return m.Upgrade(ctx)
 	})
 }
@@ -125,18 +109,10 @@ func UnInstall(m Module) (err error) {
 		"version": m.GetSkeleton().Version,
 		"status":  consts.AddonsInstallStatusUn,
 	}
-
 	return g.DB().Transaction(m.Ctx(), func(ctx context.Context, tx gdb.TX) error {
-		_, err = g.Model("sys_addons_install").
-			Ctx(m.Ctx()).
-			Where("id", record.Id).
-			Data(data).
-			Update()
-
-		if err != nil {
+		if _, err = GetModel(m.Ctx()).Where("id", record.Id).Data(data).Update(); err != nil {
 			return err
 		}
-
 		return m.UnInstall(ctx)
 	})
 }

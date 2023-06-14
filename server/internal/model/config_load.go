@@ -69,7 +69,6 @@ type GenerateConfig struct {
 // BuildAddonConfig 构建插件模块配置
 type BuildAddonConfig struct {
 	SrcPath      string `json:"srcPath"`
-	TemplatePath string `json:"templatePath"`
 	WebApiPath   string `json:"webApiPath"`
 	WebViewsPath string `json:"webViewsPath"`
 }

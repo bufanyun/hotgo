@@ -19,9 +19,8 @@
 
 1. /server/addons/hgexample/                   # 插件模块目录
 2. /server/addons/modules/hgexample.go         # 隐式注册插件文件
-3. /server/resource/template/addons/hgexample  # pc模板目录
-4. /web/src/api/addons/hgexample               # webApi目录
-5. /web/src/views/addons/hgexample             # web页面目录
+3. /web/src/api/addons/hgexample               # webApi目录
+4. /web/src/views/addons/hgexample             # web页面目录
 
 # 默认情况下没有为web页面生成菜单权限，因为在实际场景中插件不一定需要用到web页面，所以如有需要请手动到后台 权限管理 -> 菜单权限->自行添加菜单和配置权限
 ```
@@ -170,7 +169,7 @@ func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in sysin.Upd
 如：127.0.0.1:8000/admin/hgexample/index/test
 ```
 
-对应控制器路径：`server/addons/hgexample/controller/admin/sys/index.go`
+- 对应控制器路径：`server/addons/hgexample/controller/admin/sys/index.go`
 
 #### 前端API插件访问路径
 
@@ -179,7 +178,7 @@ func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in sysin.Upd
 如：127.0.0.1:8000/api/hgexample/index/test
 ```
 
-对应控制器路径：`server/addons/hgexample/controller/api/index.go`
+- 对应控制器路径：`server/addons/hgexample/controller/api/index.go`
 
 #### 前台页面插件访问路径
 
@@ -188,7 +187,17 @@ func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in sysin.Upd
 如：127.0.0.1:8000/home/hgexample/index/test
 ```
 
-对应控制器路径：`server/addons/hgexample/controller/home/index.go`
+- 对应控制器路径：`server/addons/hgexample/controller/home/index.go`
+- 对应模板路径：`server/addons/hgexample/resource/public/template`
+
+#### 静态资源插件访问路径
+
+```
+// IP+端口或域名/home/插件名称/API路径
+如：127.0.0.1:8000/addons/hgexample/default
+```
+
+- 对应资源路径：`server/addons/hgexample/resource/public`
 
 
 #### Websocket插件访问路径
@@ -198,9 +207,9 @@ func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in sysin.Upd
 如：127.0.0.1:8000/socket/hgexample/index/test
 ```
 
-对应控制器路径：`server/addons/hgexample/controller/socket/index.go`
+- 对应控制器路径：`server/addons/hgexample/controller/socket/index.go`
 
 
 ### 数据迁移
 
-可以将数据迁移逻辑写进server/xxx插件/main.go 文件中的Install方法中，并遵循系统规范进行数据安装
+- 可以将数据迁移逻辑写进server/xxx插件/main.go 文件中的Install方法中，并遵循系统规范进行数据安装
