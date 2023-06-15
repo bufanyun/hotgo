@@ -11,6 +11,7 @@ import (
 	"github.com/gogf/gf/v2/encoding/gbase64"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/os/glog"
 	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/gogf/gf/v2/util/gconv"
@@ -44,6 +45,11 @@ func FilterMaskDemo(ctx context.Context, src g.Map) g.Map {
 		}
 	}
 	return src
+}
+
+// DefaultErrorTplContent 获取默认的错误模板内容
+func DefaultErrorTplContent(ctx context.Context) string {
+	return gfile.GetContents(g.Cfg().MustGet(ctx, "viewer.paths").String() + "/error/default.html")
 }
 
 // DecryptText 解密文本

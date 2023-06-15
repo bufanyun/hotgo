@@ -17,15 +17,22 @@ import (
 	"hotgo/internal/library/response"
 	"hotgo/internal/model/input/payin"
 	"hotgo/utility/charset"
+	"hotgo/utility/simple"
+	"net/http"
 )
 
 // ResponseHandler HTTP响应预处理
 func (s *sMiddleware) ResponseHandler(r *ghttp.Request) {
 	r.Middleware.Next()
 
-	// 模板页面响应
-	if "text/html" == r.Response.Header().Get("Content-Type") {
-		r.Middleware.Next()
+	// 已存在响应
+	if r.Response.BufferLength() > 0 && contexts.Get(r.Context()).Response != nil {
+		return
+	}
+
+	// html模板响应
+	if r.Response.Header().Get("Content-Type") == "text/html" {
+		s.responseHtml(r)
 		return
 	}
 
@@ -35,10 +42,27 @@ func (s *sMiddleware) ResponseHandler(r *ghttp.Request) {
 		return
 	}
 
+	// 默认json响应
 	responseJson(r)
 }
 
-// rTemplate 支付通知响应
+// responseHtml html模板响应
+func (s *sMiddleware) responseHtml(r *ghttp.Request) {
+	code, message, resp := parseResponse(r)
+	if code == gcode.CodeOK.Code() {
+		return
+	}
+
+	r.Response.ClearBuffer()
+	_ = r.Response.WriteTplContent(simple.DefaultErrorTplContent(r.Context()), g.Map{
+		"code":    code,
+		"message": message,
+		"stack":   resp,
+	})
+	return
+}
+
+// responsePayNotify 支付通知响应
 func (s *sMiddleware) responsePayNotify(r *ghttp.Request) {
 	var (
 		ctx  = r.Context()
@@ -46,18 +70,16 @@ func (s *sMiddleware) responsePayNotify(r *ghttp.Request) {
 		data *payin.PayNotifyModel
 	)
 
-	// 异常
-	if err = r.GetError(); err != nil {
-		g.Log("exception").Error(ctx, err)
-		r.Response.ClearBuffer()
-		r.Response.WriteStatus(500, err.Error())
+	code, message, resp := parseResponse(r)
+	if code != gcode.CodeOK.Code() {
+		response.RJson(r, code, message, data)
 		return
 	}
 
-	if err = gconv.Scan(r.GetHandlerResponse(), &data); err != nil || data == nil {
+	if err = gconv.Scan(resp, &data); err != nil || data == nil {
 		g.Log("exception").Errorf(ctx, "middleware.responsePayNotify Scan err:%+v, data:%+v", err, data)
 		r.Response.ClearBuffer()
-		r.Response.WriteStatus(500, err.Error())
+		r.Response.WriteStatus(http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -80,46 +102,43 @@ func (s *sMiddleware) responsePayNotify(r *ghttp.Request) {
 		err = gerror.Newf("无效的支付方式，这可能是没有配置通知回调响应方式导致的：%+v", data)
 		g.Log("exception").Error(ctx, err)
 		r.Response.ClearBuffer()
-		r.Response.WriteStatus(500, err.Error())
+		r.Response.WriteStatus(http.StatusInternalServerError, err.Error())
 	}
 }
 
+// responseJson json响应
 func responseJson(r *ghttp.Request) {
+	code, message, data := parseResponse(r)
+	response.RJson(r, code, message, data)
+}
+
+// parseResponse 解析响应数据
+func parseResponse(r *ghttp.Request) (code int, message string, resp interface{}) {
 	var (
-		ctx         = r.Context()
-		comResponse = contexts.Get(ctx).Response
-		code        = gcode.CodeOK.Code()
-		message     = "操作成功"
-		data        interface{}
-		err         error
+		ctx = r.Context()
+		err = r.GetError()
 	)
 
-	// 已存在响应内容，且是comResponse返回的时，中断运行
-	if r.Response.BufferLength() > 0 && comResponse != nil {
-		return
+	if err == nil {
+		return gcode.CodeOK.Code(), "操作成功", r.GetHandlerResponse()
 	}
 
-	if err = r.GetError(); err != nil {
-		// 记录到自定义错误日志文件
-		code = gerror.Code(err).Code()
-
-		if code == gcode.CodeNil.Code() {
-			g.Log().Stdout(false).Printf(ctx, "exception:%v", err)
-		} else {
-			g.Log().Errorf(ctx, "exception:%v", err)
-		}
-
-		// 是否输出错误到页面
-		if g.Cfg().MustGet(ctx, "hotgo.debug", true).Bool() {
-			message = gerror.Current(err).Error()
-			data = charset.ParseErrStack(err)
-		} else {
-			message = consts.ErrorMessage(gerror.Current(err))
-		}
+	// 是否输出错误堆栈到页面
+	if g.Cfg().MustGet(ctx, "hotgo.debug", true).Bool() {
+		message = gerror.Current(err).Error()
+		resp = charset.ParseErrStack(err)
 	} else {
-		data = r.GetHandlerResponse()
+		message = consts.ErrorMessage(gerror.Current(err))
 	}
 
-	// 返回固定的友好信息
-	response.RJson(r, code, message, data)
+	// 解析错误状态码
+	code = gerror.Code(err).Code()
+
+	// 记录异常日志
+	if code == gcode.CodeNil.Code() {
+		g.Log().Stdout(false).Printf(ctx, "exception:%v", err)
+	} else {
+		g.Log().Errorf(ctx, "exception:%v", err)
+	}
+	return
 }

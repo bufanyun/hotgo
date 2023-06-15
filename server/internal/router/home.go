@@ -8,19 +8,25 @@ package router
 import (
 	"context"
 	"github.com/gogf/gf/v2/net/ghttp"
-	api "hotgo/api/home/base"
 	"hotgo/internal/consts"
 	"hotgo/internal/controller/home/base"
+	"hotgo/internal/service"
 	"hotgo/utility/simple"
 )
 
 // Home 前台页面路由
 func Home(ctx context.Context, group *ghttp.RouterGroup) {
-	// 注册首页路由
-	group.ALL("/", func(r *ghttp.Request) {
-		_, _ = base.Site.Index(r.Context(), &api.SiteIndexReq{})
+	group.Middleware(service.Middleware().HomeAuth)
+
+	// 允许通过根地址访问的路由可以同时加到这里
+	// 访问地址：http://127.0.0.1:8000
+	group.Group("/", func(group *ghttp.RouterGroup) {
+		group.Bind(
+			base.Site, // 基础
+		)
 	})
 
+	// 默认访问地址：http://127.0.0.1:8000/home
 	group.Group(simple.RouterPrefix(ctx, consts.AppHome), func(group *ghttp.RouterGroup) {
 		group.Bind(
 			base.Site, // 基础

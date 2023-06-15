@@ -6,9 +6,11 @@
 package charset
 
 import (
+	"bytes"
 	"crypto/rand"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/text/gstr"
+	"github.com/gogf/gf/v2/util/gutil"
 	r "math/rand"
 	"strings"
 	"time"
@@ -46,6 +48,16 @@ func ParseStack(st string) []string {
 		stack[i] = gstr.Replace(stack[i], "\t", "--> ")
 	}
 	return stack
+}
+
+// SerializeStack 解析错误并序列化堆栈信息
+func SerializeStack(err error) string {
+	buffer := bytes.NewBuffer(nil)
+	gutil.DumpTo(buffer, ParseErrStack(err), gutil.DumpOption{
+		WithType:     false,
+		ExportedOnly: false,
+	})
+	return buffer.String()
 }
 
 // SubstrAfter 截取指定字符后的内容

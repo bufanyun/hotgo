@@ -29,11 +29,58 @@ type (
 		UniqueId(ctx context.Context, in sysin.ProvincesUniqueIdInp) (res *sysin.ProvincesUniqueIdModel, err error)
 		Select(ctx context.Context, in sysin.ProvincesSelectInp) (res *sysin.ProvincesSelectModel, err error)
 	}
-	ISysAttachment interface {
-		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
-		Delete(ctx context.Context, in sysin.AttachmentDeleteInp) (err error)
-		View(ctx context.Context, in sysin.AttachmentViewInp) (res *sysin.AttachmentViewModel, err error)
-		List(ctx context.Context, in sysin.AttachmentListInp) (list []*sysin.AttachmentListModel, totalCount int, err error)
+	ISysSmsLog interface {
+		Delete(ctx context.Context, in sysin.SmsLogDeleteInp) (err error)
+		Edit(ctx context.Context, in sysin.SmsLogEditInp) (err error)
+		Status(ctx context.Context, in sysin.SmsLogStatusInp) (err error)
+		MaxSort(ctx context.Context, in sysin.SmsLogMaxSortInp) (res *sysin.SmsLogMaxSortModel, err error)
+		View(ctx context.Context, in sysin.SmsLogViewInp) (res *sysin.SmsLogViewModel, err error)
+		List(ctx context.Context, in sysin.SmsLogListInp) (list []*sysin.SmsLogListModel, totalCount int, err error)
+		SendCode(ctx context.Context, in sysin.SendCodeInp) (err error)
+		GetTemplate(ctx context.Context, template string, config *model.SmsConfig) (val string, err error)
+		AllowSend(ctx context.Context, models *entity.SysSmsLog, config *model.SmsConfig) (err error)
+		VerifyCode(ctx context.Context, in sysin.VerifyCodeInp) (err error)
+	}
+	ISysAddons interface {
+		List(ctx context.Context, in sysin.AddonsListInp) (list []*sysin.AddonsListModel, totalCount int, err error)
+		Selects(ctx context.Context, in sysin.AddonsSelectsInp) (res *sysin.AddonsSelectsModel, err error)
+		Build(ctx context.Context, in sysin.AddonsBuildInp) (err error)
+		Install(ctx context.Context, in sysin.AddonsInstallInp) (err error)
+		Upgrade(ctx context.Context, in sysin.AddonsUpgradeInp) (err error)
+		UnInstall(ctx context.Context, in sysin.AddonsUnInstallInp) (err error)
+	}
+	ISysLoginLog interface {
+		Model(ctx context.Context) *gdb.Model
+		List(ctx context.Context, in sysin.LoginLogListInp) (list []*sysin.LoginLogListModel, totalCount int, err error)
+		Export(ctx context.Context, in sysin.LoginLogListInp) (err error)
+		Delete(ctx context.Context, in sysin.LoginLogDeleteInp) (err error)
+		View(ctx context.Context, in sysin.LoginLogViewInp) (res *sysin.LoginLogViewModel, err error)
+		Push(ctx context.Context, in sysin.LoginLogPushInp)
+		RealWrite(ctx context.Context, models entity.SysLoginLog) (err error)
+	}
+	ISysLog interface {
+		Export(ctx context.Context, in sysin.LogListInp) (err error)
+		RealWrite(ctx context.Context, log entity.SysLog) (err error)
+		AutoLog(ctx context.Context) error
+		AnalysisLog(ctx context.Context) entity.SysLog
+		View(ctx context.Context, in sysin.LogViewInp) (res *sysin.LogViewModel, err error)
+		Delete(ctx context.Context, in sysin.LogDeleteInp) (err error)
+		List(ctx context.Context, in sysin.LogListInp) (list []*sysin.LogListModel, totalCount int, err error)
+	}
+	ISysCronGroup interface {
+		Delete(ctx context.Context, in sysin.CronGroupDeleteInp) (err error)
+		Edit(ctx context.Context, in sysin.CronGroupEditInp) (err error)
+		Status(ctx context.Context, in sysin.CronGroupStatusInp) (err error)
+		MaxSort(ctx context.Context, in sysin.CronGroupMaxSortInp) (res *sysin.CronGroupMaxSortModel, err error)
+		View(ctx context.Context, in sysin.CronGroupViewInp) (res *sysin.CronGroupViewModel, err error)
+		List(ctx context.Context, in sysin.CronGroupListInp) (list []*sysin.CronGroupListModel, totalCount int, err error)
+		Select(ctx context.Context, in sysin.CronGroupSelectInp) (res *sysin.CronGroupSelectModel, err error)
+	}
+	ISysDictData interface {
+		Delete(ctx context.Context, in sysin.DictDataDeleteInp) error
+		Edit(ctx context.Context, in sysin.DictDataEditInp) (err error)
+		List(ctx context.Context, in sysin.DictDataListInp) (list []*sysin.DictDataListModel, totalCount int, err error)
+		Select(ctx context.Context, in sysin.DataSelectInp) (list sysin.DataSelectModel, err error)
 	}
 	ISysCron interface {
 		StartCron(ctx context.Context)
@@ -44,15 +91,6 @@ type (
 		View(ctx context.Context, in sysin.CronViewInp) (res *sysin.CronViewModel, err error)
 		List(ctx context.Context, in sysin.CronListInp) (list []*sysin.CronListModel, totalCount int, err error)
 		OnlineExec(ctx context.Context, in sysin.OnlineExecInp) (err error)
-	}
-	ISysCronGroup interface {
-		Delete(ctx context.Context, in sysin.CronGroupDeleteInp) (err error)
-		Edit(ctx context.Context, in sysin.CronGroupEditInp) (err error)
-		Status(ctx context.Context, in sysin.CronGroupStatusInp) (err error)
-		MaxSort(ctx context.Context, in sysin.CronGroupMaxSortInp) (res *sysin.CronGroupMaxSortModel, err error)
-		View(ctx context.Context, in sysin.CronGroupViewInp) (res *sysin.CronGroupViewModel, err error)
-		List(ctx context.Context, in sysin.CronGroupListInp) (list []*sysin.CronGroupListModel, totalCount int, err error)
-		Select(ctx context.Context, in sysin.CronGroupSelectInp) (res *sysin.CronGroupSelectModel, err error)
 	}
 	ISysGenCodes interface {
 		Delete(ctx context.Context, in sysin.GenCodesDeleteInp) (err error)
@@ -83,32 +121,6 @@ type (
 		VariableLoad(ctx context.Context, err error)
 		Load(ctx context.Context)
 	}
-	ISysLoginLog interface {
-		Model(ctx context.Context) *gdb.Model
-		List(ctx context.Context, in sysin.LoginLogListInp) (list []*sysin.LoginLogListModel, totalCount int, err error)
-		Export(ctx context.Context, in sysin.LoginLogListInp) (err error)
-		Delete(ctx context.Context, in sysin.LoginLogDeleteInp) (err error)
-		View(ctx context.Context, in sysin.LoginLogViewInp) (res *sysin.LoginLogViewModel, err error)
-		Push(ctx context.Context, in sysin.LoginLogPushInp)
-		RealWrite(ctx context.Context, models entity.SysLoginLog) (err error)
-	}
-	ISysDictData interface {
-		Delete(ctx context.Context, in sysin.DictDataDeleteInp) error
-		Edit(ctx context.Context, in sysin.DictDataEditInp) (err error)
-		List(ctx context.Context, in sysin.DictDataListInp) (list []*sysin.DictDataListModel, totalCount int, err error)
-		Select(ctx context.Context, in sysin.DataSelectInp) (list sysin.DataSelectModel, err error)
-	}
-	ISysEmsLog interface {
-		Delete(ctx context.Context, in sysin.EmsLogDeleteInp) (err error)
-		Edit(ctx context.Context, in sysin.EmsLogEditInp) (err error)
-		Status(ctx context.Context, in sysin.EmsLogStatusInp) (err error)
-		View(ctx context.Context, in sysin.EmsLogViewInp) (res *sysin.EmsLogViewModel, err error)
-		List(ctx context.Context, in sysin.EmsLogListInp) (list []*sysin.EmsLogListModel, totalCount int, err error)
-		Send(ctx context.Context, in sysin.SendEmsInp) (err error)
-		GetTemplate(ctx context.Context, template string, config *model.EmailConfig) (val string, err error)
-		AllowSend(ctx context.Context, models *entity.SysEmsLog, config *model.EmailConfig) (err error)
-		VerifyCode(ctx context.Context, in sysin.VerifyEmsCodeInp) (err error)
-	}
 	ISysCurdDemo interface {
 		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
 		List(ctx context.Context, in sysin.CurdDemoListInp) (list []*sysin.CurdDemoListModel, totalCount int, err error)
@@ -126,14 +138,16 @@ type (
 		Edit(ctx context.Context, in sysin.DictTypeEditInp) (err error)
 		TreeSelect(ctx context.Context, in sysin.DictTreeSelectInp) (list []*sysin.DictTypeTree, err error)
 	}
-	ISysLog interface {
-		Export(ctx context.Context, in sysin.LogListInp) (err error)
-		RealWrite(ctx context.Context, log entity.SysLog) (err error)
-		AutoLog(ctx context.Context) error
-		AnalysisLog(ctx context.Context) entity.SysLog
-		View(ctx context.Context, in sysin.LogViewInp) (res *sysin.LogViewModel, err error)
-		Delete(ctx context.Context, in sysin.LogDeleteInp) (err error)
-		List(ctx context.Context, in sysin.LogListInp) (list []*sysin.LogListModel, totalCount int, err error)
+	ISysEmsLog interface {
+		Delete(ctx context.Context, in sysin.EmsLogDeleteInp) (err error)
+		Edit(ctx context.Context, in sysin.EmsLogEditInp) (err error)
+		Status(ctx context.Context, in sysin.EmsLogStatusInp) (err error)
+		View(ctx context.Context, in sysin.EmsLogViewInp) (res *sysin.EmsLogViewModel, err error)
+		List(ctx context.Context, in sysin.EmsLogListInp) (list []*sysin.EmsLogListModel, totalCount int, err error)
+		Send(ctx context.Context, in sysin.SendEmsInp) (err error)
+		GetTemplate(ctx context.Context, template string, config *model.EmailConfig) (val string, err error)
+		AllowSend(ctx context.Context, models *entity.SysEmsLog, config *model.EmailConfig) (err error)
+		VerifyCode(ctx context.Context, in sysin.VerifyEmsCodeInp) (err error)
 	}
 	ISysServeLog interface {
 		Model(ctx context.Context) *gdb.Model
@@ -143,25 +157,11 @@ type (
 		View(ctx context.Context, in sysin.ServeLogViewInp) (res *sysin.ServeLogViewModel, err error)
 		RealWrite(ctx context.Context, models entity.SysServeLog) (err error)
 	}
-	ISysSmsLog interface {
-		Delete(ctx context.Context, in sysin.SmsLogDeleteInp) (err error)
-		Edit(ctx context.Context, in sysin.SmsLogEditInp) (err error)
-		Status(ctx context.Context, in sysin.SmsLogStatusInp) (err error)
-		MaxSort(ctx context.Context, in sysin.SmsLogMaxSortInp) (res *sysin.SmsLogMaxSortModel, err error)
-		View(ctx context.Context, in sysin.SmsLogViewInp) (res *sysin.SmsLogViewModel, err error)
-		List(ctx context.Context, in sysin.SmsLogListInp) (list []*sysin.SmsLogListModel, totalCount int, err error)
-		SendCode(ctx context.Context, in sysin.SendCodeInp) (err error)
-		GetTemplate(ctx context.Context, template string, config *model.SmsConfig) (val string, err error)
-		AllowSend(ctx context.Context, models *entity.SysSmsLog, config *model.SmsConfig) (err error)
-		VerifyCode(ctx context.Context, in sysin.VerifyCodeInp) (err error)
-	}
-	ISysAddons interface {
-		List(ctx context.Context, in sysin.AddonsListInp) (list []*sysin.AddonsListModel, totalCount int, err error)
-		Selects(ctx context.Context, in sysin.AddonsSelectsInp) (res *sysin.AddonsSelectsModel, err error)
-		Build(ctx context.Context, in sysin.AddonsBuildInp) (err error)
-		Install(ctx context.Context, in sysin.AddonsInstallInp) (err error)
-		Upgrade(ctx context.Context, in sysin.AddonsUpgradeInp) (err error)
-		UnInstall(ctx context.Context, in sysin.AddonsUnInstallInp) (err error)
+	ISysAttachment interface {
+		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
+		Delete(ctx context.Context, in sysin.AttachmentDeleteInp) (err error)
+		View(ctx context.Context, in sysin.AttachmentViewInp) (res *sysin.AttachmentViewModel, err error)
+		List(ctx context.Context, in sysin.AttachmentListInp) (list []*sysin.AttachmentListModel, totalCount int, err error)
 	}
 	ISysConfig interface {
 		InitConfig(ctx context.Context)
@@ -186,23 +186,23 @@ type (
 )
 
 var (
-	localSysBlacklist    ISysBlacklist
-	localSysCronGroup    ISysCronGroup
-	localSysGenCodes     ISysGenCodes
-	localSysAddonsConfig ISysAddonsConfig
-	localSysEmsLog       ISysEmsLog
+	localSysAddons       ISysAddons
 	localSysLoginLog     ISysLoginLog
+	localSysProvinces    ISysProvinces
+	localSysSmsLog       ISysSmsLog
+	localSysCronGroup    ISysCronGroup
 	localSysDictData     ISysDictData
+	localSysLog          ISysLog
+	localSysAddonsConfig ISysAddonsConfig
+	localSysBlacklist    ISysBlacklist
+	localSysCron         ISysCron
+	localSysGenCodes     ISysGenCodes
+	localSysAttachment   ISysAttachment
 	localSysConfig       ISysConfig
 	localSysCurdDemo     ISysCurdDemo
 	localSysDictType     ISysDictType
-	localSysLog          ISysLog
+	localSysEmsLog       ISysEmsLog
 	localSysServeLog     ISysServeLog
-	localSysSmsLog       ISysSmsLog
-	localSysAddons       ISysAddons
-	localSysCron         ISysCron
-	localSysProvinces    ISysProvinces
-	localSysAttachment   ISysAttachment
 )
 
 func SysBlacklist() ISysBlacklist {
@@ -216,15 +216,15 @@ func RegisterSysBlacklist(i ISysBlacklist) {
 	localSysBlacklist = i
 }
 
-func SysCronGroup() ISysCronGroup {
-	if localSysCronGroup == nil {
-		panic("implement not found for interface ISysCronGroup, forgot register?")
+func SysCron() ISysCron {
+	if localSysCron == nil {
+		panic("implement not found for interface ISysCron, forgot register?")
 	}
-	return localSysCronGroup
+	return localSysCron
 }
 
-func RegisterSysCronGroup(i ISysCronGroup) {
-	localSysCronGroup = i
+func RegisterSysCron(i ISysCron) {
+	localSysCron = i
 }
 
 func SysGenCodes() ISysGenCodes {
@@ -247,39 +247,6 @@ func SysAddonsConfig() ISysAddonsConfig {
 
 func RegisterSysAddonsConfig(i ISysAddonsConfig) {
 	localSysAddonsConfig = i
-}
-
-func SysEmsLog() ISysEmsLog {
-	if localSysEmsLog == nil {
-		panic("implement not found for interface ISysEmsLog, forgot register?")
-	}
-	return localSysEmsLog
-}
-
-func RegisterSysEmsLog(i ISysEmsLog) {
-	localSysEmsLog = i
-}
-
-func SysLoginLog() ISysLoginLog {
-	if localSysLoginLog == nil {
-		panic("implement not found for interface ISysLoginLog, forgot register?")
-	}
-	return localSysLoginLog
-}
-
-func RegisterSysLoginLog(i ISysLoginLog) {
-	localSysLoginLog = i
-}
-
-func SysDictData() ISysDictData {
-	if localSysDictData == nil {
-		panic("implement not found for interface ISysDictData, forgot register?")
-	}
-	return localSysDictData
-}
-
-func RegisterSysDictData(i ISysDictData) {
-	localSysDictData = i
 }
 
 func SysConfig() ISysConfig {
@@ -315,15 +282,15 @@ func RegisterSysDictType(i ISysDictType) {
 	localSysDictType = i
 }
 
-func SysLog() ISysLog {
-	if localSysLog == nil {
-		panic("implement not found for interface ISysLog, forgot register?")
+func SysEmsLog() ISysEmsLog {
+	if localSysEmsLog == nil {
+		panic("implement not found for interface ISysEmsLog, forgot register?")
 	}
-	return localSysLog
+	return localSysEmsLog
 }
 
-func RegisterSysLog(i ISysLog) {
-	localSysLog = i
+func RegisterSysEmsLog(i ISysEmsLog) {
+	localSysEmsLog = i
 }
 
 func SysServeLog() ISysServeLog {
@@ -335,6 +302,39 @@ func SysServeLog() ISysServeLog {
 
 func RegisterSysServeLog(i ISysServeLog) {
 	localSysServeLog = i
+}
+
+func SysAttachment() ISysAttachment {
+	if localSysAttachment == nil {
+		panic("implement not found for interface ISysAttachment, forgot register?")
+	}
+	return localSysAttachment
+}
+
+func RegisterSysAttachment(i ISysAttachment) {
+	localSysAttachment = i
+}
+
+func SysLoginLog() ISysLoginLog {
+	if localSysLoginLog == nil {
+		panic("implement not found for interface ISysLoginLog, forgot register?")
+	}
+	return localSysLoginLog
+}
+
+func RegisterSysLoginLog(i ISysLoginLog) {
+	localSysLoginLog = i
+}
+
+func SysProvinces() ISysProvinces {
+	if localSysProvinces == nil {
+		panic("implement not found for interface ISysProvinces, forgot register?")
+	}
+	return localSysProvinces
+}
+
+func RegisterSysProvinces(i ISysProvinces) {
+	localSysProvinces = i
 }
 
 func SysSmsLog() ISysSmsLog {
@@ -359,35 +359,35 @@ func RegisterSysAddons(i ISysAddons) {
 	localSysAddons = i
 }
 
-func SysCron() ISysCron {
-	if localSysCron == nil {
-		panic("implement not found for interface ISysCron, forgot register?")
+func SysDictData() ISysDictData {
+	if localSysDictData == nil {
+		panic("implement not found for interface ISysDictData, forgot register?")
 	}
-	return localSysCron
+	return localSysDictData
 }
 
-func RegisterSysCron(i ISysCron) {
-	localSysCron = i
+func RegisterSysDictData(i ISysDictData) {
+	localSysDictData = i
 }
 
-func SysProvinces() ISysProvinces {
-	if localSysProvinces == nil {
-		panic("implement not found for interface ISysProvinces, forgot register?")
+func SysLog() ISysLog {
+	if localSysLog == nil {
+		panic("implement not found for interface ISysLog, forgot register?")
 	}
-	return localSysProvinces
+	return localSysLog
 }
 
-func RegisterSysProvinces(i ISysProvinces) {
-	localSysProvinces = i
+func RegisterSysLog(i ISysLog) {
+	localSysLog = i
 }
 
-func SysAttachment() ISysAttachment {
-	if localSysAttachment == nil {
-		panic("implement not found for interface ISysAttachment, forgot register?")
+func SysCronGroup() ISysCronGroup {
+	if localSysCronGroup == nil {
+		panic("implement not found for interface ISysCronGroup, forgot register?")
 	}
-	return localSysAttachment
+	return localSysCronGroup
 }
 
-func RegisterSysAttachment(i ISysAttachment) {
-	localSysAttachment = i
+func RegisterSysCronGroup(i ISysCronGroup) {
+	localSysCronGroup = i
 }
