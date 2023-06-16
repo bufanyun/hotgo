@@ -9,6 +9,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/model"
 	"time"
@@ -50,32 +51,28 @@ func RJson(r *ghttp.Request, code int, message string, data ...interface{}) {
 	contexts.SetResponse(r.Context(), res)
 }
 
-// SusJson 返回成功JSON
-func SusJson(isExit bool, r *ghttp.Request, message string, data ...interface{}) {
-	if isExit {
-		JsonExit(r, gcode.CodeOK.Code(), message, data...)
-		return
-	}
-	RJson(r, gcode.CodeOK.Code(), message, data...)
-}
+// CustomJson 自定义JSON
+func CustomJson(r *ghttp.Request, content interface{}) {
+	// 清空响应
+	r.Response.ClearBuffer()
 
-// FailJson 返回失败JSON
-func FailJson(isExit bool, r *ghttp.Request, message string, data ...interface{}) {
-	if isExit {
-		JsonExit(r, gcode.CodeNil.Code(), message, data...)
-		return
-	}
-	RJson(r, gcode.CodeNil.Code(), message, data...)
+	// 写入响应
+	r.Response.WriteJson(content)
+
+	// 加入到上下文
+	contexts.SetResponse(r.Context(), &model.Response{
+		Code:      0,
+		Message:   "",
+		Data:      content,
+		Error:     nil,
+		Timestamp: gtime.Timestamp(),
+		TraceID:   gctx.CtxId(r.Context()),
+	})
 }
 
 // Redirect 重定向
 func Redirect(r *ghttp.Request, location string, code ...int) {
 	r.Response.RedirectTo(location, code...)
-}
-
-// Download 下载文件
-func Download(r *ghttp.Request, location string, code ...int) {
-	r.Response.ServeFileDownload("test.txt")
 }
 
 // RText 返回成功文本

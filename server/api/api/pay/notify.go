@@ -10,7 +10,10 @@ type NotifyAliPayReq struct {
 	g.Meta `path:"/pay/notify/alipay" method:"post" tags:"支付异步通知" summary:"支付宝回调"`
 }
 
-type NotifyAliPayRes payin.PayNotifyModel
+type NotifyAliPayRes struct {
+	g.Meta `mime:"text/html" type:"string" example:"<html/>"`
+	payin.PayNotifyModel
+}
 
 // NotifyWxPayReq 微信支付回调
 type NotifyWxPayReq struct {
@@ -24,4 +27,7 @@ type NotifyQQPayReq struct {
 	g.Meta `path:"/pay/notify/qqpay" method:"post" tags:"支付异步通知" summary:"QQ支付回调"`
 }
 
-type NotifyQQPayRes payin.PayNotifyModel
+type NotifyQQPayRes struct {
+	g.Meta `mime:"text/xml" type:"string" example:"<html/>"`
+	payin.PayNotifyModel
+}

@@ -30,9 +30,8 @@ import (
 )
 
 type sMiddleware struct {
-	LoginUrl        string // 登录路由地址
-	DemoWhiteList   g.Map  // 演示模式放行的路由白名单
-	PayNotifyRoutes g.Map  // 支付异步通知路由
+	LoginUrl      string // 登录路由地址
+	DemoWhiteList g.Map  // 演示模式放行的路由白名单
 }
 
 func init() {
@@ -46,11 +45,6 @@ func NewMiddleware() *sMiddleware {
 			"/admin/site/accountLogin": struct{}{}, // 账号登录
 			"/admin/site/mobileLogin":  struct{}{}, // 手机号登录
 			"/admin/genCodes/preview":  struct{}{}, // 预览代码
-		},
-		PayNotifyRoutes: g.Map{
-			"/api/pay/notify/alipay": struct{}{}, // 支付宝
-			"/api/pay/notify/wxpay":  struct{}{}, // 微信支付
-			"/api/pay/notify/qqpay":  struct{}{}, // QQ支付
 		},
 	}
 }

@@ -104,6 +104,7 @@
     </tr>
 </table>
 
+
 ## 感谢(排名不分先后)
 > gf框架 [https://github.com/gogf/gf](https://github.com/gogf/gf)
 >
@@ -118,15 +119,9 @@
 > gopay [https://github.com/go-pay/gopay](https://github.com/go-pay/gopay)
 
 
-
 ## 交流QQ群
 交流群①：190966648  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=mJafkvme3VNyiQlCFIFNRtY8Xlr7pj9U&jump_from=webapi&authKey=jL10vIESr+vO8wpxwyd6DlChzkrbHpzN9uhAsIHgAinL/Vvd+nvuRyilf2UqUlCy"><img border="0" src="https://bufanyun.cn-bj.ufileos.com/hotgo/group.png" alt="HotGo框架交流1群" title="HotGo框架交流1群"></a>
-> <img src="https://bufanyun.cn-bj.ufileos.com/hotgo/hotgo1qun.png" width="400px"/>  
-
-
-> 感谢你使用HotGo，公司团队精力时间有限，因此我们不再提供免费的技术服务！
->
-> 同时您也可以联系我们，雇佣我们团队为您干活，谢谢合作！
+> <img src="https://bufanyun.cn-bj.ufileos.com/hotgo/hotgo1qun.png" width="400px"/>
 
 
 ## 商用说明
