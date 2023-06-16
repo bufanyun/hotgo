@@ -16,11 +16,6 @@ type (
 		GetTitle(ctx context.Context, in *model.ViewGetTitleInput) string
 		RenderTpl(ctx context.Context, tpl string, data ...model.View)
 		Render(ctx context.Context, data ...model.View)
-		Render302(ctx context.Context, data ...model.View)
-		Render401(ctx context.Context, data ...model.View)
-		Render403(ctx context.Context, data ...model.View)
-		Render404(ctx context.Context, data ...model.View)
-		Render500(ctx context.Context, data ...model.View)
 		Error(ctx context.Context, err error)
 	}
 )

@@ -15,6 +15,7 @@ type (
 	IMiddleware interface {
 		AdminAuth(r *ghttp.Request)
 		ApiAuth(r *ghttp.Request)
+		HomeAuth(r *ghttp.Request)
 		Ctx(r *ghttp.Request)
 		CORS(r *ghttp.Request)
 		DemoLimit(r *ghttp.Request)

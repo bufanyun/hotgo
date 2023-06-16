@@ -7,10 +7,13 @@ package view
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/model"
 	"hotgo/internal/service"
+	"hotgo/utility/charset"
+	"hotgo/utility/simple"
 )
 
 type sView struct{}
@@ -83,70 +86,23 @@ func (s *sView) Render(ctx context.Context, data ...model.View) {
 	s.RenderTpl(ctx, g.Cfg().MustGet(ctx, "viewer.homeLayout").String(), data...)
 }
 
-// Render302 跳转中间页面
-func (s *sView) Render302(ctx context.Context, data ...model.View) {
-	view := model.View{}
-	if len(data) > 0 {
-		view = data[0]
-	}
-	if view.Title == "" {
-		view.Title = "页面跳转中"
-	}
-	s.RenderTpl(ctx, "default/pages/302.html", view)
-}
-
-// Render401 401页面
-func (s *sView) Render401(ctx context.Context, data ...model.View) {
-	view := model.View{}
-	if len(data) > 0 {
-		view = data[0]
-	}
-	if view.Title == "" {
-		view.Title = "无访问权限"
-	}
-	s.RenderTpl(ctx, "default/pages/401.html", view)
-}
-
-// Render403 403页面
-func (s *sView) Render403(ctx context.Context, data ...model.View) {
-	view := model.View{}
-	if len(data) > 0 {
-		view = data[0]
-	}
-	if view.Title == "" {
-		view.Title = "无访问权限"
-	}
-	s.RenderTpl(ctx, "default/pages/403.html", view)
-}
-
-// Render404 404页面
-func (s *sView) Render404(ctx context.Context, data ...model.View) {
-	view := model.View{}
-	if len(data) > 0 {
-		view = data[0]
-	}
-	if view.Title == "" {
-		view.Title = "资源不存在"
-	}
-	s.RenderTpl(ctx, "default/pages/404.html", view)
-}
-
-// Render500 500页面
-func (s *sView) Render500(ctx context.Context, data ...model.View) {
-	view := model.View{}
-	if len(data) > 0 {
-		view = data[0]
-	}
-	if view.Title == "" {
-		view.Title = "请求执行错误"
-	}
-	s.RenderTpl(ctx, "default/pages/500.html", view)
-}
-
+// Error 自定义错误页面
 func (s *sView) Error(ctx context.Context, err error) {
-	view := model.View{
-		Title: "错误提示",
-		Error: err.Error(),
+	var (
+		request = g.RequestFromCtx(ctx)
+		code    = gerror.Code(err)
+		stack   string
+	)
+
+	// 是否输出错误堆栈到页面
+	if g.Cfg().MustGet(ctx, "hotgo.debug", true).Bool() {
+		stack = charset.SerializeStack(err)
 	}
-	s.RenderTpl(ctx, "default/pages/500.html", view)
+
+	request.Response.ClearBuffer()
+	_ = request.Response.WriteTplContent(simple.DefaultErrorTplContent(ctx), g.Map{
+		"code":    code.Code(),
+		"message": code.Message(),
+		"stack":   stack,
+	})
 }
