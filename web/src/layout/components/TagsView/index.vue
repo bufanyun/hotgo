@@ -500,7 +500,7 @@
       watch(
         () => tabsViewStore.signal,
         (key) => {
-          if (key != '') {
+          if (key !== '') {
             closeHandleSelect(key);
             tabsViewStore.closeSignal('');
           }
