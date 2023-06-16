@@ -16,6 +16,7 @@ export type RouteItem = Partial<RouteLocationNormalized> & {
 
 export type ITabsViewState = {
   tabsList: RouteItem[]; // 标签页
+  signal: string; // 关闭信号
 };
 
 //保留固定路由
@@ -27,6 +28,7 @@ export const useTabsViewStore = defineStore({
   id: 'app-tabs-view',
   state: (): ITabsViewState => ({
     tabsList: [],
+    signal: '',
   }),
   getters: {},
   actions: {
@@ -68,6 +70,10 @@ export const useTabsViewStore = defineStore({
       // 关闭全部
       console.log(retainAffixRoute(this.tabsList));
       this.tabsList = retainAffixRoute(this.tabsList);
+    },
+    closeSignal(signal: string) {
+      // 设置tab关闭信号， 1刷新 2关闭当前 3关闭其他 4关闭全部
+      this.signal = signal;
     },
   },
 });

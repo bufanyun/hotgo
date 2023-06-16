@@ -497,6 +497,16 @@
         observer.listenTo(navWrap.value, handleResize);
       }
 
+      watch(
+        () => tabsViewStore.signal,
+        (key) => {
+          if (key != '') {
+            closeHandleSelect(key);
+            tabsViewStore.closeSignal('');
+          }
+        }
+      );
+
       return {
         ...toRefs(state),
         navWrap,
