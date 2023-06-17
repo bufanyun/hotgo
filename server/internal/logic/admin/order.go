@@ -294,8 +294,8 @@ func (s *sAdminOrder) List(ctx context.Context, in adminin.OrderListInp) (list [
 	}
 
 	//关联表select
-	fields, err := hgorm.GenJoinSelect(ctx, adminin.OrderListModel{}, dao.AdminOrder, []*hgorm.Join{
-		{Dao: dao.PayLog, Alias: "payLog"},
+	fields, err := hgorm.GenJoinSelect(ctx, adminin.OrderListModel{}, &dao.AdminOrder, []*hgorm.Join{
+		{Dao: &dao.PayLog, Alias: "payLog"},
 	})
 
 	if err != nil {

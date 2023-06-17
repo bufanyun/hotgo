@@ -82,7 +82,7 @@ func (s *sSysDictType) Delete(ctx context.Context, in sysin.DictTypeDeleteInp) (
 
 // Edit 修改/新增
 func (s *sSysDictType) Edit(ctx context.Context, in sysin.DictTypeEditInp) (err error) {
-	if err = hgorm.IsUnique(ctx, dao.SysDictType, g.Map{dao.SysDictType.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
+	if err = hgorm.IsUnique(ctx, &dao.SysDictType, g.Map{dao.SysDictType.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
 		return
 	}
 

@@ -71,15 +71,37 @@ func (c *AdapterFile) Get(ctx context.Context, key interface{}) (*gvar.Var, erro
 }
 
 func (c *AdapterFile) GetOrSet(ctx context.Context, key interface{}, value interface{}, duration time.Duration) (result *gvar.Var, err error) {
-	return nil, gerror.New("implement me")
+	result, err = c.Get(ctx, key)
+	if err != nil {
+		return nil, err
+	}
+	if result.IsNil() {
+		return gvar.New(value), c.Set(ctx, key, value, duration)
+	}
+	return
 }
 
 func (c *AdapterFile) GetOrSetFunc(ctx context.Context, key interface{}, f gcache.Func, duration time.Duration) (result *gvar.Var, err error) {
-	return nil, gerror.New("implement me")
+	v, err := c.Get(ctx, key)
+	if err != nil {
+		return nil, err
+	}
+	if v.IsNil() {
+		value, err := f(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if value == nil {
+			return nil, nil
+		}
+		return gvar.New(value), c.Set(ctx, key, value, duration)
+	} else {
+		return v, nil
+	}
 }
 
 func (c *AdapterFile) GetOrSetFuncLock(ctx context.Context, key interface{}, f gcache.Func, duration time.Duration) (result *gvar.Var, err error) {
-	return nil, gerror.New("implement me")
+	return c.GetOrSetFunc(ctx, key, f, duration)
 }
 
 func (c *AdapterFile) Contains(ctx context.Context, key interface{}) (bool, error) {

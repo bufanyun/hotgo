@@ -79,7 +79,7 @@ func (s *sSysProvinces) Delete(ctx context.Context, in sysin.ProvincesDeleteInp)
 // Edit 修改/新增省市区数据
 func (s *sSysProvinces) Edit(ctx context.Context, in sysin.ProvincesEditInp) (err error) {
 	// 关系树
-	in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, dao.SysProvinces, in.Pid)
+	in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, &dao.SysProvinces, in.Pid)
 	if err != nil {
 		return
 	}
@@ -202,7 +202,7 @@ func (s *sSysProvinces) UniqueId(ctx context.Context, in sysin.ProvincesUniqueId
 		return
 	}
 
-	if err = hgorm.IsUnique(ctx, dao.SysProvinces, g.Map{dao.SysProvinces.Columns().Id: in.NewId}, "", in.OldId); err != nil {
+	if err = hgorm.IsUnique(ctx, &dao.SysProvinces, g.Map{dao.SysProvinces.Columns().Id: in.NewId}, "", in.OldId); err != nil {
 		res.IsUnique = false
 		return
 	}

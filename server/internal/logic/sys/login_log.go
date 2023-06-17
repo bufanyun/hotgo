@@ -84,8 +84,8 @@ func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list
 	}
 
 	//关联表select
-	fields, err := hgorm.GenJoinSelect(ctx, sysin.LoginLogListModel{}, dao.SysLoginLog, []*hgorm.Join{
-		{Dao: dao.SysLog, Alias: "sysLog"},
+	fields, err := hgorm.GenJoinSelect(ctx, sysin.LoginLogListModel{}, &dao.SysLoginLog, []*hgorm.Join{
+		{Dao: &dao.SysLog, Alias: "sysLog"},
 	})
 
 	if err != nil {

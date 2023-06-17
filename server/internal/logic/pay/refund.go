@@ -16,7 +16,6 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
-	"hotgo/internal/library/hgorm"
 	"hotgo/internal/library/hgorm/handler"
 	"hotgo/internal/library/location"
 	"hotgo/internal/library/payment"
@@ -188,12 +187,7 @@ func (s *sPayRefund) List(ctx context.Context, in payin.PayRefundListInp) (list 
 		return
 	}
 
-	fields, err := hgorm.GenSelect(ctx, payin.PayRefundListModel{}, dao.PayRefund)
-	if err != nil {
-		return
-	}
-
-	err = mod.Fields(fields).Page(in.Page, in.PerPage).OrderDesc(dao.PayRefund.Columns().Id).Scan(&list)
+	err = mod.Fields(payin.PayRefundListModel{}).Page(in.Page, in.PerPage).OrderDesc(dao.PayRefund.Columns().Id).Scan(&list)
 	return
 }
 

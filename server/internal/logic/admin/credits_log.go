@@ -13,7 +13,6 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
-	"hotgo/internal/library/hgorm"
 	"hotgo/internal/library/hgorm/handler"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
@@ -218,12 +217,7 @@ func (s *sAdminCreditsLog) List(ctx context.Context, in adminin.CreditsLogListIn
 		return
 	}
 
-	fields, err := hgorm.GenSelect(ctx, adminin.CreditsLogListModel{}, dao.AdminCreditsLog)
-	if err != nil {
-		return
-	}
-
-	err = mod.Fields(fields).Page(in.Page, in.PerPage).OrderDesc(dao.AdminCreditsLog.Columns().Id).Scan(&list)
+	err = mod.Fields(adminin.CreditsLogListModel{}).Page(in.Page, in.PerPage).OrderDesc(dao.AdminCreditsLog.Columns().Id).Scan(&list)
 	return
 }
 

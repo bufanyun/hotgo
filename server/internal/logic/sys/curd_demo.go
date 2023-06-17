@@ -83,8 +83,8 @@ func (s *sSysCurdDemo) List(ctx context.Context, in sysin.CurdDemoListInp) (list
 	}
 
 	//关联表select
-	fields, err := hgorm.GenJoinSelect(ctx, sysin.CurdDemoListModel{}, dao.SysGenCurdDemo, []*hgorm.Join{
-		{Dao: dao.TestCategory, Alias: "testCategory"},
+	fields, err := hgorm.GenJoinSelect(ctx, sysin.CurdDemoListModel{}, &dao.SysGenCurdDemo, []*hgorm.Join{
+		{Dao: &dao.TestCategory, Alias: "testCategory"},
 	})
 
 	if err != nil {
