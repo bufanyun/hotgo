@@ -7,12 +7,10 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gtime"
-	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/grand"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/model/entity"
-	"hotgo/utility/encrypt"
 	"hotgo/utility/url"
 	"hotgo/utility/validate"
 	"strconv"
@@ -163,12 +161,8 @@ func GetFileMeta(file *ghttp.UploadFile) (meta *FileMeta, err error) {
 	}
 	meta.NaiveType = naiveType
 
-	// 文件hash
-	b, err := UploadFileByte(file)
-	if err != nil {
-		return
-	}
-	meta.Md5 = encrypt.Md5ToString(gconv.String(encrypt.Hash32(b)))
+	// 计算md5值
+	meta.Md5, err = CalcFileMd5(file)
 	return
 }
 

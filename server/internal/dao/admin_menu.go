@@ -5,11 +5,7 @@
 package dao
 
 import (
-	"context"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"hotgo/internal/consts"
 	"hotgo/internal/dao/internal"
-	"hotgo/internal/model/entity"
 )
 
 // internalAdminMenuDao is internal type for wrapping internal DAO implements.
@@ -27,45 +23,3 @@ var (
 		internal.NewAdminMenuDao(),
 	}
 )
-
-// IsUniqueTitle 判断标题是否唯一
-func (dao *adminMenuDao) IsUniqueTitle(ctx context.Context, id int64, title string) (bool, error) {
-	var data *entity.AdminMenu
-	m := dao.Ctx(ctx).Where("title", title)
-
-	if id > 0 {
-		m = m.WhereNot("id", id)
-	}
-
-	if err := m.Scan(&data); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return false, err
-	}
-
-	if data == nil {
-		return true, nil
-	}
-
-	return false, nil
-}
-
-// IsUniqueName 判断编码是否唯一
-func (dao *adminMenuDao) IsUniqueName(ctx context.Context, id int64, name string) (bool, error) {
-	var data *entity.AdminMenu
-	m := dao.Ctx(ctx).Where("name", name)
-
-	if id > 0 {
-		m = m.WhereNot("id", id)
-	}
-
-	if err := m.Scan(&data); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return false, err
-	}
-
-	if data == nil {
-		return true, nil
-	}
-
-	return false, nil
-}

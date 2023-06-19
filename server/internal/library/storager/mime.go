@@ -6,6 +6,8 @@
 package storager
 
 import (
+	"crypto/md5"
+	"fmt"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -157,4 +159,21 @@ func UploadFileByte(file *ghttp.UploadFile) ([]byte, error) {
 		return nil, err
 	}
 	return io.ReadAll(open)
+}
+
+// CalcFileMd5 计算文件md5值
+func CalcFileMd5(file *ghttp.UploadFile) (string, error) {
+	f, err := file.Open()
+	if err != nil {
+		err = gerror.Wrapf(err, `os.Open failed for name "%s"`, file.Filename)
+		return "", err
+	}
+	defer f.Close()
+	h := md5.New()
+	_, err = io.Copy(h, f)
+	if err != nil {
+		err = gerror.Wrap(err, `io.Copy failed`)
+		return "", err
+	}
+	return fmt.Sprintf("%x", h.Sum(nil)), nil
 }

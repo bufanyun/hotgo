@@ -141,12 +141,9 @@ func (s *sAdminRole) UpdatePermissions(ctx context.Context, in adminin.UpdatePer
 			return
 		}
 
-		if len(in.MenuIds) == 0 {
+		if in.MenuIds = convert.UniqueSlice(in.MenuIds); len(in.MenuIds) == 0 {
 			return
 		}
-
-		// 去重
-		in.MenuIds = convert.UniqueSlice(in.MenuIds)
 
 		list := make(g.List, 0, len(in.MenuIds))
 		for _, v := range in.MenuIds {
@@ -160,7 +157,6 @@ func (s *sAdminRole) UpdatePermissions(ctx context.Context, in adminin.UpdatePer
 			err = gerror.Wrap(err, consts.ErrorORM)
 			return
 		}
-
 		return
 	})
 
@@ -217,20 +213,18 @@ func (s *sAdminRole) Edit(ctx context.Context, in adminin.RoleEditInp) (err erro
 
 func updateRoleChildrenTree(ctx context.Context, _id int64, _level int, _tree string) (err error) {
 	var list []*entity.AdminDept
-	err = dao.AdminRole.Ctx(ctx).Where("pid", _id).Scan(&list)
-	if err != nil {
+	if err = dao.AdminRole.Ctx(ctx).Where("pid", _id).Scan(&list); err != nil {
 		return
 	}
 	for _, child := range list {
 		child.Level = _level + 1
 		child.Tree = tree.GenLabel(_tree, child.Id)
 
-		_, err = dao.AdminRole.Ctx(ctx).Where("id", child.Id).Data("level", child.Level, "tree", child.Tree).Update()
-		if err != nil {
-			return err
+		if _, err = dao.AdminRole.Ctx(ctx).Where("id", child.Id).Data("level", child.Level, "tree", child.Tree).Update(); err != nil {
+			return
 		}
-		err = updateRoleChildrenTree(ctx, child.Id, child.Level, child.Tree)
-		if err != nil {
+
+		if err = updateRoleChildrenTree(ctx, child.Id, child.Level, child.Tree); err != nil {
 			return
 		}
 	}

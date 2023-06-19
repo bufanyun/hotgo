@@ -584,20 +584,17 @@ func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list
 		return
 	}
 
-	for i := 0; i < len(list); i++ {
-		posts, err := dao.AdminMemberPost.Ctx(ctx).
+	for _, v := range list {
+		columns, err := dao.AdminMemberPost.Ctx(ctx).
 			Fields(dao.AdminMemberPost.Columns().PostId).
-			Where(dao.AdminMemberPost.Columns().MemberId, list[i].Id).
-			Array()
+			Where(dao.AdminMemberPost.Columns().MemberId, v.Id).All()
 
 		if err != nil {
 			err = gerror.Wrap(err, "获取用户岗位数据失败！")
 			return nil, 0, err
 		}
 
-		for _, v := range posts {
-			list[i].PostIds = append(list[i].PostIds, v.Int64())
-		}
+		v.PostIds = g.NewVar(columns.Array()).Int64s()
 	}
 	return
 }
