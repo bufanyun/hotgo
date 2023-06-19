@@ -7,8 +7,10 @@ package pay
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/api/api/pay"
 	"hotgo/internal/consts"
+	"hotgo/internal/library/response"
 	"hotgo/internal/model/input/payin"
 	"hotgo/internal/service"
 )
@@ -21,32 +23,35 @@ type cNotify struct{}
 
 // AliPay 支付宝回调
 func (c *cNotify) AliPay(ctx context.Context, _ *pay.NotifyAliPayReq) (res *pay.NotifyAliPayRes, err error) {
-	_, err = service.Pay().Notify(ctx, payin.PayNotifyInp{PayType: consts.PayTypeAliPay})
-	if err != nil {
+	if _, err = service.Pay().Notify(ctx, payin.PayNotifyInp{PayType: consts.PayTypeAliPay}); err != nil {
 		return nil, err
 	}
-	res = &pay.NotifyAliPayRes{PayType: consts.PayTypeAliPay, Message: "success"}
+
+	response.RText(g.RequestFromCtx(ctx), "success")
 	return
 }
 
 // WxPay 微信支付回调
 func (c *cNotify) WxPay(ctx context.Context, _ *pay.NotifyWxPayReq) (res *pay.NotifyWxPayRes, err error) {
-	_, err = service.Pay().Notify(ctx, payin.PayNotifyInp{PayType: consts.PayTypeWxPay})
-	if err != nil {
-		return nil, err
+	if _, err = service.Pay().Notify(ctx, payin.PayNotifyInp{PayType: consts.PayTypeWxPay}); err != nil {
+		return
 	}
 
-	res = &pay.NotifyWxPayRes{PayType: consts.PayTypeWxPay, Code: "SUCCESS", Message: "收单成功"}
+	response.CustomJson(g.RequestFromCtx(ctx), `{"code": "SUCCESS","message": "收单成功"}`)
 	return
 }
 
 // QQPay QQ支付回调
 func (c *cNotify) QQPay(ctx context.Context, _ *pay.NotifyQQPayReq) (res *pay.NotifyQQPayRes, err error) {
-	_, err = service.Pay().Notify(ctx, payin.PayNotifyInp{PayType: consts.PayTypeQQPay})
-	if err != nil {
-		return nil, err
+	if _, err = service.Pay().Notify(ctx, payin.PayNotifyInp{PayType: consts.PayTypeQQPay}); err != nil {
+		return
 	}
 
-	res = &pay.NotifyQQPayRes{PayType: consts.PayTypeQQPay, Message: "SUCCESS"}
+	r := g.RequestFromCtx(ctx)
+	r.Response.ClearBuffer()
+	r.Response.Write(`<?xml version="1.0" encoding="UTF-8"?>`)
+	r.Response.WriteXml(g.Map{
+		"return_code": "SUCCESS",
+	})
 	return
 }

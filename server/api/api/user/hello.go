@@ -11,8 +11,9 @@ import (
 
 type HelloReq struct {
 	g.Meta `path:"/hello" tags:"Hello" method:"get" summary:"You first hello api"`
+	Name   string `json:"name" d:"hotgo" dc:"名字"`
 }
 
 type HelloRes struct {
-	g.Meta `mime:"text/html" example:"string"`
+	Tips string `json:"tips"`
 }

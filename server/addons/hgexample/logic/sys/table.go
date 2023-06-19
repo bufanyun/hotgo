@@ -105,18 +105,7 @@ func (s *sSysTable) List(ctx context.Context, in sysin.TableListInp) (list []*sy
 		return
 	}
 
-	////关联表select
-	//fields, err := hgorm.GenJoinSelect(ctx, sysin.TableListModel{}, dao.AddonHgexampleTable, []*hgorm.Join{
-	//	{Dao: dao.AddonHgexampleTableCategory, Alias: "testCategory"},
-	//	//{Dao: dao.AddonHgexampleTableCategory, Alias: "testCategory"},
-	//})
-
-	fields, err := hgorm.GenSelect(ctx, sysin.TableListModel{}, dao.AddonHgexampleTable)
-	if err != nil {
-		return
-	}
-
-	if err = mod.Fields(fields).Page(in.Page, in.PerPage).OrderAsc(dao.AddonHgexampleTable.Columns().Sort).OrderDesc(dao.AddonHgexampleTable.Columns().Id).Scan(&list); err != nil {
+	if err = mod.Fields(sysin.TableListModel{}).Page(in.Page, in.PerPage).OrderAsc(dao.AddonHgexampleTable.Columns().Sort).OrderDesc(dao.AddonHgexampleTable.Columns().Id).Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
@@ -154,7 +143,7 @@ func (s *sSysTable) Export(ctx context.Context, in sysin.TableListInp) (err erro
 
 // Edit 修改/新增
 func (s *sSysTable) Edit(ctx context.Context, in sysin.TableEditInp) (err error) {
-	if err = hgorm.IsUnique(ctx, dao.AddonHgexampleTable, g.Map{dao.AddonHgexampleTable.Columns().Qq: in.Qq}, "QQ号码已存在，请换一个", in.Id); err != nil {
+	if err = hgorm.IsUnique(ctx, &dao.AddonHgexampleTable, g.Map{dao.AddonHgexampleTable.Columns().Qq: in.Qq}, "QQ号码已存在，请换一个", in.Id); err != nil {
 		return
 	}
 

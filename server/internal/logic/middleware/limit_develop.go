@@ -19,17 +19,17 @@ func (s *sMiddleware) Develop(r *ghttp.Request) {
 	}
 
 	if !gstr.InArray(ips, "*") {
-		cuIp := location.GetClientIp(r)
+		clientIp := location.GetClientIp(r)
 		ok := false
 		for _, ip := range ips {
-			if ip == cuIp {
+			if ip == clientIp {
 				ok = true
 				break
 			}
 		}
 
 		if !ok {
-			response.JsonExit(r, gcode.CodeNotSupported.Code(), fmt.Sprintf("当前IP[%s]没有配置生成白名单！", cuIp))
+			response.JsonExit(r, gcode.CodeNotSupported.Code(), fmt.Sprintf("当前IP[%s]没有配置生成白名单！", clientIp))
 			return
 		}
 	}

@@ -380,7 +380,7 @@ func (s *sAdminMember) VerifyUnique(ctx context.Context, in adminin.VerifyUnique
 			err = gerror.Newf("字段 [ %v ] 未配置唯一属性验证", k)
 			return
 		}
-		if err = hgorm.IsUnique(ctx, dao.AdminMember, g.Map{k: v}, message, in.Id); err != nil {
+		if err = hgorm.IsUnique(ctx, &dao.AdminMember, g.Map{k: v}, message, in.Id); err != nil {
 			return
 		}
 	}
@@ -599,7 +599,6 @@ func (s *sAdminMember) List(ctx context.Context, in adminin.MemberListInp) (list
 			list[i].PostIds = append(list[i].PostIds, v.Int64())
 		}
 	}
-
 	return
 }
 

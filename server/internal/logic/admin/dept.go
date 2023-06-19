@@ -58,11 +58,11 @@ func (s *sAdminDept) Delete(ctx context.Context, in adminin.DeptDeleteInp) (err 
 
 // Edit 修改/新增
 func (s *sAdminDept) Edit(ctx context.Context, in adminin.DeptEditInp) (err error) {
-	if err = hgorm.IsUnique(ctx, dao.AdminDept, g.Map{dao.AdminDept.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
+	if err = hgorm.IsUnique(ctx, &dao.AdminDept, g.Map{dao.AdminDept.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
 		return
 	}
 
-	if in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, dao.AdminDept, in.Pid); err != nil {
+	if in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, &dao.AdminDept, in.Pid); err != nil {
 		return
 	}
 

@@ -6,8 +6,6 @@ import (
 
 // HomeAuth 前台页面鉴权中间件
 func (s *sMiddleware) HomeAuth(r *ghttp.Request) {
-	r.Response.Header().Set("Content-Type", "text/html")
-
 	// 鉴权
 	// ...
 

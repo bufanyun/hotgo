@@ -7,8 +7,9 @@ package user
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/frame/g"
+	"fmt"
 	"hotgo/api/api/user"
+	"hotgo/utility/simple"
 )
 
 var (
@@ -17,7 +18,9 @@ var (
 
 type cHello struct{}
 
-func (c *cHello) Hello(ctx context.Context, _ *user.HelloReq) (res *user.HelloRes, err error) {
-	g.RequestFromCtx(ctx).Response.Writeln("Hello World api member!")
+func (c *cHello) Hello(ctx context.Context, req *user.HelloReq) (res *user.HelloRes, err error) {
+	res = &user.HelloRes{
+		Tips: fmt.Sprintf("hello %v, this is the api for %v applications.", req.Name, simple.AppName(ctx)),
+	}
 	return
 }

@@ -171,15 +171,15 @@ func (s *sAdminRole) UpdatePermissions(ctx context.Context, in adminin.UpdatePer
 }
 
 func (s *sAdminRole) Edit(ctx context.Context, in adminin.RoleEditInp) (err error) {
-	if err = hgorm.IsUnique(ctx, dao.AdminRole, g.Map{dao.AdminRole.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
+	if err = hgorm.IsUnique(ctx, &dao.AdminRole, g.Map{dao.AdminRole.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
 		return
 	}
 
-	if err = hgorm.IsUnique(ctx, dao.AdminRole, g.Map{dao.AdminRole.Columns().Key: in.Key}, "编码已存在", in.Id); err != nil {
+	if err = hgorm.IsUnique(ctx, &dao.AdminRole, g.Map{dao.AdminRole.Columns().Key: in.Key}, "编码已存在", in.Id); err != nil {
 		return
 	}
 
-	if in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, dao.AdminRole, in.Pid); err != nil {
+	if in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, &dao.AdminRole, in.Pid); err != nil {
 		return
 	}
 
