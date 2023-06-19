@@ -7,8 +7,11 @@ package admin
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/menu"
+	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/service"
+	"hotgo/utility/validate"
 )
 
 // Menu 菜单
@@ -18,44 +21,47 @@ var (
 
 type cMenu struct{}
 
-// MaxSort 最大排序
-func (c *cMenu) MaxSort(ctx context.Context, req *menu.MaxSortReq) (res *menu.MaxSortRes, err error) {
-	res, err = service.AdminMenu().MaxSort(ctx, req)
-	return
-}
-
-// NameUnique 菜单名称是否唯一
-func (c *cMenu) NameUnique(ctx context.Context, req *menu.NameUniqueReq) (res *menu.NameUniqueRes, err error) {
-	res, err = service.AdminMenu().NameUnique(ctx, req)
-	return
-}
-
-// CodeUnique 菜单编码是否唯一
-func (c *cMenu) CodeUnique(ctx context.Context, req *menu.CodeUniqueReq) (res *menu.CodeUniqueRes, err error) {
-	res, err = service.AdminMenu().CodeUnique(ctx, req)
-	return
-}
-
 // Delete 删除
 func (c *cMenu) Delete(ctx context.Context, req *menu.DeleteReq) (res *menu.DeleteRes, err error) {
-	err = service.AdminMenu().Delete(ctx, req)
+	var in adminin.MenuDeleteInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
+	err = service.AdminMenu().Delete(ctx, in)
 	return
 }
 
 // Edit 更新
 func (c *cMenu) Edit(ctx context.Context, req *menu.EditReq) (res *menu.EditRes, err error) {
-	err = service.AdminMenu().Edit(ctx, req)
-	return
-}
+	var in adminin.MenuEditInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
 
-// View 获取信息
-func (c *cMenu) View(ctx context.Context, req *menu.ViewReq) (res *menu.ViewRes, err error) {
-	res, err = service.AdminMenu().View(ctx, req)
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
+	err = service.AdminMenu().Edit(ctx, in)
 	return
 }
 
 // List 获取列表
 func (c *cMenu) List(ctx context.Context, req *menu.ListReq) (res menu.ListRes, err error) {
-	res.List, err = service.AdminMenu().List(ctx, req)
+	var in adminin.MenuListInp
+	if err = gconv.Scan(req, &in); err != nil {
+		return
+	}
+
+	if err = validate.PreFilter(ctx, &in); err != nil {
+		return
+	}
+
+	res.List, err = service.AdminMenu().List(ctx, in)
 	return
 }

@@ -322,19 +322,18 @@ func (s *sAdminNotice) UnreadCount(ctx context.Context, in adminin.NoticeUnreadC
 
 // messageIds 获取我的消息所有的消息ID
 func (s *sAdminNotice) messageIds(ctx context.Context, memberId int64) (ids []int64, err error) {
-	array, err := s.Model(ctx, &handler.Option{FilterAuth: false}).
+	columns, err := s.Model(ctx, &handler.Option{FilterAuth: false}).
 		Fields("id").
 		Where("status", consts.StatusEnabled).
 		Where("(`type` IN(?) OR (`type` = ? and JSON_CONTAINS(`receiver`,'"+gconv.String(memberId)+"')))",
 			[]int{consts.NoticeTypeNotify, consts.NoticeTypeNotice}, consts.NoticeTypeLetter,
-		).Array()
+		).All()
 	if err != nil {
+		err = gerror.Wrap(err, "获取我的消息失败！")
 		return
 	}
 
-	for _, v := range array {
-		ids = append(ids, v.Int64())
-	}
+	ids = g.NewVar(columns).Int64s()
 	return
 }
 

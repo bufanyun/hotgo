@@ -35,7 +35,7 @@ func init() {
 	service.RegisterAdminCash(NewAdminCash())
 }
 
-// View 获取指定字典类型信息
+// View 获取指定提现信息
 func (s *sAdminCash) View(ctx context.Context, in adminin.CashViewInp) (res *adminin.CashViewModel, err error) {
 	if !service.AdminMember().VerifySuperId(ctx, contexts.GetUserId(ctx)) {
 		err = gerror.New("没有访问权限")

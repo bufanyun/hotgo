@@ -126,7 +126,7 @@ func (s *sAdminPost) CodeUnique(ctx context.Context, in adminin.PostCodeUniqueIn
 	return
 }
 
-// View 获取指定字典类型信息
+// View 获取指定岗位信息
 func (s *sAdminPost) View(ctx context.Context, in adminin.PostViewInp) (res *adminin.PostViewModel, err error) {
 	err = dao.AdminPost.Ctx(ctx).Where("id", in.Id).Scan(&res)
 	return

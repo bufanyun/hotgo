@@ -8,18 +8,18 @@ package admin
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
-	"hotgo/api/admin/menu"
 	"hotgo/api/admin/role"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/casbin"
 	"hotgo/internal/library/contexts"
+	"hotgo/internal/library/hgorm"
 	"hotgo/internal/model/do"
 	"hotgo/internal/model/input/adminin"
-	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
 	"hotgo/utility/tree"
@@ -35,40 +35,9 @@ func init() {
 	service.RegisterAdminMenu(NewAdminMenu())
 }
 
-// MaxSort 最大排序
-func (s *sAdminMenu) MaxSort(ctx context.Context, req *menu.MaxSortReq) (res *menu.MaxSortRes, err error) {
-	if req.Id > 0 {
-		if err = dao.AdminMenu.Ctx(ctx).Where("id", req.Id).Order("sort desc").Scan(&res); err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return nil, err
-		}
-	}
-
-	if res == nil {
-		res = new(menu.MaxSortRes)
-	}
-
-	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
-	return
-}
-
-// NameUnique 菜单名称是否唯一
-func (s *sAdminMenu) NameUnique(ctx context.Context, req *menu.NameUniqueReq) (res *menu.NameUniqueRes, err error) {
-	res = new(menu.NameUniqueRes)
-	res.IsUnique, err = dao.AdminMenu.IsUniqueName(ctx, req.Id, req.Name)
-	return
-}
-
-// CodeUnique 菜单编码是否唯一
-func (s *sAdminMenu) CodeUnique(ctx context.Context, req *menu.CodeUniqueReq) (res *menu.CodeUniqueRes, err error) {
-	res = new(menu.CodeUniqueRes)
-	res.IsUnique, err = dao.AdminMenu.IsUniqueName(ctx, req.Id, req.Code)
-	return
-}
-
 // Delete 删除
-func (s *sAdminMenu) Delete(ctx context.Context, req *menu.DeleteReq) (err error) {
-	exist, err := dao.AdminMenu.Ctx(ctx).Where("pid", req.Id).One()
+func (s *sAdminMenu) Delete(ctx context.Context, in adminin.MenuDeleteInp) (err error) {
+	exist, err := dao.AdminMenu.Ctx(ctx).Where("pid", in.Id).One()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
@@ -76,74 +45,76 @@ func (s *sAdminMenu) Delete(ctx context.Context, req *menu.DeleteReq) (err error
 	if !exist.IsEmpty() {
 		return gerror.New("请先删除该菜单下的所有菜单！")
 	}
-	_, err = dao.AdminMenu.Ctx(ctx).Where("id", req.Id).Delete()
+	_, err = dao.AdminMenu.Ctx(ctx).Where("id", in.Id).Delete()
+	return
+}
+
+// VerifyUnique 验证菜单唯一属性
+func (s *sAdminMenu) VerifyUnique(ctx context.Context, in adminin.VerifyUniqueInp) (err error) {
+	if in.Where == nil {
+		return
+	}
+
+	cols := dao.AdminMenu.Columns()
+	msgMap := g.MapStrStr{
+		cols.Name:  "菜单编码已存在，请换一个",
+		cols.Title: "菜单名称已存在，请换一个",
+	}
+
+	for k, v := range in.Where {
+		if v == "" {
+			continue
+		}
+		message, ok := msgMap[k]
+		if !ok {
+			err = gerror.Newf("字段 [ %v ] 未配置唯一属性验证", k)
+			return
+		}
+		if err = hgorm.IsUnique(ctx, &dao.AdminMenu, g.Map{k: v}, message, in.Id); err != nil {
+			return
+		}
+	}
 	return
 }
 
 // Edit 修改/新增
-func (s *sAdminMenu) Edit(ctx context.Context, req *menu.EditReq) (err error) {
-	var (
-		pidData    *do.AdminMenu
-		uniqueName bool
-		uniqueCode bool
-	)
-
-	if req.Title == "" {
-		err = gerror.New("菜单名称不能为空")
-		return err
-	}
-	if req.Type != 3 && req.Path == "" {
-		err = gerror.New("路由地址不能为空")
-		return err
-	}
-	if req.Name == "" {
-		err = gerror.New("路由名称不能为空")
-		return err
-	}
-
-	uniqueName, err = dao.AdminMenu.IsUniqueTitle(ctx, req.Id, req.Title)
+func (s *sAdminMenu) Edit(ctx context.Context, in adminin.MenuEditInp) (err error) {
+	// 验证唯一性
+	err = s.VerifyUnique(ctx, adminin.VerifyUniqueInp{
+		Where: g.Map{
+			dao.AdminMenu.Columns().Title: in.Title,
+			dao.AdminMenu.Columns().Name:  in.Name,
+		},
+	})
 	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-	if !uniqueName {
-		err = gerror.New("菜单名称已存在")
-		return err
+		return
 	}
 
-	uniqueCode, err = dao.AdminMenu.IsUniqueName(ctx, req.Id, req.Name)
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return err
-	}
-	if !uniqueCode {
-		err = gerror.New("菜单编码已存在")
-		return err
-	}
+	var pd *do.AdminMenu
 
 	// 维护菜单等级
-	if req.Pid == 0 {
-		req.Level = 1
+	if in.Pid == 0 {
+		in.Level = 1
 	} else {
-		if err = dao.AdminMenu.Ctx(ctx).Where("id", req.Pid).Scan(&pidData); err != nil {
+		if err = dao.AdminMenu.Ctx(ctx).Where("id", in.Pid).Scan(&pd); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
 			return err
 		}
-		if pidData == nil {
+		if pd == nil {
 			return gerror.New("上级菜单信息错误")
 		}
-		req.Level = gconv.Int(pidData.Level) + 1
+		in.Level = gconv.Int(pd.Level) + 1
 	}
 
 	// 修改
-	req.UpdatedAt = gtime.Now()
-	if req.Id > 0 {
-		if req.Pid == req.Id {
+	in.UpdatedAt = gtime.Now()
+	if in.Id > 0 {
+		if in.Pid == in.Id {
 			return gerror.New("上级菜单不能是当前菜单")
 		}
-		_, err = dao.AdminMenu.Ctx(ctx).Where("id", req.Id).Data(req).Update()
-		if err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
+
+		if _, err = dao.AdminMenu.Ctx(ctx).Where("id", in.Id).Data(in).Update(); err != nil {
+			err = gerror.Wrap(err, "修改菜单失败！")
 			return err
 		}
 
@@ -151,23 +122,17 @@ func (s *sAdminMenu) Edit(ctx context.Context, req *menu.EditReq) (err error) {
 	}
 
 	// 新增
-	req.CreatedAt = gtime.Now()
-	_, err = dao.AdminMenu.Ctx(ctx).Data(req).Insert()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
+	in.CreatedAt = gtime.Now()
+
+	if _, err = dao.AdminMenu.Ctx(ctx).Data(in).Insert(); err != nil {
+		err = gerror.Wrap(err, "新增菜单失败！")
 		return err
 	}
 	return casbin.Refresh(ctx)
 }
 
-// View 获取信息
-func (s *sAdminMenu) View(ctx context.Context, req *menu.ViewReq) (res *menu.ViewRes, err error) {
-	err = dao.AdminMenu.Ctx(ctx).Where("id", req.Id).Scan(&res)
-	return
-}
-
 // List 获取菜单列表
-func (s *sAdminMenu) List(ctx context.Context, req *menu.ListReq) (lists []map[string]interface{}, err error) {
+func (s *sAdminMenu) List(ctx context.Context, in adminin.MenuListInp) (lists []map[string]interface{}, err error) {
 	var models []*adminin.MenuTree
 	err = dao.AdminMenu.Ctx(ctx).Order("sort asc,id desc").Scan(&models)
 	if err != nil {
