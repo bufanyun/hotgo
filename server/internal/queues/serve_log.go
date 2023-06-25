@@ -29,10 +29,15 @@ func (q *qServeLog) GetTopic() string {
 }
 
 // Handle 处理消息
-func (q *qServeLog) Handle(ctx context.Context, mqMsg queue.MqMsg) (err error) {
+func (q *qServeLog) Handle(ctx context.Context, mqMsg queue.MqMsg) error {
 	var data entity.SysServeLog
-	if err = json.Unmarshal(mqMsg.Body, &data); err != nil {
-		return err
+	if err := json.Unmarshal(mqMsg.Body, &data); err != nil {
+		queue.Logger().Infof(ctx, "ServeLog Handle Unmarshal err:%+v", err)
+		return nil
 	}
-	return service.SysServeLog().RealWrite(ctx, data)
+
+	if err := service.SysServeLog().RealWrite(ctx, data); err != nil {
+		queue.Logger().Infof(ctx, "ServeLog Handle Write err:%+v", err)
+	}
+	return nil
 }

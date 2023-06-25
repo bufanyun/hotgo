@@ -3,10 +3,10 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package websocket
 
 import (
+	"context"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	"runtime/debug"
@@ -36,7 +36,20 @@ func handlerMsg(client *Client, message []byte) {
 		g.Log().Warningf(ctxManager, "handlerMsg function id %v: not registered", request.Event)
 		return
 	}
-	fun(client, request)
+
+	err := msgGo.AddWithRecover(ctxManager,
+		func(ctx context.Context) {
+			fun(client, request)
+		},
+		func(ctx context.Context, err error) {
+			g.Log().Warningf(ctxManager, "handlerMsg msgGo exec err:%+v", err)
+		},
+	)
+
+	if err != nil {
+		g.Log().Warningf(ctxManager, "handlerMsg msgGo Add err:%+v", err)
+		return
+	}
 }
 
 // RegisterMsg 注册消息

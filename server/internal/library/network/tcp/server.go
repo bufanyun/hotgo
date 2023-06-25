@@ -12,6 +12,7 @@ import (
 	"github.com/gogf/gf/v2/net/gtcp"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/glog"
+	"github.com/gogf/gf/v2/os/grpool"
 	"hotgo/internal/consts"
 	"hotgo/utility/simple"
 	"reflect"
@@ -45,6 +46,7 @@ type Server struct {
 	closeFlag    bool                     // 服务关闭标签
 	clients      map[string]*ClientConn   // 已登录的认证客户端
 	mutexConns   sync.Mutex               // 连接锁，主要用于客户端上下线
+	msgGo        *grpool.Pool             // 消息处理协程池
 	cronRouters  map[string]RouterHandler // 定时任务路由
 	queueRouters map[string]RouterHandler // 队列路由
 	authRouters  map[string]RouterHandler // 任务路由
@@ -68,15 +70,15 @@ func NewServer(config *ServerConfig) (server *Server, err error) {
 	if config.Name == "" {
 		config.Name = simple.AppName(server.Ctx)
 	}
-	
+
 	server.addr = config.Addr
 	server.name = config.Name
 	server.ln = gtcp.NewServer(server.addr, server.accept, config.Name)
 	server.clients = make(map[string]*ClientConn)
 	server.closeFlag = false
 	server.Logger = g.Log("tcpServer")
-	server.rpc = NewRpc(server.Ctx)
-
+	server.msgGo = grpool.New(20)
+	server.rpc = NewRpc(server.Ctx, server.msgGo, server.Logger)
 	server.startCron()
 	return
 }
@@ -103,18 +105,18 @@ func (server *Server) accept(conn *gtcp.Conn) {
 		switch msg.Router {
 		case "ServerLogin": // 服务登录
 			// 初始化上下文
-			ctx, cancel := initCtx(gctx.New(), &Context{
+			ctx := initCtx(gctx.New(), &Context{
 				Conn: conn,
 			})
-			doHandleRouterMsg(server.onServerLogin, ctx, cancel, msg.Data)
+			server.doHandleRouterMsg(ctx, server.onServerLogin, msg.Data)
 		case "ServerHeartbeat": // 心跳
 			if client == nil {
 				server.Logger.Infof(server.Ctx, "conn not connected, ignore the heartbeat, msg:%+v", msg)
 				continue
 			}
 			// 初始化上下文
-			ctx, cancel := initCtx(gctx.New(), &Context{})
-			doHandleRouterMsg(server.onServerHeartbeat, ctx, cancel, msg.Data, client)
+			ctx := initCtx(gctx.New(), &Context{})
+			server.doHandleRouterMsg(ctx, server.onServerHeartbeat, msg.Data, client)
 		default: // 通用路由消息处理
 			if client == nil {
 				server.Logger.Warningf(server.Ctx, "conn is not logged in but sends a routing message. actively conn disconnect, msg:%+v", msg)
@@ -137,14 +139,14 @@ func (server *Server) handleRouterMsg(msg *Message, client *ClientConn) {
 	}
 
 	// 初始化上下文
-	ctx, cancel := initCtx(gctx.New(), &Context{
+	ctx := initCtx(gctx.New(), &Context{
 		Conn:    client.Conn,
 		Auth:    client.Auth,
 		TraceID: in.TraceID,
 	})
 
 	// 响应rpc消息
-	if server.rpc.HandleMsg(ctx, cancel, msg.Data) {
+	if server.rpc.HandleMsg(ctx, msg.Data) {
 		return
 	}
 
@@ -159,7 +161,7 @@ func (server *Server) handleRouterMsg(msg *Message, client *ClientConn) {
 			return
 		}
 
-		doHandleRouterMsg(f, ctx, cancel, msg.Data)
+		server.doHandleRouterMsg(ctx, f, msg.Data)
 	}
 
 	switch client.Auth.Group {
@@ -171,6 +173,26 @@ func (server *Server) handleRouterMsg(msg *Message, client *ClientConn) {
 		handle(server.authRouters, client.Auth.Group)
 	default:
 		server.Logger.Warningf(server.Ctx, "group is not registered: %+v", client.Auth.Group)
+	}
+}
+
+// doHandleRouterMsg 处理路由消息
+func (server *Server) doHandleRouterMsg(ctx context.Context, fun RouterHandler, args ...interface{}) {
+	ctx, cancel := context.WithCancel(ctx)
+	err := server.msgGo.AddWithRecover(ctx,
+		func(ctx context.Context) {
+			fun(ctx, args...)
+			cancel()
+		},
+		func(ctx context.Context, err error) {
+			server.Logger.Warningf(ctx, "doHandleRouterMsg msgGo exec err:%+v", err)
+			cancel()
+		},
+	)
+
+	if err != nil {
+		server.Logger.Warningf(ctx, "doHandleRouterMsg msgGo Add err:%+v", err)
+		return
 	}
 }
 

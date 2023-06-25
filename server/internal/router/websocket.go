@@ -43,5 +43,4 @@ func WebSocket(ctx context.Context, group *ghttp.RouterGroup) {
 		"admin/monitor/trends":  admin.Monitor.Trends,  // 后台监控，动态数据
 		"admin/monitor/runInfo": admin.Monitor.RunInfo, // 后台监控，运行信息
 	})
-
 }

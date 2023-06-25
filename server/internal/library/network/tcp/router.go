@@ -10,12 +10,8 @@ import (
 	"encoding/json"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/net/gtcp"
-	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/gogf/gf/v2/util/gconv"
 )
-
-// GoPool 初始化一个协程池，用于处理消息处理
-var GoPool = grpool.New(20)
 
 // RouterHandler 路由消息处理器
 type RouterHandler func(ctx context.Context, args ...interface{})
@@ -63,12 +59,4 @@ func MsgPkg(data interface{}, auth *AuthMeta, traceID string) string {
 		return ""
 	}
 	return msg.TraceID
-}
-
-// doHandleRouterMsg 处理路由消息
-func doHandleRouterMsg(fun RouterHandler, ctx context.Context, cancel context.CancelFunc, args ...interface{}) {
-	_ = GoPool.Add(ctx, func(ctx context.Context) {
-		fun(ctx, args...)
-		cancel()
-	})
 }

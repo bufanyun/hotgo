@@ -12,6 +12,7 @@ import (
 	"github.com/gogf/gf/v2/net/gtcp"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/glog"
+	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/utility/simple"
 	"reflect"
@@ -49,6 +50,7 @@ type Client struct {
 	closeEvent      CallbackEvent            // 连接关闭事件
 	sync.Mutex                               // 状态锁
 	heartbeat       int64                    // 心跳
+	msgGo           *grpool.Pool             // 消息处理协程池
 	routers         map[string]RouterHandler // 已注册的路由
 	conn            *gtcp.Conn               // 连接对象
 	wg              sync.WaitGroup           // 状态控制
@@ -100,7 +102,8 @@ func NewClient(config *ClientConfig) (client *Client, err error) {
 		client.timeout = config.Timeout
 	}
 
-	client.rpc = NewRpc(client.Ctx)
+	client.msgGo = grpool.New(5)
+	client.rpc = NewRpc(client.Ctx, client.msgGo, client.Logger)
 	return
 }
 
@@ -252,8 +255,7 @@ func (client *Client) read() {
 
 			switch msg.Router {
 			case "ResponseServerLogin", "ResponseServerHeartbeat": // 服务登录、心跳无需验证签名
-				ctx, cancel := initCtx(gctx.New(), &Context{})
-				doHandleRouterMsg(f, ctx, cancel, msg.Data)
+				client.doHandleRouterMsg(initCtx(gctx.New(), &Context{}), f, msg.Data)
 			default: // 通用路由消息处理
 				in, err := VerifySign(msg.Data, client.auth.AppId, client.auth.SecretKey)
 				if err != nil {
@@ -261,18 +263,18 @@ func (client *Client) read() {
 					continue
 				}
 
-				ctx, cancel := initCtx(gctx.New(), &Context{
+				ctx := initCtx(gctx.New(), &Context{
 					Conn:    client.conn,
 					Auth:    client.auth,
 					TraceID: in.TraceID,
 				})
 
 				// 响应rpc消息
-				if client.rpc.HandleMsg(ctx, cancel, msg.Data) {
+				if client.rpc.HandleMsg(ctx, msg.Data) {
 					return
 				}
 
-				doHandleRouterMsg(f, ctx, cancel, msg.Data)
+				client.doHandleRouterMsg(ctx, f, msg.Data)
 			}
 		}
 	})
@@ -376,4 +378,24 @@ func (client *Client) RpcRequest(ctx context.Context, data interface{}) (res int
 	return client.rpc.Request(key, func() {
 		_ = client.Write(data)
 	})
+}
+
+// doHandleRouterMsg 处理路由消息
+func (client *Client) doHandleRouterMsg(ctx context.Context, fun RouterHandler, args ...interface{}) {
+	ctx, cancel := context.WithCancel(ctx)
+	err := client.msgGo.AddWithRecover(ctx,
+		func(ctx context.Context) {
+			fun(ctx, args...)
+			cancel()
+		},
+		func(ctx context.Context, err error) {
+			client.Logger.Warningf(ctx, "doHandleRouterMsg msgGo exec err:%+v", err)
+			cancel()
+		},
+	)
+
+	if err != nil {
+		client.Logger.Warningf(ctx, "doHandleRouterMsg msgGo Add err:%+v", err)
+		return
+	}
 }

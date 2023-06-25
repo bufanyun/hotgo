@@ -190,13 +190,13 @@ func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (res *adm
 
 	// 部门名称
 	if in.Name != "" {
-		columns, err := dao.AdminDept.Ctx(ctx).Fields("pid").WhereLike("name", "%"+in.Name+"%").All()
+		columns, err := dao.AdminDept.Ctx(ctx).Fields("pid").WhereLike("name", "%"+in.Name+"%").Array()
 		if err != nil {
 			err = gerror.Wrap(err, "过滤部门列表失败-1！")
 			return nil, err
 		}
 
-		ds := g.NewVar(columns.Array()).Int64s()
+		ds := g.NewVar(columns).Int64s()
 		ids = append(ids, ds...)
 		pids = append(pids, ds...)
 		if len(ids) == 0 {
@@ -205,13 +205,13 @@ func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (res *adm
 	}
 
 	if in.Code != "" {
-		columns, err := dao.AdminDept.Ctx(ctx).Fields("pid").WhereLike("code", "%"+in.Code+"%").All()
+		columns, err := dao.AdminDept.Ctx(ctx).Fields("pid").WhereLike("code", "%"+in.Code+"%").Array()
 		if err != nil {
 			err = gerror.Wrap(err, "过滤部门列表失败-2！")
 			return nil, err
 		}
 
-		ds := g.NewVar(columns.Array()).Int64s()
+		ds := g.NewVar(columns).Int64s()
 		ids = append(ids, ds...)
 		pids = append(pids, ds...)
 		if len(ids) == 0 {
