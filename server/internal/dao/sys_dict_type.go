@@ -57,7 +57,7 @@ func (dao *sysDictTypeDao) GetTypes(ctx context.Context, id int64) (types []stri
 	columns, err := dao.Ctx(ctx).Fields("type").
 		Where("id", id).
 		WhereOr("pid", id).
-		Where("status", consts.StatusEnabled).All()
+		Where("status", consts.StatusEnabled).Array()
 	types = g.NewVar(columns).Strings()
 	return
 }

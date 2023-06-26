@@ -3,13 +3,13 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package websocket
 
 import (
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gorilla/websocket"
 	"net/http"
@@ -19,6 +19,7 @@ var (
 	ctxManager    context.Context                 // 主上下文
 	clientManager = NewClientManager()            // 客户端管理
 	routers       = make(map[string]EventHandler) // 消息路由
+	msgGo         = grpool.New(20)
 	upGrader      = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,

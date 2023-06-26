@@ -12,14 +12,13 @@ import (
 )
 
 // initCtx 初始化上下文对象指针到上下文对象中，以便后续的请求流程中可以修改
-func initCtx(ctx context.Context, model *Context) (newCtx context.Context, cancel context.CancelFunc) {
+func initCtx(ctx context.Context, model *Context) (newCtx context.Context) {
 	if model.TraceID != "" {
 		newCtx, _ = gtrace.WithTraceID(ctx, model.TraceID)
 	} else {
 		newCtx = ctx
 	}
 	newCtx = context.WithValue(newCtx, consts.ContextTCPKey, model)
-	newCtx, cancel = context.WithCancel(newCtx)
 	return
 }
 

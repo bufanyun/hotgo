@@ -81,6 +81,7 @@ func (s *sAdminMenu) VerifyUnique(ctx context.Context, in adminin.VerifyUniqueIn
 func (s *sAdminMenu) Edit(ctx context.Context, in adminin.MenuEditInp) (err error) {
 	// 验证唯一性
 	err = s.VerifyUnique(ctx, adminin.VerifyUniqueInp{
+		Id: in.Id,
 		Where: g.Map{
 			dao.AdminMenu.Columns().Title: in.Title,
 			dao.AdminMenu.Columns().Name:  in.Name,

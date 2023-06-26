@@ -327,7 +327,7 @@ func (s *sAdminNotice) messageIds(ctx context.Context, memberId int64) (ids []in
 		Where("status", consts.StatusEnabled).
 		Where("(`type` IN(?) OR (`type` = ? and JSON_CONTAINS(`receiver`,'"+gconv.String(memberId)+"')))",
 			[]int{consts.NoticeTypeNotify, consts.NoticeTypeNotice}, consts.NoticeTypeLetter,
-		).All()
+		).Array()
 	if err != nil {
 		err = gerror.Wrap(err, "获取我的消息失败！")
 		return

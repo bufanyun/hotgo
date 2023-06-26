@@ -10,6 +10,8 @@ import (
 	"fmt"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/net/gtcp"
+	"github.com/gogf/gf/v2/os/glog"
+	"github.com/gogf/gf/v2/os/grpool"
 	"hotgo/internal/consts"
 	"hotgo/utility/simple"
 	"sync"
@@ -20,6 +22,8 @@ type Rpc struct {
 	ctx       context.Context
 	mutex     sync.Mutex
 	callbacks map[string]RpcRespFunc
+	msgGo     *grpool.Pool // 消息处理协程池
+	logger    *glog.Logger // 日志处理器
 }
 
 // RpcResp 响应结构
@@ -31,10 +35,12 @@ type RpcResp struct {
 type RpcRespFunc func(resp interface{}, err error)
 
 // NewRpc 初始化一个rpc协议
-func NewRpc(ctx context.Context) *Rpc {
+func NewRpc(ctx context.Context, msgGo *grpool.Pool, logger *glog.Logger) *Rpc {
 	return &Rpc{
 		ctx:       ctx,
 		callbacks: make(map[string]RpcRespFunc),
+		msgGo:     msgGo,
+		logger:    logger,
 	}
 }
 
@@ -44,7 +50,7 @@ func (r *Rpc) GetCallId(client *gtcp.Conn, traceID string) string {
 }
 
 // HandleMsg 处理rpc消息
-func (r *Rpc) HandleMsg(ctx context.Context, cancel context.CancelFunc, data interface{}) bool {
+func (r *Rpc) HandleMsg(ctx context.Context, data interface{}) bool {
 	user := GetCtx(ctx)
 	callId := r.GetCallId(user.Conn, user.TraceID)
 
@@ -53,10 +59,19 @@ func (r *Rpc) HandleMsg(ctx context.Context, cancel context.CancelFunc, data int
 		delete(r.callbacks, callId)
 		r.mutex.Unlock()
 
-		simple.SafeGo(ctx, func(ctx context.Context) {
+		ctx, cancel := context.WithCancel(ctx)
+
+		err := r.msgGo.AddWithRecover(ctx, func(ctx context.Context) {
 			call(data, nil)
 			cancel()
+		}, func(ctx context.Context, err error) {
+			r.logger.Warningf(ctx, "rpc HandleMsg msgGo exec err:%+v", err)
+			cancel()
 		})
+
+		if err != nil {
+			r.logger.Warningf(ctx, "rpc HandleMsg msgGo Add err:%+v", err)
+		}
 		return true
 	}
 	return false
