@@ -19,10 +19,10 @@ import (
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/hgorm"
 	"hotgo/internal/model/do"
+	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
-	"hotgo/utility/tree"
 )
 
 type sAdminMenu struct{}
@@ -118,7 +118,6 @@ func (s *sAdminMenu) Edit(ctx context.Context, in adminin.MenuEditInp) (err erro
 			err = gerror.Wrap(err, "修改菜单失败！")
 			return err
 		}
-
 		return casbin.Refresh(ctx)
 	}
 
@@ -133,13 +132,15 @@ func (s *sAdminMenu) Edit(ctx context.Context, in adminin.MenuEditInp) (err erro
 }
 
 // List 获取菜单列表
-func (s *sAdminMenu) List(ctx context.Context, in adminin.MenuListInp) (lists []map[string]interface{}, err error) {
-	var models []*adminin.MenuTree
-	err = dao.AdminMenu.Ctx(ctx).Order("sort asc,id desc").Scan(&models)
-	if err != nil {
+func (s *sAdminMenu) List(ctx context.Context, in adminin.MenuListInp) (res *adminin.MenuListModel, err error) {
+	var models []*entity.AdminMenu
+	if err = dao.AdminMenu.Ctx(ctx).Order("sort asc,id desc").Scan(&models); err != nil {
 		return
 	}
-	return tree.GenTree(gconv.SliceMap(models)), nil
+
+	res = new(adminin.MenuListModel)
+	res.List = s.treeList(0, models)
+	return
 }
 
 // genNaiveMenus 生成NaiveUI菜单格式
@@ -169,7 +170,6 @@ func (s *sAdminMenu) genNaiveMenus(menus []adminin.MenuRouteSummary) (sources []
 		}
 		sources = append(sources, source)
 	}
-
 	return
 }
 
@@ -177,9 +177,11 @@ func (s *sAdminMenu) genNaiveMenus(menus []adminin.MenuRouteSummary) (sources []
 func (s *sAdminMenu) getChildrenList(menu *adminin.MenuRouteSummary, treeMap map[string][]adminin.MenuRouteSummary) (err error) {
 	menu.Children = treeMap[gconv.String(menu.Id)]
 	for i := 0; i < len(menu.Children); i++ {
-		err = s.getChildrenList(&menu.Children[i], treeMap)
+		if err = s.getChildrenList(&menu.Children[i], treeMap); err != nil {
+			return
+		}
 	}
-	return err
+	return
 }
 
 // GetMenuList 获取菜单列表
@@ -193,30 +195,23 @@ func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (res *role
 
 	// 非超管验证允许的菜单列表
 	if !service.AdminMember().VerifySuperId(ctx, memberId) {
-		array, err := dao.AdminRoleMenu.Ctx(ctx).
-			Fields("menu_id").
-			Where("role_id", contexts.GetRoleId(ctx)).
-			Array()
+		menuIds, err := dao.AdminRoleMenu.Ctx(ctx).Fields("menu_id").Where("role_id", contexts.GetRoleId(ctx)).Array()
 		if err != nil {
 			return nil, err
 		}
-		if len(array) > 0 {
-			pidList, err := dao.AdminMenu.Ctx(ctx).Fields("pid").WhereIn("id", array).Group("pid").Array()
+		if len(menuIds) > 0 {
+			pidList, err := dao.AdminMenu.Ctx(ctx).Fields("pid").WhereIn("id", menuIds).Group("pid").Array()
 			if err != nil {
 				return nil, err
 			}
 			if len(pidList) > 0 {
-				array = append(pidList, array...)
+				menuIds = append(pidList, menuIds...)
 			}
 		}
-		mod = mod.Where("id", array)
+		mod = mod.Where("id", menuIds)
 	}
 
-	if err = mod.Order("sort asc,id desc").Scan(&allMenus); err != nil {
-		return
-	}
-
-	if len(allMenus) == 0 {
+	if err = mod.Order("sort asc,id desc").Scan(&allMenus); err != nil || len(allMenus) == 0 {
 		return
 	}
 
@@ -247,14 +242,11 @@ func (s *sAdminMenu) LoginPermissions(ctx context.Context, memberId int64) (list
 
 	// 非超管验证允许的菜单列表
 	if !service.AdminMember().VerifySuperId(ctx, memberId) {
-		array, err := dao.AdminRoleMenu.Ctx(ctx).
-			Fields("menu_id").
-			Where("role_id", contexts.GetRoleId(ctx)).
-			Array()
+		menuIds, err := dao.AdminRoleMenu.Ctx(ctx).Fields("menu_id").Where("role_id", contexts.GetRoleId(ctx)).Array()
 		if err != nil {
 			return nil, err
 		}
-		mod = mod.Where("id", array)
+		mod = mod.Where("id", menuIds)
 	}
 
 	if err = mod.Scan(&allPermissions); err != nil {
@@ -274,5 +266,25 @@ func (s *sAdminMenu) LoginPermissions(ctx context.Context, memberId int64) (list
 	}
 
 	lists = convert.UniqueSlice(lists)
+	return
+}
+
+// treeList 树状列表
+func (s *sAdminMenu) treeList(pid int64, nodes []*entity.AdminMenu) (list []*adminin.MenuTree) {
+	list = make([]*adminin.MenuTree, 0)
+	for _, v := range nodes {
+		if v.Pid == pid {
+			item := new(adminin.MenuTree)
+			item.AdminMenu = *v
+			item.Label = v.Title
+			item.Key = v.Id
+
+			child := s.treeList(v.Id, nodes)
+			if len(child) > 0 {
+				item.Children = child
+			}
+			list = append(list, item)
+		}
+	}
 	return
 }

@@ -192,7 +192,7 @@
     id: number;
     children?: RowData[];
   };
-  const data = ref([]);
+  const data = ref<any>([]);
   const columns: DataTableColumns<RowData> = [
     {
       title(_column) {
@@ -200,9 +200,7 @@
           h(
             NButton,
             {
-              ghost: true,
               strong: true,
-              tertiary: true,
               size: 'small',
               text: true,
               iconPlacement: 'right',
@@ -283,7 +281,7 @@
       title: '操作',
       key: 'actions',
       width: 220,
-      // fixed: 'right',
+      fixed: 'right',
       render(record: any) {
         return h(TableAction as any, {
           style: 'button',
@@ -384,7 +382,7 @@
   const loadDataTable = async (res) => {
     loading.value = true;
     const tmp = await getDeptList({ ...res, ...formRef.value?.formModel });
-    data.value = tmp.list;
+    data.value = tmp?.list;
     if (data.value === undefined || data.value === null) {
       data.value = [];
     }

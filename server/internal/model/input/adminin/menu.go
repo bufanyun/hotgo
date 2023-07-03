@@ -57,11 +57,6 @@ func (in *MenuListInp) Filter(ctx context.Context) (err error) {
 	return
 }
 
-type MenuListModel struct {
-	List []*entity.AdminMenu `json:"list"   dc:"数据列表"`
-	form.PageRes
-}
-
 // MenuSearchListInp 查询菜单列表
 type MenuSearchListInp struct {
 	Name string `json:"name" dc:"菜单名称"`
@@ -74,12 +69,16 @@ func (in *MenuSearchListInp) Filter(ctx context.Context) (err error) {
 
 type MenuSearchListModel []*model.TreeMenu
 
-// MenuTree 菜单树结构
+// MenuTree 树
 type MenuTree struct {
-	// 适配n-tree
-	Id    int64  `json:"key" `
-	Title string `json:"label"`
 	entity.AdminMenu
+	Key      int64       `json:"key" `
+	Label    string      `json:"label"     dc:"标签"`
+	Children []*MenuTree `json:"children"`
+}
+
+type MenuListModel struct {
+	List []*MenuTree `json:"list"`
 }
 
 // MenuRouteMeta 菜单路由

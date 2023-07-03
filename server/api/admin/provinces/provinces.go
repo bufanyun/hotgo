@@ -76,7 +76,7 @@ type TreeReq struct {
 }
 
 type TreeRes struct {
-	List []map[string]interface{} `json:"list"   dc:"数据列表"`
+	List []*sysin.ProvincesTree `json:"list"   dc:"数据列表"`
 }
 
 // ChildrenListReq 获取省市区下级列表

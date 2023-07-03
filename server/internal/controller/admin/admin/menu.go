@@ -62,6 +62,6 @@ func (c *cMenu) List(ctx context.Context, req *menu.ListReq) (res menu.ListRes, 
 		return
 	}
 
-	res.List, err = service.AdminMenu().List(ctx, in)
+	res.MenuListModel, err = service.AdminMenu().List(ctx, in)
 	return
 }

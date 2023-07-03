@@ -10,6 +10,12 @@ import (
 )
 
 type (
+	IAuthClient interface {
+		Start(ctx context.Context)
+		Stop(ctx context.Context)
+		IsLogin() bool
+		OnResponseAuthSummary(ctx context.Context, args ...interface{})
+	}
 	ICronClient interface {
 		Start(ctx context.Context)
 		Stop(ctx context.Context)
@@ -19,17 +25,11 @@ type (
 		OnCronStatus(ctx context.Context, args ...interface{})
 		OnCronOnlineExec(ctx context.Context, args ...interface{})
 	}
-	IAuthClient interface {
-		Start(ctx context.Context)
-		Stop(ctx context.Context)
-		IsLogin() bool
-		OnResponseAuthSummary(ctx context.Context, args ...interface{})
-	}
 )
 
 var (
-	localAuthClient IAuthClient
 	localCronClient ICronClient
+	localAuthClient IAuthClient
 )
 
 func AuthClient() IAuthClient {

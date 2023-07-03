@@ -9,14 +9,12 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/hgorm"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/tree"
 )
 
 type sSysProvinces struct{}
@@ -30,19 +28,15 @@ func init() {
 }
 
 // Tree 关系树选项列表
-func (s *sSysProvinces) Tree(ctx context.Context) (list []g.Map, err error) {
+func (s *sSysProvinces) Tree(ctx context.Context) (list []*sysin.ProvincesTree, err error) {
 	var models []*entity.SysProvinces
 	if err = dao.SysProvinces.Ctx(ctx).Order("pid asc,id asc,sort asc").Scan(&models); err != nil {
 		err = gerror.Wrap(err, "获取省市区关系树选项列表失败！")
 		return
 	}
 
-	list = gconv.SliceMap(models)
-	for k, v := range list {
-		list[k]["key"] = v["id"]
-		list[k]["label"] = v["title"]
-	}
-	return tree.GenTree(list), nil
+	list = s.treeList(0, models)
+	return
 }
 
 // Delete 删除省市区数据
@@ -212,9 +206,7 @@ func (s *sSysProvinces) UniqueId(ctx context.Context, in sysin.ProvincesUniqueId
 // Select 省市区选项
 func (s *sSysProvinces) Select(ctx context.Context, in sysin.ProvincesSelectInp) (res *sysin.ProvincesSelectModel, err error) {
 	res = new(sysin.ProvincesSelectModel)
-	mod := dao.SysProvinces.Ctx(ctx).
-		Fields("id as value, title as label, level").
-		Where("pid", in.Value)
+	mod := dao.SysProvinces.Ctx(ctx).Fields("id as value, title as label, level").Where("pid", in.Value)
 
 	if err = mod.Order("sort asc,id asc").Scan(&res.List); err != nil {
 		err = gerror.Wrap(err, "获取省市区选项失败！")
@@ -226,6 +218,7 @@ func (s *sSysProvinces) Select(ctx context.Context, in sysin.ProvincesSelectInp)
 			v.IsLeaf = true
 			continue
 		}
+
 		if in.DataType == "pc" && v.Level >= 2 {
 			v.IsLeaf = true
 			continue
@@ -234,6 +227,27 @@ func (s *sSysProvinces) Select(ctx context.Context, in sysin.ProvincesSelectInp)
 		if in.DataType == "pca" && v.Level >= 3 {
 			v.IsLeaf = true
 			continue
+		}
+	}
+	return
+}
+
+// treeList 树状列表
+func (s *sSysProvinces) treeList(pid int64, nodes []*entity.SysProvinces) (list []*sysin.ProvincesTree) {
+	list = make([]*sysin.ProvincesTree, 0)
+	for _, v := range nodes {
+		if v.Pid == pid {
+			item := new(sysin.ProvincesTree)
+			item.SysProvinces = *v
+			item.Label = v.Title
+			item.Value = v.Id
+			item.Key = v.Id
+
+			child := s.treeList(v.Id, nodes)
+			if len(child) > 0 {
+				item.Children = child
+			}
+			list = append(list, item)
 		}
 	}
 	return
