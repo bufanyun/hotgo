@@ -28,6 +28,6 @@ type NotifyQQPayReq struct {
 }
 
 type NotifyQQPayRes struct {
-	g.Meta `mime:"text/xml" type:"string" example:"<html/>"`
+	g.Meta `mime:"text/xml" type:"string"`
 	payin.PayNotifyModel
 }

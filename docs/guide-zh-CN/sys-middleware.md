@@ -73,9 +73,50 @@ func main()  {
 - 文件路径：server/internal/logic/middleware/response.go
 
 
+#### 常用响应类型
+
+- hotgo为一些常用的响应类型做了统一格式封装，例如：`application/json`、`text/xml`、`text/html`、`text/event-stream`等，默认使用`application/json`。
+- 下面我们以`text/xml`为例简单演示几种使用方法：
+
+1. 当你使用规范化路由时，可直接在XxxRes结构体的`g.Meta`中声明响应类型：
+```go
+type HelloReq struct {
+    g.Meta `path:"/hello" tags:"Hello" method:"get" summary:"You first hello api"`
+    Name   string `json:"name" d:"hotgo" dc:"名字"`
+}
+
+type HelloRes struct {
+    g.Meta `mime:"text/xml" type:"string"`
+    Tips string `json:"tips"`
+}
+```
+
+2. 在响应前设置响应头：
+```go
+var (
+    Hello = cHello{}
+)
+
+type cHello struct{}
+
+func (c *cHello) Hello(ctx context.Context, req *user.HelloReq) (res *user.HelloRes, err error) {
+    r := ghttp.RequestFromCtx(ctx)
+    r.Response.Header().Set("Content-Type", "text/xml")
+	
+    res = &user.HelloRes{
+        Tips: fmt.Sprintf("hello %v, this is the api for %v applications.", req.Name, simple.AppName(ctx)),
+    }
+    return
+}
+```
+
+- 浏览器中访问响应内容如下：
+  ![./images/sys-middleware-com-response.png](./images/sys-middleware-com-response.png)
+
+
 #### 自定义响应
-- 由于响应中间件是全局的，并且是统一使用json格式进行响应的，但是在实际的开发中可能存在一些需要使用非json格式的响应，所以你需要进行单独的处理。
-- 推荐以下几种处理方式，可做参考：
+- 在实际开发中，可能需要使用自定义的响应类型，由于响应中间件是全局的，因此您需要对其进行单独处理。
+- 推荐以下几种处理方案，可做参考：
 1. 使用`ghttp.ExitAll()`，需要注意的是此方法会终止后续所有的http处理
 
 ```go
@@ -100,6 +141,7 @@ func main()  {
 ```
 
 2. 在`server/internal/logic/middleware/response.go`中根据请求的独有特征进行单独的处理，兼容后续http处理。
+
 
 
 #### 重写响应错误提示
