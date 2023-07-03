@@ -81,7 +81,7 @@ func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 		}
 
 		if in.Stack == "" {
-			in.Stack = in.Logger.GetStack(4) // 4是跳过当前方法，如果调整本行位置需要重新调整skip
+			in.Stack = in.Logger.GetStack()
 		}
 
 		var data entity.SysServeLog

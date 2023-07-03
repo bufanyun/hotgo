@@ -115,7 +115,6 @@
             h(
               NButton,
               {
-                ghost: true,
                 strong: true,
                 size: 'small',
                 text: true,
@@ -182,7 +181,6 @@
             h(
               NButton,
               {
-                ghost: true,
                 strong: true,
                 size: 'small',
                 text: true,

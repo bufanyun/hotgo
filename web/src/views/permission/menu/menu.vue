@@ -375,7 +375,7 @@
 </template>
 <script lang="ts" setup>
   import { onMounted, reactive, ref, unref } from 'vue';
-  import { FormItemRule, TreeSelectOption, useDialog, useMessage } from 'naive-ui';
+  import { FormItemRule, useDialog, useMessage } from 'naive-ui';
   import {
     AlignLeftOutlined,
     FormOutlined,
@@ -401,19 +401,6 @@
     {
       value: 3,
       label: '按钮',
-    },
-  ].map((s) => {
-    return s;
-  });
-
-  const switchStatusMap = [
-    {
-      value: 2,
-      label: '关闭',
-    },
-    {
-      value: 1,
-      label: '开启',
     },
   ].map((s) => {
     return s;
@@ -472,8 +459,6 @@
   const createDrawerRef = ref();
   const message = useMessage();
   const dialog = useDialog();
-  let treeItemKey = ref([]);
-  let expandedKeys = ref([]);
   const treeData = ref([]);
   const loading = ref(true);
   const subLoading = ref(false);
@@ -482,8 +467,10 @@
   const pattern = ref('');
   const drawerTitle = ref('');
   const optionTreeData = ref<any>([]);
-
   const formParams = reactive<State>(newState(null));
+
+  let treeItemKey = ref([]);
+  let expandedKeys = ref([]);
 
   function openCreateDrawer() {
     drawerTitle.value = '添加菜单';
@@ -562,10 +549,7 @@
   }
 
   // 处理选项更新
-  function handleUpdateValue(
-    value: string | number | Array<string | number> | null,
-    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
-  ) {
+  function handleUpdateValue(value) {
     formParams.pid = value as number;
   }
 

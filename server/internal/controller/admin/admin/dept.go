@@ -79,7 +79,7 @@ func (c *cDept) List(ctx context.Context, req *dept.ListReq) (res *dept.ListRes,
 	}
 
 	data, err := service.AdminDept().List(ctx, in)
-	if err != nil {
+	if err != nil || data == nil {
 		return
 	}
 

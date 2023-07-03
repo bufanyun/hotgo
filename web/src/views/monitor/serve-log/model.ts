@@ -105,9 +105,7 @@ export const columns = [
         h(
           NButton,
           {
-            ghost: true,
             strong: true,
-            tertiary: true,
             size: 'small',
             text: true,
             iconPlacement: 'right',

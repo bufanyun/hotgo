@@ -169,3 +169,12 @@ type ProvincesCityLabelInp struct {
 }
 
 type ProvincesCityLabelModel string
+
+// ProvincesTree 树
+type ProvincesTree struct {
+	entity.SysProvinces
+	Key      int64            `json:"key"       dc:"key"`
+	Label    string           `json:"label"     dc:"标签"`
+	Value    int64            `json:"value"     dc:"键值"`
+	Children []*ProvincesTree `json:"children"`
+}

@@ -8,6 +8,7 @@ package menu
 import (
 	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/model/input/adminin"
+	"hotgo/internal/model/input/form"
 )
 
 // EditReq 修改/新增菜单
@@ -33,5 +34,7 @@ type ListReq struct {
 }
 
 type ListRes struct {
-	List []map[string]interface{} `json:"list"   dc:"数据列表"`
+	//List adminin.MenuList `json:"list"   dc:"数据列表"`
+	*adminin.MenuListModel
+	form.PageRes
 }
