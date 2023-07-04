@@ -28,8 +28,8 @@
 
 
 ## 平台简介
-* 基于全新Go Frame 2+Vue3+Naive UI+UinApp开发的全栖框架，为二次开发而生，适合中小型完整应用开发。
-* 前端采用Naive-Ui-Admin、Vue、Naive UI、UinApp。
+* 基于全新Go Frame 2+Vue3+Naive UI+uniapp开发的全栖框架，为二次开发而生，适合中小型完整应用开发。
+* 前端采用Naive-Ui-Admin、Vue、Naive UI、uniapp。
 
 ## 演示地址
 -  [https://hotgo.facms.cn/admin](https://hotgo.facms.cn/admin)

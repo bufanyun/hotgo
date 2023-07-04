@@ -36,7 +36,6 @@ func (s *sMiddleware) ResponseHandler(r *ghttp.Request) {
 		s.responseXml(r)
 		return
 	case consts.HTTPContentTypeStream:
-		// ...
 	default:
 		responseJson(r)
 	}
@@ -56,16 +55,8 @@ func (s *sMiddleware) responseHtml(r *ghttp.Request) {
 
 // responseXml xml响应
 func (s *sMiddleware) responseXml(r *ghttp.Request) {
-	code, message, resp := parseResponse(r)
-	r.Response.ClearBuffer()
-	r.Response.Write(`<?xml version="1.0" encoding="UTF-8"?>`)
-
-	switch code {
-	case gcode.CodeOK.Code():
-		r.Response.WriteXml(g.Map{"code": code, "message": message, "data": resp})
-	default:
-		r.Response.WriteXml(g.Map{"code": code, "message": message, "error": resp})
-	}
+	code, message, data := parseResponse(r)
+	response.RXml(r, code, message, data)
 	return
 }
 
