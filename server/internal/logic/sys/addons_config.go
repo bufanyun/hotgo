@@ -7,16 +7,19 @@ package sys
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
+	"hotgo/utility/simple"
 )
 
 var AddonsMaskDemoField []string
@@ -55,7 +58,7 @@ func (s *sSysAddonsConfig) GetConfigByGroup(ctx context.Context, in sysin.GetAdd
 		return nil, err
 	}
 
-	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false)
+	isDemo := g.Cfg().MustGet(ctx, simple.AppName(ctx)+".isDemo", false)
 	if len(models) > 0 {
 		res = new(sysin.GetAddonsConfigModel)
 		res.List = make(g.Map, len(models))
@@ -112,19 +115,19 @@ func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in sysin.Upd
 			row := s.getConfigByKey(k, models)
 			// 新增
 			if row == nil {
-				//row.Id = 0
-				//row.Key = k
-				//row.Value = gconv.String(v)
-				//row.Group = in.Group
-				//row.Status = consts.StatusEnabled
-				//row.CreatedAt = gtime.Now()
-				//row.UpdatedAt = gtime.Now()
-				//_, err := dao.SysAddonsConfig.Ctx(ctx).Data(row).Insert()
-				//if err != nil {
+				// row.Id = 0
+				// row.Key = k
+				// row.Value = gconv.String(v)
+				// row.Group = in.Group
+				// row.Status = consts.StatusEnabled
+				// row.CreatedAt = gtime.Now()
+				// row.UpdatedAt = gtime.Now()
+				// _, err := dao.SysAddonsConfig.Ctx(ctx).Data(row).Insert()
+				// if err != nil {
 				//	err = gerror.Wrap(err, consts.ErrorORM)
 				//	return err
-				//}
-				//continue
+				// }
+				// continue
 				return gerror.Newf("暂不支持从前台添加变量，请先在数据库表[%v]中配置变量：%v", dao.SysAddonsConfig.Table(), k)
 			}
 

@@ -7,8 +7,11 @@ package form
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
+
+	"hotgo/utility/simple"
 )
 
 var (
@@ -21,7 +24,7 @@ func DefaultPageSize(ctx context.Context) int {
 	if pageSize > 0 {
 		return pageSize
 	}
-	pageSize = g.Cfg().MustGet(ctx, "hotgo.admin.defaultPageSize", 10).Int()
+	pageSize = g.Cfg().MustGet(ctx, simple.AppName(ctx)+".admin.defaultPageSize", 10).Int()
 	if pageSize <= 0 {
 		pageSize = 10
 	}
@@ -33,7 +36,7 @@ func DefaultPage(ctx context.Context) int {
 	if page > 0 {
 		return page
 	}
-	page = g.Cfg().MustGet(ctx, "hotgo.admin.defaultPage", 1).Int()
+	page = g.Cfg().MustGet(ctx, simple.AppName(ctx)+".admin.defaultPage", 1).Int()
 	if page <= 0 {
 		page = 1
 	}
@@ -118,7 +121,7 @@ type SelectInt64 struct {
 
 // DefaultMaxSort 默认最大排序
 func DefaultMaxSort(ctx context.Context, baseSort int) int {
-	return baseSort + g.Cfg().MustGet(ctx, "hotgo.admin.maxSortIncrement", 10).Int()
+	return baseSort + g.Cfg().MustGet(ctx, simple.AppName(ctx)+".admin.maxSortIncrement", 10).Int()
 }
 
 // AvatarGroup 头像组

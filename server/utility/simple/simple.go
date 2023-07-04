@@ -7,6 +7,7 @@ package simple
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/crypto/gmd5"
 	"github.com/gogf/gf/v2/encoding/gbase64"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -15,6 +16,7 @@ import (
 	"github.com/gogf/gf/v2/os/glog"
 	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/gogf/gf/v2/util/gconv"
+
 	"hotgo/internal/consts"
 	"hotgo/utility/encrypt"
 )
@@ -35,7 +37,7 @@ func FilterMaskDemo(ctx context.Context, src g.Map) g.Map {
 		return nil
 	}
 
-	if !g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool() {
+	if !g.Cfg().MustGet(ctx, AppName(ctx)+".isDemo", false).Bool() {
 		return src
 	}
 

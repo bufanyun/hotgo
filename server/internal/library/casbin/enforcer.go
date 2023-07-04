@@ -7,12 +7,15 @@ package casbin
 
 import (
 	"context"
+	"net/http"
+	"strings"
+
 	"github.com/casbin/casbin/v2"
 	_ "github.com/gogf/gf/contrib/drivers/mysql/v2"
 	"github.com/gogf/gf/v2/frame/g"
+
 	"hotgo/internal/consts"
-	"net/http"
-	"strings"
+	"hotgo/utility/simple"
 )
 
 const (
@@ -55,7 +58,7 @@ func loadPermissions(ctx context.Context) {
 		rules        [][]string
 		polices      []*Policy
 		err          error
-		superRoleKey = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
+		superRoleKey = g.Cfg().MustGet(ctx, simple.AppName(ctx)+".admin.superRoleKey")
 	)
 
 	err = g.Model("hg_admin_role r").

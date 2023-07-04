@@ -8,6 +8,7 @@ package admin
 import (
 	"context"
 	"fmt"
+
 	"github.com/gogf/gf/v2/crypto/gmd5"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -16,6 +17,7 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/grand"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/contexts"
@@ -26,6 +28,7 @@ import (
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
+	"hotgo/utility/simple"
 	"hotgo/utility/tree"
 	"hotgo/utility/validate"
 )
@@ -718,7 +721,7 @@ func (s *sAdminMember) Select(ctx context.Context, in adminin.MemberSelectInp) (
 
 // VerifySuperId 验证是否为超管
 func (s *sAdminMember) VerifySuperId(ctx context.Context, verifyId int64) bool {
-	for _, id := range g.Cfg().MustGet(ctx, "hotgo.admin.superIds").Int64s() {
+	for _, id := range g.Cfg().MustGet(ctx, simple.AppName(ctx)+".admin.superIds").Int64s() {
 		if id == verifyId {
 			return true
 		}

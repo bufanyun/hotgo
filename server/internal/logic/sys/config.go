@@ -8,11 +8,13 @@ package sys
 import (
 	"context"
 	"fmt"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/payment"
@@ -174,13 +176,13 @@ func (s *sSysConfig) GetLoadToken(ctx context.Context) (conf *model.TokenConfig,
 
 // GetLoadLog 获取本地日志配置
 func (s *sSysConfig) GetLoadLog(ctx context.Context) (conf *model.LogConfig, err error) {
-	err = g.Cfg().MustGet(ctx, "hotgo.log").Scan(&conf)
+	err = g.Cfg().MustGet(ctx, simple.AppName(ctx)+".log").Scan(&conf)
 	return
 }
 
 // GetLoadServeLog 获取本地服务日志配置
 func (s *sSysConfig) GetLoadServeLog(ctx context.Context) (conf *model.ServeLogConfig, err error) {
-	err = g.Cfg().MustGet(ctx, "hotgo.serveLog").Scan(&conf)
+	err = g.Cfg().MustGet(ctx, simple.AppName(ctx)+".serveLog").Scan(&conf)
 	return
 }
 
@@ -242,19 +244,19 @@ func (s *sSysConfig) UpdateConfigByGroup(ctx context.Context, in sysin.UpdateCon
 			row := s.getConfigByKey(k, models)
 			// 新增
 			if row == nil {
-				//row.Id = 0
-				//row.Key = k
-				//row.Value = gconv.String(v)
-				//row.Group = in.Group
-				//row.Status = consts.StatusEnabled
-				//row.CreatedAt = gtime.Now()
-				//row.UpdatedAt = gtime.Now()
-				//_, err := dao.SysConfig.Ctx(ctx).Data(row).Insert()
-				//if err != nil {
+				// row.Id = 0
+				// row.Key = k
+				// row.Value = gconv.String(v)
+				// row.Group = in.Group
+				// row.Status = consts.StatusEnabled
+				// row.CreatedAt = gtime.Now()
+				// row.UpdatedAt = gtime.Now()
+				// _, err := dao.SysConfig.Ctx(ctx).Data(row).Insert()
+				// if err != nil {
 				//	err = gerror.Wrap(err, consts.ErrorORM)
 				//	return err
-				//}
-				//continue
+				// }
+				// continue
 				err = gerror.Newf("暂不支持从前台添加变量，请先在数据库表[%v]中配置变量：%v", dao.SysConfig.Table(), k)
 				return
 			}

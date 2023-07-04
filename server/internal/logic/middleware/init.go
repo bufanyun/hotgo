@@ -8,6 +8,9 @@ package middleware
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/frame/g"
@@ -16,6 +19,7 @@ import (
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/text/gstr"
 	"go.opentelemetry.io/otel/attribute"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/global"
 	"hotgo/internal/library/addons"
@@ -24,9 +28,8 @@ import (
 	"hotgo/internal/library/token"
 	"hotgo/internal/model"
 	"hotgo/internal/service"
+	"hotgo/utility/simple"
 	"hotgo/utility/validate"
-	"net/http"
-	"strings"
 )
 
 type sMiddleware struct {
@@ -92,7 +95,7 @@ func (s *sMiddleware) CORS(r *ghttp.Request) {
 
 // DemoLimit 演示系統操作限制
 func (s *sMiddleware) DemoLimit(r *ghttp.Request) {
-	isDemo := g.Cfg().MustGet(r.Context(), "hotgo.isDemo", false)
+	isDemo := g.Cfg().MustGet(r.Context(), simple.AppName(r.Context())+".isDemo", false)
 	if !isDemo.Bool() {
 		r.Middleware.Next()
 		return

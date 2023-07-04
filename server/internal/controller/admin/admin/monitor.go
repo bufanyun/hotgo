@@ -7,17 +7,19 @@ package admin
 
 import (
 	"context"
+	"sort"
+
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
+
 	"hotgo/api/admin/monitor"
 	"hotgo/internal/consts"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/websocket"
 	"hotgo/utility/simple"
 	"hotgo/utility/useragent"
-	"sort"
 )
 
 // Monitor 监控
@@ -93,7 +95,7 @@ func (c *cMonitor) OnlineList(ctx context.Context, req *monitor.OnlineListReq) (
 	res.PerPage = req.PerPage
 
 	sort.Sort(monitor.OnlineModels(clients))
-	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool()
+	isDemo := g.Cfg().MustGet(ctx, simple.AppName(ctx)+".isDemo", false).Bool()
 	_, perPage, offset := form.CalPage(ctx, req.Page, req.PerPage)
 
 	for k, v := range clients {

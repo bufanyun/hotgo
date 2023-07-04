@@ -7,6 +7,10 @@ package admin
 
 import (
 	"fmt"
+	"os"
+	"runtime"
+	"time"
+
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
@@ -15,15 +19,14 @@ import (
 	"github.com/shirou/gopsutil/v3/host"
 	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/shirou/gopsutil/v3/process"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/model"
 	"hotgo/internal/service"
 	"hotgo/internal/websocket"
 	"hotgo/utility/file"
 	"hotgo/utility/format"
-	"os"
-	"runtime"
-	"time"
+	"hotgo/utility/simple"
 )
 
 var (
@@ -76,7 +79,7 @@ func (c *cMonitor) RunInfo(client *websocket.Client, req *websocket.WRequest) {
 		"goSize":    file.DirSize(pwd),
 	}
 
-	isDemo := g.Cfg().MustGet(client.Context(), "hotgo.isDemo", false).Bool()
+	isDemo := g.Cfg().MustGet(client.Context(), simple.AppName(client.Context())+".isDemo", false).Bool()
 	if isDemo {
 		data["rootPath"] = consts.DemoTips
 		data["pwd"] = consts.DemoTips

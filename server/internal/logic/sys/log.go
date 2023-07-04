@@ -8,6 +8,7 @@ package sys
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -16,6 +17,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/contexts"
@@ -241,7 +243,7 @@ func (s *sSysLog) View(ctx context.Context, in sysin.LogViewInp) (res *sysin.Log
 		return
 	}
 
-	if g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool() {
+	if g.Cfg().MustGet(ctx, simple.AppName(ctx)+".isDemo", false).Bool() {
 		res.HeaderData = gjson.New(`{
 		   "none": [
 		       "` + consts.DemoTips + `"
@@ -317,7 +319,7 @@ func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.
 		return
 	}
 
-	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool()
+	isDemo := g.Cfg().MustGet(ctx, simple.AppName(ctx)+".isDemo", false).Bool()
 	for i := 0; i < len(list); i++ {
 		// 管理员
 		if list[i].AppId == consts.AppAdmin {
@@ -329,25 +331,25 @@ func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.
 			list[i].MemberName = memberName.String()
 		}
 
-		//// 接口
-		//if list[i].AppId == consts.AppApi {
+		// // 接口
+		// if list[i].AppId == consts.AppApi {
 		//	//memberName, err = dao.Member.Ctx(ctx).Fields("realname").Where("id", res.List[i].MemberId).Value()
 		//	//if err != nil {
 		//	//	err = gerror.Wrap(err, consts.ErrorORM)
 		//	//	return nil, err
 		//	//}
-		//}
+		// }
 
 		if list[i].MemberName == "" {
 			list[i].MemberName = "游客"
 		}
 
-		//// 获取省市编码对应的地区名称
-		//region, err := dao.SysProvinces.GetRegion(ctx, list[i].ProvinceId, list[i].CityId)
-		//if err != nil {
+		// // 获取省市编码对应的地区名称
+		// region, err := dao.SysProvinces.GetRegion(ctx, list[i].ProvinceId, list[i].CityId)
+		// if err != nil {
 		//	return list, totalCount, err
-		//}
-		//list[i].Region = region
+		// }
+		// list[i].Region = region
 
 		// 截取请求url路径
 		if gstr.Contains(list[i].Url, "?") {

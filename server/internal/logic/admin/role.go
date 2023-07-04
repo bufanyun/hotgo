@@ -7,10 +7,13 @@ package admin
 
 import (
 	"context"
+	"sort"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/casbin"
@@ -21,8 +24,8 @@ import (
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
+	"hotgo/utility/simple"
 	"hotgo/utility/tree"
-	"sort"
 )
 
 type sAdminRole struct{}
@@ -39,7 +42,7 @@ func init() {
 func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 	var (
 		user = contexts.Get(ctx).User
-		sk   = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
+		sk   = g.Cfg().MustGet(ctx, simple.AppName(ctx)+".admin.superRoleKey")
 		err  error
 	)
 
@@ -272,7 +275,7 @@ func (s *sAdminRole) DataScopeSelect() (res form.Selects) {
 func (s *sAdminRole) DataScopeEdit(ctx context.Context, in *adminin.DataScopeEditInp) (err error) {
 	var (
 		models *entity.AdminRole
-		sk     = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
+		sk     = g.Cfg().MustGet(ctx, simple.AppName(ctx)+".admin.superRoleKey")
 	)
 
 	if err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
