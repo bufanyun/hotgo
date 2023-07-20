@@ -65,6 +65,7 @@ type DeleteRes struct{}
 // MaxSortReq 获取@{.tableComment}最大排序
 type MaxSortReq struct {
 	g.Meta `path:"/@{.varName | LcFirst}/maxSort" method:"get" tags:"@{.tableComment}" summary:"获取@{.tableComment}最大排序"`
+	@{.templateGroup}in.@{.varName}MaxSortInp
 }
 
 type MaxSortRes struct {

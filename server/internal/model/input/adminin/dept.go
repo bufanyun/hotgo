@@ -8,6 +8,7 @@ package adminin
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
@@ -16,7 +17,7 @@ import (
 
 // DeptMaxSortInp 最大排序
 type DeptMaxSortInp struct {
-	Id int64
+	Id int64 `json:"id" dc:"部门ID"`
 }
 
 type DeptMaxSortModel struct {
@@ -77,13 +78,13 @@ type DeptInsertFields struct {
 
 // DeptDeleteInp 删除部门类型
 type DeptDeleteInp struct {
-	Id interface{}
+	Id interface{} `json:"id" v:"required#部门ID不能为空" dc:"部门ID"`
 }
 type DeptDeleteModel struct{}
 
 // DeptViewInp 获取信息
 type DeptViewInp struct {
-	Id int64
+	Id int64 `json:"id" v:"required#部门ID不能为空" dc:"部门ID"`
 }
 
 type DeptViewModel struct {
@@ -92,8 +93,14 @@ type DeptViewModel struct {
 
 // DeptListInp 获取列表
 type DeptListInp struct {
-	Name string
-	Code string
+	Name      string        `json:"name"             dc:"部门名称"`
+	Code      string        `json:"code"             dc:"部门编码"`
+	Leader    string        `json:"leader"           dc:"负责人"`
+	CreatedAt []*gtime.Time `json:"createdAt"        dc:"创建时间"`
+}
+
+func (in *DeptListInp) Filter(ctx context.Context) (err error) {
+	return
 }
 
 // DeptTree 树

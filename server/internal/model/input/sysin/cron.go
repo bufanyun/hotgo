@@ -43,7 +43,7 @@ type CronViewModel struct {
 // CronListInp 获取列表
 type CronListInp struct {
 	form.PageReq
-	form.RangeDateReq
+
 	form.StatusReq
 	Name string
 }

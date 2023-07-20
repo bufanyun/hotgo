@@ -286,7 +286,7 @@ func (manager *ClientManager) start() {
 				}
 			}
 		case <-manager.closeSignal:
-			g.Log().Info(ctxManager, "websocket closeSignal quit..")
+			g.Log().Debug(ctxManager, "websocket closeSignal quit..")
 			return
 		}
 	}

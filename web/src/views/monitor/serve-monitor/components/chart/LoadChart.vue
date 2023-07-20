@@ -4,8 +4,14 @@
 
 <script lang="ts">
   import useEcharts from '@/hooks/useEcharts';
-  import { defineComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+  import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue';
   import { dispose, graphic } from 'echarts';
+
+  type DataItem = {
+    time: string;
+    avg: number;
+    ratio: number;
+  };
 
   export default defineComponent({
     name: 'LoadChart',
@@ -13,8 +19,7 @@
       dataModel: {
         type: Array,
         default: () => {
-          // eslint-disable-next-line vue/require-valid-default-prop
-          return {};
+          return [];
         },
       },
     },
@@ -72,51 +77,53 @@
         ],
       });
 
-      const loading = ref(true);
-      const orderChartWrapper = ref<HTMLDivElement | null>(null);
+      const orderChartWrapper = ref();
+
+      function getWrapper(): HTMLElement {
+        return orderChartWrapper.value as HTMLElement;
+      }
+
       const init = () => {
-        for (let i = 0; i < props.dataModel?.length; i++) {
-          const v : any = props.dataModel[i]
-          data.value.push({
-            name: 'CPU分钟负载比率',
-            value: [v?.time, v?.ratio],
-          });
-        }
-
-        // 基于准备好的dom，初始化echarts实例
-        setTimeout(() => {
-          loading.value = false;
-          nextTick(() => {
-            useEcharts(orderChartWrapper.value as HTMLDivElement).setOption(option.value);
-          });
-        }, 100);
-
         // 绘制图表
         option.value.series.forEach((item) => {
           item.data = data.value;
         });
-        useEcharts(orderChartWrapper.value as HTMLDivElement).setOption(option.value);
+
+        handleResize();
+
+        useEcharts(getWrapper()).setOption(option.value);
       };
-      const updateChart = () => {
-        useEcharts(orderChartWrapper.value as HTMLDivElement).resize();
+
+      // 调整图表大小
+      const handleResize = () => {
+        useEcharts(getWrapper()).resize();
       };
+
       onMounted(init);
+
       onBeforeUnmount(() => {
-        dispose(orderChartWrapper.value as HTMLDivElement);
+        dispose(getWrapper());
       });
-      watch(props, (newVal, _oldVal) => {
-        let last : any = newVal.dataModel[newVal.dataModel.length - 1];
-        data.value.shift();
-        data.value.push({
+
+      watch(props, (newVal) => {
+        const newValues = newVal.dataModel.map((item: DataItem) => ({
           name: 'CPU分钟负载比率',
-          value: [last?.time, last?.ratio],
-        });
-        useEcharts(orderChartWrapper.value as HTMLDivElement).setOption(option.value);
+          value: [item.time, item.ratio],
+        }));
+
+        data.value.push(...newValues);
+
+        // 移除超过10个的最开头元素
+        if (data.value.length > 10) {
+          const removeCount = data.value.length - 10;
+          data.value.splice(0, removeCount);
+        }
+
+        useEcharts(getWrapper()).setOption(option.value);
       });
+
       return {
-        loading,
         orderChartWrapper,
-        updateChart,
       };
     },
   });

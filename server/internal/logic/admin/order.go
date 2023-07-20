@@ -48,8 +48,8 @@ func (s *sAdminOrder) Model(ctx context.Context, option ...*handler.Option) *gdb
 }
 
 // AcceptRefund 受理申请退款
-func (s *sAdminOrder) AcceptRefund(ctx context.Context, in adminin.OrderAcceptRefundInp) (err error) {
-	view, err := s.View(ctx, adminin.OrderViewInp{Id: in.Id})
+func (s *sAdminOrder) AcceptRefund(ctx context.Context, in *adminin.OrderAcceptRefundInp) (err error) {
+	view, err := s.View(ctx, &adminin.OrderViewInp{Id: in.Id})
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (s *sAdminOrder) AcceptRefund(ctx context.Context, in adminin.OrderAcceptRe
 		// 同意退款
 		if in.Status == consts.OrderStatusReturned {
 			// 更新余额
-			_, err = service.AdminCreditsLog().SaveBalance(ctx, adminin.CreditsLogSaveBalanceInp{
+			_, err = service.AdminCreditsLog().SaveBalance(ctx, &adminin.CreditsLogSaveBalanceInp{
 				MemberId:    view.MemberId,
 				AppId:       contexts.GetModule(ctx),
 				AddonsName:  contexts.GetAddonName(ctx),
@@ -81,7 +81,7 @@ func (s *sAdminOrder) AcceptRefund(ctx context.Context, in adminin.OrderAcceptRe
 				return err
 			}
 
-			_, err = service.PayRefund().Refund(ctx, payin.PayRefundInp{
+			_, err = service.PayRefund().Refund(ctx, &payin.PayRefundInp{
 				OrderSn:     view.OrderSn,
 				RefundMoney: view.Money,
 				Reason:      view.RefundReason,
@@ -98,16 +98,14 @@ func (s *sAdminOrder) AcceptRefund(ctx context.Context, in adminin.OrderAcceptRe
 		}
 
 		_, err = s.Model(ctx).Where(dao.AdminOrder.Columns().Id, in.Id).Data(update).Update()
-
 		return
 	})
-
 	return
 }
 
 // ApplyRefund 申请退款
-func (s *sAdminOrder) ApplyRefund(ctx context.Context, in adminin.OrderApplyRefundInp) (err error) {
-	view, err := s.View(ctx, adminin.OrderViewInp{Id: in.Id})
+func (s *sAdminOrder) ApplyRefund(ctx context.Context, in *adminin.OrderApplyRefundInp) (err error) {
+	view, err := s.View(ctx, &adminin.OrderViewInp{Id: in.Id})
 	if err != nil {
 		return err
 	}
@@ -137,7 +135,7 @@ func (s *sAdminOrder) ApplyRefund(ctx context.Context, in adminin.OrderApplyRefu
 }
 
 // PayNotify 支付成功通知
-func (s *sAdminOrder) PayNotify(ctx context.Context, in payin.NotifyCallFuncInp) (err error) {
+func (s *sAdminOrder) PayNotify(ctx context.Context, in *payin.NotifyCallFuncInp) (err error) {
 	var models *entity.AdminOrder
 	if err = s.Model(ctx).Where(dao.AdminOrder.Columns().OrderSn, in.Pay.OrderSn).Scan(&models); err != nil {
 		return
@@ -163,7 +161,7 @@ func (s *sAdminOrder) PayNotify(ctx context.Context, in payin.NotifyCallFuncInp)
 		}
 
 		// 更新余额
-		_, err = service.AdminCreditsLog().SaveBalance(ctx, adminin.CreditsLogSaveBalanceInp{
+		_, err = service.AdminCreditsLog().SaveBalance(ctx, &adminin.CreditsLogSaveBalanceInp{
 			MemberId:    models.MemberId,
 			AppId:       in.Pay.AppId,
 			AddonsName:  in.Pay.AddonsName,
@@ -195,7 +193,7 @@ func (s *sAdminOrder) PayNotify(ctx context.Context, in payin.NotifyCallFuncInp)
 }
 
 // Create 创建充值订单
-func (s *sAdminOrder) Create(ctx context.Context, in adminin.OrderCreateInp) (res *adminin.OrderCreateModel, err error) {
+func (s *sAdminOrder) Create(ctx context.Context, in *adminin.OrderCreateInp) (res *adminin.OrderCreateModel, err error) {
 	var (
 		subject = "支付订单"
 		orderSn = payment.GenOrderSn()
@@ -247,12 +245,11 @@ func (s *sAdminOrder) Create(ctx context.Context, in adminin.OrderCreateInp) (re
 		res.Order = create.Order
 		return
 	})
-
 	return
 }
 
 // List 获取充值订单列表
-func (s *sAdminOrder) List(ctx context.Context, in adminin.OrderListInp) (list []*adminin.OrderListModel, totalCount int, err error) {
+func (s *sAdminOrder) List(ctx context.Context, in *adminin.OrderListInp) (list []*adminin.OrderListModel, totalCount int, err error) {
 	mod := s.Model(ctx)
 
 	// 查询业务订单号
@@ -307,7 +304,7 @@ func (s *sAdminOrder) List(ctx context.Context, in adminin.OrderListInp) (list [
 }
 
 // Export 导出充值订单
-func (s *sAdminOrder) Export(ctx context.Context, in adminin.OrderListInp) (err error) {
+func (s *sAdminOrder) Export(ctx context.Context, in *adminin.OrderListInp) (err error) {
 	list, totalCount, err := s.List(ctx, in)
 	if err != nil {
 		return
@@ -334,7 +331,7 @@ func (s *sAdminOrder) Export(ctx context.Context, in adminin.OrderListInp) (err 
 }
 
 // Edit 修改/新增充值订单
-func (s *sAdminOrder) Edit(ctx context.Context, in adminin.OrderEditInp) (err error) {
+func (s *sAdminOrder) Edit(ctx context.Context, in *adminin.OrderEditInp) (err error) {
 	// 修改
 	if in.Id > 0 {
 		_, err = s.Model(ctx).
@@ -356,7 +353,7 @@ func (s *sAdminOrder) Edit(ctx context.Context, in adminin.OrderEditInp) (err er
 }
 
 // Delete 删除充值订单
-func (s *sAdminOrder) Delete(ctx context.Context, in adminin.OrderDeleteInp) (err error) {
+func (s *sAdminOrder) Delete(ctx context.Context, in *adminin.OrderDeleteInp) (err error) {
 	_, err = s.Model(ctx).
 		Where(dao.AdminOrder.Columns().Id, in.Id).
 		Where(dao.AdminOrder.Columns().Status, consts.OrderStatusClose).
@@ -365,13 +362,13 @@ func (s *sAdminOrder) Delete(ctx context.Context, in adminin.OrderDeleteInp) (er
 }
 
 // View 获取充值订单指定信息
-func (s *sAdminOrder) View(ctx context.Context, in adminin.OrderViewInp) (res *adminin.OrderViewModel, err error) {
+func (s *sAdminOrder) View(ctx context.Context, in *adminin.OrderViewInp) (res *adminin.OrderViewModel, err error) {
 	err = s.Model(ctx).Where(dao.AdminOrder.Columns().Id, in.Id).Scan(&res)
 	return
 }
 
 // Status 更新充值订单状态
-func (s *sAdminOrder) Status(ctx context.Context, in adminin.OrderStatusInp) (err error) {
+func (s *sAdminOrder) Status(ctx context.Context, in *adminin.OrderStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
 		return

@@ -107,6 +107,7 @@ type StatusRes struct{}
 // SelectReq 获取可选的后台用户选项
 type SelectReq struct {
 	g.Meta `path:"/member/option" method:"get" tags:"用户" summary:"获取可选的后台用户选项"`
+	adminin.MemberSelectInp
 }
 
 type SelectRes []*adminin.MemberSelectModel

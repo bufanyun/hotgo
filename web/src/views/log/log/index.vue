@@ -2,7 +2,7 @@
   <div>
     <div class="n-layout-page-header">
       <n-card :bordered="false" title="访问日志">
-        全局访问日志，记录了系统中后台人员和客户端的操作记录，以及服务响应情况
+        全局访问日志记录了系统中后台人员和客户端的操作记录以及服务响应情况
       </n-card>
     </div>
     <n-card :bordered="false" class="proCard">
@@ -212,12 +212,7 @@
 
   function onCheckedRow(rowKeys) {
     console.log(rowKeys);
-    if (rowKeys.length > 0) {
-      batchDeleteDisabled.value = false;
-    } else {
-      batchDeleteDisabled.value = true;
-    }
-
+    batchDeleteDisabled.value = rowKeys.length <= 0;
     checkedIds.value = rowKeys;
   }
 

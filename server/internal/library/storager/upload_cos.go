@@ -36,7 +36,7 @@ func (d *CosDrive) Upload(ctx context.Context, file *ghttp.UploadFile) (fullPath
 		},
 	})
 
-	fullPath = GenFullPath(config.UCloudPath, gfile.Ext(file.Filename))
+	fullPath = GenFullPath(config.CosPath, gfile.Ext(file.Filename))
 	_, err = client.Object.Put(ctx, fullPath, f2, nil)
 	return
 }

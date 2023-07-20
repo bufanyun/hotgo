@@ -52,7 +52,6 @@
       >
         <n-form
           :model="formParams"
-          :rules="rules"
           ref="formRef"
           label-placement="left"
           :label-width="80"
@@ -61,13 +60,14 @@
           <n-form-item label="岗位名称" path="name">
             <n-input placeholder="请输入岗位名称" v-model:value="formParams.name" />
           </n-form-item>
+
           <n-form-item label="岗位编码" path="code">
             <n-input placeholder="请输入岗位编码" v-model:value="formParams.code" />
           </n-form-item>
 
-          <!--          <n-form-item label="排序" path="sort">-->
-          <!--            <n-input-number v-model:value="formParams.sort" clearable />-->
-          <!--          </n-form-item>-->
+          <n-form-item label="排序" path="sort">
+            <n-input-number v-model:value="formParams.sort" clearable style="width: 100%" />
+          </n-form-item>
 
           <n-form-item label="状态" path="status">
             <n-radio-group v-model:value="formParams.status" name="status">
@@ -105,6 +105,7 @@
   import { columns } from './columns';
   import { DeleteOutlined, PlusOutlined } from '@vicons/antd';
   import { statusActions, statusOptions } from '@/enums/optionsiEnum';
+  import { defRangeShortcuts } from "@/utils/dateUtil";
 
   const params = ref<any>({
     pageSize: 10,
@@ -112,14 +113,6 @@
     code: '',
     status: null,
   });
-
-  const rules = {
-    name: {
-      // required: true,
-      trigger: ['blur', 'input'],
-      message: '请输入名称',
-    },
-  };
 
   const schemas: FormSchema[] = [
     {
@@ -154,6 +147,19 @@
       componentProps: {
         placeholder: '请选择类型',
         options: statusOptions,
+        onUpdateValue: (e: any) => {
+          console.log(e);
+        },
+      },
+    },
+    {
+      field: 'createdAt',
+      component: 'NDatePicker',
+      label: '创建时间',
+      componentProps: {
+        type: 'datetimerange',
+        clearable: true,
+        shortcuts: defRangeShortcuts(),
         onUpdateValue: (e: any) => {
           console.log(e);
         },

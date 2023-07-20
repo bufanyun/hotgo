@@ -317,5 +317,10 @@ func setDefaultValue(field *sysin.GenCodesColumnListModel) {
 		value = consts.ConvType(field.DefaultValue, field.GoType)
 	}
 
+	// 时间类型不做默认值处理
+	if field.GoType == GoTypeGTime {
+		value = ""
+	}
+
 	field.DefaultValue = value
 }

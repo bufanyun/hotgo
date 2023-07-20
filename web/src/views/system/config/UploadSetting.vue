@@ -152,9 +152,7 @@
               <n-icon :size="16" :component="Glasses" />
             </template>
           </n-input>
-          <template #feedback
-            >创建地址：https://ram.console.aliyun.com/manage/ak</template
-          >
+          <template #feedback>创建地址：https://ram.console.aliyun.com/manage/ak</template>
         </n-form-item>
 
         <n-form-item label="AccessKey Secret" path="uploadOssSecretKey">
@@ -200,9 +198,7 @@
               <n-icon :size="16" :component="Glasses" />
             </template>
           </n-input>
-          <template #feedback
-          >创建地址：https://portal.qiniu.com/user/key</template
-          >
+          <template #feedback>创建地址：https://portal.qiniu.com/user/key</template>
         </n-form-item>
 
         <n-form-item label="SecretKey" path="uploadQiNiuSecretKey">
@@ -287,12 +283,12 @@
     uploadOssEndpoint: '',
     uploadOssBucketURL: '',
     uploadOssPath: '',
-    uploadOssBucket:'',
-    uploadQiNiuAccessKey:'',
-    uploadQiNiuSecretKey:'',
-    uploadQiNiuDomain:'',
-    uploadQiNiuPath:'',
-    uploadQiNiuBucket:'',
+    uploadOssBucket: '',
+    uploadQiNiuAccessKey: '',
+    uploadQiNiuSecretKey: '',
+    uploadQiNiuDomain: '',
+    uploadQiNiuPath: '',
+    uploadQiNiuBucket: '',
   });
 
   function formSubmit() {

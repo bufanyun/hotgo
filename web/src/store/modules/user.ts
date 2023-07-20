@@ -226,11 +226,11 @@ export const useUserStore = defineStore({
         return false;
       }
 
-      if (this.loginConfig?.loginAutoOpenId !== 1) {
+      if (this.loginConfig !== null && this.loginConfig.loginAutoOpenId !== 1) {
         return false;
       }
 
-      return this.info?.openId === '';
+      return this.info === null || this.info.openId === '';
     },
     // 登出
     async logout() {

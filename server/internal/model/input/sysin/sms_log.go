@@ -8,35 +8,29 @@ package sysin
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 )
 
-// SmsLogMaxSortInp 最大排序
-type SmsLogMaxSortInp struct {
-	Id int64
-}
-
-type SmsLogMaxSortModel struct {
-	Sort int
-}
-
 // SmsLogEditInp 修改/新增数据
 type SmsLogEditInp struct {
 	entity.SysSmsLog
 }
+
 type SmsLogEditModel struct{}
 
 // SmsLogDeleteInp 删除
 type SmsLogDeleteInp struct {
-	Id interface{}
+	Id interface{} `json:"id" v:"required#短信记录ID不能为空" dc:"短信记录ID"`
 }
+
 type SmsLogDeleteModel struct{}
 
 // SmsLogViewInp 获取信息
 type SmsLogViewInp struct {
-	Id int64
+	Id int64 `json:"id" v:"required#短信记录ID不能为空" dc:"短信记录ID"`
 }
 
 type SmsLogViewModel struct {
@@ -46,11 +40,11 @@ type SmsLogViewModel struct {
 // SmsLogListInp 获取列表
 type SmsLogListInp struct {
 	form.PageReq
-	form.RangeDateReq
 	form.StatusReq
-	Mobile string
-	Ip     string
-	Event  string
+	Mobile    string        `json:"mobile"    dc:"手机号"`
+	Ip        string        `json:"ip"        dc:"IP"`
+	Event     string        `json:"event"     dc:"事件"`
+	CreatedAt []*gtime.Time `json:"createdAt" dc:"创建时间"`
 }
 
 func (in *SmsLogListInp) Filter(ctx context.Context) (err error) {
@@ -71,6 +65,7 @@ type SmsLogListModel struct {
 type SmsLogStatusInp struct {
 	entity.SysSmsLog
 }
+
 type SmsLogStatusModel struct{}
 
 // SendCodeInp 发送验证码

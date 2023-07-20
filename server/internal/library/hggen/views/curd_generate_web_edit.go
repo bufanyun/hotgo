@@ -48,7 +48,7 @@ func (l *gCurd) generateWebEditFormItem(ctx context.Context, in *CurdPreviewInpu
 			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-input type=\"textarea\" placeholder=\"%s\" v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.Dc, field.TsName)
 
 		case FormModeInputEditor:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <Editor style=\"height: 450px\" v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <Editor style=\"height: 450px\" id=\"%s\" v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName, field.TsName)
 
 		case FormModeInputDynamic:
 			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-dynamic-input\n            v-model:value=\"params.%s\"\n            preset=\"pair\"\n            key-placeholder=\"键名\"\n            value-placeholder=\"键值\"\n          />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)

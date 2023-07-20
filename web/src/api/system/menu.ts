@@ -1,5 +1,5 @@
-import {http} from '@/utils/http/axios';
-import {ApiEnum} from "@/enums/apiEnum";
+import { http } from '@/utils/http/axios';
+import { ApiEnum } from '@/enums/apiEnum';
 
 /**
  * @description: 根据用户id获取用户菜单

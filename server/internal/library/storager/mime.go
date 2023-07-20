@@ -18,12 +18,15 @@ import (
 
 // 文件归属分类
 const (
-	KindImg   = "images"   // 图片
-	KindDoc   = "document" // 文档
-	KindAudio = "audio"    // 音频
-	KindVideo = "video"    // 视频
-	KindOther = "other"    // 其他
+	KindImg   = "image" // 图片
+	KindDoc   = "doc"   // 文档
+	KindAudio = "audio" // 音频
+	KindVideo = "video" // 视频
+	KindZip   = "zip"   // 压缩包
+	KindOther = "other" // 其他
 )
+
+var KindSlice = []string{KindImg, KindDoc, KindAudio, KindVideo, KindZip, KindOther}
 
 var (
 	// 图片类型
@@ -45,12 +48,33 @@ var (
 
 	// 文档类型
 	docType = g.MapStrStr{
-		"doc":  "application/msword",
-		"docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-		"xls":  "application/vnd.ms-excel",
-		"xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-		"ppt":  "application/vnd.ms-powerpoint",
-		"pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+		"doc":      "application/msword",
+		"docx":     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+		"dot":      "application/msword",
+		"xls":      "application/vnd.ms-excel",
+		"xlt":      "application/vnd.ms-excel",
+		"xlsx":     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+		"xltx":     "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+		"ppt":      "application/vnd.ms-powerpoint",
+		"pptx":     "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+		"pdf":      "application/pdf",
+		"txt":      "text/plain",
+		"csv":      "text/csv",
+		"html":     "text/html",
+		"xml":      "text/xml",
+		"pptm":     "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
+		"pot":      "application/vnd.ms-powerpoint",
+		"wpd":      "application/wordperfect",
+		"md":       "text/markdown",
+		"json":     "application/json",
+		"yaml":     "application/x-yaml",
+		"markdown": "text/markdown",
+		"asciidoc": "text/asciidoc",
+		"xsl":      "application/xml",
+		"wps":      "application/vnd.ms-works",
+		"sxi":      "application/vnd.sun.xml.impress",
+		"sti":      "application/vnd.sun.xml.impress.template",
+		"odp":      "application/vnd.oasis.opendocument.presentation-template",
 	}
 
 	// 音频类型
@@ -79,6 +103,23 @@ var (
 		"flv":  "video/x-flv",
 		"3gp":  "video/3gpp",
 	}
+
+	// 压缩包
+	zipType = g.MapStrStr{
+		"zip":    "application/zip",
+		"rar":    "application/x-rar-compressed",
+		"tar":    "application/x-tar",
+		"gz":     "application/gzip",
+		"7z":     "application/octet-stream",
+		"tar.gz": "application/octet-stream",
+	}
+
+	// 其他
+	otherType = g.MapStrStr{
+		"dwf":   "model/vnd.dwf",
+		"ics":   "text/calendar",
+		"vcard": "text/vcard",
+	}
 )
 
 // IsImgType 判断是否为图片
@@ -105,16 +146,17 @@ func IsVideoType(ext string) bool {
 	return ok
 }
 
-// GetImgType 获取图片类型
-func GetImgType(ext string) (string, error) {
-	if mime, ok := imgType[ext]; ok {
-		return mime, nil
-	}
-	return "", gerror.New("Invalid image type")
+// IsZipType 判断是否为压缩包
+func IsZipType(ext string) bool {
+	_, ok := zipType[ext]
+	return ok
 }
 
-// GetFileType 获取文件类型
-func GetFileType(ext string) (string, error) {
+// GetFileMimeType 获取文件扩展类型
+// 如果文件类型没有加入系统映射类型，默认认为不是合法的文件类型。建议将常用的上传文件类型加入映射关系。
+// 当然你也可以不做限制，可以上传任意文件。但需要谨慎处理和设置相应的安全措施。
+// 获取任意扩展名的扩展类型：mime.TypeByExtension(".xls")
+func GetFileMimeType(ext string) (string, error) {
 	if mime, ok := imgType[ext]; ok {
 		return mime, nil
 	}
@@ -127,10 +169,16 @@ func GetFileType(ext string) (string, error) {
 	if mime, ok := videoType[ext]; ok {
 		return mime, nil
 	}
+	if mime, ok := zipType[ext]; ok {
+		return mime, nil
+	}
+	if mime, ok := otherType[ext]; ok {
+		return mime, nil
+	}
 	return "", gerror.Newf("Invalid file type:%v", ext)
 }
 
-// GetFileKind 获取文件所属分类
+// GetFileKind 获取文件上传类型
 func GetFileKind(ext string) string {
 	if _, ok := imgType[ext]; ok {
 		return KindImg
@@ -144,12 +192,15 @@ func GetFileKind(ext string) string {
 	if _, ok := videoType[ext]; ok {
 		return KindVideo
 	}
+	if _, ok := zipType[ext]; ok {
+		return KindZip
+	}
 	return KindOther
 }
 
 // Ext 获取文件后缀
 func Ext(baseName string) string {
-	return gstr.StrEx(path.Ext(baseName), ".")
+	return gstr.ToLower(gstr.StrEx(path.Ext(baseName), "."))
 }
 
 // UploadFileByte 获取上传文件的byte

@@ -83,6 +83,5 @@ func (l *gCurd) webIndexTplData(ctx context.Context, in *CurdPreviewInput) (g.Ma
 		}
 	}
 	data["isSearchForm"] = isSearchForm
-
 	return data, nil
 }

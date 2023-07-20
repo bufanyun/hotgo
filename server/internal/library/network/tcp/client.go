@@ -7,18 +7,32 @@ package tcp
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/container/gtype"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/gtcp"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/glog"
 	"github.com/gogf/gf/v2/os/grpool"
-	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/utility/simple"
-	"reflect"
 	"sync"
 	"time"
 )
+
+// Client tcp客户端
+type Client struct {
+	ctx       context.Context // 上下文
+	conn      *Conn           // 连接对象
+	config    *ClientConfig   // 配置
+	msgParser *MsgParser      // 消息处理器
+	logger    *glog.Logger    // 日志处理器
+	isLogin   *gtype.Bool     // 是否已登录
+	taskGo    *grpool.Pool    // 任务协程池
+	closeFlag *gtype.Bool     // 关闭标签，关闭以后可以重连
+	stopFlag  *gtype.Bool     // 停止标签，停止以后不能重连
+	wg        sync.WaitGroup  // 流程控制
+	mutex     sync.Mutex      // 状态锁
+}
 
 // ClientConfig 客户端配置
 type ClientConfig struct {
@@ -33,86 +47,56 @@ type ClientConfig struct {
 	CloseEvent      CallbackEvent // 连接关闭事件
 }
 
-// Client 客户端
-type Client struct {
-	Ctx             context.Context          // 上下文
-	Logger          *glog.Logger             // 日志处理器
-	IsLogin         bool                     // 是否已登录
-	addr            string                   // 连接地址
-	auth            *AuthMeta                // 认证元数据
-	rpc             *Rpc                     // rpc协议支持
-	timeout         time.Duration            // 连接超时时间
-	connectInterval time.Duration            // 重连时间间隔
-	maxConnectCount uint                     // 最大重连次数，0不限次数
-	connectCount    uint                     // 已重连次数
-	autoReconnect   bool                     // 是否开启自动重连
-	loginEvent      CallbackEvent            // 登录成功事件
-	closeEvent      CallbackEvent            // 连接关闭事件
-	sync.Mutex                               // 状态锁
-	heartbeat       int64                    // 心跳
-	msgGo           *grpool.Pool             // 消息处理协程池
-	routers         map[string]RouterHandler // 已注册的路由
-	conn            *gtcp.Conn               // 连接对象
-	wg              sync.WaitGroup           // 状态控制
-	closeFlag       bool                     // 关闭标签，关闭以后可以重连
-	stopFlag        bool                     // 停止标签，停止以后不能重连
-}
+// CallbackEvent 回调事件
+type CallbackEvent func()
 
 // NewClient 初始化一个tcp客户端
-func NewClient(config *ClientConfig) (client *Client, err error) {
+func NewClient(config *ClientConfig) (client *Client) {
 	client = new(Client)
+	client.ctx = gctx.New()
+	client.logger = g.Log("tcpClient")
+
+	baseErr := gerror.New("NewClient fail")
 
 	if config == nil {
-		err = gerror.New("config is nil")
+		client.logger.Fatal(client.ctx, gerror.Wrap(baseErr, "config is nil"))
 		return
 	}
 
 	if config.Addr == "" {
-		err = gerror.New("client address is not set")
+		client.logger.Fatal(client.ctx, gerror.Wrap(baseErr, "client address is not set"))
 		return
 	}
 
-	if config.Auth == nil {
-		err = gerror.New("client auth cannot be empty")
-		return
-	}
-
-	if config.Auth.Group == "" || config.Auth.Name == "" {
-		err = gerror.New("Auth.Group or Auth.Group is nil")
-		return
-	}
-
-	client.Ctx = gctx.New()
-	client.autoReconnect = true
-	client.addr = config.Addr
-	client.auth = config.Auth
-	client.loginEvent = config.LoginEvent
-	client.closeEvent = config.CloseEvent
-	client.Logger = g.Log("tcpClient")
-
+	client.config = config
 	if config.ConnectInterval <= 0 {
-		client.connectInterval = 5 * time.Second
+		client.config.ConnectInterval = 5 * time.Second
 	} else {
-		client.connectInterval = config.ConnectInterval
+		client.config.ConnectInterval = config.ConnectInterval
 	}
 
 	if config.Timeout <= 0 {
-		client.timeout = 10 * time.Second
+		client.config.Timeout = 10 * time.Second
 	} else {
-		client.timeout = config.Timeout
+		client.config.Timeout = config.Timeout
 	}
 
-	client.msgGo = grpool.New(5)
-	client.rpc = NewRpc(client.Ctx, client.msgGo, client.Logger)
+	client.isLogin = gtype.NewBool(false)
+	client.closeFlag = gtype.NewBool(false)
+	client.stopFlag = gtype.NewBool(false)
+
+	client.taskGo = grpool.New(5)
+	client.msgParser = NewMsgParser(client.handleRoutineTask)
+	client.registerDefaultRouter()
 	return
 }
 
 // Start 启动tcp连接
 func (client *Client) Start() (err error) {
-	client.Lock()
-	defer client.Unlock()
+	client.mutex.Lock()
+	defer client.mutex.Unlock()
 
-	if client.stopFlag {
+	if client.stopFlag.Val() {
 		err = gerror.New("client is stop")
 		return
 	}
@@ -121,64 +105,66 @@ func (client *Client) Start() (err error) {
 		return gerror.New("client is running")
 	}
 
-	client.IsLogin = false
-	client.connectCount = 0
-	client.closeFlag = false
-	client.stopFlag = false
+	client.isLogin.Set(false)
+	client.config.ConnectCount = 0
+	client.closeFlag.Set(false)
+	client.stopFlag.Set(false)
 
 	client.wg.Add(1)
-	simple.SafeGo(client.Ctx, func(ctx context.Context) {
+	simple.SafeGo(client.ctx, func(ctx context.Context) {
 		client.connect()
 	})
 	return
 }
 
+// registerDefaultRouter 注册默认路由
+func (client *Client) registerDefaultRouter() {
+	var routers = []interface{}{
+		client.onResponseServerLogin,     // 服务登录
+		client.onResponseServerHeartbeat, // 心跳
+	}
+	client.RegisterRouter(routers...)
+}
+
 // RegisterRouter 注册路由
-func (client *Client) RegisterRouter(routers map[string]RouterHandler) (err error) {
-	if client.conn != nil {
-		return gerror.New("client is running")
+func (client *Client) RegisterRouter(routers ...interface{}) {
+	err := client.msgParser.RegisterRouter(routers...)
+	if err != nil {
+		client.logger.Fatal(client.ctx, err)
 	}
+}
 
-	client.Lock()
-	defer client.Unlock()
-
-	if client.routers == nil {
-		client.routers = make(map[string]RouterHandler)
-		// 默认路由
-		client.routers = map[string]RouterHandler{
-			"ResponseServerHeartbeat": client.onResponseServerHeartbeat,
-			"ResponseServerLogin":     client.onResponseServerLogin,
-		}
+// RegisterRPCRouter 注册RPC路由
+func (client *Client) RegisterRPCRouter(routers ...interface{}) {
+	err := client.msgParser.RegisterRPCRouter(routers...)
+	if err != nil {
+		client.logger.Fatal(client.ctx, err)
 	}
+}
 
-	for i, router := range routers {
-		_, ok := client.routers[i]
-		if ok {
-			return gerror.Newf("client route duplicate registration:%v", i)
-		}
-		client.routers[i] = router
-	}
-	return
+// RegisterInterceptor 注册拦截器
+func (client *Client) RegisterInterceptor(interceptors ...Interceptor) {
+	client.msgParser.RegisterInterceptor(interceptors...)
 }
 
 // dial
 func (client *Client) dial() *gtcp.Conn {
 	for {
-		conn, err := gtcp.NewConn(client.addr, client.timeout)
-		if err == nil || client.closeFlag {
+		conn, err := gtcp.NewConn(client.config.Addr, client.config.Timeout)
+		if err == nil || client.closeFlag.Val() {
 			return conn
 		}
 
-		if client.maxConnectCount > 0 {
-			if client.connectCount < client.maxConnectCount {
-				client.connectCount += 1
+		if client.config.MaxConnectCount > 0 {
+			if client.config.ConnectCount < client.config.MaxConnectCount {
+				client.config.ConnectCount += 1
 			} else {
 				return nil
 			}
 		}
 
-		client.Logger.Debugf(client.Ctx, "connect to %v error: %v", client.addr, err)
-		time.Sleep(client.connectInterval)
+		client.logger.Debugf(client.ctx, "connect to %v error: %v", client.config.Addr, err)
+		time.Sleep(client.config.ConnectInterval)
 		continue
 	}
 }
@@ -190,26 +176,24 @@ func (client *Client) connect() {
 reconnect:
 	conn := client.dial()
 	if conn == nil {
-		if !client.stopFlag {
-			client.Logger.Debugf(client.Ctx, "client dial failed")
+		if !client.stopFlag.Val() {
+			client.logger.Debugf(client.ctx, "client dial failed")
 		}
 		return
 	}
 
-	client.Lock()
-	if client.closeFlag {
-		client.Unlock()
-		_ = conn.Close()
-		client.Logger.Debugf(client.Ctx, "client connect but closeFlag is true")
+	client.mutex.Lock()
+	if client.closeFlag.Val() {
+		client.mutex.Unlock()
+		conn.Close()
+		client.logger.Debugf(client.ctx, "client connect but closeFlag is true")
 		return
 	}
 
-	client.conn = conn
-	client.connectCount = 0
-	client.heartbeat = gtime.Timestamp()
-
+	client.conn = NewConn(conn, client.logger, client.msgParser)
+	client.config.ConnectCount = 0
 	client.read()
-	client.Unlock()
+	client.mutex.Unlock()
 
 	client.serverLogin()
 	client.startCron()
@@ -217,100 +201,36 @@ reconnect:
 
 // read
 func (client *Client) read() {
-	simple.SafeGo(client.Ctx, func(ctx context.Context) {
+	go func() {
 		defer func() {
 			client.Close()
-			client.Logger.Debugf(client.Ctx, "client are about to be reconnected..")
-			time.Sleep(client.connectInterval)
-			_ = client.Start()
+			client.logger.Debugf(client.ctx, "client are about to be reconnected..")
+			time.Sleep(client.config.ConnectInterval)
+			client.Start()
 		}()
 
-		for {
-			if client.conn == nil {
-				client.Logger.Debugf(client.Ctx, "client client.conn is nil, server closed")
-				break
-			}
-
-			msg, err := RecvPkg(client.conn)
-			if err != nil {
-				client.Logger.Debugf(client.Ctx, "client RecvPkg err:%+v, server closed", err)
-				break
-			}
-
-			if client.routers == nil {
-				client.Logger.Debugf(client.Ctx, "client RecvPkg routers is nil")
-				break
-			}
-
-			if msg == nil {
-				client.Logger.Debugf(client.Ctx, "client RecvPkg msg is nil")
-				break
-			}
-
-			f, ok := client.routers[msg.Router]
-			if !ok {
-				client.Logger.Debugf(client.Ctx, "client RecvPkg invalid message: %+v", msg)
-				continue
-			}
-
-			switch msg.Router {
-			case "ResponseServerLogin", "ResponseServerHeartbeat": // 服务登录、心跳无需验证签名
-				client.doHandleRouterMsg(initCtx(gctx.New(), &Context{}), f, msg.Data)
-			default: // 通用路由消息处理
-				in, err := VerifySign(msg.Data, client.auth.AppId, client.auth.SecretKey)
-				if err != nil {
-					client.Logger.Warningf(client.Ctx, "client read VerifySign err:%+v message: %+v", err, msg)
-					continue
-				}
-
-				ctx := initCtx(gctx.New(), &Context{
-					Conn:    client.conn,
-					Auth:    client.auth,
-					TraceID: in.TraceID,
-				})
-
-				// 响应rpc消息
-				if client.rpc.HandleMsg(ctx, msg.Data) {
-					return
-				}
-
-				client.doHandleRouterMsg(ctx, f, msg.Data)
-			}
+		if err := client.conn.Run(); err != nil {
+			client.logger.Debug(client.ctx, err)
 		}
-	})
+	}()
 }
 
 // Close 关闭同服务器的链接
 func (client *Client) Close() {
-	client.Lock()
-	defer client.Unlock()
+	client.mutex.Lock()
+	defer client.mutex.Unlock()
 
-	client.IsLogin = false
-	client.closeFlag = true
+	client.isLogin.Set(false)
+	client.closeFlag.Set(true)
 	if client.conn != nil {
 		client.conn.Close()
 		client.conn = nil
 	}
 
-	if client.closeEvent != nil {
-		client.closeEvent()
+	if client.config.CloseEvent != nil {
+		client.config.CloseEvent()
 	}
 	client.wg.Wait()
-}
-
-// Stop 停止服务
-func (client *Client) Stop() {
-	if client.stopFlag {
-		return
-	}
-	client.stopFlag = true
-	client.stopCron()
-	client.Close()
-}
-
-// IsStop 是否已停止
-func (client *Client) IsStop() bool {
-	return client.stopFlag
 }
 
 // Destroy 销毁当前连接
@@ -322,80 +242,62 @@ func (client *Client) Destroy() {
 	}
 }
 
-// Write
-func (client *Client) Write(data interface{}) error {
-	client.Lock()
-	defer client.Unlock()
-
-	if client.conn == nil {
-		return gerror.New("client conn is nil")
+// Stop 停止服务
+func (client *Client) Stop() {
+	if client.stopFlag.Val() {
+		return
 	}
+	client.stopFlag.Set(true)
+	client.stopCron()
+	client.Close()
+}
 
-	if client.closeFlag {
-		return gerror.New("client conn is closed")
-	}
+// IsStop 是否已停止
+func (client *Client) IsStop() bool {
+	return client.stopFlag.Val()
+}
 
-	if data == nil {
-		return gerror.New("client Write message is nil")
-	}
+// IsLogin 是否已登录成功
+func (client *Client) IsLogin() bool {
+	return client.isLogin.Val()
+}
 
-	msgType := reflect.TypeOf(data)
-	if msgType == nil || msgType.Kind() != reflect.Ptr {
-		return gerror.Newf("client json message pointer required: %+v", data)
+func (client *Client) handleRoutineTask(ctx context.Context, task func()) {
+	ctx, cancel := context.WithCancel(ctx)
+	err := client.taskGo.AddWithRecover(ctx,
+		func(ctx context.Context) {
+			task()
+			cancel()
+		},
+		func(ctx context.Context, err error) {
+			client.logger.Warningf(ctx, "routineTask exec err:%+v", err)
+			cancel()
+		},
+	)
+	if err != nil {
+		client.logger.Warningf(ctx, "routineTask add err:%+v", err)
 	}
-	msg := &Message{Router: msgType.Elem().Name(), Data: data}
-	return SendPkg(client.conn, msg)
+}
+
+// Conn 获取当前连接
+func (client *Client) Conn() *Conn {
+	return client.conn
 }
 
 // Send 发送消息
 func (client *Client) Send(ctx context.Context, data interface{}) error {
-	MsgPkg(data, client.auth, gctx.CtxId(ctx))
-	return client.Write(data)
+	if client.conn == nil {
+		return gerror.New("conn is nil")
+	}
+	return client.conn.Send(ctx, data)
 }
 
-// Reply 回复消息
-func (client *Client) Reply(ctx context.Context, data interface{}) (err error) {
-	user := GetCtx(ctx)
-	if user == nil {
-		err = gerror.New("获取回复用户信息失败")
-		return
-	}
-	MsgPkg(data, client.auth, user.TraceID)
-	return client.Write(data)
+// Request 发送消息并等待响应结果
+func (client *Client) Request(ctx context.Context, data interface{}) (interface{}, error) {
+	return client.conn.Request(ctx, data)
 }
 
-// RpcRequest 发送消息并等待响应结果
-func (client *Client) RpcRequest(ctx context.Context, data interface{}) (res interface{}, err error) {
-	var (
-		traceID = MsgPkg(data, client.auth, gctx.CtxId(ctx))
-		key     = client.rpc.GetCallId(client.conn, traceID)
-	)
-
-	if traceID == "" {
-		err = gerror.New("traceID is required")
-		return
-	}
-	return client.rpc.Request(key, func() {
-		_ = client.Write(data)
-	})
-}
-
-// doHandleRouterMsg 处理路由消息
-func (client *Client) doHandleRouterMsg(ctx context.Context, fun RouterHandler, args ...interface{}) {
-	ctx, cancel := context.WithCancel(ctx)
-	err := client.msgGo.AddWithRecover(ctx,
-		func(ctx context.Context) {
-			fun(ctx, args...)
-			cancel()
-		},
-		func(ctx context.Context, err error) {
-			client.Logger.Warningf(ctx, "doHandleRouterMsg msgGo exec err:%+v", err)
-			cancel()
-		},
-	)
-
-	if err != nil {
-		client.Logger.Warningf(ctx, "doHandleRouterMsg msgGo Add err:%+v", err)
-		return
-	}
+// RequestScan 发送消息并等待响应结果，将结果保存在response中
+func (client *Client) RequestScan(ctx context.Context, data, response interface{}) error {
+	return client.conn.RequestScan(ctx, data, response)
 }

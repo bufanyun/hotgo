@@ -38,7 +38,7 @@ func (s *sSysServeLog) Model(ctx context.Context) *gdb.Model {
 }
 
 // List 获取服务日志列表
-func (s *sSysServeLog) List(ctx context.Context, in sysin.ServeLogListInp) (list []*sysin.ServeLogListModel, totalCount int, err error) {
+func (s *sSysServeLog) List(ctx context.Context, in *sysin.ServeLogListInp) (list []*sysin.ServeLogListModel, totalCount int, err error) {
 	mod := dao.SysServeLog.Ctx(ctx)
 
 	// 查询链路ID
@@ -86,7 +86,7 @@ func (s *sSysServeLog) List(ctx context.Context, in sysin.ServeLogListInp) (list
 }
 
 // Export 导出服务日志
-func (s *sSysServeLog) Export(ctx context.Context, in sysin.ServeLogListInp) (err error) {
+func (s *sSysServeLog) Export(ctx context.Context, in *sysin.ServeLogListInp) (err error) {
 	list, totalCount, err := s.List(ctx, in)
 	if err != nil {
 		return
@@ -113,13 +113,13 @@ func (s *sSysServeLog) Export(ctx context.Context, in sysin.ServeLogListInp) (er
 }
 
 // Delete 删除服务日志
-func (s *sSysServeLog) Delete(ctx context.Context, in sysin.ServeLogDeleteInp) (err error) {
+func (s *sSysServeLog) Delete(ctx context.Context, in *sysin.ServeLogDeleteInp) (err error) {
 	_, err = dao.SysServeLog.Ctx(ctx).Where(dao.SysServeLog.Columns().Id, in.Id).Delete()
 	return
 }
 
 // View 获取服务日志指定信息
-func (s *sSysServeLog) View(ctx context.Context, in sysin.ServeLogViewInp) (res *sysin.ServeLogViewModel, err error) {
+func (s *sSysServeLog) View(ctx context.Context, in *sysin.ServeLogViewInp) (res *sysin.ServeLogViewModel, err error) {
 	err = dao.SysServeLog.Ctx(ctx).Where(dao.SysServeLog.Columns().Id, in.Id).Scan(&res)
 	return
 }

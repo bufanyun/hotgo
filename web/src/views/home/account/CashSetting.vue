@@ -11,11 +11,7 @@
         </n-form-item>
 
         <n-form-item label="支付宝收款码" path="payeeCode">
-          <UploadImage
-            :maxNumber="1"
-            :helpText="'请上传清晰有效的收款码，图片大小不超过2M'"
-            v-model:value="formValue.payeeCode"
-          />
+          <FileChooser v-model:value="formValue.payeeCode" file-type="image" />
         </n-form-item>
 
         <n-form-item label="登录密码" path="password">
@@ -39,10 +35,8 @@
 <script lang="ts" setup>
   import { onMounted, ref } from 'vue';
   import { useMessage } from 'naive-ui';
-  import UploadImage from '@/components/Upload/uploadImage.vue';
   import { getUserInfo, updateMemberCash } from '@/api/system/user';
-
-  const show = ref(false);
+  import FileChooser from '@/components/FileChooser/index.vue';
 
   const rules = {
     password: {
@@ -52,6 +46,7 @@
     },
   };
 
+  const show = ref(false);
   const formRef: any = ref(null);
   const message = useMessage();
   const formValue = ref({

@@ -1,96 +1,36 @@
+// Package tcpclient
+// @Link  https://github.com/bufanyun/hotgo
+// @Copyright  Copyright (c) 2023 HotGo CLI
+// @Author  Ms <133814250@qq.com>
+// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package tcpclient
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/util/gconv"
-	"hotgo/internal/model/input/msgin"
+	"hotgo/api/servmsg"
 	"hotgo/internal/service"
 )
 
 // OnCronDelete 删除任务
-func (s *sCronClient) OnCronDelete(ctx context.Context, args ...interface{}) {
-	var (
-		in  *msgin.CronDelete
-		res = new(msgin.ResponseCronDelete)
-	)
-
-	if err := gconv.Scan(args[0], &in); err != nil {
-		res.Code = 1
-		res.Message = err.Error()
-		_ = s.client.Reply(ctx, res)
-		return
-	}
-
-	if err := service.SysCron().Delete(ctx, in.CronDeleteInp); err != nil {
-		res.Code = 2
-		res.Message = err.Error()
-	}
-
-	_ = s.client.Reply(ctx, res)
+func (s *sCronClient) OnCronDelete(ctx context.Context, req *servmsg.CronDeleteReq) (res *servmsg.CronDeleteRes, err error) {
+	err = service.SysCron().Delete(ctx, req.CronDeleteInp)
+	return
 }
 
 // OnCronEdit 编辑任务
-func (s *sCronClient) OnCronEdit(ctx context.Context, args ...interface{}) {
-	var (
-		in  *msgin.CronEdit
-		res = new(msgin.ResponseCronEdit)
-	)
-
-	if err := gconv.Scan(args[0], &in); err != nil {
-		res.Code = 1
-		res.Message = err.Error()
-		_ = s.client.Reply(ctx, res)
-		return
-	}
-
-	if err := service.SysCron().Edit(ctx, in.CronEditInp); err != nil {
-		res.Code = 2
-		res.Message = err.Error()
-	}
-
-	_ = s.client.Reply(ctx, res)
+func (s *sCronClient) OnCronEdit(ctx context.Context, req *servmsg.CronEditReq) (res *servmsg.CronEditRes, err error) {
+	err = service.SysCron().Edit(ctx, req.CronEditInp)
+	return
 }
 
 // OnCronStatus 修改任务状态
-func (s *sCronClient) OnCronStatus(ctx context.Context, args ...interface{}) {
-	var (
-		in  *msgin.CronStatus
-		res = new(msgin.ResponseCronStatus)
-	)
-
-	if err := gconv.Scan(args[0], &in); err != nil {
-		res.Code = 1
-		res.Message = err.Error()
-		_ = s.client.Reply(ctx, res)
-		return
-	}
-
-	if err := service.SysCron().Status(ctx, in.CronStatusInp); err != nil {
-		res.Code = 2
-		res.Message = err.Error()
-	}
-
-	_ = s.client.Reply(ctx, res)
+func (s *sCronClient) OnCronStatus(ctx context.Context, req *servmsg.CronStatusReq) (res *servmsg.CronStatusRes, err error) {
+	err = service.SysCron().Status(ctx, req.CronStatusInp)
+	return
 }
 
 // OnCronOnlineExec 执行一次任务
-func (s *sCronClient) OnCronOnlineExec(ctx context.Context, args ...interface{}) {
-	var (
-		in  *msgin.CronOnlineExec
-		res = new(msgin.ResponseCronOnlineExec)
-	)
-
-	if err := gconv.Scan(args[0], &in); err != nil {
-		res.Code = 1
-		res.Message = err.Error()
-		_ = s.client.Reply(ctx, res)
-		return
-	}
-
-	if err := service.SysCron().OnlineExec(ctx, in.OnlineExecInp); err != nil {
-		res.Code = 1
-		res.Message = err.Error()
-	}
-
-	_ = s.client.Reply(ctx, res)
+func (s *sCronClient) OnCronOnlineExec(ctx context.Context, req *servmsg.CronOnlineExecReq) (res *servmsg.CronOnlineExecRes, err error) {
+	err = service.SysCron().OnlineExec(ctx, req.OnlineExecInp)
+	return
 }

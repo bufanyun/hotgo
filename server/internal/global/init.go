@@ -48,6 +48,9 @@ func Init(ctx context.Context) {
 
 	// 初始化功能库配置
 	service.SysConfig().InitConfig(ctx)
+
+	// 加载超管数据
+	service.AdminMember().LoadSuperAdmin(ctx)
 }
 
 // LoggingServeLogHandler 服务日志处理

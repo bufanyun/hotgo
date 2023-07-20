@@ -3,10 +3,10 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package adminin
 
 import (
+	"context"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
@@ -47,7 +47,6 @@ type NoticeViewModel struct {
 // NoticeListInp 获取列表
 type NoticeListInp struct {
 	form.PageReq
-	form.RangeDateReq
 	form.StatusReq
 	Title   string
 	Content string
@@ -79,6 +78,13 @@ type NoticeReadAllInp struct {
 // PullMessagesInp 获取列表
 type PullMessagesInp struct {
 	Limit int `json:"limit" dc:"拉取最大数量限制"`
+}
+
+func (in *PullMessagesInp) Filter(ctx context.Context) (err error) {
+	if in.Limit == 0 {
+		in.Limit = 100
+	}
+	return
 }
 
 type PullMessagesRow struct {

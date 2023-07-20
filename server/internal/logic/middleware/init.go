@@ -30,8 +30,9 @@ import (
 )
 
 type sMiddleware struct {
-	LoginUrl      string // 登录路由地址
-	DemoWhiteList g.Map  // 演示模式放行的路由白名单
+	LoginUrl      string                      // 登录路由地址
+	DemoWhiteList g.Map                       // 演示模式放行的路由白名单
+	FilterRoutes  map[string]ghttp.RouterItem // 支持预处理的web路由
 }
 
 func init() {

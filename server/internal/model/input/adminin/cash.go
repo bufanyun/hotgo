@@ -23,7 +23,6 @@ type CashViewModel struct {
 // CashListInp 获取列表
 type CashListInp struct {
 	form.PageReq
-	form.RangeDateReq
 	form.StatusReq
 	MemberId  int64   `json:"memberId"`
 	CreatedAt []int64 `json:"created_at"`

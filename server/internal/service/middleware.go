@@ -25,6 +25,9 @@ type (
 		IsExceptLogin(ctx context.Context, appName, path string) bool
 		Blacklist(r *ghttp.Request)
 		Develop(r *ghttp.Request)
+		GetFilterRoutes(r *ghttp.Request) map[string]ghttp.RouterItem
+		GenFilterRouteKey(router *ghttp.Router) string
+		PreFilter(r *ghttp.Request)
 		ResponseHandler(r *ghttp.Request)
 		WebSocketAuth(r *ghttp.Request)
 	}

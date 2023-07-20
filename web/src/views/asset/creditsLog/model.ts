@@ -105,6 +105,17 @@ export const schemas = ref<FormSchema[]>([
     },
   },
   {
+    field: 'id',
+    component: 'NInput',
+    label: '变动ID',
+    componentProps: {
+      placeholder: '请输入变动ID',
+      onUpdateValue: (e: any) => {
+        console.log(e);
+      },
+    },
+  },
+  {
     field: 'createdAt',
     component: 'NDatePicker',
     label: '变动时间',
@@ -112,17 +123,6 @@ export const schemas = ref<FormSchema[]>([
       type: 'datetimerange',
       clearable: true,
       shortcuts: defRangeShortcuts(),
-      onUpdateValue: (e: any) => {
-        console.log(e);
-      },
-    },
-  },
-  {
-    field: 'id',
-    component: 'NInput',
-    label: '变动ID',
-    componentProps: {
-      placeholder: '请输入变动ID',
       onUpdateValue: (e: any) => {
         console.log(e);
       },

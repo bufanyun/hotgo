@@ -97,3 +97,14 @@ func IpFilterStrategy(originIp string) (list map[string]struct{}) {
 	}
 	return list
 }
+
+// MatchIpStrategy 匹配IP策略，输入ip如果在策略当中返回true
+func MatchIpStrategy(rules, ip string) bool {
+	allowedIps := IpFilterStrategy(rules)
+	if _, ok := allowedIps["*"]; ok {
+		return true
+	}
+
+	_, ok := allowedIps[ip]
+	return ok
+}

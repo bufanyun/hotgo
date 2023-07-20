@@ -8,6 +8,7 @@ package queues
 import (
 	"context"
 	"encoding/json"
+	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/queue"
 	"hotgo/internal/model/entity"
@@ -32,12 +33,13 @@ func (q *qServeLog) GetTopic() string {
 func (q *qServeLog) Handle(ctx context.Context, mqMsg queue.MqMsg) error {
 	var data entity.SysServeLog
 	if err := json.Unmarshal(mqMsg.Body, &data); err != nil {
-		queue.Logger().Infof(ctx, "ServeLog Handle Unmarshal err:%+v", err)
+		g.Dump("ServeLog Handle Unmarshal err:%+v", err)
 		return nil
 	}
 
 	if err := service.SysServeLog().RealWrite(ctx, data); err != nil {
-		queue.Logger().Infof(ctx, "ServeLog Handle Write err:%+v", err)
+		g.Dump("ServeLog Handle Write err:%+v", err)
+		return nil
 	}
 	return nil
 }

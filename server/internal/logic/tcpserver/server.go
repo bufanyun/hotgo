@@ -1,3 +1,8 @@
+// Package tcpserver
+// @Link  https://github.com/bufanyun/hotgo
+// @Copyright  Copyright (c) 2023 HotGo CLI
+// @Author  Ms <133814250@qq.com>
+// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package tcpserver
 
 import (
@@ -20,40 +25,39 @@ func newTCPServer() *sTCPServer {
 	return &sTCPServer{}
 }
 
+// Instance 获取实例
+func (s *sTCPServer) Instance() *tcp.Server {
+	return s.serv
+}
+
 // Start 启动服务
 func (s *sTCPServer) Start(ctx context.Context) {
 	simple.SafeGo(ctx, func(ctx context.Context) {
 		g.Log().Debug(ctx, "TCPServer start..")
 
-		server, err := tcp.NewServer(&tcp.ServerConfig{
+		s.serv = tcp.NewServer(&tcp.ServerConfig{
 			Name: simple.AppName(ctx),
 			Addr: g.Cfg().MustGet(ctx, "tcp.server.address").String(),
 		})
 
-		if err != nil {
-			g.Log().Warningf(ctx, "TCPServer start fail：%+v", err)
-			return
-		}
+		// 注册路由
+		s.serv.RegisterRouter(
+			s.onServerLogin,     // 服务登录
+			s.onServerHeartbeat, // 心跳
+			s.OnAuthSummary,     // 获取授权信息
+			s.OnExampleHello,    // 一个tcp请求例子
+		)
 
-		s.serv = server
+		// 注册RPC路由
+		s.serv.RegisterRPCRouter(
+			s.OnExampleRPCHello, // 一个rpc请求例子
+		)
 
-		// 消息队列路由
-		s.serv.RegisterQueueRouter(map[string]tcp.RouterHandler{
-			// ...
-		})
-
-		// 定时任务路由
-		s.serv.RegisterCronRouter(map[string]tcp.RouterHandler{
-			// ...
-		})
-
-		// 授权服务路由
-		s.serv.RegisterAuthRouter(map[string]tcp.RouterHandler{
-			"AuthSummary": s.OnAuthSummary, // 获取授权信息
-		})
+		// 注册拦截器
+		s.serv.RegisterInterceptor(s.DefaultInterceptor, s.PreFilterInterceptor)
 
 		// 服务监听
-		if err = s.serv.Listen(); err != nil {
+		if err := s.serv.Listen(); err != nil {
 			if !s.serv.IsClose() {
 				g.Log().Warningf(ctx, "TCPServer Listen err:%v", err)
 			}

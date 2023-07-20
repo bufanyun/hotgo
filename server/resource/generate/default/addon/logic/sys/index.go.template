@@ -26,7 +26,7 @@ func init() {
 }
 
 // Test 测试
-func (s *sSysIndex) Test(ctx context.Context, in sysin.IndexTestInp) (res *sysin.IndexTestModel, err error) {
+func (s *sSysIndex) Test(ctx context.Context, in *sysin.IndexTestInp) (res *sysin.IndexTestModel, err error) {
 	res = new(sysin.IndexTestModel)
 	res.Name = in.Name
 	res.Module = fmt.Sprintf("当前插件模块是：%s，当前应用模块是：%s", global.GetSkeleton().Name, contexts.Get(ctx).Module)

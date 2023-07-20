@@ -85,14 +85,14 @@
   import Edit from './edit.vue';
 
   const router = useRouter();
-  const actionRef = ref();
   const dialog = useDialog();
   const message = useMessage();
-  const searchFormRef = ref<any>({});
+  const searchFormRef = ref<any>();
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
   const showModal = ref(false);
   const formParams = ref<State>();
+  const actionRef = ref();
 
   const actionColumn = reactive({
     width: 300,

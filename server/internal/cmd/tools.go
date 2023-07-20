@@ -7,6 +7,7 @@ package cmd
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcmd"
 	"hotgo/internal/library/casbin"
@@ -18,44 +19,50 @@ var (
 		Brief:       "常用工具",
 		Description: ``,
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			flags := parser.GetOptAll()
-			g.Log().Debugf(ctx, "flags:%+v", flags)
-			if len(flags) == 0 {
-				g.Log().Fatal(ctx, "工具参数不能为空")
+			args := parser.GetOptAll()
+			g.Log().Debugf(ctx, "tools args:%v", args)
+			if len(args) == 0 {
+				err = gerror.New("tools args cannot be empty.")
 				return
 			}
 
-			method, ok := flags["m"]
+			method, ok := args["m"]
 			if !ok {
-				g.Log().Fatal(ctx, "工具方法不能为空")
+				err = gerror.New("tools method cannot be empty.")
 				return
 			}
 
 			switch method {
 			case "casbin":
-				a1, ok := flags["a1"]
-				if !ok {
-					g.Log().Fatal(ctx, "casbin参数不能为空")
-					return
-				}
-				casbin.InitEnforcer(ctx)
-				if a1 == "clear" {
-					if err := casbin.Clear(ctx); err != nil {
-						return err
-					}
-				} else if a1 == "refresh" {
-					if err := casbin.Refresh(ctx); err != nil {
-						return err
-					}
-				} else {
-					g.Log().Fatalf(ctx, "casbin参数无效,a1：%+v", a1)
-					return
-				}
+				err = handleCasbin(ctx, args)
 			default:
-				g.Log().Fatal(ctx, "工具方法不存在")
+				err = gerror.Newf("tools method[%v] does not exist", method)
 			}
-			g.Log().Info(ctx, "执行完成！")
+
+			if err == nil {
+				g.Log().Info(ctx, "tools exec successful!")
+			}
 			return
 		},
 	}
 )
+
+// handleCasbin casbin.
+func handleCasbin(ctx context.Context, args map[string]string) (err error) {
+	a1, ok := args["a1"]
+	if !ok {
+		err = gerror.New("casbin args cannot be empty.")
+		return
+	}
+
+	casbin.InitEnforcer(ctx)
+	switch a1 {
+	case "clear":
+		err = casbin.Clear(ctx)
+	case "refresh":
+		err = casbin.Refresh(ctx)
+	default:
+		err = gerror.Newf("casbin a1 is invalid, a1:%v", a1)
+	}
+	return
+}

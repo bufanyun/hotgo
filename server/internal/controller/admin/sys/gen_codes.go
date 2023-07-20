@@ -3,17 +3,12 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sys
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/gencodes"
-	"hotgo/internal/model/input/form"
-	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/validate"
 )
 
 var (
@@ -24,27 +19,13 @@ type cGenCodes struct{}
 
 // Delete 删除
 func (c *cGenCodes) Delete(ctx context.Context, req *gencodes.DeleteReq) (res *gencodes.DeleteRes, err error) {
-	var in sysin.GenCodesDeleteInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	err = service.SysGenCodes().Delete(ctx, in)
+	err = service.SysGenCodes().Delete(ctx, &req.GenCodesDeleteInp)
 	return
 }
 
 // Edit 更新
 func (c *cGenCodes) Edit(ctx context.Context, req *gencodes.EditReq) (res *gencodes.EditRes, err error) {
-	var in sysin.GenCodesEditInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	data, err := service.SysGenCodes().Edit(ctx, in)
+	data, err := service.SysGenCodes().Edit(ctx, &req.GenCodesEditInp)
 	if err != nil {
 		return
 	}
@@ -56,7 +37,7 @@ func (c *cGenCodes) Edit(ctx context.Context, req *gencodes.EditReq) (res *genco
 
 // MaxSort 最大排序
 func (c *cGenCodes) MaxSort(ctx context.Context, req *gencodes.MaxSortReq) (res *gencodes.MaxSortRes, err error) {
-	data, err := service.SysGenCodes().MaxSort(ctx, sysin.GenCodesMaxSortInp{Id: req.Id})
+	data, err := service.SysGenCodes().MaxSort(ctx, &req.GenCodesMaxSortInp)
 	if err != nil {
 		return
 	}
@@ -68,7 +49,7 @@ func (c *cGenCodes) MaxSort(ctx context.Context, req *gencodes.MaxSortReq) (res 
 
 // View 获取指定信息
 func (c *cGenCodes) View(ctx context.Context, req *gencodes.ViewReq) (res *gencodes.ViewRes, err error) {
-	data, err := service.SysGenCodes().View(ctx, sysin.GenCodesViewInp{Id: req.Id})
+	data, err := service.SysGenCodes().View(ctx, &req.GenCodesViewInp)
 	if err != nil {
 		return
 	}
@@ -80,38 +61,26 @@ func (c *cGenCodes) View(ctx context.Context, req *gencodes.ViewReq) (res *genco
 
 // List 查看列表
 func (c *cGenCodes) List(ctx context.Context, req *gencodes.ListReq) (res *gencodes.ListRes, err error) {
-	var in sysin.GenCodesListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	list, totalCount, err := service.SysGenCodes().List(ctx, in)
+	list, totalCount, err := service.SysGenCodes().List(ctx, &req.GenCodesListInp)
 	if err != nil {
 		return
 	}
 
 	res = new(gencodes.ListRes)
 	res.List = list
-	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
-	res.Page = req.Page
-	res.PerPage = req.PerPage
+	res.PageRes.Pack(req, totalCount)
 	return
 }
 
-// Status 更新部门状态
+// Status 更新状态
 func (c *cGenCodes) Status(ctx context.Context, req *gencodes.StatusReq) (res *gencodes.StatusRes, err error) {
-	var in sysin.GenCodesStatusInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	err = service.SysGenCodes().Status(ctx, in)
+	err = service.SysGenCodes().Status(ctx, &req.GenCodesStatusInp)
 	return
 }
 
 // Selects 获取指定信息
 func (c *cGenCodes) Selects(ctx context.Context, req *gencodes.SelectsReq) (res *gencodes.SelectsRes, err error) {
-	data, err := service.SysGenCodes().Selects(ctx, sysin.GenCodesSelectsInp{})
+	data, err := service.SysGenCodes().Selects(ctx, &req.GenCodesSelectsInp)
 	if err != nil {
 		return
 	}
@@ -123,7 +92,7 @@ func (c *cGenCodes) Selects(ctx context.Context, req *gencodes.SelectsReq) (res 
 
 // TableSelect 数据库表选项
 func (c *cGenCodes) TableSelect(ctx context.Context, req *gencodes.TableSelectReq) (res *gencodes.TableSelectRes, err error) {
-	data, err := service.SysGenCodes().TableSelect(ctx, sysin.GenCodesTableSelectInp{Name: req.Name})
+	data, err := service.SysGenCodes().TableSelect(ctx, &req.GenCodesTableSelectInp)
 	if err != nil {
 		return
 	}
@@ -134,7 +103,7 @@ func (c *cGenCodes) TableSelect(ctx context.Context, req *gencodes.TableSelectRe
 
 // ColumnSelect 表字段选项
 func (c *cGenCodes) ColumnSelect(ctx context.Context, req *gencodes.ColumnSelectReq) (res *gencodes.ColumnSelectRes, err error) {
-	data, err := service.SysGenCodes().ColumnSelect(ctx, sysin.GenCodesColumnSelectInp{Name: req.Name, Table: req.Table})
+	data, err := service.SysGenCodes().ColumnSelect(ctx, &req.GenCodesColumnSelectInp)
 	if err != nil {
 		return
 	}
@@ -145,12 +114,7 @@ func (c *cGenCodes) ColumnSelect(ctx context.Context, req *gencodes.ColumnSelect
 
 // ColumnList 表字段列表
 func (c *cGenCodes) ColumnList(ctx context.Context, req *gencodes.ColumnListReq) (res *gencodes.ColumnListRes, err error) {
-	var in sysin.GenCodesColumnListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	data, err := service.SysGenCodes().ColumnList(ctx, in)
+	data, err := service.SysGenCodes().ColumnList(ctx, &req.GenCodesColumnListInp)
 	if err != nil {
 		return
 	}
@@ -161,16 +125,7 @@ func (c *cGenCodes) ColumnList(ctx context.Context, req *gencodes.ColumnListReq)
 
 // Preview 生成预览
 func (c *cGenCodes) Preview(ctx context.Context, req *gencodes.PreviewReq) (res *gencodes.PreviewRes, err error) {
-	var in sysin.GenCodesPreviewInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	data, err := service.SysGenCodes().Preview(ctx, in)
+	data, err := service.SysGenCodes().Preview(ctx, &req.GenCodesPreviewInp)
 	if err != nil {
 		return
 	}
@@ -182,15 +137,6 @@ func (c *cGenCodes) Preview(ctx context.Context, req *gencodes.PreviewReq) (res 
 
 // Build 生成预览
 func (c *cGenCodes) Build(ctx context.Context, req *gencodes.BuildReq) (res *gencodes.BuildRes, err error) {
-	var in sysin.GenCodesBuildInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	err = service.SysGenCodes().Build(ctx, in)
+	err = service.SysGenCodes().Build(ctx, &req.GenCodesBuildInp)
 	return
 }

@@ -18,7 +18,7 @@ import (
 )
 
 // Notify 异步通知
-func (s *sPay) Notify(ctx context.Context, in payin.PayNotifyInp) (res *payin.PayNotifyModel, err error) {
+func (s *sPay) Notify(ctx context.Context, in *payin.PayNotifyInp) (res *payin.PayNotifyModel, err error) {
 	data, err := payment.New(in.PayType).Notify(ctx, payin.NotifyInp{})
 	if err != nil {
 		return
@@ -80,6 +80,6 @@ func (s *sPay) Notify(ctx context.Context, in payin.PayNotifyInp) (res *payin.Pa
 	}
 
 	// 回调业务
-	payment.NotifyCall(ctx, payin.NotifyCallFuncInp{Pay: models})
+	payment.NotifyCall(ctx, &payin.NotifyCallFuncInp{Pay: models})
 	return
 }

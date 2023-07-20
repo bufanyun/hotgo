@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="n-layout-page-header">
-      <n-card :bordered="false" title="短信记录"> 你可以在这里查看到平台所有的短信发送记录 </n-card>
+      <n-card :bordered="false" title="短信记录">
+        在这里，您可以方便地查看平台的所有短信发送记录
+      </n-card>
     </div>
     <n-card :bordered="false" class="proCard">
       <BasicForm
@@ -46,10 +48,10 @@
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
   import { getLogList, Delete } from '@/api/log/smslog';
-  import { useRouter } from 'vue-router';
   import { DeleteOutlined } from '@vicons/antd';
   import { Dicts } from '@/api/dict/dict';
   import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
+  import { defRangeShortcuts } from "@/utils/dateUtil";
 
   const options = ref<Options>({
     config_sms_template: [],
@@ -137,6 +139,8 @@
   ];
 
   const dialog = useDialog();
+  const message = useMessage();
+  const actionRef = ref();
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
   const searchFormRef = ref<any>({});
@@ -198,14 +202,23 @@
         },
       },
     },
+    {
+      field: 'createdAt',
+      component: 'NDatePicker',
+      label: '发送时间',
+      componentProps: {
+        type: 'datetimerange',
+        clearable: true,
+        shortcuts: defRangeShortcuts(),
+        onUpdateValue: (e: any) => {
+          console.log(e);
+        },
+      },
+    },
   ]);
 
-  const router = useRouter();
-  const message = useMessage();
-  const actionRef = ref();
-
   const actionColumn = reactive({
-    width: 120,
+    width: 80,
     title: '操作',
     key: 'action',
     fixed: 'right',
@@ -241,15 +254,10 @@
       positiveText: '确定',
       negativeText: '不确定',
       onPositiveClick: () => {
-        Delete(record)
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((_e: Error) => {
-            // message.error(e.message ?? '操作失败');
-          });
+        Delete(record).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
         // message.error('不确定');
@@ -264,15 +272,10 @@
       positiveText: '确定',
       negativeText: '不确定',
       onPositiveClick: () => {
-        Delete({ id: checkedIds.value })
-          .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
-            message.success('操作成功');
-            reloadTable();
-          })
-          .catch((e: Error) => {
-            message.error(e.message ?? '操作失败');
-          });
+        Delete({ id: checkedIds.value }).then((_res) => {
+          message.success('操作成功');
+          reloadTable();
+        });
       },
       onNegativeClick: () => {
         // message.error('不确定');

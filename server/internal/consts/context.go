@@ -11,5 +11,4 @@ type CtxKey string
 const (
 	ContextHTTPKey     CtxKey = "httpContext" // http上下文变量名称
 	ContextKeyCronArgs CtxKey = "cronArgs"    // 定时任务参数上下文变量名称
-	ContextTCPKey      CtxKey = "tcpContext"  // tcp上下文变量名称
 )

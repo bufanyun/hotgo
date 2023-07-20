@@ -10,29 +10,28 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/api/admin/common"
+	"hotgo/internal/library/storager"
 	"hotgo/internal/service"
+	"hotgo/utility/validate"
 )
 
 var Upload = new(cUpload)
 
 type cUpload struct{}
 
-// UploadImage 上传图片
-func (c *cUpload) UploadImage(ctx context.Context, _ *common.UploadImageReq) (res common.UploadImageRes, err error) {
-	file := g.RequestFromCtx(ctx).GetUploadFile("file")
-	if file == nil {
-		err = gerror.New("没有找到上传的文件")
-		return
-	}
-	return service.CommonUpload().UploadImage(ctx, file)
-}
-
-// UploadFile 上传附件
+// UploadFile 上传文件
 func (c *cUpload) UploadFile(ctx context.Context, _ *common.UploadFileReq) (res common.UploadFileRes, err error) {
-	file := g.RequestFromCtx(ctx).GetUploadFile("file")
+	r := g.RequestFromCtx(ctx)
+	uploadType := r.Header.Get("uploadType")
+	if uploadType != "default" && !validate.InSlice(storager.KindSlice, uploadType) {
+		err = gerror.New("上传类型是无效的")
+		return
+	}
+
+	file := r.GetUploadFile("file")
 	if file == nil {
 		err = gerror.New("没有找到上传的文件")
 		return
 	}
-	return service.CommonUpload().UploadFile(ctx, file)
+	return service.CommonUpload().UploadFile(ctx, uploadType, file)
 }

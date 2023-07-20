@@ -81,6 +81,13 @@ export function isArray(val: any): val is Array<any> {
 }
 
 /**
+ * @description:  是否为字符串数组
+ */
+export function isArrayString(val: any): val is Array<any> {
+  return Array.isArray(val) && val.every((item: any) => typeof item === 'string');
+}
+
+/**
  * @description:  是否为转为string的json
  */
 export function isJsonString(value: any) {

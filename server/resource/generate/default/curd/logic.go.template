@@ -44,7 +44,7 @@ func (s *s@{.servFunName}) Model(ctx context.Context, option ...*handler.Option)
 }
 
 // List 获取@{.tableComment}列表
-func (s *s@{.servFunName}) List(ctx context.Context, in @{.templateGroup}in.@{.varName}ListInp) (list []*@{.templateGroup}in.@{.varName}ListModel, totalCount int, err error) {
+func (s *s@{.servFunName}) List(ctx context.Context, in *@{.templateGroup}in.@{.varName}ListInp) (list []*@{.templateGroup}in.@{.varName}ListModel, totalCount int, err error) {
 	mod := s.Model(ctx@{ if eq .options.Step.HasNotFilterAuth true } ,&handler.Option{FilterAuth: false}@{end})
 @{.listWhere}
 @{.listJoin.link}
@@ -68,7 +68,7 @@ func (s *s@{.servFunName}) List(ctx context.Context, in @{.templateGroup}in.@{.v
 }
 @{ if eq .options.Step.HasExport true }
 // Export 导出@{.tableComment}
-func (s *s@{.servFunName}) Export(ctx context.Context, in @{.templateGroup}in.@{.varName}ListInp) (err error) {
+func (s *s@{.servFunName}) Export(ctx context.Context, in *@{.templateGroup}in.@{.varName}ListInp) (err error) {
 	list, totalCount, err := s.List(ctx, in)
 	if err != nil {
 		return
@@ -95,9 +95,8 @@ func (s *s@{.servFunName}) Export(ctx context.Context, in @{.templateGroup}in.@{
 }@{end}
 @{ if eq .options.Step.HasEdit true }
 // Edit 修改/新增@{.tableComment}
-func (s *s@{.servFunName}) Edit(ctx context.Context, in @{.templateGroup}in.@{.varName}EditInp) (err error) {
-@{.edit.unique}
-	// 修改
+func (s *s@{.servFunName}) Edit(ctx context.Context, in *@{.templateGroup}in.@{.varName}EditInp) (err error) {
+@{.edit.unique}	// 修改
 	if in.@{.pk.GoName} > 0 {
 @{.edit.update}
 	}
@@ -109,7 +108,7 @@ func (s *s@{.servFunName}) Edit(ctx context.Context, in @{.templateGroup}in.@{.v
 @{end}
 @{ if eq .options.Step.HasDel true }
 // Delete 删除@{.tableComment}
-func (s *s@{.servFunName}) Delete(ctx context.Context, in @{.templateGroup}in.@{.varName}DeleteInp) (err error) {
+func (s *s@{.servFunName}) Delete(ctx context.Context, in *@{.templateGroup}in.@{.varName}DeleteInp) (err error) {
 	if _, err = s.Model(ctx@{ if eq .options.Step.HasNotFilterAuth true } ,&handler.Option{FilterAuth: false}@{end}).WherePri(in.@{.pk.GoName}).Delete();err != nil {
 		err = gerror.Wrap(err, "删除@{.tableComment}失败，请稍后重试！")
     	return
@@ -118,7 +117,7 @@ func (s *s@{.servFunName}) Delete(ctx context.Context, in @{.templateGroup}in.@{
 }@{end}
 @{ if and (eq .options.Step.HasEdit true) (eq .options.Step.HasMaxSort true) }
 // MaxSort 获取@{.tableComment}最大排序
-func (s *s@{.servFunName}) MaxSort(ctx context.Context, in @{.templateGroup}in.@{.varName}MaxSortInp) (res *@{.templateGroup}in.@{.varName}MaxSortModel, err error) {
+func (s *s@{.servFunName}) MaxSort(ctx context.Context, in *@{.templateGroup}in.@{.varName}MaxSortInp) (res *@{.templateGroup}in.@{.varName}MaxSortModel, err error) {
 	if err = dao.@{.daoName}.Ctx(ctx).Fields(dao.@{.daoName}.Columns().Sort).OrderDesc(dao.@{.daoName}.Columns().Sort).Scan(&res); err != nil {
 		err = gerror.Wrap(err, "获取@{.tableComment}最大排序，请稍后重试！")
 		return
@@ -128,13 +127,13 @@ func (s *s@{.servFunName}) MaxSort(ctx context.Context, in @{.templateGroup}in.@
 		res = new(@{.templateGroup}in.@{.varName}MaxSortModel)
 	}
 
-	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	res.Sort = form.DefaultMaxSort(res.Sort)
 	return
 }
 @{end}
 @{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }
 // View 获取@{.tableComment}指定信息
-func (s *s@{.servFunName}) View(ctx context.Context, in @{.templateGroup}in.@{.varName}ViewInp) (res *@{.templateGroup}in.@{.varName}ViewModel, err error) {
+func (s *s@{.servFunName}) View(ctx context.Context, in *@{.templateGroup}in.@{.varName}ViewInp) (res *@{.templateGroup}in.@{.varName}ViewModel, err error) {
     if err = s.Model(ctx@{ if eq .options.Step.HasNotFilterAuth true } ,&handler.Option{FilterAuth: false}@{end}).WherePri(in.@{.pk.GoName}).Scan(&res);err != nil {
 		err = gerror.Wrap(err, "获取@{.tableComment}信息，请稍后重试！")
 		return
@@ -143,7 +142,7 @@ func (s *s@{.servFunName}) View(ctx context.Context, in @{.templateGroup}in.@{.v
 }@{end}
 @{ if eq .options.Step.HasStatus true }
 // Status 更新@{.tableComment}状态
-func (s *s@{.servFunName}) Status(ctx context.Context, in @{.templateGroup}in.@{.varName}StatusInp) (err error) {
+func (s *s@{.servFunName}) Status(ctx context.Context, in *@{.templateGroup}in.@{.varName}StatusInp) (err error) {
 	if _, err = s.Model(ctx@{ if eq .options.Step.HasNotFilterAuth true } ,&handler.Option{FilterAuth: false}@{end}).WherePri(in.@{.pk.GoName}).Data(@{.statusUpdate}).Update();err != nil {
 		err = gerror.Wrap(err, "更新@{.tableComment}状态失败，请稍后重试！")
 		return
@@ -153,7 +152,7 @@ func (s *s@{.servFunName}) Status(ctx context.Context, in @{.templateGroup}in.@{
 @{end}
 @{ if eq .options.Step.HasSwitch true }
 // Switch 更新@{.tableComment}开关
-func (s *s@{.servFunName}) Switch(ctx context.Context, in @{.templateGroup}in.@{.varName}SwitchInp) (err error) {
+func (s *s@{.servFunName}) Switch(ctx context.Context, in *@{.templateGroup}in.@{.varName}SwitchInp) (err error) {
 	var fields = []string{
 @{.switchFields}
 		// ...

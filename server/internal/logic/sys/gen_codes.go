@@ -35,13 +35,13 @@ func init() {
 }
 
 // Delete 删除
-func (s *sSysGenCodes) Delete(ctx context.Context, in sysin.GenCodesDeleteInp) (err error) {
+func (s *sSysGenCodes) Delete(ctx context.Context, in *sysin.GenCodesDeleteInp) (err error) {
 	_, err = dao.SysGenCodes.Ctx(ctx).Where("id", in.Id).Delete()
 	return
 }
 
 // Edit 修改/新增
-func (s *sSysGenCodes) Edit(ctx context.Context, in sysin.GenCodesEditInp) (res *sysin.GenCodesEditModel, err error) {
+func (s *sSysGenCodes) Edit(ctx context.Context, in *sysin.GenCodesEditInp) (res *sysin.GenCodesEditModel, err error) {
 	if in.GenType == 0 {
 		err = gerror.New("生成类型不能为空")
 		return
@@ -99,7 +99,7 @@ func (s *sSysGenCodes) Edit(ctx context.Context, in sysin.GenCodesEditInp) (res 
 }
 
 // Status 更新部门状态
-func (s *sSysGenCodes) Status(ctx context.Context, in sysin.GenCodesStatusInp) (err error) {
+func (s *sSysGenCodes) Status(ctx context.Context, in *sysin.GenCodesStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
 		return
@@ -120,7 +120,7 @@ func (s *sSysGenCodes) Status(ctx context.Context, in sysin.GenCodesStatusInp) (
 }
 
 // MaxSort 最大排序
-func (s *sSysGenCodes) MaxSort(ctx context.Context, in sysin.GenCodesMaxSortInp) (res *sysin.GenCodesMaxSortModel, err error) {
+func (s *sSysGenCodes) MaxSort(ctx context.Context, in *sysin.GenCodesMaxSortInp) (res *sysin.GenCodesMaxSortModel, err error) {
 	if in.Id > 0 {
 		if err = dao.SysGenCodes.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
@@ -132,18 +132,18 @@ func (s *sSysGenCodes) MaxSort(ctx context.Context, in sysin.GenCodesMaxSortInp)
 		res = new(sysin.GenCodesMaxSortModel)
 	}
 
-	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	res.Sort = form.DefaultMaxSort(res.Sort)
 	return
 }
 
 // View 获取指定字典类型信息
-func (s *sSysGenCodes) View(ctx context.Context, in sysin.GenCodesViewInp) (res *sysin.GenCodesViewModel, err error) {
+func (s *sSysGenCodes) View(ctx context.Context, in *sysin.GenCodesViewInp) (res *sysin.GenCodesViewModel, err error) {
 	err = dao.SysGenCodes.Ctx(ctx).Where("id", in.Id).Scan(&res)
 	return
 }
 
 // List 获取列表
-func (s *sSysGenCodes) List(ctx context.Context, in sysin.GenCodesListInp) (list []*sysin.GenCodesListModel, totalCount int, err error) {
+func (s *sSysGenCodes) List(ctx context.Context, in *sysin.GenCodesListInp) (list []*sysin.GenCodesListModel, totalCount int, err error) {
 	mod := dao.SysGenCodes.Ctx(ctx)
 
 	if in.GenType > 0 {
@@ -195,17 +195,16 @@ func (s *sSysGenCodes) List(ctx context.Context, in sysin.GenCodesListInp) (list
 			v.GenTemplateGroup = getTpGroup(v)
 		}
 	}
-
 	return
 }
 
 // Selects 选项
-func (s *sSysGenCodes) Selects(ctx context.Context, in sysin.GenCodesSelectsInp) (res *sysin.GenCodesSelectsModel, err error) {
+func (s *sSysGenCodes) Selects(ctx context.Context, in *sysin.GenCodesSelectsInp) (res *sysin.GenCodesSelectsModel, err error) {
 	return hggen.TableSelects(ctx, in)
 }
 
 // TableSelect 表选项
-func (s *sSysGenCodes) TableSelect(ctx context.Context, in sysin.GenCodesTableSelectInp) (res []*sysin.GenCodesTableSelectModel, err error) {
+func (s *sSysGenCodes) TableSelect(ctx context.Context, in *sysin.GenCodesTableSelectInp) (res []*sysin.GenCodesTableSelectModel, err error) {
 	var (
 		sql           = "SELECT TABLE_NAME as value, TABLE_COMMENT as label FROM information_schema.`TABLES` WHERE TABLE_SCHEMA = '%s'"
 		config        = g.DB(in.Name).GetConfig()
@@ -248,14 +247,13 @@ func (s *sSysGenCodes) TableSelect(ctx context.Context, in sysin.GenCodesTableSe
 		row.DefAlias = gstr.CaseCamelLower(newValue)
 		row.Name = fmt.Sprintf("%s (%s)", v.Value, v.Label)
 		row.Label = row.Name
-
 		res = append(res, row)
 	}
 	return
 }
 
 // ColumnSelect 表字段选项
-func (s *sSysGenCodes) ColumnSelect(ctx context.Context, in sysin.GenCodesColumnSelectInp) (res []*sysin.GenCodesColumnSelectModel, err error) {
+func (s *sSysGenCodes) ColumnSelect(ctx context.Context, in *sysin.GenCodesColumnSelectInp) (res []*sysin.GenCodesColumnSelectModel, err error) {
 	var (
 		sql    = "select COLUMN_NAME as value,COLUMN_COMMENT as label from information_schema.COLUMNS where TABLE_SCHEMA = '%s' and TABLE_NAME = '%s'"
 		config = g.DB(in.Name).GetConfig()
@@ -278,31 +276,31 @@ func (s *sSysGenCodes) ColumnSelect(ctx context.Context, in sysin.GenCodesColumn
 }
 
 // ColumnList 表字段列表
-func (s *sSysGenCodes) ColumnList(ctx context.Context, in sysin.GenCodesColumnListInp) (res []*sysin.GenCodesColumnListModel, err error) {
+func (s *sSysGenCodes) ColumnList(ctx context.Context, in *sysin.GenCodesColumnListInp) (res []*sysin.GenCodesColumnListModel, err error) {
 	return hggen.TableColumns(ctx, in)
 }
 
 // Preview 生成预览
-func (s *sSysGenCodes) Preview(ctx context.Context, in sysin.GenCodesPreviewInp) (res *sysin.GenCodesPreviewModel, err error) {
+func (s *sSysGenCodes) Preview(ctx context.Context, in *sysin.GenCodesPreviewInp) (res *sysin.GenCodesPreviewModel, err error) {
 	return hggen.Preview(ctx, in)
 }
 
 // Build 提交生成
-func (s *sSysGenCodes) Build(ctx context.Context, in sysin.GenCodesBuildInp) (err error) {
+func (s *sSysGenCodes) Build(ctx context.Context, in *sysin.GenCodesBuildInp) (err error) {
 	// 先保存配置
 	ein := in.SysGenCodes
-	if _, err = s.Edit(ctx, sysin.GenCodesEditInp{SysGenCodes: ein}); err != nil {
+	if _, err = s.Edit(ctx, &sysin.GenCodesEditInp{SysGenCodes: ein}); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
 
-	if err = s.Status(ctx, sysin.GenCodesStatusInp{Id: in.Id, Status: consts.GenCodesStatusOk}); err != nil {
+	if err = s.Status(ctx, &sysin.GenCodesStatusInp{Id: in.Id, Status: consts.GenCodesStatusOk}); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
 	}
 
 	if err = hggen.Build(ctx, in); err != nil {
-		_ = s.Status(ctx, sysin.GenCodesStatusInp{Id: in.Id, Status: consts.GenCodesStatusFail})
+		_ = s.Status(ctx, &sysin.GenCodesStatusInp{Id: in.Id, Status: consts.GenCodesStatusFail})
 		return err
 	}
 	return

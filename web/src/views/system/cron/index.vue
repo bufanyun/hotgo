@@ -445,7 +445,6 @@
   }
 
   const GroupModalRef = ref();
-
   function openGroupModal() {
     const { openDrawer } = GroupModalRef.value;
     openDrawer();

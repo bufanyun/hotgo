@@ -6,6 +6,9 @@
 package hggen
 
 import (
+	_ "hotgo/internal/library/hggen/internal/cmd/gendao"
+	_ "unsafe"
+
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -23,6 +26,9 @@ import (
 	"sort"
 )
 
+//go:linkname doGenDaoForArray hotgo/internal/library/hggen/internal/cmd/gendao.doGenDaoForArray
+func doGenDaoForArray(ctx context.Context, index int, in gendao.CGenDaoInput)
+
 // Dao 生成数据库实体
 func Dao(ctx context.Context) (err error) {
 	for _, v := range daoConfig {
@@ -31,7 +37,7 @@ func Dao(ctx context.Context) (err error) {
 		if err != nil {
 			return
 		}
-		gendao.DoGenDaoForArray(ctx, inp)
+		doGenDaoForArray(ctx, -1, inp)
 	}
 	return
 }
@@ -52,11 +58,11 @@ func ServiceWithCfg(ctx context.Context, cfg ...genservice.CGenServiceInput) (er
 }
 
 // TableColumns 获取指定表生成字段列表
-func TableColumns(ctx context.Context, in sysin.GenCodesColumnListInp) (fields []*sysin.GenCodesColumnListModel, err error) {
+func TableColumns(ctx context.Context, in *sysin.GenCodesColumnListInp) (fields []*sysin.GenCodesColumnListModel, err error) {
 	return views.DoTableColumns(ctx, in, GetDaoConfig(in.Name))
 }
 
-func TableSelects(ctx context.Context, in sysin.GenCodesSelectsInp) (res *sysin.GenCodesSelectsModel, err error) {
+func TableSelects(ctx context.Context, in *sysin.GenCodesSelectsInp) (res *sysin.GenCodesSelectsModel, err error) {
 	res = new(sysin.GenCodesSelectsModel)
 	res.GenType, err = GenTypeSelect(ctx)
 	if err != nil {
@@ -110,7 +116,7 @@ func TableSelects(ctx context.Context, in sysin.GenCodesSelectsInp) (res *sysin.
 	}
 	sort.Sort(res.FormRole)
 
-	dictMode, err := service.SysDictType().TreeSelect(ctx, sysin.DictTreeSelectInp{})
+	dictMode, err := service.SysDictType().TreeSelect(ctx, &sysin.DictTreeSelectInp{})
 	if err != nil {
 		return
 	}
@@ -183,7 +189,7 @@ func DbSelect(ctx context.Context) (res form.Selects) {
 }
 
 // Preview 生成预览
-func Preview(ctx context.Context, in sysin.GenCodesPreviewInp) (res *sysin.GenCodesPreviewModel, err error) {
+func Preview(ctx context.Context, in *sysin.GenCodesPreviewInp) (res *sysin.GenCodesPreviewModel, err error) {
 	genConfig, err := service.SysConfig().GetLoadGenerate(ctx)
 	if err != nil {
 		return nil, err
@@ -209,7 +215,7 @@ func Preview(ctx context.Context, in sysin.GenCodesPreviewInp) (res *sysin.GenCo
 }
 
 // Build 提交生成
-func Build(ctx context.Context, in sysin.GenCodesBuildInp) (err error) {
+func Build(ctx context.Context, in *sysin.GenCodesBuildInp) (err error) {
 	genConfig, err := service.SysConfig().GetLoadGenerate(ctx)
 	if err != nil {
 		return err
@@ -217,7 +223,7 @@ func Build(ctx context.Context, in sysin.GenCodesBuildInp) (err error) {
 
 	switch in.GenType {
 	case consts.GenCodesTypeCurd:
-		pin := sysin.GenCodesPreviewInp(in)
+		pin := &sysin.GenCodesPreviewInp{SysGenCodes: in.SysGenCodes}
 		return views.Curd.DoBuild(ctx, &views.CurdBuildInput{
 			PreviewIn: &views.CurdPreviewInput{
 				In:        pin,

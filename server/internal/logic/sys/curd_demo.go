@@ -3,7 +3,7 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-// @AutoGenerate Version 2.7.3
+// @AutoGenerate Version 2.7.6
 package sys
 
 import (
@@ -43,7 +43,7 @@ func (s *sSysCurdDemo) Model(ctx context.Context, option ...*handler.Option) *gd
 }
 
 // List 获取生成演示列表
-func (s *sSysCurdDemo) List(ctx context.Context, in sysin.CurdDemoListInp) (list []*sysin.CurdDemoListModel, totalCount int, err error) {
+func (s *sSysCurdDemo) List(ctx context.Context, in *sysin.CurdDemoListInp) (list []*sysin.CurdDemoListModel, totalCount int, err error) {
 	mod := s.Model(ctx)
 
 	// 查询ID
@@ -88,6 +88,7 @@ func (s *sSysCurdDemo) List(ctx context.Context, in sysin.CurdDemoListInp) (list
 	})
 
 	if err != nil {
+		err = gerror.Wrap(err, "获取生成演示关联字段失败，请稍后重试！")
 		return
 	}
 
@@ -99,7 +100,7 @@ func (s *sSysCurdDemo) List(ctx context.Context, in sysin.CurdDemoListInp) (list
 }
 
 // Export 导出生成演示
-func (s *sSysCurdDemo) Export(ctx context.Context, in sysin.CurdDemoListInp) (err error) {
+func (s *sSysCurdDemo) Export(ctx context.Context, in *sysin.CurdDemoListInp) (err error) {
 	list, totalCount, err := s.List(ctx, in)
 	if err != nil {
 		return
@@ -126,27 +127,30 @@ func (s *sSysCurdDemo) Export(ctx context.Context, in sysin.CurdDemoListInp) (er
 }
 
 // Edit 修改/新增生成演示
-func (s *sSysCurdDemo) Edit(ctx context.Context, in sysin.CurdDemoEditInp) (err error) {
-
+func (s *sSysCurdDemo) Edit(ctx context.Context, in *sysin.CurdDemoEditInp) (err error) {
 	// 修改
 	if in.Id > 0 {
 		in.UpdatedBy = contexts.GetUserId(ctx)
-		_, err = s.Model(ctx).
+		if _, err = s.Model(ctx).
 			Fields(sysin.CurdDemoUpdateFields{}).
-			WherePri(in.Id).Data(in).Update()
+			WherePri(in.Id).Data(in).Update(); err != nil {
+			err = gerror.Wrap(err, "修改生成演示失败，请稍后重试！")
+		}
 		return
 	}
 
 	// 新增
 	in.CreatedBy = contexts.GetUserId(ctx)
-	_, err = s.Model(ctx, &handler.Option{FilterAuth: false}).
+	if _, err = s.Model(ctx, &handler.Option{FilterAuth: false}).
 		Fields(sysin.CurdDemoInsertFields{}).
-		Data(in).Insert()
+		Data(in).Insert(); err != nil {
+		err = gerror.Wrap(err, "新增生成演示失败，请稍后重试！")
+	}
 	return
 }
 
 // Delete 删除生成演示
-func (s *sSysCurdDemo) Delete(ctx context.Context, in sysin.CurdDemoDeleteInp) (err error) {
+func (s *sSysCurdDemo) Delete(ctx context.Context, in *sysin.CurdDemoDeleteInp) (err error) {
 	if _, err = s.Model(ctx).WherePri(in.Id).Delete(); err != nil {
 		err = gerror.Wrap(err, "删除生成演示失败，请稍后重试！")
 		return
@@ -155,7 +159,7 @@ func (s *sSysCurdDemo) Delete(ctx context.Context, in sysin.CurdDemoDeleteInp) (
 }
 
 // MaxSort 获取生成演示最大排序
-func (s *sSysCurdDemo) MaxSort(ctx context.Context, in sysin.CurdDemoMaxSortInp) (res *sysin.CurdDemoMaxSortModel, err error) {
+func (s *sSysCurdDemo) MaxSort(ctx context.Context, in *sysin.CurdDemoMaxSortInp) (res *sysin.CurdDemoMaxSortModel, err error) {
 	if err = dao.SysGenCurdDemo.Ctx(ctx).Fields(dao.SysGenCurdDemo.Columns().Sort).OrderDesc(dao.SysGenCurdDemo.Columns().Sort).Scan(&res); err != nil {
 		err = gerror.Wrap(err, "获取生成演示最大排序，请稍后重试！")
 		return
@@ -165,12 +169,12 @@ func (s *sSysCurdDemo) MaxSort(ctx context.Context, in sysin.CurdDemoMaxSortInp)
 		res = new(sysin.CurdDemoMaxSortModel)
 	}
 
-	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	res.Sort = form.DefaultMaxSort(res.Sort)
 	return
 }
 
 // View 获取生成演示指定信息
-func (s *sSysCurdDemo) View(ctx context.Context, in sysin.CurdDemoViewInp) (res *sysin.CurdDemoViewModel, err error) {
+func (s *sSysCurdDemo) View(ctx context.Context, in *sysin.CurdDemoViewInp) (res *sysin.CurdDemoViewModel, err error) {
 	if err = s.Model(ctx).WherePri(in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, "获取生成演示信息，请稍后重试！")
 		return
@@ -179,7 +183,7 @@ func (s *sSysCurdDemo) View(ctx context.Context, in sysin.CurdDemoViewInp) (res 
 }
 
 // Status 更新生成演示状态
-func (s *sSysCurdDemo) Status(ctx context.Context, in sysin.CurdDemoStatusInp) (err error) {
+func (s *sSysCurdDemo) Status(ctx context.Context, in *sysin.CurdDemoStatusInp) (err error) {
 	if _, err = s.Model(ctx).WherePri(in.Id).Data(g.Map{
 		dao.SysGenCurdDemo.Columns().Status:    in.Status,
 		dao.SysGenCurdDemo.Columns().UpdatedBy: contexts.GetUserId(ctx),
@@ -191,7 +195,7 @@ func (s *sSysCurdDemo) Status(ctx context.Context, in sysin.CurdDemoStatusInp) (
 }
 
 // Switch 更新生成演示开关
-func (s *sSysCurdDemo) Switch(ctx context.Context, in sysin.CurdDemoSwitchInp) (err error) {
+func (s *sSysCurdDemo) Switch(ctx context.Context, in *sysin.CurdDemoSwitchInp) (err error) {
 	var fields = []string{
 		dao.SysGenCurdDemo.Columns().Switch,
 

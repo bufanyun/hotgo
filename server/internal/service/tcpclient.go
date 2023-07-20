@@ -7,41 +7,34 @@ package service
 
 import (
 	"context"
+	"hotgo/api/servmsg"
+	"hotgo/internal/library/network/tcp"
 )
 
 type (
 	IAuthClient interface {
+		Instance() *tcp.Client
 		Start(ctx context.Context)
 		Stop(ctx context.Context)
-		IsLogin() bool
-		OnResponseAuthSummary(ctx context.Context, args ...interface{})
+		OnResponseAuthSummary(ctx context.Context, req *servmsg.AuthSummaryRes)
+		OnResponseExampleHello(ctx context.Context, req *servmsg.ExampleHelloRes)
 	}
 	ICronClient interface {
+		Instance() *tcp.Client
 		Start(ctx context.Context)
 		Stop(ctx context.Context)
-		IsLogin() bool
-		OnCronDelete(ctx context.Context, args ...interface{})
-		OnCronEdit(ctx context.Context, args ...interface{})
-		OnCronStatus(ctx context.Context, args ...interface{})
-		OnCronOnlineExec(ctx context.Context, args ...interface{})
+		OnCronDelete(ctx context.Context, req *servmsg.CronDeleteReq) (res *servmsg.CronDeleteRes, err error)
+		OnCronEdit(ctx context.Context, req *servmsg.CronEditReq) (res *servmsg.CronEditRes, err error)
+		OnCronStatus(ctx context.Context, req *servmsg.CronStatusReq) (res *servmsg.CronStatusRes, err error)
+		OnCronOnlineExec(ctx context.Context, req *servmsg.CronOnlineExecReq) (res *servmsg.CronOnlineExecRes, err error)
+		DefaultInterceptor(ctx context.Context, msg *tcp.Message) (err error)
 	}
 )
 
 var (
-	localCronClient ICronClient
 	localAuthClient IAuthClient
+	localCronClient ICronClient
 )
-
-func AuthClient() IAuthClient {
-	if localAuthClient == nil {
-		panic("implement not found for interface IAuthClient, forgot register?")
-	}
-	return localAuthClient
-}
-
-func RegisterAuthClient(i IAuthClient) {
-	localAuthClient = i
-}
 
 func CronClient() ICronClient {
 	if localCronClient == nil {
@@ -52,4 +45,15 @@ func CronClient() ICronClient {
 
 func RegisterCronClient(i ICronClient) {
 	localCronClient = i
+}
+
+func AuthClient() IAuthClient {
+	if localAuthClient == nil {
+		panic("implement not found for interface IAuthClient, forgot register?")
+	}
+	return localAuthClient
+}
+
+func RegisterAuthClient(i IAuthClient) {
+	localAuthClient = i
 }

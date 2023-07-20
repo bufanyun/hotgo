@@ -68,16 +68,7 @@
       </n-space>
     </div>
 
-    <!--预览图片-->
-    <n-modal
-      v-model:show="showModal"
-      preset="card"
-      title="预览"
-      :bordered="false"
-      :style="{ width: '520px' }"
-    >
-      <img :src="previewUrl" />
-    </n-modal>
+    <Preview ref="previewRef" />
   </div>
 </template>
 
@@ -86,6 +77,7 @@
   import { EyeOutlined, DeleteOutlined, PlusOutlined, CloudDownloadOutlined } from '@vicons/antd';
   import { basicProps } from './props';
   import { useMessage, useDialog } from 'naive-ui';
+  import Preview from '@/components/FileChooser/src/Preview.vue';
   import { ResultEnum } from '@/enums/httpEnum';
   import componentSetting from '@/settings/componentSetting';
   import { useGlobSetting } from '@/hooks/setting';
@@ -110,6 +102,7 @@
         };
       });
 
+      const previewRef = ref();
       const message = useMessage();
       const dialog = useDialog();
       const uploadTitle = ref(props.fileType === 'image' ? '上传图片' : '上传附件');
@@ -185,9 +178,9 @@
 
       //预览
       function preview(url: string) {
-        state.showModal = true;
-        state.previewUrl = url;
+        previewRef.value.openPreview(url);
       }
+
       //下载
       function download(url: string) {
         window.open(url);
@@ -294,6 +287,8 @@
         uploadTitle,
         fileAvatarCSS,
         getFileExt,
+        Preview,
+        previewRef,
       };
     },
   });

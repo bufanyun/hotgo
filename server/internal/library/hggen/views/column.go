@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package views
 
 import (
@@ -20,7 +19,7 @@ import (
 )
 
 // DoTableColumns 获取指定表生成字段列表
-func DoTableColumns(ctx context.Context, in sysin.GenCodesColumnListInp, config gendao.CGenDaoInput) (fields []*sysin.GenCodesColumnListModel, err error) {
+func DoTableColumns(ctx context.Context, in *sysin.GenCodesColumnListInp, config gendao.CGenDaoInput) (fields []*sysin.GenCodesColumnListModel, err error) {
 	var (
 		sql  = "select ORDINAL_POSITION as `id`, COLUMN_NAME as `name`, COLUMN_COMMENT as `dc`, DATA_TYPE as `dataType`, COLUMN_TYPE as `sqlType`, CHARACTER_MAXIMUM_LENGTH as `length`, IS_NULLABLE as `isAllowNull`, COLUMN_DEFAULT as `defaultValue`, COLUMN_KEY as `index`, EXTRA as `extra` from information_schema.COLUMNS where TABLE_SCHEMA = '%s' and TABLE_NAME = '%s' ORDER BY `id` ASC"
 		conf = g.DB(in.Name).GetConfig()
@@ -42,7 +41,6 @@ func DoTableColumns(ctx context.Context, in sysin.GenCodesColumnListInp, config 
 			CustomAttributes(ctx, field, config)
 		}
 	}
-
 	return
 }
 
@@ -65,10 +63,7 @@ func CustomAttributes(ctx context.Context, field *sysin.GenCodesColumnListModel,
 
 // GenGotype 生成字段的go类型
 func GenGotype(ctx context.Context, field *sysin.GenCodesColumnListModel, in gendao.CGenDaoInput) (goName, typeName, tsName, tsType string) {
-	var (
-		err error
-	)
-
+	var err error
 	tsName = getJsonTagFromCase(field.Name, in.JsonCase)
 	goName = gstr.CaseCamel(field.Name)
 
@@ -100,7 +95,6 @@ func GenGotype(ctx context.Context, field *sysin.GenCodesColumnListModel, in gen
 	}
 
 	tsType = ShiftMap[typeName]
-
 	return
 }
 

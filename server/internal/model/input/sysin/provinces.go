@@ -74,6 +74,7 @@ type ProvincesInsertFields struct {
 type ProvincesDeleteInp struct {
 	Id interface{} `json:"id" v:"required#省市区ID不能为空" dc:"省市区ID"`
 }
+
 type ProvincesDeleteModel struct{}
 
 // ProvincesViewInp 获取信息
@@ -82,16 +83,16 @@ type ProvincesViewInp struct {
 }
 
 type ProvincesViewModel struct {
-	entity.SysProvinces
+	Id int64 `json:"id" v:"required#省市区ID不能为空" dc:"省市区ID"`
 }
 
 // ProvincesListInp 获取列表
 type ProvincesListInp struct {
 	form.PageReq
-	form.RangeDateReq
+
 	form.StatusReq
-	Title   string
-	Content string
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
 type ProvincesListModel struct {

@@ -15,7 +15,7 @@ import (
 // DictDataEditInp 修改/新增字典数据
 type DictDataEditInp struct {
 	entity.SysDictData
-	TypeID int64
+	TypeID int64 `json:"typeID"  dc:"字典类型ID"`
 }
 
 func (in *DictDataEditInp) Filter(ctx context.Context) (err error) {
@@ -28,7 +28,6 @@ func (in *DictDataEditInp) Filter(ctx context.Context) (err error) {
 		err = gerror.New("字典类型不能为空")
 		return
 	}
-
 	return
 }
 
@@ -63,18 +62,19 @@ type DictDataInsertFields struct {
 
 // DictDataDeleteInp 删除字典数据
 type DictDataDeleteInp struct {
-	Id interface{}
+	Id interface{} `json:"id" v:"required#字典数据ID不能为空" dc:"字典数据ID"`
 }
+
 type DictDataDeleteModel struct{}
 
 // DictDataListInp 获取列表
 type DictDataListInp struct {
 	form.PageReq
-	form.RangeDateReq
+
 	form.StatusReq
-	TypeID int64
-	Type   string
-	Label  string
+	TypeID int64  `json:"typeId" v:"required#字典类型ID不能为空" dc:"字典类型ID"`
+	Type   string `json:"type"`
+	Label  string `json:"label"`
 }
 
 type DictDataListModel struct {
@@ -85,7 +85,7 @@ type DictDataListModel struct {
 
 // DataSelectInp 获取指定字典选项
 type DataSelectInp struct {
-	Type string
+	Type string `in:"path" v:"required#字典类型不能为空" dc:"字典类型"`
 }
 
 type DataSelectModel []*SelectData

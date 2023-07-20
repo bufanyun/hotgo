@@ -75,6 +75,7 @@ type GroupStatusRes struct {
 // GroupSelectReq 定时任务分组选项
 type GroupSelectReq struct {
 	g.Meta `path:"/cronGroup/select" method:"get" tags:"定时任务分组" summary:"定时任务分组选项"`
+	sysin.CronGroupSelectInp
 }
 
 type GroupSelectRes struct {

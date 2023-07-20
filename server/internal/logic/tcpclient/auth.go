@@ -1,10 +1,17 @@
+// Package tcpclient
+// @Link  https://github.com/bufanyun/hotgo
+// @Copyright  Copyright (c) 2023 HotGo CLI
+// @Author  Ms <133814250@qq.com>
+// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package tcpclient
 
 import (
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gctx"
+	"hotgo/api/servmsg"
 	"hotgo/internal/library/network/tcp"
-	"hotgo/internal/model/input/msgin"
+	"hotgo/internal/model/input/servmsgin"
 	"hotgo/internal/service"
 	"hotgo/utility/simple"
 )
@@ -12,7 +19,7 @@ import (
 // tcp客户端
 type sAuthClient struct {
 	client  *tcp.Client
-	summary *msgin.AuthSummaryData
+	summary *servmsgin.AuthSummaryModel
 }
 
 func init() {
@@ -21,6 +28,11 @@ func init() {
 
 func newAuthClient() *sAuthClient {
 	return &sAuthClient{}
+}
+
+// Instance 获取实例
+func (s *sAuthClient) Instance() *tcp.Client {
+	return s.client
 }
 
 // Start 启动服务
@@ -38,39 +50,37 @@ func (s *sAuthClient) Start(ctx context.Context) {
 		return
 	}
 
-	simple.SafeGo(ctx, func(ctx context.Context) {
-		s.client, err = tcp.NewClient(&tcp.ClientConfig{
-			Addr: config.Client.Auth.Address,
-			Auth: &tcp.AuthMeta{
-				Group:     config.Client.Auth.Group,
-				Name:      config.Client.Auth.Name,
-				AppId:     config.Client.Auth.AppId,
-				SecretKey: config.Client.Auth.SecretKey,
+	// 创建客户端配置
+	clientConfig := &tcp.ClientConfig{
+		Addr:          config.Client.Auth.Address,
+		AutoReconnect: true,
+		Auth: &tcp.AuthMeta{
+			Name: config.Client.Auth.Name,
+			Extra: g.Map{
+				"test": 13,
 			},
-			LoginEvent: s.onLoginEvent,
-			CloseEvent: s.onCloseEvent,
-		})
+			Group:     config.Client.Auth.Group,
+			AppId:     config.Client.Auth.AppId,
+			SecretKey: config.Client.Auth.SecretKey,
+		},
+		LoginEvent: s.onLoginEvent,
+		CloseEvent: s.onCloseEvent,
+	}
 
-		if err != nil {
-			g.Log().Errorf(ctx, "AuthClient NewClient fail：%+v", err)
-			return
-		}
+	simple.SafeGo(ctx, func(ctx context.Context) {
+		s.client = tcp.NewClient(clientConfig)
 
-		err = s.client.RegisterRouter(map[string]tcp.RouterHandler{
-			"ResponseAuthSummary": s.OnResponseAuthSummary,
-		})
-
-		if err != nil {
-			g.Log().Errorf(ctx, "AuthClient RegisterRouter fail：%+v", err)
-			return
-		}
+		// 注册路由
+		s.client.RegisterRouter(
+			s.OnResponseAuthSummary,  // 响应授权信息
+			s.OnResponseExampleHello, // 一个tcp请求例子
+		)
 
 		if err = s.client.Start(); err != nil {
 			g.Log().Errorf(ctx, "AuthClient Start fail：%+v", err)
 			return
 		}
 	})
-
 }
 
 // Stop 停止服务
@@ -81,22 +91,20 @@ func (s *sAuthClient) Stop(ctx context.Context) {
 	}
 }
 
-// IsLogin 是否已登录认证
-func (s *sAuthClient) IsLogin() bool {
-	if s.client == nil {
-		return false
-	}
-	return s.client.IsLogin
-}
-
 // onLoginEvent 登录认证成功事件
 func (s *sAuthClient) onLoginEvent() {
+	ctx := gctx.New()
 
-	// 获取授权数据
-	_ = s.client.Send(s.client.Ctx, &msgin.AuthSummary{})
+	// 获取授权信息
+	s.client.Send(ctx, &servmsg.AuthSummaryReq{})
+
+	// 测试例子，实际使用时可以注释掉
+	s.testExample(ctx)
+
+	g.Log().Debug(ctx, "AuthClient login succeed.")
 }
 
 // onCloseEvent 连接关闭回调事件
 func (s *sAuthClient) onCloseEvent() {
-	// ...
+	g.Log().Debug(gctx.New(), "AuthClient closed.")
 }

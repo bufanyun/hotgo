@@ -73,7 +73,7 @@
         style="margin-top: 15px"
       >
         <n-form-item label="头像" path="avatar">
-          <UploadImage :maxNumber="1" v-model:value="formValue.avatar" />
+          <FileChooser v-model:value="formValue.avatar" file-type="image" />
         </n-form-item>
 
         <n-form-item label="姓名" path="realName">
@@ -122,13 +122,13 @@
 <script lang="ts" setup>
   import { onMounted, ref } from 'vue';
   import { useMessage } from 'naive-ui';
-  import UploadImage from '@/components/Upload/uploadImage.vue';
   import CitySelector from '@/components/CitySelector/citySelector.vue';
   import DatePicker from '@/components/DatePicker/datePicker.vue';
   import { getUserInfo, updateMemberProfile } from '@/api/system/user';
   import { CheckmarkCircle } from '@vicons/ionicons5';
   import { timeFix } from '@/utils/hotgo';
   import { UserInfoState, useUserStore } from '@/store/modules/user';
+  import FileChooser from '@/components/FileChooser/index.vue';
 
   const userStore = useUserStore();
   const show = ref(false);
@@ -146,30 +146,33 @@
 
   const formValue = ref<UserInfoState>({
     id: 0,
-    deptName: '',
-    roleName: '',
-    cityLabel: '',
+    deptName: "",
+    roleName: "",
+    cityLabel: "",
     permissions: [],
-    username: '',
-    realName: '',
-    avatar: '',
+    username: "",
+    realName: "",
+    avatar: "",
     balance: 0,
     sex: 1,
-    qq: '',
-    email: '',
-    mobile: '',
-    birthday: '',
+    qq: "",
+    email: "",
+    mobile: "",
+    birthday: "",
     cityId: 0,
-    address: '',
+    address: "",
     cash: {
-      name: '',
-      account: '',
-      payeeCode: '',
+      name: "",
+      account: "",
+      payeeCode: ""
     },
-    createdAt: '',
+    createdAt: "",
     loginCount: 0,
-    lastLoginAt: '',
-    lastLoginIp: '',
+    lastLoginAt: "",
+    lastLoginIp: "",
+    integral: 0,
+    openId: "",
+    inviteCode: ""
   });
 
   function formSubmit() {

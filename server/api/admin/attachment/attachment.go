@@ -13,12 +13,8 @@ import (
 
 // ListReq 查询附件列表
 type ListReq struct {
-	form.PageReq
-	form.RangeDateReq
-	form.StatusReq
-	MemberId int64  `json:"member_id"`
-	Drive    string `json:"drive"`
-	g.Meta   `path:"/attachment/list" method:"get" tags:"附件" summary:"获取附件列表"`
+	g.Meta `path:"/attachment/list" method:"get" tags:"附件" summary:"获取附件列表"`
+	sysin.AttachmentListInp
 }
 
 type ListRes struct {
@@ -28,8 +24,8 @@ type ListRes struct {
 
 // ViewReq 获取附件信息
 type ViewReq struct {
-	Id     int64 `json:"id" v:"required#附件ID不能为空" dc:"附件ID"`
 	g.Meta `path:"/attachment/view" method:"get" tags:"附件" summary:"获取指定附件信息"`
+	sysin.AttachmentViewInp
 }
 
 type ViewRes struct {
@@ -38,8 +34,34 @@ type ViewRes struct {
 
 // DeleteReq 删除附件
 type DeleteReq struct {
-	Id     interface{} `json:"id" v:"required#附件ID不能为空" dc:"附件ID"`
 	g.Meta `path:"/attachment/delete" method:"post" tags:"附件" summary:"删除附件"`
+	sysin.AttachmentDeleteInp
 }
 
 type DeleteRes struct{}
+
+// ClearKindReq 清空上传类型
+type ClearKindReq struct {
+	g.Meta `path:"/attachment/clearKind" method:"post" tags:"附件" summary:"清空上传类型"`
+	sysin.AttachmentClearKindInp
+}
+
+type ClearKindRes struct{}
+
+// ChooserOptionReq 获取选择器选项
+type ChooserOptionReq struct {
+	g.Meta `path:"/attachment/chooserOption" method:"get" tags:"附件" summary:"获取选择器选项"`
+}
+
+type ChooserOptionRes struct {
+	Drive sysin.DataSelectModel `json:"drive" dc:"驱动"`
+	Kind  []KindSelect          `json:"kind"  dc:"上传类型"`
+}
+
+type KindSelect struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+	Tag   string `json:"listClass"`
+	Label string `json:"label"`
+	Icon  string `json:"icon"`
+}

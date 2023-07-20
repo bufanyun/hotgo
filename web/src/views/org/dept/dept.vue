@@ -61,6 +61,7 @@
           <n-form-item label="部门名称" path="name">
             <n-input placeholder="请输入名称" v-model:value="formParams.name" />
           </n-form-item>
+
           <n-form-item label="部门编码" path="code">
             <n-input placeholder="请输入部门编码" v-model:value="formParams.code" />
           </n-form-item>
@@ -68,16 +69,18 @@
           <n-form-item label="负责人" path="leader">
             <n-input placeholder="请输入负责人" v-model:value="formParams.leader" />
           </n-form-item>
+
           <n-form-item label="联系电话" path="phone">
             <n-input placeholder="请输入联系电话" v-model:value="formParams.phone" />
           </n-form-item>
+
           <n-form-item label="邮箱" path="email">
             <n-input placeholder="请输入邮箱" v-model:value="formParams.email" />
           </n-form-item>
 
-          <!--          <n-form-item label="排序" path="sort">-->
-          <!--            <n-input-number v-model:value="formParams.sort" clearable />-->
-          <!--          </n-form-item>-->
+          <n-form-item label="排序" path="sort">
+            <n-input-number v-model:value="formParams.sort" clearable style="width: 100%" />
+          </n-form-item>
 
           <n-form-item label="状态" path="status">
             <n-radio-group v-model:value="formParams.status" name="status">
@@ -113,6 +116,7 @@
   import { cloneDeep } from 'lodash-es';
   import { renderIcon, renderTooltip } from '@/utils';
   import { HelpCircleOutline } from '@vicons/ionicons5';
+  import { defRangeShortcuts } from '@/utils/dateUtil';
 
   const rules = {
     name: {
@@ -148,6 +152,31 @@
         placeholder: '请输入部门编码',
         showButton: false,
         onInput: (e: any) => {
+          console.log(e);
+        },
+      },
+    },
+    {
+      field: 'leader',
+      component: 'NInput',
+      label: '负责人',
+      componentProps: {
+        placeholder: '请输入负责人',
+        showButton: false,
+        onInput: (e: any) => {
+          console.log(e);
+        },
+      },
+    },
+    {
+      field: 'createdAt',
+      component: 'NDatePicker',
+      label: '创建时间',
+      componentProps: {
+        type: 'datetimerange',
+        clearable: true,
+        shortcuts: defRangeShortcuts(),
+        onUpdateValue: (e: any) => {
           console.log(e);
         },
       },

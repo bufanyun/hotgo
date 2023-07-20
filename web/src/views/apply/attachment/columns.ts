@@ -1,14 +1,14 @@
 import { h, ref } from 'vue';
 import { NAvatar, NImage, NTag } from 'naive-ui';
 import { getFileExt } from '@/utils/urlUtils';
-import { Dicts } from '@/api/dict/dict';
 import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
 import { FormSchema } from '@/components/Form';
-import { isNullOrUnDef } from '@/utils/is';
 import { errorImg } from '@/utils/hotgo';
+import { defRangeShortcuts } from '@/utils/dateUtil';
+import { ChooserOption } from '@/api/apply/attachment';
 export const options = ref<Options>({
-  sys_normal_disable: [],
-  config_upload_drive: [],
+  kind: [],
+  drive: [],
 });
 
 export const schemas = ref<FormSchema[]>([
@@ -26,6 +26,45 @@ export const schemas = ref<FormSchema[]>([
     },
   },
   {
+    field: 'kind',
+    component: 'NSelect',
+    label: '上传类型',
+    defaultValue: null,
+    componentProps: {
+      placeholder: '请选择上传类型',
+      options: [],
+      onUpdateValue: (e: any) => {
+        console.log(e);
+      },
+    },
+  },
+  {
+    field: 'name',
+    component: 'NInput',
+    label: '文件名称',
+    labelMessage: '支持模糊查询',
+    componentProps: {
+      placeholder: '请输入文件名称',
+      onUpdateValue: (e: any) => {
+        console.log(e);
+      },
+    },
+    rules: [{ message: '请输入文件名称', trigger: ['blur'] }],
+  },
+  {
+    field: 'updatedAt',
+    component: 'NDatePicker',
+    label: '上传时间',
+    componentProps: {
+      type: 'datetimerange',
+      clearable: true,
+      shortcuts: defRangeShortcuts(),
+      onUpdateValue: (e: any) => {
+        console.log(e);
+      },
+    },
+  },
+  {
     field: 'member_id',
     component: 'NInput',
     label: '用户ID',
@@ -36,19 +75,6 @@ export const schemas = ref<FormSchema[]>([
       },
     },
     rules: [{ message: '请输入用户ID', trigger: ['blur'] }],
-  },
-  {
-    field: 'status',
-    component: 'NSelect',
-    label: '状态',
-    defaultValue: null,
-    componentProps: {
-      placeholder: '请选择类型',
-      options: [],
-      onUpdateValue: (e: any) => {
-        console.log(e);
-      },
-    },
   },
 ]);
 
@@ -63,11 +89,11 @@ export const columns = [
     key: 'appId',
     width: 100,
   },
-  {
-    title: '用户ID',
-    key: 'memberId',
-    width: 100,
-  },
+  // {
+  //   title: '用户ID',
+  //   key: 'memberId',
+  //   width: 100,
+  // },
   {
     title: '驱动',
     key: 'drive',
@@ -86,14 +112,19 @@ export const columns = [
           style: {
             marginRight: '6px',
           },
-          type: row.kind == 'images' ? 'success' : 'warning',
+          type: getOptionTag(options.value.kind, row.kind),
           bordered: false,
         },
         {
-          default: () => row.kind,
+          default: () => getOptionLabel(options.value.kind, row.kind),
         }
       );
     },
+    width: 120,
+  },
+  {
+    title: '文件名称',
+    key: 'name',
     width: 120,
   },
   {
@@ -104,7 +135,7 @@ export const columns = [
       if (row.fileUrl === '') {
         return ``;
       }
-      if (row.kind !== 'images') {
+      if (row.kind !== 'image') {
         return h(
           NAvatar,
           {
@@ -132,61 +163,37 @@ export const columns = [
       });
     },
   },
-  // {
-  //   title: '本地路径',
-  //   key: 'path',
-  // },
-  {
-    title: '扩展名',
-    key: 'ext',
-    width: 80,
-  },
   {
     title: '文件大小',
     key: 'sizeFormat',
     width: 100,
   },
   {
-    title: '状态',
-    key: 'status',
-    render(row) {
-      if (isNullOrUnDef(row.status)) {
-        return ``;
-      }
-      return h(
-        NTag,
-        {
-          style: {
-            marginRight: '6px',
-          },
-          type: getOptionTag(options.value.sys_normal_disable, row.status),
-          bordered: false,
-        },
-        {
-          default: () => getOptionLabel(options.value.sys_normal_disable, row.status),
-        }
-      );
-    },
-    width: 100,
+    title: '扩展名',
+    key: 'ext',
+    width: 80,
+  },
+  {
+    title: '扩展类型',
+    key: 'mimeType',
+    width: 120,
   },
   {
     title: '上传时间',
-    key: 'createdAt',
+    key: 'updatedAt',
     width: 180,
   },
 ];
 
 async function loadOptions() {
-  options.value = await Dicts({
-    types: ['sys_normal_disable', 'config_upload_drive'],
-  });
+  options.value = await ChooserOption();
   for (const item of schemas.value) {
     switch (item.field) {
-      case 'status':
-        item.componentProps.options = options.value.sys_normal_disable;
+      case 'kind':
+        item.componentProps.options = options.value.kind;
         break;
       case 'drive':
-        item.componentProps.options = options.value.config_upload_drive;
+        item.componentProps.options = options.value.drive;
         break;
     }
   }

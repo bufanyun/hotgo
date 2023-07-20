@@ -26,6 +26,10 @@
     helpText?: string;
   }
 
+  const emit = defineEmits(['update:value']);
+  const props = withDefaults(defineProps<Props>(), { value: '', maxNumber: 1, helpText: '' });
+  const image = ref<string>('');
+  const images = ref<string[]>([]);
   const globSetting = useGlobSetting();
   const urlPrefix = globSetting.urlPrefix || '';
   const { uploadUrl } = globSetting;
@@ -33,10 +37,6 @@
   const uploadHeaders = reactive({
     Authorization: useUserStore.token,
   });
-  const emit = defineEmits(['update:value']);
-  const props = withDefaults(defineProps<Props>(), { value: '', maxNumber: 1, helpText: '' });
-  const image = ref<string>('');
-  const images = ref<string[]>([]);
 
   function uploadChange(list: string | string[]) {
     if (props.maxNumber === 1) {
@@ -48,7 +48,6 @@
     }
   }
 
-  //赋值默认图片显示
   function loadImage() {
     if (props.maxNumber === 1) {
       image.value = props.value as string;

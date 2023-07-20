@@ -33,7 +33,7 @@ func init() {
 }
 
 // Delete 删除
-func (s *sAdminDept) Delete(ctx context.Context, in adminin.DeptDeleteInp) (err error) {
+func (s *sAdminDept) Delete(ctx context.Context, in *adminin.DeptDeleteInp) (err error) {
 	var models *entity.AdminDept
 	if err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
 		return err
@@ -56,12 +56,49 @@ func (s *sAdminDept) Delete(ctx context.Context, in adminin.DeptDeleteInp) (err 
 	return
 }
 
-// Edit 修改/新增
-func (s *sAdminDept) Edit(ctx context.Context, in adminin.DeptEditInp) (err error) {
-	if err = hgorm.IsUnique(ctx, &dao.AdminDept, g.Map{dao.AdminDept.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
+// VerifyUnique 验证部门唯一属性
+func (s *sAdminDept) VerifyUnique(ctx context.Context, in *adminin.VerifyUniqueInp) (err error) {
+	if in.Where == nil {
 		return
 	}
 
+	cols := dao.AdminDept.Columns()
+	msgMap := g.MapStrStr{
+		cols.Name: "部门名称已存在，请换一个",
+		cols.Code: "部门编码已存在，请换一个",
+	}
+
+	for k, v := range in.Where {
+		if v == "" {
+			continue
+		}
+		message, ok := msgMap[k]
+		if !ok {
+			err = gerror.Newf("字段 [ %v ] 未配置唯一属性验证", k)
+			return
+		}
+		if err = hgorm.IsUnique(ctx, &dao.AdminDept, g.Map{k: v}, message, in.Id); err != nil {
+			return
+		}
+	}
+	return
+}
+
+// Edit 修改/新增
+func (s *sAdminDept) Edit(ctx context.Context, in *adminin.DeptEditInp) (err error) {
+	// 验证唯一性
+	err = s.VerifyUnique(ctx, &adminin.VerifyUniqueInp{
+		Id: in.Id,
+		Where: g.Map{
+			dao.AdminDept.Columns().Name: in.Name,
+			dao.AdminDept.Columns().Code: in.Code,
+		},
+	})
+	if err != nil {
+		return
+	}
+
+	// 生成下级关系树
 	if in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, &dao.AdminDept, in.Pid); err != nil {
 		return
 	}
@@ -70,7 +107,7 @@ func (s *sAdminDept) Edit(ctx context.Context, in adminin.DeptEditInp) (err erro
 	if in.Id > 0 {
 		// 获取父级tree
 		var pTree gdb.Value
-		pTree, err = dao.AdminDept.Ctx(ctx).Where("id", in.Pid).Fields("tree").Value()
+		pTree, err = dao.AdminDept.Ctx(ctx).WherePri(in.Pid).Fields("tree").Value()
 		if err != nil {
 			return
 		}
@@ -115,7 +152,7 @@ func updateChildrenTree(ctx context.Context, _id int64, _level int, _tree string
 }
 
 // Status 更新部门状态
-func (s *sAdminDept) Status(ctx context.Context, in adminin.DeptStatusInp) (err error) {
+func (s *sAdminDept) Status(ctx context.Context, in *adminin.DeptStatusInp) (err error) {
 	if _, err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update(); err != nil {
 		err = gerror.Wrap(err, "更新部门状态失败！")
 	}
@@ -123,7 +160,7 @@ func (s *sAdminDept) Status(ctx context.Context, in adminin.DeptStatusInp) (err 
 }
 
 // MaxSort 最大排序
-func (s *sAdminDept) MaxSort(ctx context.Context, in adminin.DeptMaxSortInp) (res *adminin.DeptMaxSortModel, err error) {
+func (s *sAdminDept) MaxSort(ctx context.Context, in *adminin.DeptMaxSortInp) (res *adminin.DeptMaxSortModel, err error) {
 	if in.Id > 0 {
 		if err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
 			err = gerror.Wrap(err, "获取部门数据异常！")
@@ -135,12 +172,12 @@ func (s *sAdminDept) MaxSort(ctx context.Context, in adminin.DeptMaxSortInp) (re
 		res = new(adminin.DeptMaxSortModel)
 	}
 
-	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	res.Sort = form.DefaultMaxSort(res.Sort)
 	return
 }
 
 // View 获取指定部门信息
-func (s *sAdminDept) View(ctx context.Context, in adminin.DeptViewInp) (res *adminin.DeptViewModel, err error) {
+func (s *sAdminDept) View(ctx context.Context, in *adminin.DeptViewInp) (res *adminin.DeptViewModel, err error) {
 	if err = dao.AdminDept.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, "获取部门信息失败！")
 	}
@@ -148,7 +185,7 @@ func (s *sAdminDept) View(ctx context.Context, in adminin.DeptViewInp) (res *adm
 }
 
 // Option 选项
-func (s *sAdminDept) Option(ctx context.Context, in adminin.DeptOptionInp) (res *adminin.DeptOptionModel, totalCount int, err error) {
+func (s *sAdminDept) Option(ctx context.Context, in *adminin.DeptOptionInp) (res *adminin.DeptOptionModel, totalCount int, err error) {
 	var (
 		mod    = dao.AdminDept.Ctx(ctx)
 		models []*entity.AdminDept
@@ -180,43 +217,72 @@ func (s *sAdminDept) Option(ctx context.Context, in adminin.DeptOptionInp) (res 
 }
 
 // List 获取列表
-func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (res *adminin.DeptListModel, err error) {
+func (s *sAdminDept) List(ctx context.Context, in *adminin.DeptListInp) (res *adminin.DeptListModel, err error) {
 	var (
 		mod    = dao.AdminDept.Ctx(ctx)
+		cols   = dao.AdminDept.Columns()
 		models []*entity.AdminDept
 		ids    []int64
 		pids   []int64
 	)
 
-	// 部门名称
-	if in.Name != "" {
-		columns, err := dao.AdminDept.Ctx(ctx).Fields("pid").WhereLike("name", "%"+in.Name+"%").Array()
-		if err != nil {
-			err = gerror.Wrap(err, "过滤部门列表失败-1！")
-			return nil, err
-		}
-
+	appends := func(columns []gdb.Value) {
 		ds := g.NewVar(columns).Int64s()
 		ids = append(ids, ds...)
 		pids = append(pids, ds...)
-		if len(ids) == 0 {
+	}
+
+	// 部门名称
+	if in.Name != "" {
+		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Pid).WhereLike(cols.Name, "%"+in.Name+"%").Array()
+		if err != nil {
+			err = gerror.Wrap(err, "查询部门名称失败！")
+			return nil, err
+		}
+
+		if len(columns) == 0 {
 			return nil, nil
 		}
+		appends(columns)
 	}
 
 	if in.Code != "" {
-		columns, err := dao.AdminDept.Ctx(ctx).Fields("pid").WhereLike("code", "%"+in.Code+"%").Array()
+		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Pid).WhereLike(cols.Code, "%"+in.Code+"%").Array()
 		if err != nil {
-			err = gerror.Wrap(err, "过滤部门列表失败-2！")
+			err = gerror.Wrap(err, "查询部门编码失败！")
 			return nil, err
 		}
 
-		ds := g.NewVar(columns).Int64s()
-		ids = append(ids, ds...)
-		pids = append(pids, ds...)
-		if len(ids) == 0 {
+		if len(columns) == 0 {
 			return nil, nil
 		}
+		appends(columns)
+	}
+
+	if in.Leader != "" {
+		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Pid).Where(cols.Leader, in.Leader).Array()
+		if err != nil {
+			err = gerror.Wrap(err, "查询负责人失败！")
+			return nil, err
+		}
+
+		if len(columns) == 0 {
+			return nil, nil
+		}
+		appends(columns)
+	}
+
+	if len(in.CreatedAt) == 2 {
+		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Pid).WhereBetween(cols.CreatedAt, in.CreatedAt[0], in.CreatedAt[1]).Array()
+		if err != nil {
+			err = gerror.Wrap(err, "查询创建时间失败！")
+			return nil, err
+		}
+
+		if len(columns) == 0 {
+			return nil, nil
+		}
+		appends(columns)
 	}
 
 	if len(ids) > 0 {
@@ -224,7 +290,7 @@ func (s *sAdminDept) List(ctx context.Context, in adminin.DeptListInp) (res *adm
 	}
 
 	if err = mod.Order("pid asc,sort asc").Scan(&models); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
+		err = gerror.Wrap(err, "获取部门列表失败！")
 		return
 	}
 

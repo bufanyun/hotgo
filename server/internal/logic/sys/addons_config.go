@@ -32,7 +32,7 @@ func init() {
 }
 
 // GetConfigByGroup 获取指定分组的配置
-func (s *sSysAddonsConfig) GetConfigByGroup(ctx context.Context, in sysin.GetAddonsConfigInp) (res *sysin.GetAddonsConfigModel, err error) {
+func (s *sSysAddonsConfig) GetConfigByGroup(ctx context.Context, in *sysin.GetAddonsConfigInp) (res *sysin.GetAddonsConfigModel, err error) {
 	if in.AddonName == "" {
 		err = gerror.New("插件名称不能为空")
 		return
@@ -84,7 +84,7 @@ func (s *sSysAddonsConfig) ConversionType(ctx context.Context, models *entity.Sy
 }
 
 // UpdateConfigByGroup 更新指定分组的配置
-func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in sysin.UpdateAddonsConfigInp) (err error) {
+func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in *sysin.UpdateAddonsConfigInp) (err error) {
 	if in.AddonName == "" {
 		err = gerror.New("插件名称不能为空")
 		return

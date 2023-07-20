@@ -27,8 +27,8 @@
             clearable
           />
           <template #feedback
-            >与公众平台接入设置值一致，必须为英文或者数字，长度为43个字符 </template
-          >
+            >与公众平台接入设置值一致，必须为英文或者数字，长度为43个字符
+          </template>
         </n-form-item>
 
         <n-divider title-placement="left">开放平台</n-divider>
@@ -56,7 +56,7 @@
           >
         </n-form-item>
 
-<!--        <n-divider title-placement="left">小程序</n-divider>-->
+        <!--        <n-divider title-placement="left">小程序</n-divider>-->
 
         <div>
           <n-space>

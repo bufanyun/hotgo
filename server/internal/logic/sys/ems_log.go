@@ -42,13 +42,13 @@ func init() {
 }
 
 // Delete 删除
-func (s *sSysEmsLog) Delete(ctx context.Context, in sysin.EmsLogDeleteInp) (err error) {
+func (s *sSysEmsLog) Delete(ctx context.Context, in *sysin.EmsLogDeleteInp) (err error) {
 	_, err = dao.SysEmsLog.Ctx(ctx).Where("id", in.Id).Delete()
 	return
 }
 
 // Edit 修改/新增
-func (s *sSysEmsLog) Edit(ctx context.Context, in sysin.EmsLogEditInp) (err error) {
+func (s *sSysEmsLog) Edit(ctx context.Context, in *sysin.EmsLogEditInp) (err error) {
 	if in.Ip == "" {
 		err = gerror.New("ip不能为空")
 		return
@@ -66,7 +66,7 @@ func (s *sSysEmsLog) Edit(ctx context.Context, in sysin.EmsLogEditInp) (err erro
 }
 
 // Status 更新部门状态
-func (s *sSysEmsLog) Status(ctx context.Context, in sysin.EmsLogStatusInp) (err error) {
+func (s *sSysEmsLog) Status(ctx context.Context, in *sysin.EmsLogStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
 		return
@@ -88,13 +88,13 @@ func (s *sSysEmsLog) Status(ctx context.Context, in sysin.EmsLogStatusInp) (err 
 }
 
 // View 获取指定字典类型信息
-func (s *sSysEmsLog) View(ctx context.Context, in sysin.EmsLogViewInp) (res *sysin.EmsLogViewModel, err error) {
+func (s *sSysEmsLog) View(ctx context.Context, in *sysin.EmsLogViewInp) (res *sysin.EmsLogViewModel, err error) {
 	err = dao.SysEmsLog.Ctx(ctx).Where("id", in.Id).Scan(&res)
 	return
 }
 
 // List 获取列表
-func (s *sSysEmsLog) List(ctx context.Context, in sysin.EmsLogListInp) (list []*sysin.EmsLogListModel, totalCount int, err error) {
+func (s *sSysEmsLog) List(ctx context.Context, in *sysin.EmsLogListInp) (list []*sysin.EmsLogListModel, totalCount int, err error) {
 	mod := dao.SysEmsLog.Ctx(ctx)
 
 	if in.Status > 0 {
@@ -116,7 +116,7 @@ func (s *sSysEmsLog) List(ctx context.Context, in sysin.EmsLogListInp) (list []*
 }
 
 // Send 发送邮件
-func (s *sSysEmsLog) Send(ctx context.Context, in sysin.SendEmsInp) (err error) {
+func (s *sSysEmsLog) Send(ctx context.Context, in *sysin.SendEmsInp) (err error) {
 	var models *entity.SysEmsLog
 	if err = dao.SysEmsLog.Ctx(ctx).Where("event", in.Event).Where("email", in.Email).Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
@@ -194,7 +194,7 @@ func (s *sSysEmsLog) Send(ctx context.Context, in sysin.SendEmsInp) (err error) 
 	return
 }
 
-func (s *sSysEmsLog) newView(ctx context.Context, in sysin.SendEmsInp, config *model.EmailConfig) (view *gview.View, err error) {
+func (s *sSysEmsLog) newView(ctx context.Context, in *sysin.SendEmsInp, config *model.EmailConfig) (view *gview.View, err error) {
 	view = gview.New()
 	err = view.SetConfig(gview.Config{
 		Delimiters: g.Cfg().MustGet(ctx, "viewer.delimiters").Strings(),
@@ -349,7 +349,7 @@ func (s *sSysEmsLog) AllowSend(ctx context.Context, models *entity.SysEmsLog, co
 }
 
 // VerifyCode 效验验证码
-func (s *sSysEmsLog) VerifyCode(ctx context.Context, in sysin.VerifyEmsCodeInp) (err error) {
+func (s *sSysEmsLog) VerifyCode(ctx context.Context, in *sysin.VerifyEmsCodeInp) (err error) {
 	if in.Event == "" {
 		err = gerror.New("事件不能为空")
 		return

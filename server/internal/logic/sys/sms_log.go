@@ -18,7 +18,6 @@ import (
 	"hotgo/internal/library/sms"
 	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
-	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/validate"
@@ -36,13 +35,13 @@ func init() {
 }
 
 // Delete 删除
-func (s *sSysSmsLog) Delete(ctx context.Context, in sysin.SmsLogDeleteInp) (err error) {
-	_, err = dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Delete()
+func (s *sSysSmsLog) Delete(ctx context.Context, in *sysin.SmsLogDeleteInp) (err error) {
+	_, err = dao.SysSmsLog.Ctx(ctx).WherePri(in.Id).Delete()
 	return
 }
 
 // Edit 修改/新增
-func (s *sSysSmsLog) Edit(ctx context.Context, in sysin.SmsLogEditInp) (err error) {
+func (s *sSysSmsLog) Edit(ctx context.Context, in *sysin.SmsLogEditInp) (err error) {
 	if in.Ip == "" {
 		err = gerror.New("ip不能为空")
 		return
@@ -50,7 +49,7 @@ func (s *sSysSmsLog) Edit(ctx context.Context, in sysin.SmsLogEditInp) (err erro
 
 	// 修改
 	if in.Id > 0 {
-		_, err = dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Data(in).Update()
+		_, err = dao.SysSmsLog.Ctx(ctx).WherePri(in.Id).Data(in).Update()
 		return
 	}
 
@@ -59,8 +58,8 @@ func (s *sSysSmsLog) Edit(ctx context.Context, in sysin.SmsLogEditInp) (err erro
 	return
 }
 
-// Status 更新部门状态
-func (s *sSysSmsLog) Status(ctx context.Context, in sysin.SmsLogStatusInp) (err error) {
+// Status 更新短信状态
+func (s *sSysSmsLog) Status(ctx context.Context, in *sysin.SmsLogStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
 		return
@@ -77,30 +76,13 @@ func (s *sSysSmsLog) Status(ctx context.Context, in sysin.SmsLogStatusInp) (err 
 	}
 
 	// 修改
-	_, err = dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update()
-	return
-}
-
-// MaxSort 最大排序
-func (s *sSysSmsLog) MaxSort(ctx context.Context, in sysin.SmsLogMaxSortInp) (res *sysin.SmsLogMaxSortModel, err error) {
-	if in.Id > 0 {
-		if err = dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
-			return
-		}
-	}
-
-	if res == nil {
-		res = new(sysin.SmsLogMaxSortModel)
-	}
-
-	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	_, err = dao.SysSmsLog.Ctx(ctx).WherePri(in.Id).Data(dao.SysSmsLog.Columns().Status, in.Status).Update()
 	return
 }
 
 // View 获取指定字典类型信息
-func (s *sSysSmsLog) View(ctx context.Context, in sysin.SmsLogViewInp) (res *sysin.SmsLogViewModel, err error) {
-	if err = dao.SysSmsLog.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
+func (s *sSysSmsLog) View(ctx context.Context, in *sysin.SmsLogViewInp) (res *sysin.SmsLogViewModel, err error) {
+	if err = dao.SysSmsLog.Ctx(ctx).WherePri(in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
@@ -108,44 +90,49 @@ func (s *sSysSmsLog) View(ctx context.Context, in sysin.SmsLogViewInp) (res *sys
 }
 
 // List 获取列表
-func (s *sSysSmsLog) List(ctx context.Context, in sysin.SmsLogListInp) (list []*sysin.SmsLogListModel, totalCount int, err error) {
+func (s *sSysSmsLog) List(ctx context.Context, in *sysin.SmsLogListInp) (list []*sysin.SmsLogListModel, totalCount int, err error) {
 	mod := dao.SysSmsLog.Ctx(ctx)
+	cols := dao.SysSmsLog.Columns()
 
 	if in.Mobile != "" {
-		mod = mod.WhereLike("mobile", "%"+in.Mobile+"%")
+		mod = mod.WhereLike(cols.Mobile, "%"+in.Mobile+"%")
 	}
 
 	if in.Ip != "" {
-		mod = mod.Where("ip", in.Ip)
+		mod = mod.Where(cols.Ip, in.Ip)
 	}
 
 	if in.Event != "" {
-		mod = mod.Where("event", in.Event)
+		mod = mod.Where(cols.Event, in.Event)
 	}
 
 	if in.Status > 0 {
-		mod = mod.Where("status", in.Status)
+		mod = mod.Where(cols.Status, in.Status)
+	}
+
+	if len(in.CreatedAt) == 2 {
+		mod = mod.WhereBetween(cols.CreatedAt, in.CreatedAt[0], in.CreatedAt[1])
 	}
 
 	totalCount, err = mod.Count()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
 	if totalCount == 0 {
-		return list, totalCount, nil
+		return
 	}
 
-	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
+	if err = mod.Page(in.Page, in.PerPage).OrderDesc(cols.Id).Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
-	return list, totalCount, err
+	return
 }
 
 // SendCode 发送验证码
-func (s *sSysSmsLog) SendCode(ctx context.Context, in sysin.SendCodeInp) (err error) {
+func (s *sSysSmsLog) SendCode(ctx context.Context, in *sysin.SendCodeInp) (err error) {
 	if in.Event == "" {
 		err = gerror.New("事件不能为空")
 		return
@@ -157,7 +144,7 @@ func (s *sSysSmsLog) SendCode(ctx context.Context, in sysin.SendCodeInp) (err er
 	}
 
 	var models *entity.SysSmsLog
-	if err = dao.SysSmsLog.Ctx(ctx).Where("event", in.Event).Where("mobile", in.Mobile).Scan(&models); err != nil {
+	if err = dao.SysSmsLog.Ctx(ctx).Where(dao.SysSmsLog.Columns().Event, in.Event).Where(dao.SysSmsLog.Columns().Mobile, in.Mobile).Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
@@ -179,7 +166,7 @@ func (s *sSysSmsLog) SendCode(ctx context.Context, in sysin.SendCodeInp) (err er
 		in.Code = grand.Digits(4)
 	}
 
-	if err = sms.New(config.SmsDrive).SendCode(ctx, in, config); err != nil {
+	if err = sms.New(config.SmsDrive).SendCode(ctx, in); err != nil {
 		return
 	}
 
@@ -272,7 +259,7 @@ func (s *sSysSmsLog) AllowSend(ctx context.Context, models *entity.SysSmsLog, co
 }
 
 // VerifyCode 效验验证码
-func (s *sSysSmsLog) VerifyCode(ctx context.Context, in sysin.VerifyCodeInp) (err error) {
+func (s *sSysSmsLog) VerifyCode(ctx context.Context, in *sysin.VerifyCodeInp) (err error) {
 	if in.Event == "" {
 		err = gerror.New("事件不能为空")
 		return
@@ -289,7 +276,8 @@ func (s *sSysSmsLog) VerifyCode(ctx context.Context, in sysin.VerifyCodeInp) (er
 	}
 
 	var models *entity.SysSmsLog
-	if err = dao.SysSmsLog.Ctx(ctx).Where("event", in.Event).Where("mobile", in.Mobile).Order("id desc").Scan(&models); err != nil {
+	cols := dao.SysSmsLog.Columns()
+	if err = dao.SysSmsLog.Ctx(ctx).Where(cols.Event, in.Event).Where(cols.Mobile, in.Mobile).OrderDesc(cols.Id).Scan(&models); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
@@ -317,15 +305,15 @@ func (s *sSysSmsLog) VerifyCode(ctx context.Context, in sysin.VerifyCodeInp) (er
 	}
 
 	if models.Code != in.Code {
-		_, _ = dao.SysSmsLog.Ctx(ctx).Where("id", models.Id).Increment("times", 1)
+		_, _ = dao.SysSmsLog.Ctx(ctx).WherePri(models.Id).Increment(cols.Times, 1)
 		err = gerror.New("验证码错误！")
 		return
 	}
 
-	_, err = dao.SysSmsLog.Ctx(ctx).Where("id", models.Id).Data(g.Map{
-		"times":      models.Times + 1,
-		"status":     consts.SmsStatusUsed,
-		"updated_at": gtime.Now(),
+	_, err = dao.SysSmsLog.Ctx(ctx).WherePri(models.Id).Data(g.Map{
+		cols.Times:     models.Times + 1,
+		cols.Status:    consts.SmsStatusUsed,
+		cols.UpdatedAt: gtime.Now(),
 	}).Update()
 	return
 }

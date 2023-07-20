@@ -199,10 +199,10 @@
 
       const fullYearSalesChart = ref<HTMLDivElement | null>(null);
       watch(props, (newVal, _oldVal) => {
-        last.value  = newVal.dataModel[newVal.dataModel.length - 1];
+        last.value = newVal.dataModel[newVal.dataModel.length - 1];
         if (months.value.length < 10) {
           for (let i = 0; i < newVal.dataModel?.length; i++) {
-            const v : any = newVal.dataModel[i]
+            const v: any = newVal.dataModel[i];
             s.value.push(v.up);
             x.value.push(v.down);
             months.value.push(v.time);

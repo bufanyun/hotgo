@@ -7,118 +7,95 @@ package tcp
 
 import (
 	"context"
-	"fmt"
+	"github.com/gogf/gf/v2/container/gtype"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/net/gtcp"
-	"github.com/gogf/gf/v2/os/glog"
-	"github.com/gogf/gf/v2/os/grpool"
-	"hotgo/internal/consts"
-	"hotgo/utility/simple"
 	"sync"
 	"time"
 )
 
-type Rpc struct {
-	ctx       context.Context
+// RPC .
+type RPC struct {
 	mutex     sync.Mutex
-	callbacks map[string]RpcRespFunc
-	msgGo     *grpool.Pool // 消息处理协程池
-	logger    *glog.Logger // 日志处理器
+	callbacks map[string]RPCResponseFunc
+	task      RoutineTask
 }
 
-// RpcResp 响应结构
-type RpcResp struct {
+// RPCResponse 响应结构
+type RPCResponse struct {
 	res interface{}
 	err error
 }
 
-type RpcRespFunc func(resp interface{}, err error)
+type RPCResponseFunc func(resp interface{}, err error)
 
-// NewRpc 初始化一个rpc协议
-func NewRpc(ctx context.Context, msgGo *grpool.Pool, logger *glog.Logger) *Rpc {
-	return &Rpc{
-		ctx:       ctx,
-		callbacks: make(map[string]RpcRespFunc),
-		msgGo:     msgGo,
-		logger:    logger,
+// NewRPC 初始化RPC
+func NewRPC(task RoutineTask) *RPC {
+	return &RPC{
+		task:      task,
+		callbacks: make(map[string]RPCResponseFunc),
 	}
 }
 
-// GetCallId 获取回调id
-func (r *Rpc) GetCallId(client *gtcp.Conn, traceID string) string {
-	return fmt.Sprintf("%v.%v", client.LocalAddr().String(), traceID)
-}
-
-// HandleMsg 处理rpc消息
-func (r *Rpc) HandleMsg(ctx context.Context, data interface{}) bool {
-	user := GetCtx(ctx)
-	callId := r.GetCallId(user.Conn, user.TraceID)
-
-	if call, ok := r.callbacks[callId]; ok {
-		r.mutex.Lock()
-		delete(r.callbacks, callId)
-		r.mutex.Unlock()
-
-		ctx, cancel := context.WithCancel(ctx)
-
-		err := r.msgGo.AddWithRecover(ctx, func(ctx context.Context) {
-			call(data, nil)
-			cancel()
-		}, func(ctx context.Context, err error) {
-			r.logger.Warningf(ctx, "rpc HandleMsg msgGo exec err:%+v", err)
-			cancel()
-		})
-
-		if err != nil {
-			r.logger.Warningf(ctx, "rpc HandleMsg msgGo Add err:%+v", err)
-		}
-		return true
-	}
-	return false
-}
-
-// Request 发起rpc请求
-func (r *Rpc) Request(callId string, send func()) (res interface{}, err error) {
-	var (
-		waitCh  = make(chan struct{})
-		resCh   = make(chan RpcResp, 1)
-		isClose = false
-	)
+// Request 发起RPC请求
+func (r *RPC) Request(ctx context.Context, msgId string, send func()) (res interface{}, err error) {
+	resCh := make(chan RPCResponse, 1)
+	isClose := gtype.NewBool(false)
 
 	defer func() {
-		isClose = true
+		isClose.Set(true)
 		close(resCh)
-
-		// 移除消息
-		if _, ok := r.callbacks[callId]; ok {
-			r.mutex.Lock()
-			delete(r.callbacks, callId)
-			r.mutex.Unlock()
-		}
+		r.popCallback(msgId)
 	}()
 
-	simple.SafeGo(r.ctx, func(ctx context.Context) {
-		close(waitCh)
-
-		// 加入回调
-		r.mutex.Lock()
-		r.callbacks[callId] = func(res interface{}, err error) {
-			if !isClose {
-				resCh <- RpcResp{res: res, err: err}
-			}
+	r.mutex.Lock()
+	r.callbacks[msgId] = func(res interface{}, err error) {
+		if !isClose.Val() {
+			resCh <- RPCResponse{res: res, err: err}
 		}
-		r.mutex.Unlock()
+	}
+	r.mutex.Unlock()
 
-		// 发送消息
-		send()
-	})
+	r.task(ctx, send)
 
-	<-waitCh
 	select {
-	case <-time.After(time.Second * consts.TCPRpcTimeout):
-		err = gerror.New("rpc response timeout")
+	case <-time.After(time.Second * RPCTimeout):
+		err = gerror.New("RPC response timeout")
 		return
 	case got := <-resCh:
 		return got.res, got.err
 	}
+}
+
+// Response RPC消息响应
+func (r *RPC) Response(ctx context.Context, msg *Message) bool {
+	if len(msg.MsgId) == 0 {
+		return false
+	}
+
+	f, ok := r.popCallback(msg.MsgId)
+	if !ok {
+		return false
+	}
+
+	var msgError error
+	if len(msg.Error) > 0 {
+		msgError = gerror.New(msg.Error)
+	}
+
+	r.task(ctx, func() {
+		f(msg.Data, msgError)
+	})
+	return true
+}
+
+// popCallback 弹出回调
+func (r *RPC) popCallback(msgId string) (RPCResponseFunc, bool) {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+
+	call, ok := r.callbacks[msgId]
+	if ok {
+		delete(r.callbacks, msgId)
+	}
+	return call, ok
 }

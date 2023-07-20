@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package sysin
 
 import (
@@ -16,12 +15,14 @@ import (
 type EmsLogEditInp struct {
 	entity.SysEmsLog
 }
+
 type EmsLogEditModel struct{}
 
 // EmsLogDeleteInp 删除
 type EmsLogDeleteInp struct {
 	Id interface{} `json:"id" v:"required#邮件记录ID不能为空" dc:"邮件记录ID"`
 }
+
 type EmsLogDeleteModel struct{}
 
 // EmsLogViewInp 获取信息
@@ -36,7 +37,7 @@ type EmsLogViewModel struct {
 // EmsLogListInp 获取列表
 type EmsLogListInp struct {
 	form.PageReq
-	form.RangeDateReq
+
 	form.StatusReq
 	Title   string `json:"title"`
 	Content string `json:"content"`
@@ -50,6 +51,7 @@ type EmsLogListModel struct {
 type EmsLogStatusInp struct {
 	entity.SysSmsLog
 }
+
 type EmsLogStatusModel struct{}
 
 // SendEmsInp 发送邮件

@@ -30,7 +30,7 @@ func init() {
 }
 
 // Register 账号注册
-func (s *sAdminSite) Register(ctx context.Context, in adminin.RegisterInp) (err error) {
+func (s *sAdminSite) Register(ctx context.Context, in *adminin.RegisterInp) (err error) {
 	config, err := service.SysConfig().GetLogin(ctx)
 	if err != nil {
 		return
@@ -42,12 +42,13 @@ func (s *sAdminSite) Register(ctx context.Context, in adminin.RegisterInp) (err 
 	}
 
 	var data adminin.MemberAddInp
+
 	// 默认上级
 	data.Pid = 1
 
 	// 存在邀请人
 	if in.InviteCode != "" {
-		pmb, err := service.AdminMember().GetIdByCode(ctx, adminin.GetIdByCodeInp{Code: in.InviteCode})
+		pmb, err := service.AdminMember().GetIdByCode(ctx, &adminin.GetIdByCodeInp{Code: in.InviteCode})
 		if err != nil {
 			return err
 		}
@@ -81,7 +82,7 @@ func (s *sAdminSite) Register(ctx context.Context, in adminin.RegisterInp) (err 
 	}
 
 	// 验证唯一性
-	err = service.AdminMember().VerifyUnique(ctx, adminin.VerifyUniqueInp{
+	err = service.AdminMember().VerifyUnique(ctx, &adminin.VerifyUniqueInp{
 		Where: g.Map{
 			dao.AdminMember.Columns().Username: in.Username,
 			dao.AdminMember.Columns().Mobile:   in.Mobile,
@@ -92,7 +93,7 @@ func (s *sAdminSite) Register(ctx context.Context, in adminin.RegisterInp) (err 
 	}
 
 	// 验证短信验证码
-	err = service.SysSmsLog().VerifyCode(ctx, sysin.VerifyCodeInp{
+	err = service.SysSmsLog().VerifyCode(ctx, &sysin.VerifyCodeInp{
 		Event:  consts.SmsTemplateRegister,
 		Mobile: in.Mobile,
 		Code:   in.Code,
@@ -101,7 +102,7 @@ func (s *sAdminSite) Register(ctx context.Context, in adminin.RegisterInp) (err 
 		return
 	}
 
-	data.MemberEditInp = adminin.MemberEditInp{
+	data.MemberEditInp = &adminin.MemberEditInp{
 		Id:       0,
 		RoleId:   config.RoleId,
 		PostIds:  config.PostIds,
@@ -139,9 +140,9 @@ func (s *sAdminSite) Register(ctx context.Context, in adminin.RegisterInp) (err 
 }
 
 // AccountLogin 账号登录
-func (s *sAdminSite) AccountLogin(ctx context.Context, in adminin.AccountLoginInp) (res *adminin.LoginModel, err error) {
+func (s *sAdminSite) AccountLogin(ctx context.Context, in *adminin.AccountLoginInp) (res *adminin.LoginModel, err error) {
 	defer func() {
-		service.SysLoginLog().Push(ctx, sysin.LoginLogPushInp{Response: res, Err: err})
+		service.SysLoginLog().Push(ctx, &sysin.LoginLogPushInp{Response: res, Err: err})
 	}()
 
 	var mb *entity.AdminMember
@@ -177,9 +178,9 @@ func (s *sAdminSite) AccountLogin(ctx context.Context, in adminin.AccountLoginIn
 }
 
 // MobileLogin 手机号登录
-func (s *sAdminSite) MobileLogin(ctx context.Context, in adminin.MobileLoginInp) (res *adminin.LoginModel, err error) {
+func (s *sAdminSite) MobileLogin(ctx context.Context, in *adminin.MobileLoginInp) (res *adminin.LoginModel, err error) {
 	defer func() {
-		service.SysLoginLog().Push(ctx, sysin.LoginLogPushInp{Response: res, Err: err})
+		service.SysLoginLog().Push(ctx, &sysin.LoginLogPushInp{Response: res, Err: err})
 	}()
 
 	var mb *entity.AdminMember
@@ -197,7 +198,7 @@ func (s *sAdminSite) MobileLogin(ctx context.Context, in adminin.MobileLoginInp)
 	res.Id = mb.Id
 	res.Username = mb.Username
 
-	err = service.SysSmsLog().VerifyCode(ctx, sysin.VerifyCodeInp{
+	err = service.SysSmsLog().VerifyCode(ctx, &sysin.VerifyCodeInp{
 		Event:  consts.SmsTemplateLogin,
 		Mobile: in.Mobile,
 		Code:   in.Code,
@@ -249,7 +250,7 @@ func (s *sAdminSite) handleLogin(ctx context.Context, mb *entity.AdminMember) (r
 		LoginAt:  gtime.Now(),
 	}
 
-	loginToken, expires, err := token.Login(ctx, user)
+	lt, expires, err := token.Login(ctx, user)
 	if err != nil {
 		return nil, err
 	}
@@ -257,7 +258,7 @@ func (s *sAdminSite) handleLogin(ctx context.Context, mb *entity.AdminMember) (r
 	res = &adminin.LoginModel{
 		Username: user.Username,
 		Id:       user.Id,
-		Token:    loginToken,
+		Token:    lt,
 		Expires:  expires,
 	}
 	return

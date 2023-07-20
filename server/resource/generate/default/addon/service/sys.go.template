@@ -14,11 +14,11 @@ import (
 type (
 	ISysConfig interface {
 		GetBasic(ctx context.Context) (conf *model.BasicConfig, err error)
-		GetConfigByGroup(ctx context.Context, in sysin.GetConfigInp) (res *sysin.GetConfigModel, err error)
-		UpdateConfigByGroup(ctx context.Context, in sysin.UpdateConfigInp) error
+		GetConfigByGroup(ctx context.Context, in *sysin.GetConfigInp) (res *sysin.GetConfigModel, err error)
+		UpdateConfigByGroup(ctx context.Context, in *sysin.UpdateConfigInp) error
 	}
 	ISysIndex interface {
-		Test(ctx context.Context, in sysin.IndexTestInp) (res *sysin.IndexTestModel, err error)
+		Test(ctx context.Context, in *sysin.IndexTestInp) (res *sysin.IndexTestModel, err error)
 	}
 )
 

@@ -10,12 +10,7 @@ package pay
 import (
 	"context"
 	"hotgo/api/admin/pay"
-	"hotgo/internal/model/input/form"
-	"hotgo/internal/model/input/payin"
 	"hotgo/internal/service"
-	"hotgo/utility/validate"
-
-	"github.com/gogf/gf/v2/util/gconv"
 )
 
 var (
@@ -26,39 +21,19 @@ type cRefund struct{}
 
 // List 查看交易退款列表
 func (c *cRefund) List(ctx context.Context, req *pay.RefundListReq) (res *pay.RefundListRes, err error) {
-	var in payin.PayRefundListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	list, totalCount, err := service.PayRefund().List(ctx, in)
+	list, totalCount, err := service.PayRefund().List(ctx, &req.PayRefundListInp)
 	if err != nil {
 		return
 	}
 
 	res = new(pay.RefundListRes)
 	res.List = list
-	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
-	res.Page = req.Page
-	res.PerPage = req.PerPage
+	res.PageRes.Pack(req, totalCount)
 	return
 }
 
 // Export 导出交易退款列表
 func (c *cRefund) Export(ctx context.Context, req *pay.RefundExportReq) (res *pay.RefundExportRes, err error) {
-	var in payin.PayRefundListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	err = service.PayRefund().Export(ctx, in)
+	err = service.PayRefund().Export(ctx, &req.PayRefundListInp)
 	return
 }

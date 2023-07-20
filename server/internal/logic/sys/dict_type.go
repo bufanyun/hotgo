@@ -44,7 +44,7 @@ func (s *sSysDictType) Tree(ctx context.Context) (list []*sysin.DictTypeTree, er
 }
 
 // Delete 删除
-func (s *sSysDictType) Delete(ctx context.Context, in sysin.DictTypeDeleteInp) (err error) {
+func (s *sSysDictType) Delete(ctx context.Context, in *sysin.DictTypeDeleteInp) (err error) {
 	var models *entity.SysDictType
 	if err = dao.SysDictType.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
 		return
@@ -81,7 +81,7 @@ func (s *sSysDictType) Delete(ctx context.Context, in sysin.DictTypeDeleteInp) (
 }
 
 // Edit 修改/新增
-func (s *sSysDictType) Edit(ctx context.Context, in sysin.DictTypeEditInp) (err error) {
+func (s *sSysDictType) Edit(ctx context.Context, in *sysin.DictTypeEditInp) (err error) {
 	if err = hgorm.IsUnique(ctx, &dao.SysDictType, g.Map{dao.SysDictType.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
 		return
 	}
@@ -102,7 +102,7 @@ func (s *sSysDictType) Edit(ctx context.Context, in sysin.DictTypeEditInp) (err 
 }
 
 // TreeSelect 获取类型关系树选项
-func (s *sSysDictType) TreeSelect(ctx context.Context, in sysin.DictTreeSelectInp) (list []*sysin.DictTypeTree, err error) {
+func (s *sSysDictType) TreeSelect(ctx context.Context, in *sysin.DictTreeSelectInp) (list []*sysin.DictTypeTree, err error) {
 	var (
 		mod    = dao.SysDictType.Ctx(ctx)
 		models []*entity.SysDictType

@@ -7,7 +7,6 @@ package gencodes
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
-	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 )
@@ -25,8 +24,8 @@ type ListRes struct {
 
 // ViewReq 获取指定信息
 type ViewReq struct {
-	Id     int64 `json:"id" v:"required#生成代码ID不能为空" dc:"生成代码ID"`
 	g.Meta `path:"/genCodes/view" method:"get" tags:"生成代码" summary:"获取指定信息"`
+	sysin.GenCodesViewInp
 }
 
 type ViewRes struct {
@@ -35,8 +34,8 @@ type ViewRes struct {
 
 // EditReq 修改/新增数据
 type EditReq struct {
-	entity.SysGenCodes
 	g.Meta `path:"/genCodes/edit" method:"post" tags:"生成代码" summary:"修改/新增生成代码"`
+	sysin.GenCodesEditInp
 }
 
 type EditRes struct {
@@ -45,32 +44,33 @@ type EditRes struct {
 
 // DeleteReq 删除
 type DeleteReq struct {
-	Id     interface{} `json:"id" v:"required#生成代码ID不能为空" dc:"生成代码ID"`
 	g.Meta `path:"/genCodes/delete" method:"post" tags:"生成代码" summary:"删除生成代码"`
+	sysin.GenCodesDeleteInp
 }
 
 type DeleteRes struct{}
 
 // MaxSortReq 最大排序
 type MaxSortReq struct {
-	Id     int64 `json:"id" dc:"生成代码ID"`
 	g.Meta `path:"/genCodes/maxSort" method:"get" tags:"生成代码" summary:"生成代码最大排序"`
+	sysin.GenCodesMaxSortInp
 }
 
 type MaxSortRes struct {
-	Sort int `json:"sort" dc:"排序"`
+	*sysin.GenCodesMaxSortModel
 }
 
 // StatusReq 更新状态
 type StatusReq struct {
-	entity.SysGenCodes
 	g.Meta `path:"/genCodes/status" method:"post" tags:"生成代码" summary:"更新生成代码状态"`
+	sysin.GenCodesStatusInp
 }
 
 type StatusRes struct{}
 
 type SelectsReq struct {
 	g.Meta `path:"/genCodes/selects" method:"get" tags:"生成代码" summary:"生成入口选项"`
+	sysin.GenCodesSelectsInp
 }
 
 type SelectsRes struct {
@@ -111,7 +111,7 @@ type PreviewRes struct {
 // BuildReq 提交生成
 type BuildReq struct {
 	g.Meta `path:"/genCodes/build" method:"post" tags:"生成代码" summary:"提交生成"`
-	sysin.GenCodesPreviewInp
+	sysin.GenCodesBuildInp
 }
 
 type BuildRes struct {

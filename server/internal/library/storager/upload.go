@@ -52,7 +52,7 @@ func New(name ...string) UploadDrive {
 }
 
 // DoUpload 上传入口
-func DoUpload(ctx context.Context, file *ghttp.UploadFile, typ int) (result *entity.SysAttachment, err error) {
+func DoUpload(ctx context.Context, typ string, file *ghttp.UploadFile) (result *entity.SysAttachment, err error) {
 	if file == nil {
 		err = gerror.New("文件必须!")
 		return
@@ -63,17 +63,12 @@ func DoUpload(ctx context.Context, file *ghttp.UploadFile, typ int) (result *ent
 		return
 	}
 
-	if _, err = GetFileType(meta.Ext); err != nil {
+	if _, err = GetFileMimeType(meta.Ext); err != nil {
 		return
 	}
 
 	switch typ {
-	case consts.UploadTypeFile:
-		if config.FileSize > 0 && meta.Size > config.FileSize*1024*1024 {
-			err = gerror.Newf("文件大小不能超过%vMB", config.FileSize)
-			return
-		}
-	case consts.UploadTypeImage:
+	case KindImg:
 		if !IsImgType(meta.Ext) {
 			err = gerror.New("上传的文件不是图片")
 			return
@@ -82,24 +77,34 @@ func DoUpload(ctx context.Context, file *ghttp.UploadFile, typ int) (result *ent
 			err = gerror.Newf("图片大小不能超过%vMB", config.ImageSize)
 			return
 		}
-	case consts.UploadTypeDoc:
+	case KindDoc:
 		if !IsDocType(meta.Ext) {
 			err = gerror.New("上传的文件不是文档")
 			return
 		}
-	case consts.UploadTypeAudio:
+	case KindAudio:
 		if !IsAudioType(meta.Ext) {
 			err = gerror.New("上传的文件不是音频")
 			return
 		}
-	case consts.UploadTypeVideo:
+	case KindVideo:
 		if !IsVideoType(meta.Ext) {
 			err = gerror.New("上传的文件不是视频")
 			return
 		}
+	case KindZip:
+		if !IsZipType(meta.Ext) {
+			err = gerror.New("上传的文件不是压缩文件")
+			return
+		}
+	case KindOther:
+		fallthrough
 	default:
-		err = gerror.Newf("无效的上传类型:%v", typ)
-		return
+		// 默认为通用的文件上传
+		if config.FileSize > 0 && meta.Size > config.FileSize*1024*1024 {
+			err = gerror.Newf("文件大小不能超过%vMB", config.FileSize)
+			return
+		}
 	}
 
 	result, err = hasFile(ctx, meta.Md5)
@@ -149,7 +154,7 @@ func GetFileMeta(file *ghttp.UploadFile) (meta *FileMeta, err error) {
 	meta.Size = file.Size
 	meta.Ext = Ext(file.Filename)
 	meta.Kind = GetFileKind(meta.Ext)
-	meta.MetaType, err = GetFileType(meta.Ext)
+	meta.MimeType, err = GetFileMimeType(meta.Ext)
 	if err != nil {
 		return
 	}
@@ -185,7 +190,7 @@ func write(ctx context.Context, meta *FileMeta, fullPath string) (models *entity
 		FileUrl:   fullPath,
 		Name:      meta.Filename,
 		Kind:      meta.Kind,
-		MetaType:  meta.MetaType,
+		MimeType:  meta.MimeType,
 		NaiveType: meta.NaiveType,
 		Ext:       meta.Ext,
 		Md5:       meta.Md5,

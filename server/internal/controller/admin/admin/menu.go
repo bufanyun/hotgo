@@ -7,11 +7,8 @@ package admin
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/menu"
-	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/service"
-	"hotgo/utility/validate"
 )
 
 // Menu 菜单
@@ -23,45 +20,18 @@ type cMenu struct{}
 
 // Delete 删除
 func (c *cMenu) Delete(ctx context.Context, req *menu.DeleteReq) (res *menu.DeleteRes, err error) {
-	var in adminin.MenuDeleteInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	err = service.AdminMenu().Delete(ctx, in)
+	err = service.AdminMenu().Delete(ctx, &req.MenuDeleteInp)
 	return
 }
 
 // Edit 更新
 func (c *cMenu) Edit(ctx context.Context, req *menu.EditReq) (res *menu.EditRes, err error) {
-	var in adminin.MenuEditInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	err = service.AdminMenu().Edit(ctx, in)
+	err = service.AdminMenu().Edit(ctx, &req.MenuEditInp)
 	return
 }
 
 // List 获取列表
 func (c *cMenu) List(ctx context.Context, req *menu.ListReq) (res menu.ListRes, err error) {
-	var in adminin.MenuListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	res.MenuListModel, err = service.AdminMenu().List(ctx, in)
+	res.MenuListModel, err = service.AdminMenu().List(ctx, &req.MenuListInp)
 	return
 }

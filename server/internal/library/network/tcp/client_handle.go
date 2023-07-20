@@ -7,70 +7,73 @@ package tcp
 
 import (
 	"context"
+	"fmt"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gtime"
-	"github.com/gogf/gf/v2/util/gconv"
-	"hotgo/internal/consts"
-	"hotgo/internal/model/input/msgin"
+	"hotgo/utility/encrypt"
 )
 
 // serverLogin 心跳
 func (client *Client) serverHeartbeat() {
+	if !client.isLogin.Val() {
+		return
+	}
+
 	ctx := gctx.New()
-	if err := client.Send(ctx, &msgin.ServerHeartbeat{}); err != nil {
-		client.Logger.Debugf(ctx, "client WriteMsg ServerHeartbeat err:%+v", err)
+	if err := client.conn.Send(ctx, &ServerHeartbeatReq{}); err != nil {
+		client.logger.Warningf(ctx, "client ServerHeartbeat Send err:%+v", err)
 		return
 	}
 }
 
 // serverLogin 服务登陆
 func (client *Client) serverLogin() {
-	data := &msgin.ServerLogin{
-		Group: client.auth.Group,
-		Name:  client.auth.Name,
+	auth := client.config.Auth
+
+	// 无需登录
+	if auth == nil {
+		return
 	}
 
+	data := &ServerLoginReq{
+		Name:      auth.Name,
+		Extra:     auth.Extra,
+		Group:     auth.Group,
+		AppId:     auth.AppId,
+		Timestamp: gtime.Timestamp(),
+	}
+
+	// 签名
+	data.Sign = encrypt.Md5ToString(fmt.Sprintf("%v%v%v", data.AppId, data.Timestamp, auth.SecretKey))
+
 	ctx := gctx.New()
-	if err := client.Send(ctx, data); err != nil {
-		client.Logger.Debugf(ctx, "client WriteMsg ServerLogin err:%+v", err)
+	if err := client.conn.Send(ctx, data); err != nil {
+		client.logger.Warningf(ctx, "client ServerLogin Send err:%+v", err)
 		return
 	}
 }
 
 // onResponseServerLogin 接收服务登陆响应结果
-func (client *Client) onResponseServerLogin(ctx context.Context, args ...interface{}) {
-	var in *msgin.ResponseServerLogin
-	if err := gconv.Scan(args[0], &in); err != nil {
-		client.Logger.Infof(ctx, "onResponseServerLogin message Scan failed:%+v, args:%+v", err, args[0])
-		return
-	}
-
-	if in.Code != consts.TCPMsgCodeSuccess {
-		client.IsLogin = false
-		client.Logger.Warningf(ctx, "onResponseServerLogin quit err:%v", in.Message)
+func (client *Client) onResponseServerLogin(ctx context.Context, req *ServerLoginRes) {
+	if err := req.GetError(); err != nil {
+		client.isLogin.Set(false)
+		client.logger.Warningf(ctx, "onResponseServerLogin destroy, err:%v", err)
 		client.Destroy()
 		return
 	}
 
-	client.IsLogin = true
+	client.isLogin.Set(true)
 
-	if client.loginEvent != nil {
-		client.loginEvent()
+	if client.config.LoginEvent != nil {
+		client.config.LoginEvent()
 	}
 }
 
 // onResponseServerHeartbeat 接收心跳响应结果
-func (client *Client) onResponseServerHeartbeat(ctx context.Context, args ...interface{}) {
-	var in *msgin.ResponseServerHeartbeat
-	if err := gconv.Scan(args[0], &in); err != nil {
-		client.Logger.Infof(ctx, "onResponseServerHeartbeat message Scan failed:%+v, args:%+v", err, args)
+func (client *Client) onResponseServerHeartbeat(ctx context.Context, req *ServerHeartbeatRes) {
+	if err := req.GetError(); err != nil {
+		client.logger.Warningf(ctx, "onResponseServerHeartbeat err:%v", err)
 		return
 	}
-
-	if in.Code != consts.TCPMsgCodeSuccess {
-		client.Logger.Warningf(ctx, "onResponseServerHeartbeat err:%v", in.Message)
-		return
-	}
-
-	client.heartbeat = gtime.Timestamp()
+	client.conn.Heartbeat = gtime.Timestamp()
 }

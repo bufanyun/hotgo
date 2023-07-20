@@ -39,7 +39,6 @@ func init() {
 func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 	var (
 		user = contexts.Get(ctx).User
-		sk   = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
 		err  error
 	)
 
@@ -48,7 +47,7 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 		return false
 	}
 
-	if service.AdminMember().VerifySuperId(ctx, user.Id) || user.RoleKey == sk.String() {
+	if service.AdminMember().VerifySuperId(ctx, user.Id) {
 		return true
 	}
 
@@ -61,7 +60,7 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 }
 
 // List 获取列表
-func (s *sAdminRole) List(ctx context.Context, in adminin.RoleListInp) (res *adminin.RoleListModel, totalCount int, err error) {
+func (s *sAdminRole) List(ctx context.Context, in *adminin.RoleListInp) (res *adminin.RoleListModel, totalCount int, err error) {
 	var (
 		mod    = dao.AdminRole.Ctx(ctx)
 		models []*entity.AdminRole
@@ -113,11 +112,8 @@ func (s *sAdminRole) GetMemberList(ctx context.Context, id int64) (list []*admin
 }
 
 // GetPermissions 更改角色菜单权限
-func (s *sAdminRole) GetPermissions(ctx context.Context, in adminin.GetPermissionsInp) (res *adminin.GetPermissionsModel, err error) {
-	values, err := dao.AdminRoleMenu.Ctx(ctx).
-		Fields("menu_id").
-		Where("role_id", in.RoleId).
-		Array()
+func (s *sAdminRole) GetPermissions(ctx context.Context, in *adminin.GetPermissionsInp) (res *adminin.GetPermissionsModel, err error) {
+	values, err := dao.AdminRoleMenu.Ctx(ctx).Fields("menu_id").Where("role_id", in.RoleId).Array()
 	if err != nil {
 		return
 	}
@@ -134,7 +130,7 @@ func (s *sAdminRole) GetPermissions(ctx context.Context, in adminin.GetPermissio
 }
 
 // UpdatePermissions 更改角色菜单权限
-func (s *sAdminRole) UpdatePermissions(ctx context.Context, in adminin.UpdatePermissionsInp) (err error) {
+func (s *sAdminRole) UpdatePermissions(ctx context.Context, in *adminin.UpdatePermissionsInp) (err error) {
 	err = dao.AdminRoleMenu.Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
 		if _, err = dao.AdminRoleMenu.Ctx(ctx).Where("role_id", in.RoleId).Delete(); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
@@ -166,7 +162,7 @@ func (s *sAdminRole) UpdatePermissions(ctx context.Context, in adminin.UpdatePer
 	return casbin.Refresh(ctx)
 }
 
-func (s *sAdminRole) Edit(ctx context.Context, in adminin.RoleEditInp) (err error) {
+func (s *sAdminRole) Edit(ctx context.Context, in *adminin.RoleEditInp) (err error) {
 	if err = hgorm.IsUnique(ctx, &dao.AdminRole, g.Map{dao.AdminRole.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
 		return
 	}
@@ -231,7 +227,7 @@ func updateRoleChildrenTree(ctx context.Context, _id int64, _level int, _tree st
 	return
 }
 
-func (s *sAdminRole) Delete(ctx context.Context, in adminin.RoleDeleteInp) (err error) {
+func (s *sAdminRole) Delete(ctx context.Context, in *adminin.RoleDeleteInp) (err error) {
 	var models *entity.AdminRole
 	if err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
 		return
@@ -270,11 +266,7 @@ func (s *sAdminRole) DataScopeSelect() (res form.Selects) {
 }
 
 func (s *sAdminRole) DataScopeEdit(ctx context.Context, in *adminin.DataScopeEditInp) (err error) {
-	var (
-		models *entity.AdminRole
-		sk     = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
-	)
-
+	var models *entity.AdminRole
 	if err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
 		return
 	}
@@ -283,7 +275,7 @@ func (s *sAdminRole) DataScopeEdit(ctx context.Context, in *adminin.DataScopeEdi
 		return gerror.New("角色不存在")
 	}
 
-	if models.Key == sk.String() {
+	if models.Key == consts.SuperRoleKey {
 		return gerror.New("超管角色拥有全部权限，无需修改！")
 	}
 

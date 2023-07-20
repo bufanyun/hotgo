@@ -7,11 +7,8 @@ package websocket
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/addons/@{.name}/api/websocket/index"
-	"hotgo/addons/@{.name}/model/input/sysin"
 	"hotgo/addons/@{.name}/service"
-	"hotgo/utility/validate"
 )
 
 var (
@@ -22,16 +19,7 @@ type cIndex struct{}
 
 // Test 测试
 func (c *cIndex) Test(ctx context.Context, req *index.TestReq) (res *index.TestRes, err error) {
-	var in sysin.IndexTestInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return nil, err
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return nil, err
-	}
-
-	data, err := service.SysIndex().Test(ctx, in)
+	data, err := service.SysIndex().Test(ctx, &req.IndexTestInp)
 	if err != nil {
 		return
 	}

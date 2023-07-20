@@ -53,7 +53,6 @@
         </n-alert>
         <n-form
           :model="formParams"
-          :rules="rules"
           ref="formRef"
           label-placement="left"
           :label-width="80"
@@ -134,10 +133,23 @@
   import { isUrl } from '@/utils/is';
   import { getIconComponent } from '@/utils/icons';
 
+  const dialog = useDialog();
+  const message = useMessage();
+  const notification = useNotification();
+  const showModal = ref(false);
+  const formBtnLoading = ref(false);
+  const formRef: any = ref(null);
+  const actionRef = ref();
+  const formParams = ref<any>();
+  const dialogWidth = ref('50%');
+  const checkedIds = ref([]);
+  const searchFormRef = ref<any>();
+
   const selectList = ref({
     groupType: [],
     status: [],
   });
+
   const columns = [
     {
       title: '图标',
@@ -246,9 +258,6 @@
     },
   ];
 
-  const checkedIds = ref([]);
-  const searchFormRef = ref<any>();
-
   const schemas = ref<FormSchema[]>([
     {
       field: 'name',
@@ -287,17 +296,6 @@
       },
     },
   ]);
-
-  const notification = useNotification();
-  const dialog = useDialog();
-  const showModal = ref(false);
-  const formBtnLoading = ref(false);
-  const formRef: any = ref(null);
-  const message = useMessage();
-  const actionRef = ref();
-  const formParams = ref<any>();
-
-  const rules = {};
 
   const actionColumn = reactive({
     width: 220,
@@ -450,8 +448,6 @@
     });
   }
 
-  const dialogWidth = ref('50%');
-
   function mapWidth() {
     let val = document.body.clientWidth;
     const def = 840; // 默认宽度
@@ -463,10 +459,6 @@
 
     return dialogWidth.value;
   }
-
-  onBeforeMount(async () => {
-    await loadSelect();
-  });
 
   const loadSelect = async () => {
     selectList.value = await Selects({});
@@ -508,6 +500,10 @@
       },
     });
   }
+
+  onBeforeMount(async () => {
+    await loadSelect();
+  });
 </script>
 
 <style lang="less" scoped></style>

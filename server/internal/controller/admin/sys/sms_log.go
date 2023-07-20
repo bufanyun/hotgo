@@ -7,12 +7,8 @@ package sys
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/smslog"
-	"hotgo/internal/model/input/form"
-	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/validate"
 )
 
 var (
@@ -23,41 +19,19 @@ type cSmsLog struct{}
 
 // Delete 删除
 func (c *cSmsLog) Delete(ctx context.Context, req *smslog.DeleteReq) (res *smslog.DeleteRes, err error) {
-	var in sysin.SmsLogDeleteInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	err = service.SysSmsLog().Delete(ctx, in)
+	err = service.SysSmsLog().Delete(ctx, &req.SmsLogDeleteInp)
 	return
 }
 
 // Edit 更新
 func (c *cSmsLog) Edit(ctx context.Context, req *smslog.EditReq) (res *smslog.EditRes, err error) {
-	var in sysin.SmsLogEditInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	err = service.SysSmsLog().Edit(ctx, in)
-	return
-}
-
-// MaxSort 最大排序
-func (c *cSmsLog) MaxSort(ctx context.Context, req *smslog.MaxSortReq) (res *smslog.MaxSortRes, err error) {
-	data, err := service.SysSmsLog().MaxSort(ctx, sysin.SmsLogMaxSortInp{Id: req.Id})
-	if err != nil {
-		return
-	}
-
-	res = new(smslog.MaxSortRes)
-	res.Sort = data.Sort
+	err = service.SysSmsLog().Edit(ctx, &req.SmsLogEditInp)
 	return
 }
 
 // View 获取指定信息
 func (c *cSmsLog) View(ctx context.Context, req *smslog.ViewReq) (res *smslog.ViewRes, err error) {
-	data, err := service.SysSmsLog().View(ctx, sysin.SmsLogViewInp{Id: req.Id})
+	data, err := service.SysSmsLog().View(ctx, &req.SmsLogViewInp)
 	if err != nil {
 		return
 	}
@@ -69,35 +43,19 @@ func (c *cSmsLog) View(ctx context.Context, req *smslog.ViewReq) (res *smslog.Vi
 
 // List 查看列表
 func (c *cSmsLog) List(ctx context.Context, req *smslog.ListReq) (res *smslog.ListRes, err error) {
-	var in sysin.SmsLogListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	list, totalCount, err := service.SysSmsLog().List(ctx, in)
+	list, totalCount, err := service.SysSmsLog().List(ctx, &req.SmsLogListInp)
 	if err != nil {
 		return
 	}
 
 	res = new(smslog.ListRes)
 	res.List = list
-	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
-	res.Page = req.Page
-	res.PerPage = req.PerPage
+	res.PageRes.Pack(req, totalCount)
 	return
 }
 
-// Status 更新部门状态
+// Status 更新状态
 func (c *cSmsLog) Status(ctx context.Context, req *smslog.StatusReq) (res *smslog.StatusRes, err error) {
-	var in sysin.SmsLogStatusInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	err = service.SysSmsLog().Status(ctx, in)
+	err = service.SysSmsLog().Status(ctx, &req.SmsLogStatusInp)
 	return
 }

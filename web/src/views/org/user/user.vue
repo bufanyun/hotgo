@@ -39,7 +39,8 @@
     }
   });
 
-  function handleBeforeLeave(tabName: string) {
+  function handleBeforeLeave(tabName: string): boolean | Promise<boolean> {
     defaultTab.value = tabName;
+    return true;
   }
 </script>

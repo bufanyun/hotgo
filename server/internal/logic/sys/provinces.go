@@ -40,7 +40,7 @@ func (s *sSysProvinces) Tree(ctx context.Context) (list []*sysin.ProvincesTree, 
 }
 
 // Delete 删除省市区数据
-func (s *sSysProvinces) Delete(ctx context.Context, in sysin.ProvincesDeleteInp) (err error) {
+func (s *sSysProvinces) Delete(ctx context.Context, in *sysin.ProvincesDeleteInp) (err error) {
 	var models *entity.SysProvinces
 	if err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
 		err = gerror.Wrap(err, "获取省市区数据失败！")
@@ -71,14 +71,14 @@ func (s *sSysProvinces) Delete(ctx context.Context, in sysin.ProvincesDeleteInp)
 }
 
 // Edit 修改/新增省市区数据
-func (s *sSysProvinces) Edit(ctx context.Context, in sysin.ProvincesEditInp) (err error) {
+func (s *sSysProvinces) Edit(ctx context.Context, in *sysin.ProvincesEditInp) (err error) {
 	// 关系树
 	in.Pid, in.Level, in.Tree, err = hgorm.GenSubTree(ctx, &dao.SysProvinces, in.Pid)
 	if err != nil {
 		return
 	}
 
-	models, err := s.View(ctx, sysin.ProvincesViewInp{Id: in.Id})
+	models, err := s.View(ctx, &sysin.ProvincesViewInp{Id: in.Id})
 	if err != nil {
 		return
 	}
@@ -99,7 +99,7 @@ func (s *sSysProvinces) Edit(ctx context.Context, in sysin.ProvincesEditInp) (er
 }
 
 // Status 更新省市区状态
-func (s *sSysProvinces) Status(ctx context.Context, in sysin.ProvincesStatusInp) (err error) {
+func (s *sSysProvinces) Status(ctx context.Context, in *sysin.ProvincesStatusInp) (err error) {
 	if _, err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update(); err != nil {
 		err = gerror.Wrap(err, "更新省市区状态失败！")
 	}
@@ -107,7 +107,7 @@ func (s *sSysProvinces) Status(ctx context.Context, in sysin.ProvincesStatusInp)
 }
 
 // MaxSort 最大排序
-func (s *sSysProvinces) MaxSort(ctx context.Context, in sysin.ProvincesMaxSortInp) (res *sysin.ProvincesMaxSortModel, err error) {
+func (s *sSysProvinces) MaxSort(ctx context.Context, in *sysin.ProvincesMaxSortInp) (res *sysin.ProvincesMaxSortModel, err error) {
 	if err = dao.SysProvinces.Ctx(ctx).Fields(dao.SysProvinces.Columns().Sort).OrderDesc(dao.SysProvinces.Columns().Sort).Scan(&res); err != nil {
 		err = gerror.Wrap(err, "获取省市区最大排序失败！")
 		return
@@ -116,12 +116,12 @@ func (s *sSysProvinces) MaxSort(ctx context.Context, in sysin.ProvincesMaxSortIn
 	if res == nil {
 		res = new(sysin.ProvincesMaxSortModel)
 	}
-	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	res.Sort = form.DefaultMaxSort(res.Sort)
 	return
 }
 
 // View 获取省市区信息
-func (s *sSysProvinces) View(ctx context.Context, in sysin.ProvincesViewInp) (res *sysin.ProvincesViewModel, err error) {
+func (s *sSysProvinces) View(ctx context.Context, in *sysin.ProvincesViewInp) (res *sysin.ProvincesViewModel, err error) {
 	if err = dao.SysProvinces.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, "获取省市区信息失败！")
 	}
@@ -129,7 +129,7 @@ func (s *sSysProvinces) View(ctx context.Context, in sysin.ProvincesViewInp) (re
 }
 
 // List 获取列表
-func (s *sSysProvinces) List(ctx context.Context, in sysin.ProvincesListInp) (list []*sysin.ProvincesListModel, totalCount int, err error) {
+func (s *sSysProvinces) List(ctx context.Context, in *sysin.ProvincesListInp) (list []*sysin.ProvincesListModel, totalCount int, err error) {
 	mod := dao.SysProvinces.Ctx(ctx)
 
 	if in.Title != "" {
@@ -157,7 +157,7 @@ func (s *sSysProvinces) List(ctx context.Context, in sysin.ProvincesListInp) (li
 }
 
 // ChildrenList 获取省市区下级列表
-func (s *sSysProvinces) ChildrenList(ctx context.Context, in sysin.ProvincesChildrenListInp) (list []*sysin.ProvincesChildrenListModel, totalCount int, err error) {
+func (s *sSysProvinces) ChildrenList(ctx context.Context, in *sysin.ProvincesChildrenListInp) (list []*sysin.ProvincesChildrenListModel, totalCount int, err error) {
 	mod := dao.SysProvinces.Ctx(ctx)
 
 	if in.Title != "" {
@@ -189,7 +189,7 @@ func (s *sSysProvinces) ChildrenList(ctx context.Context, in sysin.ProvincesChil
 }
 
 // UniqueId 获取省市区下级列表
-func (s *sSysProvinces) UniqueId(ctx context.Context, in sysin.ProvincesUniqueIdInp) (res *sysin.ProvincesUniqueIdModel, err error) {
+func (s *sSysProvinces) UniqueId(ctx context.Context, in *sysin.ProvincesUniqueIdInp) (res *sysin.ProvincesUniqueIdModel, err error) {
 	res = new(sysin.ProvincesUniqueIdModel)
 	res.IsUnique = true
 	if in.NewId == 0 {
@@ -204,7 +204,7 @@ func (s *sSysProvinces) UniqueId(ctx context.Context, in sysin.ProvincesUniqueId
 }
 
 // Select 省市区选项
-func (s *sSysProvinces) Select(ctx context.Context, in sysin.ProvincesSelectInp) (res *sysin.ProvincesSelectModel, err error) {
+func (s *sSysProvinces) Select(ctx context.Context, in *sysin.ProvincesSelectInp) (res *sysin.ProvincesSelectModel, err error) {
 	res = new(sysin.ProvincesSelectModel)
 	mod := dao.SysProvinces.Ctx(ctx).Fields("id as value, title as label, level").Where("pid", in.Value)
 

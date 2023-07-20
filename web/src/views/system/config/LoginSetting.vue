@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-spin :show="show" description="请稍候...">
-      <n-form :label-width="100" :model="formValue" :rules="rules" ref="formRef">
+      <n-form :label-width="100" :model="formValue" ref="formRef">
         <n-divider title-placement="left">开关配置</n-divider>
         <n-form-item label="登录验证码开关" path="loginCaptchaSwitch">
           <n-radio-group v-model:value="formValue.loginCaptchaSwitch" name="loginCaptchaSwitch">
@@ -47,7 +47,7 @@
 
         <n-divider title-placement="left">注册默认信息配置</n-divider>
         <n-form-item label="默认注册头像" path="loginAvatar">
-          <UploadImage :maxNumber="1" v-model:value="formValue.loginAvatar" />
+          <FileChooser v-model:value="formValue.loginAvatar" file-type="image" />
         </n-form-item>
 
         <n-form-item label="默认注册角色" path="loginRoleId">
@@ -100,16 +100,16 @@
   import { useMessage } from 'naive-ui';
   import { getConfig, updateConfig } from '@/api/sys/config';
   import Editor from '@/components/Editor/editor.vue';
+  import FileChooser from '@/components/FileChooser/index.vue';
   import { getDeptOption } from '@/api/org/dept';
   import { getRoleOption } from '@/api/system/role';
   import { getPostOption } from '@/api/org/post';
-  import UploadImage from '@/components/Upload/uploadImage.vue';
 
+  const message = useMessage();
+  const formRef: any = ref(null);
   const group = ref('login');
   const show = ref(false);
-  const rules = {};
-  const formRef: any = ref(null);
-  const message = useMessage();
+
   const formValue = ref({
     loginRegisterSwitch: 1,
     loginCaptchaSwitch: 1,
@@ -180,12 +180,6 @@
     });
   }
 
-  onMounted(async () => {
-    show.value = true;
-    await loadOptions();
-    load();
-  });
-
   function load() {
     show.value = true;
     new Promise((_resolve, _reject) => {
@@ -200,4 +194,10 @@
         });
     });
   }
+
+  onMounted(async () => {
+    show.value = true;
+    await loadOptions();
+    load();
+  });
 </script>

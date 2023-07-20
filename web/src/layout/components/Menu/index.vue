@@ -123,7 +123,9 @@
         if (/http(s)?:/.test(key)) {
           window.open(key);
         } else {
-          router.push({ name: key });
+          if (getSelectedKeys.value !== key){
+            router.push({ name: key });
+          }
         }
         emit('clickMenuItem' as any, key);
       }

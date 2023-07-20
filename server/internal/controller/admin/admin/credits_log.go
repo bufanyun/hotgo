@@ -11,12 +11,7 @@ import (
 	"context"
 	"hotgo/api/admin/creditslog"
 	"hotgo/internal/consts"
-	"hotgo/internal/model/input/adminin"
-	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
-	"hotgo/utility/validate"
-
-	"github.com/gogf/gf/v2/util/gconv"
 )
 
 var (
@@ -27,40 +22,20 @@ type cCreditsLog struct{}
 
 // List 查看资产变动列表
 func (c *cCreditsLog) List(ctx context.Context, req *creditslog.ListReq) (res *creditslog.ListRes, err error) {
-	var in adminin.CreditsLogListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	list, totalCount, err := service.AdminCreditsLog().List(ctx, in)
+	list, totalCount, err := service.AdminCreditsLog().List(ctx, &req.CreditsLogListInp)
 	if err != nil {
 		return
 	}
 
 	res = new(creditslog.ListRes)
 	res.List = list
-	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
-	res.Page = req.Page
-	res.PerPage = req.PerPage
+	res.PageRes.Pack(req, totalCount)
 	return
 }
 
 // Export 导出资产变动列表
 func (c *cCreditsLog) Export(ctx context.Context, req *creditslog.ExportReq) (res *creditslog.ExportRes, err error) {
-	var in adminin.CreditsLogListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	err = service.AdminCreditsLog().Export(ctx, in)
+	err = service.AdminCreditsLog().Export(ctx, &req.CreditsLogListInp)
 	return
 }
 

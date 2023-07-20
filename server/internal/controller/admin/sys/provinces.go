@@ -7,13 +7,9 @@ package sys
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/provinces"
 	"hotgo/internal/library/location"
-	"hotgo/internal/model/input/form"
-	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/validate"
 )
 
 var (
@@ -31,33 +27,19 @@ func (c *cProvinces) Tree(ctx context.Context, _ *provinces.TreeReq) (res *provi
 
 // Delete 删除
 func (c *cProvinces) Delete(ctx context.Context, req *provinces.DeleteReq) (res *provinces.DeleteRes, err error) {
-	var in sysin.ProvincesDeleteInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	err = service.SysProvinces().Delete(ctx, in)
+	err = service.SysProvinces().Delete(ctx, &req.ProvincesDeleteInp)
 	return
 }
 
 // Edit 更新
 func (c *cProvinces) Edit(ctx context.Context, req *provinces.EditReq) (res *provinces.EditRes, err error) {
-	var in sysin.ProvincesEditInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	err = service.SysProvinces().Edit(ctx, in)
+	err = service.SysProvinces().Edit(ctx, &req.ProvincesEditInp)
 	return
 }
 
 // MaxSort 最大排序
 func (c *cProvinces) MaxSort(ctx context.Context, req *provinces.MaxSortReq) (res *provinces.MaxSortRes, err error) {
-	data, err := service.SysProvinces().MaxSort(ctx, sysin.ProvincesMaxSortInp{})
+	data, err := service.SysProvinces().MaxSort(ctx, &req.ProvincesMaxSortInp)
 	if err != nil {
 		return
 	}
@@ -69,7 +51,7 @@ func (c *cProvinces) MaxSort(ctx context.Context, req *provinces.MaxSortReq) (re
 
 // View 获取指定信息
 func (c *cProvinces) View(ctx context.Context, req *provinces.ViewReq) (res *provinces.ViewRes, err error) {
-	data, err := service.SysProvinces().View(ctx, sysin.ProvincesViewInp{Id: req.Id})
+	data, err := service.SysProvinces().View(ctx, &req.ProvincesViewInp)
 	if err != nil {
 		return
 	}
@@ -81,67 +63,39 @@ func (c *cProvinces) View(ctx context.Context, req *provinces.ViewReq) (res *pro
 
 // List 查看列表
 func (c *cProvinces) List(ctx context.Context, req *provinces.ListReq) (res *provinces.ListRes, err error) {
-	var in sysin.ProvincesListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	list, totalCount, err := service.SysProvinces().List(ctx, in)
+	list, totalCount, err := service.SysProvinces().List(ctx, &req.ProvincesListInp)
 	if err != nil {
 		return
 	}
 
 	res = new(provinces.ListRes)
 	res.List = list
-	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
-	res.Page = req.Page
-	res.PerPage = req.PerPage
+	res.PageRes.Pack(req, totalCount)
 	return
 }
 
-// Status 更新部门状态
+// Status 更新省市区状态
 func (c *cProvinces) Status(ctx context.Context, req *provinces.StatusReq) (res *provinces.StatusRes, err error) {
-	var in sysin.ProvincesStatusInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	err = service.SysProvinces().Status(ctx, in)
+	err = service.SysProvinces().Status(ctx, &req.ProvincesStatusInp)
 	return
 }
 
 // ChildrenList 获取省市区下级列表
 func (c *cProvinces) ChildrenList(ctx context.Context, req *provinces.ChildrenListReq) (res *provinces.ChildrenListRes, err error) {
-	var in sysin.ProvincesChildrenListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	list, totalCount, err := service.SysProvinces().ChildrenList(ctx, in)
+	list, totalCount, err := service.SysProvinces().ChildrenList(ctx, &req.ProvincesChildrenListInp)
 	if err != nil {
 		return
 	}
 
 	res = new(provinces.ChildrenListRes)
 	res.List = list
-	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
-	res.Page = req.Page
-	res.PerPage = req.PerPage
+	res.PageRes.Pack(req, totalCount)
 	return
 }
 
 // UniqueId 地区ID是否唯一
 func (c *cProvinces) UniqueId(ctx context.Context, req *provinces.UniqueIdReq) (res *provinces.UniqueIdRes, err error) {
-	var in sysin.ProvincesUniqueIdInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	data, err := service.SysProvinces().UniqueId(ctx, in)
+	data, err := service.SysProvinces().UniqueId(ctx, &req.ProvincesUniqueIdInp)
 	if err != nil {
 		return
 	}
@@ -153,12 +107,7 @@ func (c *cProvinces) UniqueId(ctx context.Context, req *provinces.UniqueIdReq) (
 
 // Select 省市区选项
 func (c *cProvinces) Select(ctx context.Context, req *provinces.SelectReq) (res *provinces.SelectRes, err error) {
-	var in sysin.ProvincesSelectInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	data, err := service.SysProvinces().Select(ctx, in)
+	data, err := service.SysProvinces().Select(ctx, &req.ProvincesSelectInp)
 	if err != nil {
 		return
 	}

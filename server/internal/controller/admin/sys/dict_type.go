@@ -7,11 +7,8 @@ package sys
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/dict"
-	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/validate"
 )
 
 var (
@@ -29,26 +26,12 @@ func (c *cDictType) Tree(ctx context.Context, _ *dict.TypeTreeReq) (res *dict.Ty
 
 // Delete 删除
 func (c *cDictType) Delete(ctx context.Context, req *dict.TypeDeleteReq) (res *dict.TypeDeleteRes, err error) {
-	var in sysin.DictTypeDeleteInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	err = service.SysDictType().Delete(ctx, in)
+	err = service.SysDictType().Delete(ctx, &req.DictTypeDeleteInp)
 	return
 }
 
 // Edit 更新
 func (c *cDictType) Edit(ctx context.Context, req *dict.TypeEditReq) (res *dict.TypeEditRes, err error) {
-	var in sysin.DictTypeEditInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	err = service.SysDictType().Edit(ctx, in)
+	err = service.SysDictType().Edit(ctx, &req.DictTypeEditInp)
 	return
 }

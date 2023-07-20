@@ -47,15 +47,15 @@
         </n-form-item>
 
         <n-form-item label="单图" path="image">
-          <UploadImage :maxNumber="1" v-model:value="params.image" />
+          <UploadImage v-model:value="params.image" />
         </n-form-item>
 
         <n-form-item label="多图" path="images">
-          <UploadImage :maxNumber="10" v-model:value="params.images" />
+          <FileChooser :maxNumber="10" v-model:value="params.images" fileType="image" />
         </n-form-item>
 
         <n-form-item label="单附件" path="attachfile">
-          <UploadFile :maxNumber="1" v-model:value="params.attachfile" />
+          <FileChooser v-model:value="params.attachfile" />
         </n-form-item>
 
         <n-form-item label="多附件" path="attachfiles">
@@ -160,6 +160,7 @@
   import UploadImage from '@/components/Upload/uploadImage.vue';
   import UploadFile from '@/components/Upload/uploadFile.vue';
   import CitySelector from '@/components/CitySelector/citySelector.vue';
+  import FileChooser from '@/components/FileChooser/index.vue';
   const emit = defineEmits(['reloadTable', 'updateShowModal']);
 
   interface Props {

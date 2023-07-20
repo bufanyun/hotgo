@@ -23,10 +23,10 @@ import (
 type CreditsLogSaveBalanceInp struct {
 	MemberId    int64   `json:"memberId"    dc:"管理员ID"`
 	AppId       string  `json:"appId"       dc:"应用id"`
-	AddonsName  string  `json:"addonsName"  description:"插件名称"`
+	AddonsName  string  `json:"addonsName"  dc:"插件名称"`
 	CreditGroup string  `json:"creditGroup" dc:"变动的组别"`
 	Num         float64 `json:"num"         dc:"变动数据"`
-	Ip          string  `json:"ip"          description:"操作人IP"`
+	Ip          string  `json:"ip"          dc:"操作人IP"`
 	MapId       int64   `json:"mapId"       dc:"关联ID"`
 	Remark      string  `json:"remark"      dc:"备注"`
 }
@@ -51,7 +51,6 @@ func (in *CreditsLogSaveBalanceInp) Filter(ctx context.Context) (err error) {
 	if in.Ip == "" {
 		in.Ip = location.GetClientIp(ghttp.RequestFromCtx(ctx))
 	}
-
 	return
 }
 
@@ -62,10 +61,10 @@ type CreditsLogSaveBalanceModel struct {
 type CreditsLogSaveIntegralInp struct {
 	MemberId    int64   `json:"memberId"    dc:"管理员ID"`
 	AppId       string  `json:"appId"       dc:"应用id"`
-	AddonsName  string  `json:"addonsName"  description:"插件名称"`
+	AddonsName  string  `json:"addonsName"  dc:"插件名称"`
 	CreditGroup string  `json:"creditGroup" dc:"变动的组别"`
 	Num         float64 `json:"num"         dc:"变动数据"`
-	Ip          string  `json:"ip"          description:"操作人IP"`
+	Ip          string  `json:"ip"          dc:"操作人IP"`
 	MapId       int64   `json:"mapId"       dc:"关联ID"`
 	Remark      string  `json:"remark"      dc:"备注"`
 }
@@ -90,7 +89,6 @@ func (in *CreditsLogSaveIntegralInp) Filter(ctx context.Context) (err error) {
 	if in.Ip == "" {
 		in.Ip = location.GetClientIp(ghttp.RequestFromCtx(ctx))
 	}
-
 	return
 }
 

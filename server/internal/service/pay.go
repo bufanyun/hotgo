@@ -14,16 +14,10 @@ import (
 )
 
 type (
-	IPayRefund interface {
-		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
-		Refund(ctx context.Context, in payin.PayRefundInp) (res *payin.PayRefundModel, err error)
-		List(ctx context.Context, in payin.PayRefundListInp) (list []*payin.PayRefundListModel, totalCount int, err error)
-		Export(ctx context.Context, in payin.PayRefundListInp) (err error)
-	}
 	IPay interface {
 		Create(ctx context.Context, in payin.PayCreateInp) (res *payin.PayCreateModel, err error)
 		GenNotifyURL(ctx context.Context, in payin.PayCreateInp) (notifyURL string, err error)
-		Notify(ctx context.Context, in payin.PayNotifyInp) (res *payin.PayNotifyModel, err error)
+		Notify(ctx context.Context, in *payin.PayNotifyInp) (res *payin.PayNotifyModel, err error)
 		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
 		List(ctx context.Context, in payin.PayListInp) (list []*payin.PayListModel, totalCount int, err error)
 		Export(ctx context.Context, in payin.PayListInp) (err error)
@@ -31,6 +25,12 @@ type (
 		Delete(ctx context.Context, in payin.PayDeleteInp) (err error)
 		View(ctx context.Context, in payin.PayViewInp) (res *payin.PayViewModel, err error)
 		Status(ctx context.Context, in payin.PayStatusInp) (err error)
+	}
+	IPayRefund interface {
+		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
+		Refund(ctx context.Context, in *payin.PayRefundInp) (res *payin.PayRefundModel, err error)
+		List(ctx context.Context, in *payin.PayRefundListInp) (list []*payin.PayRefundListModel, totalCount int, err error)
+		Export(ctx context.Context, in *payin.PayRefundListInp) (err error)
 	}
 )
 

@@ -33,6 +33,9 @@ func main()  {
 	
 	// 演示系統操作限制，当开启演示模式时，所有POST请求将被拒绝
 	service.Middleware().DemoLimit()
+
+	// 请求输入预处理，api使用gf规范路由并且XxxReq结构体实现了validate.Filter接口即可隐式预处理
+	service.Middleware().PreFilter()
 	
 	// HTTP响应预处理，在业务处理完成后，对响应结果进行格式化和错误过滤，将处理后的数据发送给请求方
 	service.Middleware().ResponseHandler()
@@ -141,7 +144,6 @@ func main()  {
 ```
 
 2. 在`server/internal/logic/middleware/response.go`中根据请求的独有特征进行单独的处理，兼容后续http处理。
-
 
 
 #### 重写响应错误提示

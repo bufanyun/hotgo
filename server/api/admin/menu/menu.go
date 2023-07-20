@@ -34,7 +34,6 @@ type ListReq struct {
 }
 
 type ListRes struct {
-	//List adminin.MenuList `json:"list"   dc:"数据列表"`
 	*adminin.MenuListModel
 	form.PageRes
 }

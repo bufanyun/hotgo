@@ -96,7 +96,7 @@
         <div>
           <n-space>
             <n-button type="primary" @click="formSubmit">保存更新</n-button>
-<!--            <n-button type="default" @click="sendTest">测试支付</n-button>-->
+            <!--            <n-button type="default" @click="sendTest">测试支付</n-button>-->
           </n-space>
         </div>
       </n-form>

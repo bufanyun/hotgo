@@ -7,24 +7,30 @@ package tcp
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/container/gtype"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/gtcp"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/glog"
 	"github.com/gogf/gf/v2/os/grpool"
-	"hotgo/internal/consts"
 	"hotgo/utility/simple"
-	"reflect"
 	"sync"
-	"time"
 )
 
-// ClientConn 连接到tcp服务器的客户端对象
-type ClientConn struct {
-	Conn      *gtcp.Conn // 连接对象
-	Auth      *AuthMeta  // 认证元数据
-	heartbeat int64      // 心跳
+// Server tcp服务器
+type Server struct {
+	ctx        context.Context  // 上下文
+	name       string           // 服务器名称
+	addr       string           // 服务器地址
+	ln         *gtcp.Server     // tcp服务器
+	logger     *glog.Logger     // 日志处理器
+	wgLn       sync.WaitGroup   // 流程控制，让tcp服务器按可控流程启动退出
+	closeFlag  *gtype.Bool      // 服务关闭标签
+	clients    map[string]*Conn // 已登录的认证客户端
+	mutexConns sync.Mutex       // 连接锁，主要用于客户端上下线
+	taskGo     *grpool.Pool     // 任务协程池
+	msgParser  *MsgParser       // 消息处理器
 }
 
 // ServerConfig tcp服务器配置
@@ -33,182 +39,121 @@ type ServerConfig struct {
 	Addr string // 监听地址
 }
 
-// Server tcp服务器对象结构
-type Server struct {
-	Ctx          context.Context          // 上下文
-	Logger       *glog.Logger             // 日志处理器
-	addr         string                   // 连接地址
-	name         string                   // 服务器名称
-	rpc          *Rpc                     // rpc协议
-	ln           *gtcp.Server             // tcp服务器
-	wgLn         sync.WaitGroup           // 状态控制，主要用于tcp服务器能够按流程启动退出
-	mutex        sync.Mutex               // 服务器状态锁
-	closeFlag    bool                     // 服务关闭标签
-	clients      map[string]*ClientConn   // 已登录的认证客户端
-	mutexConns   sync.Mutex               // 连接锁，主要用于客户端上下线
-	msgGo        *grpool.Pool             // 消息处理协程池
-	cronRouters  map[string]RouterHandler // 定时任务路由
-	queueRouters map[string]RouterHandler // 队列路由
-	authRouters  map[string]RouterHandler // 任务路由
-}
-
 // NewServer 初始一个tcp服务器对象
-func NewServer(config *ServerConfig) (server *Server, err error) {
+func NewServer(config *ServerConfig) (server *Server) {
+	server = new(Server)
+	server.ctx = gctx.New()
+	server.logger = g.Log("tcpServer")
+
+	baseErr := gerror.New("TCPServer start fail")
 	if config == nil {
-		err = gerror.New("config is nil")
+		server.logger.Fatal(server.ctx, gerror.Wrap(baseErr, "config is nil"))
 		return
 	}
 
 	if config.Addr == "" {
-		err = gerror.New("server address is not set")
+		server.logger.Fatal(server.ctx, gerror.Wrap(baseErr, "server address is not set"))
 		return
 	}
 
-	server = new(Server)
-	server.Ctx = gctx.New()
-
 	if config.Name == "" {
-		config.Name = simple.AppName(server.Ctx)
+		config.Name = simple.AppName(server.ctx)
 	}
 
 	server.addr = config.Addr
 	server.name = config.Name
 	server.ln = gtcp.NewServer(server.addr, server.accept, config.Name)
-	server.clients = make(map[string]*ClientConn)
-	server.closeFlag = false
-	server.Logger = g.Log("tcpServer")
-	server.msgGo = grpool.New(20)
-	server.rpc = NewRpc(server.Ctx, server.msgGo, server.Logger)
+	server.closeFlag = gtype.NewBool(false)
+	server.clients = make(map[string]*Conn)
+	server.taskGo = grpool.New(20)
+	server.msgParser = NewMsgParser(server.handleRoutineTask)
+
 	server.startCron()
 	return
 }
 
 // accept
 func (server *Server) accept(conn *gtcp.Conn) {
-	defer func() {
-		server.mutexConns.Lock()
-		_ = conn.Close()
-		// 从登录列表中移除
-		delete(server.clients, conn.RemoteAddr().String())
-		server.mutexConns.Unlock()
+	tcpConn := NewConn(conn, server.logger, server.msgParser)
+	server.AddClient(tcpConn)
+	go func() {
+		if err := tcpConn.Run(); err != nil {
+			server.logger.Info(server.ctx, err)
+		}
+
+		// cleanup
+		tcpConn.Close()
+		server.RemoveClient(tcpConn)
 	}()
+}
 
-	for {
-		msg, err := RecvPkg(conn)
-		if err != nil {
-			server.Logger.Debugf(server.Ctx, "RecvPkg err:%+v, client closed.", err)
-			break
-		}
-
-		client := server.getLoginConn(conn)
-
-		switch msg.Router {
-		case "ServerLogin": // 服务登录
-			// 初始化上下文
-			ctx := initCtx(gctx.New(), &Context{
-				Conn: conn,
-			})
-			server.doHandleRouterMsg(ctx, server.onServerLogin, msg.Data)
-		case "ServerHeartbeat": // 心跳
-			if client == nil {
-				server.Logger.Infof(server.Ctx, "conn not connected, ignore the heartbeat, msg:%+v", msg)
-				continue
-			}
-			// 初始化上下文
-			ctx := initCtx(gctx.New(), &Context{})
-			server.doHandleRouterMsg(ctx, server.onServerHeartbeat, msg.Data, client)
-		default: // 通用路由消息处理
-			if client == nil {
-				server.Logger.Warningf(server.Ctx, "conn is not logged in but sends a routing message. actively conn disconnect, msg:%+v", msg)
-				time.Sleep(time.Second)
-				conn.Close()
-				return
-			}
-			server.handleRouterMsg(msg, client)
-		}
+// RemoveClient 移除客户端
+func (server *Server) RemoveClient(conn *Conn) {
+	label := server.ClientLabel(conn.Conn)
+	if _, ok := server.clients[label]; ok {
+		server.mutexConns.Lock()
+		delete(server.clients, label)
+		server.mutexConns.Unlock()
 	}
 }
 
-// handleRouterMsg 处理路由消息
-func (server *Server) handleRouterMsg(msg *Message, client *ClientConn) {
-	// 验证签名
-	in, err := VerifySign(msg.Data, client.Auth.AppId, client.Auth.SecretKey)
-	if err != nil {
-		server.Logger.Warningf(server.Ctx, "handleRouterMsg VerifySign err:%+v message: %+v", err, msg)
-		return
-	}
-
-	// 初始化上下文
-	ctx := initCtx(gctx.New(), &Context{
-		Conn:    client.Conn,
-		Auth:    client.Auth,
-		TraceID: in.TraceID,
-	})
-
-	// 响应rpc消息
-	if server.rpc.HandleMsg(ctx, msg.Data) {
-		return
-	}
-
-	handle := func(routers map[string]RouterHandler, group string) {
-		if routers == nil {
-			server.Logger.Debugf(server.Ctx, "handleRouterMsg route is not initialized %v message: %+v", group, msg)
-			return
-		}
-		f, ok := routers[msg.Router]
-		if !ok {
-			server.Logger.Debugf(server.Ctx, "handleRouterMsg invalid %v message: %+v", group, msg)
-			return
-		}
-
-		server.doHandleRouterMsg(ctx, f, msg.Data)
-	}
-
-	switch client.Auth.Group {
-	case consts.TCPClientGroupCron:
-		handle(server.cronRouters, client.Auth.Group)
-	case consts.TCPClientGroupQueue:
-		handle(server.queueRouters, client.Auth.Group)
-	case consts.TCPClientGroupAuth:
-		handle(server.authRouters, client.Auth.Group)
-	default:
-		server.Logger.Warningf(server.Ctx, "group is not registered: %+v", client.Auth.Group)
-	}
+// AddClient 添加客户端
+func (server *Server) AddClient(conn *Conn) {
+	server.mutexConns.Lock()
+	server.clients[server.ClientLabel(conn.Conn)] = conn
+	server.mutexConns.Unlock()
 }
 
-// doHandleRouterMsg 处理路由消息
-func (server *Server) doHandleRouterMsg(ctx context.Context, fun RouterHandler, args ...interface{}) {
-	ctx, cancel := context.WithCancel(ctx)
-	err := server.msgGo.AddWithRecover(ctx,
-		func(ctx context.Context) {
-			fun(ctx, args...)
-			cancel()
-		},
-		func(ctx context.Context, err error) {
-			server.Logger.Warningf(ctx, "doHandleRouterMsg msgGo exec err:%+v", err)
-			cancel()
-		},
-	)
-
-	if err != nil {
-		server.Logger.Warningf(ctx, "doHandleRouterMsg msgGo Add err:%+v", err)
+// AuthClient 认证客户端
+func (server *Server) AuthClient(conn *Conn, auth *AuthMeta) {
+	label := server.ClientLabel(conn.Conn)
+	client, ok := server.clients[label]
+	if !ok {
+		server.logger.Debugf(server.ctx, "authClient client does not exist:%v", label)
 		return
 	}
+	client.Auth = auth
 }
 
-// getLoginConn 获取指定已登录的连接
-func (server *Server) getLoginConn(conn *gtcp.Conn) *ClientConn {
-	client, ok := server.clients[conn.RemoteAddr().String()]
+// ClientLabel 客户端标识
+func (server *Server) ClientLabel(conn *gtcp.Conn) string {
+	return conn.RemoteAddr().String()
+}
+
+// GetClient 获取指定连接
+func (server *Server) GetClient(conn *gtcp.Conn) *Conn {
+	client, ok := server.clients[server.ClientLabel(conn)]
 	if !ok {
 		return nil
 	}
 	return client
 }
 
-// getLoginConn 获取指定appid的所有连接
-func (server *Server) getAppIdClients(appid string) (list []*ClientConn) {
+// GetClients 获取所有连接
+func (server *Server) GetClients() map[string]*Conn {
+	return server.clients
+}
+
+// GetClientById 通过连接ID获取连接
+func (server *Server) GetClientById(id int64) *Conn {
+	server.mutexConns.Lock()
+	defer server.mutexConns.Unlock()
+
 	for _, v := range server.clients {
-		if v.Auth.AppId == appid {
+		if v.CID == id {
+			return v
+		}
+	}
+	return nil
+}
+
+// GetAppIdClients 获取指定appid的所有连接
+func (server *Server) GetAppIdClients(appid string) (list []*Conn) {
+	server.mutexConns.Lock()
+	defer server.mutexConns.Unlock()
+
+	for _, v := range server.clients {
+		if v.Auth != nil && v.Auth.AppId == appid {
 			list = append(list, v)
 		}
 	}
@@ -216,70 +161,63 @@ func (server *Server) getAppIdClients(appid string) (list []*ClientConn) {
 }
 
 // GetGroupClients 获取指定分组的所有连接
-func (server *Server) GetGroupClients(group string) (list []*ClientConn) {
+func (server *Server) GetGroupClients(group string) (list []*Conn) {
+	server.mutexConns.Lock()
+	defer server.mutexConns.Unlock()
+
 	for _, v := range server.clients {
-		if v.Auth.Group == group {
+		if v.Auth != nil && v.Auth.Group == group {
 			list = append(list, v)
 		}
 	}
 	return
 }
 
-// RegisterAuthRouter 注册授权路由
-func (server *Server) RegisterAuthRouter(routers map[string]RouterHandler) {
-	server.mutex.Lock()
-	defer server.mutex.Unlock()
-
-	if server.authRouters == nil {
-		server.authRouters = make(map[string]RouterHandler)
-	}
-
-	for i, router := range routers {
-		_, ok := server.authRouters[i]
-		if ok {
-			server.Logger.Debugf(server.Ctx, "server authRouters duplicate registration:%v", i)
-			continue
-		}
-		server.authRouters[i] = router
-	}
+// GetAppIdOnline 获取指定appid的在线数量
+func (server *Server) GetAppIdOnline(appid string) int {
+	return len(server.GetAppIdClients(appid))
 }
 
-// RegisterCronRouter 注册任务路由
-func (server *Server) RegisterCronRouter(routers map[string]RouterHandler) {
-	server.mutex.Lock()
-	defer server.mutex.Unlock()
-
-	if server.cronRouters == nil {
-		server.cronRouters = make(map[string]RouterHandler)
-	}
-
-	for i, router := range routers {
-		_, ok := server.cronRouters[i]
-		if ok {
-			server.Logger.Debugf(server.Ctx, "server cronRouters duplicate registration:%v", i)
-			continue
-		}
-		server.cronRouters[i] = router
-	}
+// GetAllOnline 获取所有在线数量
+func (server *Server) GetAllOnline() int {
+	return len(server.clients)
 }
 
-// RegisterQueueRouter 注册队列路由
-func (server *Server) RegisterQueueRouter(routers map[string]RouterHandler) {
-	server.mutex.Lock()
-	defer server.mutex.Unlock()
+// GetAuthOnline 获取所有已登录认证在线数量
+func (server *Server) GetAuthOnline() int {
+	server.mutexConns.Lock()
+	defer server.mutexConns.Unlock()
 
-	if server.queueRouters == nil {
-		server.queueRouters = make(map[string]RouterHandler)
-	}
-
-	for i, router := range routers {
-		_, ok := server.queueRouters[i]
-		if ok {
-			server.Logger.Debugf(server.Ctx, "server queueRouters duplicate registration:%v", i)
-			continue
+	online := 0
+	for _, v := range server.clients {
+		if v.Auth != nil {
+			online++
 		}
-		server.queueRouters[i] = router
 	}
+	return online
+}
+
+// RegisterRouter 注册路由
+func (server *Server) RegisterRouter(routers ...interface{}) {
+	err := server.msgParser.RegisterRouter(routers...)
+	if err != nil {
+		server.logger.Fatal(server.ctx, err)
+	}
+	return
+}
+
+// RegisterRPCRouter 注册RPC路由
+func (server *Server) RegisterRPCRouter(routers ...interface{}) {
+	err := server.msgParser.RegisterRPCRouter(routers...)
+	if err != nil {
+		server.logger.Fatal(server.ctx, err)
+	}
+	return
+}
+
+// RegisterInterceptor 注册拦截器
+func (server *Server) RegisterInterceptor(interceptors ...Interceptor) {
+	server.msgParser.RegisterInterceptor(interceptors...)
 }
 
 // Listen 监听服务
@@ -291,77 +229,68 @@ func (server *Server) Listen() (err error) {
 
 // Close 关闭服务
 func (server *Server) Close() {
-	if server.closeFlag {
+	if server.closeFlag.Val() {
 		return
 	}
-	server.closeFlag = true
 
+	server.closeFlag.Set(true)
 	server.stopCron()
 
 	server.mutexConns.Lock()
 	for _, client := range server.clients {
-		_ = client.Conn.Close()
+		client.Conn.Close()
 	}
 	server.clients = nil
 	server.mutexConns.Unlock()
 
 	if server.ln != nil {
-		_ = server.ln.Close()
+		server.ln.Close()
 	}
 	server.wgLn.Wait()
 }
 
 // IsClose 服务是否关闭
 func (server *Server) IsClose() bool {
-	return server.closeFlag
+	return server.closeFlag.Val()
 }
 
-// Write 向指定客户端发送消息
-func (server *Server) Write(conn *gtcp.Conn, data interface{}) (err error) {
-	if server.closeFlag {
-		return gerror.New("service is down")
-	}
-
-	msgType := reflect.TypeOf(data)
-	if msgType == nil || msgType.Kind() != reflect.Ptr {
-		return gerror.Newf("json message pointer required: %+v", data)
-	}
-
-	msg := &Message{Router: msgType.Elem().Name(), Data: data}
-
-	return SendPkg(conn, msg)
-}
-
-// Send 发送消息
-func (server *Server) Send(ctx context.Context, client *ClientConn, data interface{}) (err error) {
-	MsgPkg(data, client.Auth, gctx.CtxId(ctx))
-	return server.Write(client.Conn, data)
-}
-
-// Reply 回复消息
-func (server *Server) Reply(ctx context.Context, data interface{}) (err error) {
-	user := GetCtx(ctx)
-	if user == nil {
-		err = gerror.New("获取回复用户信息失败")
-		return
-	}
-	MsgPkg(data, user.Auth, user.TraceID)
-	return server.Write(user.Conn, data)
-}
-
-// RpcRequest 向指定客户端发送消息并等待响应结果
-func (server *Server) RpcRequest(ctx context.Context, client *ClientConn, data interface{}) (res interface{}, err error) {
-	var (
-		traceID = MsgPkg(data, client.Auth, gctx.CtxId(ctx))
-		key     = server.rpc.GetCallId(client.Conn, traceID)
+// handleRoutineTask 处理协程任务
+func (server *Server) handleRoutineTask(ctx context.Context, task func()) {
+	ctx, cancel := context.WithCancel(ctx)
+	err := server.taskGo.AddWithRecover(ctx,
+		func(ctx context.Context) {
+			task()
+			cancel()
+		},
+		func(ctx context.Context, err error) {
+			server.logger.Warningf(ctx, "routineTask exec err:%+v", err)
+			cancel()
+		},
 	)
 
-	if traceID == "" {
-		err = gerror.New("traceID is required")
+	if err != nil {
+		server.logger.Warningf(ctx, "routineTask add err:%+v", err)
+	}
+}
+
+// GetRoutes 获取所有路由
+func (server *Server) GetRoutes() (routes []RouteHandler) {
+	if server.msgParser.routers == nil {
 		return
 	}
 
-	return server.rpc.Request(key, func() {
-		_ = server.Write(client.Conn, data)
-	})
+	for _, v := range server.msgParser.routers {
+		routes = append(routes, *v)
+	}
+	return
+}
+
+// Request 向指定客户端发送消息并等待响应结果
+func (server *Server) Request(ctx context.Context, client *Conn, data interface{}) (interface{}, error) {
+	return client.Request(ctx, data)
+}
+
+// RequestScan 向指定客户端发送消息并等待响应结果，将结果保存在response中
+func (server *Server) RequestScan(ctx context.Context, client *Conn, data, response interface{}) error {
+	return client.RequestScan(ctx, data, response)
 }

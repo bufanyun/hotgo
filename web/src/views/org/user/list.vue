@@ -228,7 +228,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref } from 'vue';
+  import { h, reactive, ref, onMounted } from 'vue';
   import { useDialog, useMessage } from 'naive-ui';
   import { ActionItem, BasicTable, TableAction } from '@/components/Table';
   import { BasicForm } from '@/components/Form/index';
@@ -243,7 +243,7 @@
   import QrcodeVue from 'qrcode.vue';
   import AddBalance from './addBalance.vue';
   import AddIntegral from './addIntegral.vue';
-  import { addNewState, addState, options, register, defaultState } from './model';
+  import { addNewState, addState, options, register, defaultState, loadOptions } from './model';
   import { usePermission } from '@/hooks/web/usePermission';
   import { useUserStore } from '@/store/modules/user';
   import { LoginRoute } from '@/router';
@@ -518,11 +518,15 @@
     formParams.value = addNewState(record as addState);
   }
 
-  function handleInviteQR(code: string) {
+  function handleInviteQR(code: any) {
     const domain = getNowUrl() + '#';
     qrParams.value.qrUrl = domain + LoginRoute.path + '?scope=register&inviteCode=' + code;
     showQrModal.value = true;
   }
+
+  onMounted(async () => {
+    await loadOptions();
+  });
 </script>
 
 <style lang="less" scoped></style>
