@@ -245,7 +245,7 @@ func (s *sAdminNotice) PullMessages(ctx context.Context, in *adminin.PullMessage
 		res.NoticeUnreadCountModel = unread
 	}
 
-	if err = s.Model(ctx).WhereIn("id", messageIds).Limit(in.Limit).Order("id desc").Scan(&res.List); err != nil {
+	if err = s.Model(ctx, &handler.Option{FilterAuth: false}).WhereIn("id", messageIds).Limit(in.Limit).Order("id desc").Scan(&res.List); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
