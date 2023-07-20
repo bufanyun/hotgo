@@ -118,6 +118,14 @@
   import { HelpCircleOutline } from '@vicons/ionicons5';
   import { defRangeShortcuts } from '@/utils/dateUtil';
 
+  type RowData = {
+    createdAt: string;
+    status: number;
+    name: string;
+    id: number;
+    children?: RowData[];
+  };
+
   const rules = {
     name: {
       required: true,
@@ -197,6 +205,9 @@
   const dialog = useDialog();
   const showModal = ref(false);
   const formBtnLoading = ref(false);
+  let formParams = ref<any>();
+  const data = ref<any>([]);
+  const rowKey = (row: RowData) => row.id;
 
   const defaultState = {
     id: 0,
@@ -212,16 +223,7 @@
     createdAt: '',
     updatedAt: '',
   };
-  let formParams = ref<any>();
 
-  type RowData = {
-    createdAt: string;
-    status: number;
-    name: string;
-    id: number;
-    children?: RowData[];
-  };
-  const data = ref<any>([]);
   const columns: DataTableColumns<RowData> = [
     {
       title(_column) {
@@ -332,8 +334,6 @@
       },
     },
   ];
-
-  const rowKey = (row: RowData) => row.id;
 
   function addTable() {
     showModal.value = true;

@@ -26,7 +26,6 @@
 - [消息队列](sys-queue.md)
 - [功能扩展库](sys-library.md)
 - [工具方法](sys-utility.md)
-- RESTful Api
 - Websocket服务器
 - [TCP服务器](sys-tcp-server.md)
 - [单元测试](sys-test.md)
