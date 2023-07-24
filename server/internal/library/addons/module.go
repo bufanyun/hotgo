@@ -137,9 +137,9 @@ func NewView(ctx context.Context, name string) *gview.View {
 	}
 	view.SetDelimiters(delimiters[0], delimiters[1])
 
-	//// 更多配置
-	//view.SetI18n()
-	//// ...
+	// 更多配置
+	// view.SetI18n()
+	// ...
 	return view
 }
 

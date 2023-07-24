@@ -30,13 +30,8 @@ func (c *cPost) Edit(ctx context.Context, req *post.EditReq) (res *post.EditRes,
 
 // MaxSort 最大排序
 func (c *cPost) MaxSort(ctx context.Context, req *post.MaxSortReq) (res *post.MaxSortRes, err error) {
-	data, err := service.AdminPost().MaxSort(ctx, &req.PostMaxSortInp)
-	if err != nil {
-		return
-	}
-
 	res = new(post.MaxSortRes)
-	res.Sort = data.Sort
+	res.PostMaxSortModel, err = service.AdminPost().MaxSort(ctx, &req.PostMaxSortInp)
 	return
 }
 

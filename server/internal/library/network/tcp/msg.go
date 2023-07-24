@@ -34,7 +34,6 @@ func (i *ServerRes) SetMessage(msg ...string) {
 	message := "操作成功"
 	if len(msg) > 0 {
 		message = msg[0]
-		return
 	}
 	i.Message = message
 }
@@ -45,7 +44,6 @@ func (i *ServerRes) SetError(err error) {
 		i.Code = gerror.Code(err).Code()
 		i.Message = err.Error()
 	}
-	return
 }
 
 // GetError 获取响应中的错误

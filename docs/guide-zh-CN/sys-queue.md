@@ -3,6 +3,7 @@
 目录
 
 - 配置文件
+- 实现接口
 - 一个例子
 - 控制台
 - 自定义队列驱动
@@ -41,6 +42,18 @@ queue:
     multiConsumer: true                               # 是否支持创建多个消费者
 
 ```
+
+### 实现接口
+- 为了提供高度的扩展性，消费队列在设计上采用了接口化的思路。只需要实现以下接口，您就可以在任何地方注册和使用消费队列消费功能，从而实现更大的灵活性和可扩展性。
+
+```go
+// Consumer 消费者接口，实现该接口即可加入到消费队列中
+type Consumer interface {
+    GetTopic() string                                    // 获取消费主题
+    Handle(ctx context.Context, mqMsg MqMsg) (err error) // 处理消息的方法
+}
+```
+
 
 ### 一个例子
 

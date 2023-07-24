@@ -90,7 +90,6 @@ func (m *MsgParser) RegisterRPCRouter(routers ...interface{}) (err error) {
 // RegisterInterceptor 注册拦截器
 func (m *MsgParser) RegisterInterceptor(interceptors ...Interceptor) {
 	m.interceptors = append(interceptors, interceptors...)
-	return
 }
 
 // Encoding 消息编码
@@ -166,7 +165,6 @@ func (m *MsgParser) doHandleRouterMsg(ctx context.Context, handler *RouteHandler
 				responseMsg, deErr := m.doDecoding(ctx, results[0].Interface(), msg.MsgId)
 				if deErr != nil && responseErr == nil {
 					responseErr = deErr
-					return
 				}
 
 				if responseErr != nil {

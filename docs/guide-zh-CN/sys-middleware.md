@@ -114,7 +114,8 @@ func (c *cHello) Hello(ctx context.Context, req *user.HelloReq) (res *user.Hello
 ```
 
 - 浏览器中访问响应内容如下：
-  ![./images/sys-middleware-com-response.png](./images/sys-middleware-com-response.png)
+
+![./images/sys-middleware-com-response.png](./images/sys-middleware-com-response.png)
 
 
 #### 自定义响应

@@ -19,16 +19,15 @@ func (server *Server) getCronKey(s string) string {
 
 // stopCron 停止定时任务
 func (server *Server) stopCron() {
-	for _, v := range gcron.Entries() {
-		gcron.Remove(v.Name)
-	}
+	gcron.Remove(server.getCronKey(CronHeartbeatVerify))
+	gcron.Remove(server.getCronKey(CronAuthVerify))
 }
 
 // startCron 启动定时任务
 func (server *Server) startCron() {
 	// 心跳超时检查
 	if gcron.Search(server.getCronKey(CronHeartbeatVerify)) == nil {
-		gcron.AddSingleton(server.ctx, "@every 300s", func(ctx context.Context) {
+		_, _ = gcron.AddSingleton(server.ctx, "@every 300s", func(ctx context.Context) {
 			if server == nil || server.clients == nil {
 				return
 			}
@@ -43,7 +42,7 @@ func (server *Server) startCron() {
 
 	// 认证检查
 	if gcron.Search(server.getCronKey(CronAuthVerify)) == nil {
-		gcron.AddSingleton(server.ctx, "@every 300s", func(ctx context.Context) {
+		_, _ = gcron.AddSingleton(server.ctx, "@every 300s", func(ctx context.Context) {
 			if server == nil || server.clients == nil {
 				return
 			}
@@ -52,7 +51,7 @@ func (server *Server) startCron() {
 					continue
 				}
 				if client.Auth.EndAt.Before(gtime.Now()) {
-					client.Conn.Close()
+					_ = client.Conn.Close()
 					server.logger.Debugf(server.ctx, "client auth expired, close conn. auth:%+v", client.Auth)
 				}
 			}

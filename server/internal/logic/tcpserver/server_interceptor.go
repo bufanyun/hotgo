@@ -37,7 +37,7 @@ func (s *sTCPServer) isNoVerifyRouter(router string) bool {
 // DefaultInterceptor 默认拦截器
 func (s *sTCPServer) DefaultInterceptor(ctx context.Context, msg *tcp.Message) (err error) {
 	conn := tcp.ConnFromCtx(ctx)
-	//g.Log().Debugf(ctx, "DefaultInterceptor msg:%+v, conn:%+v", msg, gjson.New(conn).String())
+	// g.Log().Debugf(ctx, "DefaultInterceptor msg:%+v, conn:%+v", msg, gjson.New(conn).String())
 
 	// 免登录
 	if s.isNoLoginRouter(msg.Router) {
@@ -70,6 +70,6 @@ func (s *sTCPServer) DefaultInterceptor(ctx context.Context, msg *tcp.Message) (
 
 // PreFilterInterceptor 预处理
 func (s *sTCPServer) PreFilterInterceptor(ctx context.Context, msg *tcp.Message) (err error) {
-	//g.Log().Debug(ctx, "PreFilterInterceptor...")
+	// g.Log().Debug(ctx, "PreFilterInterceptor...")
 	return
 }

@@ -105,9 +105,9 @@ func (manager *ClientManager) DelClients(client *Client) {
 }
 
 // GetClient 通过socket ID获取客户端的连接
-func (manager *ClientManager) GetClient(ID string) (client *Client) {
+func (manager *ClientManager) GetClient(id string) (client *Client) {
 	for c := range manager.Clients {
-		if c.ID == ID {
+		if c.ID == id {
 			return c
 		}
 	}
@@ -164,8 +164,8 @@ func (manager *ClientManager) EventRegister(client *Client) {
 		UserId: client.User.Id,
 		Client: client,
 	})
-	////发送当前客户端标识
-	//SendSuccess(client, "connected", g.Map{"id": client.ID, "userInfo": client.User})
+	// 发送当前客户端标识
+	// SendSuccess(client, "connected", g.Map{"id": client.ID, "userInfo": client.User})
 }
 
 // EventLogin 用户登录事件
@@ -196,7 +196,6 @@ func (manager *ClientManager) clearTimeoutConnections() {
 	clients := clientManager.GetClients()
 	for client := range clients {
 		if client.IsHeartbeatTimeout(currentTime) {
-			//fmt.Println("心跳时间超时 关闭连接", client.Addr, client.UserId, client.LoginTime, client.HeartbeatTime)
 			_ = client.Socket.Close()
 		}
 	}
@@ -210,14 +209,16 @@ func (manager *ClientManager) ping() {
 			return
 		}
 	}()
-	////定时任务，发送心跳包
-	//gcron.Add(ctx, "0 */1 * * * *", func(ctx context.Context) {
+
+	// 定时任务，发送心跳包
+	// gcron.Add(ctx, "0 */1 * * * *", func(ctx context.Context) {
 	//	res := &WResponse{
 	//		Event:     "ping",
-	//		Timestamp: gtime.Now().Unix(),
-	//	}
-	//	SendToAll(res)
-	//})
+	// 		Timestamp: gtime.Now().Unix(),
+	// 	}
+	// 	SendToAll(res)
+	// })
+
 	// 定时任务，清理超时连接
 	_, _ = gcron.Add(ctxManager, "*/30 * * * * *", func(ctx context.Context) {
 		manager.clearTimeoutConnections()

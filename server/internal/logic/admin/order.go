@@ -206,8 +206,8 @@ func (s *sAdminOrder) Create(ctx context.Context, in *adminin.OrderCreateInp) (r
 		// 读取商品信息，读取商品最终支付价格
 		// ...
 
-		//in.Money = 999
-		//subject = fmt.Sprintf("购买商品:%v", "测试商品名称")
+		// in.Money = 999
+		// subject = fmt.Sprintf("购买商品:%v", "测试商品名称")
 
 	default:
 		err = gerror.New("不支持的订单类型")
@@ -290,7 +290,7 @@ func (s *sAdminOrder) List(ctx context.Context, in *adminin.OrderListInp) (list 
 		return
 	}
 
-	//关联表select
+	// 关联表select
 	fields, err := hgorm.GenJoinSelect(ctx, adminin.OrderListModel{}, &dao.AdminOrder, []*hgorm.Join{
 		{Dao: &dao.PayLog, Alias: "payLog"},
 	})

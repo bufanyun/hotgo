@@ -52,7 +52,7 @@ type MaxSortReq struct {
 }
 
 type MaxSortRes struct {
-	Sort int `json:"sort" dc:"排序"`
+	*adminin.DeptMaxSortModel
 }
 
 // StatusReq 更新部门状态

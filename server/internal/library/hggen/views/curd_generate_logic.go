@@ -19,7 +19,7 @@ const (
 	LogicWhereComments      = "\n\t// 查询%s\n"
 	LogicWhereNoSupport     = "\t// TODO 暂不支持生成[ %s ]查询方式，请自行补充此处代码！"
 	LogicListSimpleSelect   = "\tfields, err := hgorm.GenSelect(ctx, sysin.%sListModel{}, dao.%s)\n\tif err != nil {\n\t\treturn\n\t}"
-	LogicListJoinSelect     = "\t//关联表select\n\tfields, err := hgorm.GenJoinSelect(ctx, %sin.%sListModel{}, &dao.%s, []*hgorm.Join{\n%v\t})\n\n\tif err != nil {\n\t\terr = gerror.Wrap(err, \"获取%s关联字段失败，请稍后重试！\")\n\t\treturn\n\t}"
+	LogicListJoinSelect     = "\t// 关联表select\n\tfields, err := hgorm.GenJoinSelect(ctx, %sin.%sListModel{}, &dao.%s, []*hgorm.Join{\n%v\t})\n\n\tif err != nil {\n\t\terr = gerror.Wrap(err, \"获取%s关联字段失败，请稍后重试！\")\n\t\treturn\n\t}"
 	LogicListJoinOnRelation = "\t// 关联表%s\n\tmod = mod.%s(hgorm.GenJoinOnRelation(\n\t\tdao.%s.Table(), dao.%s.Columns().%s, // 主表表名,关联字段\n\t\tdao.%s.Table(), \"%s\", dao.%s.Columns().%s, // 关联表表名,别名,关联字段\n\t)...)\n\n"
 	LogicEditUpdate         = "\tif _, err = s.Model(ctx%s).\n\t\t\tFields(%sin.%sUpdateFields{}).\n\t\t\tWherePri(in.%s).Data(in).Update(); err != nil {\n\t\t\terr = gerror.Wrap(err, \"修改%s失败，请稍后重试！\")\n\t\t}\n\t\treturn"
 	LogicEditInsert         = "\tif _, err = s.Model(ctx, &handler.Option{FilterAuth: false}).\n\t\tFields(%sin.%sInsertFields{}).\n\t\tData(in).Insert(); err != nil {\n\t\terr = gerror.Wrap(err, \"新增%s失败，请稍后重试！\")\n\t}"

@@ -112,19 +112,6 @@ func (s *sSysAddonsConfig) UpdateConfigByGroup(ctx context.Context, in *sysin.Up
 			row := s.getConfigByKey(k, models)
 			// 新增
 			if row == nil {
-				//row.Id = 0
-				//row.Key = k
-				//row.Value = gconv.String(v)
-				//row.Group = in.Group
-				//row.Status = consts.StatusEnabled
-				//row.CreatedAt = gtime.Now()
-				//row.UpdatedAt = gtime.Now()
-				//_, err := dao.SysAddonsConfig.Ctx(ctx).Data(row).Insert()
-				//if err != nil {
-				//	err = gerror.Wrap(err, consts.ErrorORM)
-				//	return err
-				//}
-				//continue
 				return gerror.Newf("暂不支持从前台添加变量，请先在数据库表[%v]中配置变量：%v", dao.SysAddonsConfig.Table(), k)
 			}
 

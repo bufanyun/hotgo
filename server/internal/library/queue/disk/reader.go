@@ -117,8 +117,9 @@ func (r *reader) close() {
 // sync index and offset
 func (r *reader) sync() {
 	name := path.Join(r.config.Path, indexFile)
-	data, _ := json.Marshal(&r.checkpoint)
-	_ = os.WriteFile(name, data, filePerm)
+	if data, err := json.Marshal(&r.checkpoint); err == nil {
+		_ = os.WriteFile(name, data, filePerm)
+	}
 }
 
 // restore index and offset

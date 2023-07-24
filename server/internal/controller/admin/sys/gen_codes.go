@@ -37,13 +37,8 @@ func (c *cGenCodes) Edit(ctx context.Context, req *gencodes.EditReq) (res *genco
 
 // MaxSort 最大排序
 func (c *cGenCodes) MaxSort(ctx context.Context, req *gencodes.MaxSortReq) (res *gencodes.MaxSortRes, err error) {
-	data, err := service.SysGenCodes().MaxSort(ctx, &req.GenCodesMaxSortInp)
-	if err != nil {
-		return
-	}
-
 	res = new(gencodes.MaxSortRes)
-	res.Sort = data.Sort
+	res.GenCodesMaxSortModel, err = service.SysGenCodes().MaxSort(ctx, &req.GenCodesMaxSortInp)
 	return
 }
 

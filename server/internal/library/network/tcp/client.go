@@ -206,7 +206,7 @@ func (client *Client) read() {
 			client.Close()
 			client.logger.Debugf(client.ctx, "client are about to be reconnected..")
 			time.Sleep(client.config.ConnectInterval)
-			client.Start()
+			_ = client.Start()
 		}()
 
 		if err := client.conn.Run(); err != nil {

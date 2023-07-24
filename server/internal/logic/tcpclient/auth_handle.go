@@ -36,7 +36,7 @@ func (s *sAuthClient) OnResponseExampleHello(ctx context.Context, req *servmsg.E
 func (s *sAuthClient) testExample(ctx context.Context) {
 	// 发起tcp请求
 	// 异步执行，服务端返回消息后会转到`OnResponseExampleHello`中
-	s.client.Send(ctx, &servmsg.ExampleHelloReq{
+	_ = s.client.Send(ctx, &servmsg.ExampleHelloReq{
 		Name: "Tom",
 	})
 

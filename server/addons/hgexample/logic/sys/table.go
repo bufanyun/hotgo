@@ -87,14 +87,6 @@ func (s *sSysTable) List(ctx context.Context, in *sysin.TableListInp) (list []*s
 		mod = mod.Where(fmt.Sprintf(`JSON_CONTAINS(%s,'%v')`, cols.Hobby, in.Hobby))
 	}
 
-	//// 关联表testCategory
-	//mod = mod.LeftJoin(hgorm.GenJoinOnRelation(
-	//	dao.AddonHgexampleTable.Table(), cols.CategoryId, // 主表表名,关联条件
-	//	dao.AddonHgexampleTableCategory.Table(), "testCategory", dao.AddonHgexampleTableCategory.Columns().Id, // 关联表表名,别名,关联条件
-	//)...)
-	//
-	//mod = mod.Where(`testCategory.`+dao.AddonHgexampleTableCategory.Columns().Name, "微信公众号")
-
 	totalCount, err = mod.Clone().Count(1)
 	if err != nil {
 		err = gerror.Wrap(err, "获取表格数据行失败，请稍后重试！")

@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package captcha
 
 import (
@@ -17,21 +16,21 @@ import (
 // Generate 生成验证码
 func Generate(ctx context.Context) (id string, base64 string) {
 	// 字符
-	//driver := &base64Captcha.DriverString{
-	//	Height: 42,
-	//	Width:  100,
-	//	//NoiseCount:      50,
-	//	//ShowLineOptions: 20,
-	//	Length: 4,
-	//	BgColor: &color.RGBA{
-	//		R: 255,
-	//		G: 250,
-	//		B: 250,
-	//		A: 250,
-	//	},
-	//	Source: "0123456789", // abcdefghjkmnpqrstuvwxyz23456789
-	//	Fonts:  []string{"chromohv.ttf"},
-	//}
+	//	driver := &base64Captcha.DriverString{
+	//		Height: 42,
+	//		Width:  100,
+	//		//NoiseCount:      50,
+	//		//ShowLineOptions: 20,
+	//		Length: 4,
+	//		BgColor: &color.RGBA{
+	//			R: 255,
+	//			G: 250,
+	//			B: 250,
+	//			A: 250,
+	//		},
+	//		Source: "0123456789", // abcdefghjkmnpqrstuvwxyz23456789
+	//		Fonts:  []string{"chromohv.ttf"},
+	//	}
 
 	// 算数
 	driver := &base64Captcha.DriverMath{

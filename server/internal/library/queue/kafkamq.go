@@ -85,7 +85,7 @@ func (r *KafkaMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) 
 		return gerror.New("queue kafka consumer not register")
 	}
 
-	consumer := Consumer{
+	consumer := KaConsumer{
 		ready:        make(chan bool),
 		receiveDoFun: receiveDo,
 	}
@@ -219,26 +219,25 @@ func validateVersion(version sarama.KafkaVersion) bool {
 	return false
 }
 
-type Consumer struct {
+type KaConsumer struct {
 	ready        chan bool
 	receiveDoFun func(mqMsg MqMsg)
 }
 
 // Setup is run at the beginning of a new session, before ConsumeClaim
-func (consumer *Consumer) Setup(sarama.ConsumerGroupSession) error {
+func (consumer *KaConsumer) Setup(sarama.ConsumerGroupSession) error {
 	// Mark the consumer as ready
 	close(consumer.ready)
 	return nil
 }
 
 // Cleanup is run at the end of a session, once all ConsumeClaim goroutines have exited
-func (consumer *Consumer) Cleanup(sarama.ConsumerGroupSession) error {
+func (consumer *KaConsumer) Cleanup(sarama.ConsumerGroupSession) error {
 	return nil
 }
 
 // ConsumeClaim must start a consumer loop of ConsumerGroupClaim's Messages().
-func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-
+func (consumer *KaConsumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 	// NOTE:
 	// Do not move the code below to a goroutine.
 	// The `ConsumeClaim` itself is called within a goroutine, see:

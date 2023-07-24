@@ -97,7 +97,6 @@ var defaultWhereModeMap = map[string]string{
 
 // setDefault 设置默认属性
 func setDefault(field *sysin.GenCodesColumnListModel) {
-
 	setDefaultEdit(field)
 
 	setDefaultFormMode(field)
@@ -192,7 +191,6 @@ func setDefaultFormMode(field *sysin.GenCodesColumnListModel) {
 		field.FormMode = FormModeInputEditor
 		return
 	}
-
 }
 
 // setDefaultFormRole 设置默认表单验证

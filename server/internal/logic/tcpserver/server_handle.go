@@ -39,7 +39,7 @@ func (s *sTCPServer) onServerLogin(ctx context.Context, req *tcp.ServerLoginReq)
 	}
 	if models == nil {
 		res.SetError(gerror.New("授权信息不存在"))
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
@@ -47,39 +47,39 @@ func (s *sTCPServer) onServerLogin(ctx context.Context, req *tcp.ServerLoginReq)
 	sign := encrypt.Md5ToString(fmt.Sprintf("%v%v%v", models.Appid, req.Timestamp, models.SecretKey))
 	if sign != req.Sign {
 		res.SetError(gerror.New("签名错误，请检查！"))
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
 	if models.Status != consts.StatusEnabled {
 		res.SetError(gerror.New("授权已禁用，请联系管理员"))
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
 	if models.Group != req.Group {
 		res.SetError(gerror.New("你登录的授权分组未得到授权，请联系管理员"))
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
 	if models.EndAt.Before(gtime.Now()) {
 		res.SetError(gerror.New("授权已过期，请联系管理员"))
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
 	ip := gstr.StrTillEx(conn.RemoteAddr().String(), ":")
 	if !convert.MatchIpStrategy(models.AllowedIps, ip) {
 		res.SetError(gerror.New("IP(" + ip + ")未授权，请联系管理员"))
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
 	var routes []string
 	if err := models.Routes.Scan(&routes); err != nil {
 		res.SetError(gerror.New("授权路由解析失败，请联系管理员"))
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
@@ -92,14 +92,14 @@ func (s *sTCPServer) onServerLogin(ctx context.Context, req *tcp.ServerLoginReq)
 			client.Close()
 		}
 		res.SetError(gerror.New("授权登录端超出上限，请勿多地登录"))
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
 	for _, client := range clients {
 		if client.Auth.Name == req.Name {
 			res.SetError(gerror.Newf("应用名称[%v]已存在登录用户，当前连接已被拒绝。", req.Name))
-			conn.Send(ctx, res)
+			_ = conn.Send(ctx, res)
 			return
 		}
 	}
@@ -123,12 +123,12 @@ func (s *sTCPServer) onServerLogin(ctx context.Context, req *tcp.ServerLoginReq)
 	}
 	if _, err := dao.SysServeLicense.Ctx(ctx).Where(cols.Id, models.Id).Data(update).Update(); err != nil {
 		res.SetError(err)
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
 	g.Log().Debugf(ctx, "onServerLogin succeed. appid:%v, group:%v, name:%v", auth.AppId, auth.Group, auth.Name)
-	conn.Send(ctx, res)
+	_ = conn.Send(ctx, res)
 }
 
 // onServerHeartbeat 处理客户端心跳
@@ -146,7 +146,7 @@ func (s *sTCPServer) onServerHeartbeat(ctx context.Context, req *tcp.ServerHeart
 	client := s.serv.GetClient(conn.Conn)
 	if client == nil {
 		res.SetError(gerror.New("登录异常，请重新登录"))
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
@@ -159,9 +159,9 @@ func (s *sTCPServer) onServerHeartbeat(ctx context.Context, req *tcp.ServerHeart
 	}
 	if _, err := dao.SysServeLicense.Ctx(ctx).Where(dao.SysServeLicense.Columns().Appid, client.Auth.AppId).Data(update).Update(); err != nil {
 		res.SetError(err)
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
-	conn.Send(ctx, res)
+	_ = conn.Send(ctx, res)
 }

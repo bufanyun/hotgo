@@ -31,13 +31,8 @@ func (c *cDept) Edit(ctx context.Context, req *dept.EditReq) (res *dept.EditRes,
 
 // MaxSort 最大排序
 func (c *cDept) MaxSort(ctx context.Context, req *dept.MaxSortReq) (res *dept.MaxSortRes, err error) {
-	data, err := service.AdminDept().MaxSort(ctx, &req.DeptMaxSortInp)
-	if err != nil {
-		return
-	}
-
 	res = new(dept.MaxSortRes)
-	res.Sort = data.Sort
+	res.DeptMaxSortModel, err = service.AdminDept().MaxSort(ctx, &req.DeptMaxSortInp)
 	return
 }
 

@@ -114,7 +114,6 @@ func AutoTradeType(payType, userAgent string) (tradeType string) {
 		}
 		return consts.TradeTypeQQWeb
 	default:
-
 	}
 	return
 }

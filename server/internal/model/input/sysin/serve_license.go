@@ -25,7 +25,7 @@ type ServeLicenseUpdateFields struct {
 	Appid       string `json:"appid"       dc:"应用ID"`
 	SecretKey   string `json:"secretKey"   dc:"应用秘钥"`
 	OnlineLimit int    `json:"onlineLimit" dc:"在线数量限制，默认1"`
-	//Routes      *gjson.Json `json:"routes"      dc:"路由表，空使用默认分组路由"`
+	// Routes      *gjson.Json `json:"routes"      dc:"路由表，空使用默认分组路由"`
 	AllowedIps string      `json:"allowedIps"  dc:"白名单，*代表所有，只有允许的IP才能连接到tcp服务"`
 	EndAt      *gtime.Time `json:"endAt"       dc:"授权结束时间"`
 	Remark     string      `json:"remark"      dc:"备注"`
@@ -39,7 +39,7 @@ type ServeLicenseInsertFields struct {
 	Appid       string `json:"appid"       dc:"应用ID"`
 	SecretKey   string `json:"secretKey"   dc:"应用秘钥"`
 	OnlineLimit int    `json:"onlineLimit" dc:"在线数量限制，默认1"`
-	//Routes      *gjson.Json `json:"routes"      dc:"路由表，空使用默认分组路由"`
+	// Routes      *gjson.Json `json:"routes"      dc:"路由表，空使用默认分组路由"`
 	AllowedIps string      `json:"allowedIps"  dc:"白名单，*代表所有，只有允许的IP才能连接到tcp服务"`
 	EndAt      *gtime.Time `json:"endAt"       dc:"授权结束时间"`
 	Remark     string      `json:"remark"      dc:"备注"`

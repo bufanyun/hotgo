@@ -56,12 +56,12 @@ func (l *gCurd) generateWebEditFormItem(ctx context.Context, in *CurdPreviewInpu
 		case FormModeDate:
 			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <DatePicker v-model:formValue=\"params.%s\" type=\"date\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
 
-		//case FormModeDateRange:  // 必须要有两个字段，后面优化下
+		// case FormModeDateRange:  // 必须要有两个字段，后面优化下
 
 		case FormModeTime:
 			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <DatePicker v-model:formValue=\"params.%s\" type=\"datetime\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
 
-		//case FormModeTimeRange: // 必须要有两个字段，后面优化下
+		// case FormModeTimeRange: // 必须要有两个字段，后面优化下
 
 		case FormModeRadio:
 			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-radio-group v-model:value=\"params.%s\" name=\"%s\">\n            <n-radio-button\n              v-for=\"%s in options.%s\"\n              :key=\"%s.value\"\n              :value=\"%s.value\"\n              :label=\"%s.label\"\n            />\n          </n-radio-group>\n          </n-form-item>", field.Dc, field.TsName, field.TsName, field.TsName, field.TsName, in.options.dictMap[field.TsName], field.TsName, field.TsName, field.TsName)
@@ -109,7 +109,6 @@ func (l *gCurd) generateWebEditFormItem(ctx context.Context, in *CurdPreviewInpu
 		} else {
 			buffer.WriteString("          " + component + "\n\n")
 		}
-
 	}
 	return buffer.String()
 }
@@ -167,7 +166,6 @@ func (l *gCurd) generateWebEditScript(ctx context.Context, in *CurdPreviewInput)
 				importBuffer.WriteString("  import CitySelector from '@/components/CitySelector/citySelector.vue';\n")
 			}
 		}
-
 	}
 
 	data["import"] = importBuffer.String()

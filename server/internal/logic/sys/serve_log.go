@@ -72,7 +72,7 @@ func (s *sSysServeLog) List(ctx context.Context, in *sysin.ServeLogListInp) (lis
 		return
 	}
 
-	//关联表select
+	// 关联表select
 	fields, err := hgorm.GenJoinSelect(ctx, sysin.ServeLogListModel{}, &dao.SysServeLog, []*hgorm.Join{
 		{Dao: &dao.SysLog, Alias: "sysLog"},
 	})

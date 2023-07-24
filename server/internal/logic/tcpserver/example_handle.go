@@ -27,14 +27,14 @@ func (s *sTCPServer) OnExampleHello(ctx context.Context, req *servmsg.ExampleHel
 
 	if conn.Auth == nil {
 		res.SetError(gerror.New("连接未认证，请确认已登录成功！"))
-		conn.Send(ctx, res)
+		_ = conn.Send(ctx, res)
 		return
 	}
 
 	data.Desc = fmt.Sprintf("Hello %v, 你的APPID：%v，当前HotGo版本：%v，你成功请求了`servmsg.ExampleHelloReq`接口！", req.Name, conn.Auth.AppId, consts.VersionApp)
 	data.Timestamp = gtime.Now()
 	res.Data = data
-	conn.Send(ctx, res)
+	_ = conn.Send(ctx, res)
 }
 
 // OnExampleRPCHello 一个rpc请求例子

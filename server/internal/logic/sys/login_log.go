@@ -83,7 +83,7 @@ func (s *sSysLoginLog) List(ctx context.Context, in *sysin.LoginLogListInp) (lis
 		return
 	}
 
-	//关联表select
+	// 关联表select
 	fields, err := hgorm.GenJoinSelect(ctx, sysin.LoginLogListModel{}, &dao.SysLoginLog, []*hgorm.Join{
 		{Dao: &dao.SysLog, Alias: "sysLog"},
 	})
@@ -98,12 +98,6 @@ func (s *sSysLoginLog) List(ctx context.Context, in *sysin.LoginLogListInp) (lis
 	}
 
 	for _, v := range list {
-		//// 获取省市编码对应的地区名称
-		//region, err := location.ParseRegion(ctx, v.SysLogProvinceId, v.SysLogCityId, 0)
-		//if err != nil {
-		//	return list, totalCount, err
-		//}
-		//v.Region = region
 		v.Os = useragent.GetOs(v.SysLogUserAgent)
 		v.Browser = useragent.GetBrowser(v.SysLogUserAgent)
 	}

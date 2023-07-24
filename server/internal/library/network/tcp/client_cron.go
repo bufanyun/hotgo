@@ -14,14 +14,13 @@ import (
 
 // getCronKey 生成客户端定时任务名称
 func (client *Client) getCronKey(s string) string {
-	return fmt.Sprintf("tcp.client_%s:%s", s, client.conn.LocalAddr().String())
+	return fmt.Sprintf("tcp.client_%s:%d", s, client.conn.CID)
 }
 
 // stopCron 停止定时任务
 func (client *Client) stopCron() {
-	for _, v := range gcron.Entries() {
-		gcron.Remove(v.Name)
-	}
+	gcron.Remove(client.getCronKey(CronHeartbeatVerify))
+	gcron.Remove(client.getCronKey(CronHeartbeat))
 }
 
 // startCron 启动定时任务

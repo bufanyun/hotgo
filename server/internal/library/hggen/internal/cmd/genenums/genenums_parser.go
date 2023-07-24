@@ -33,15 +33,15 @@ type EnumItem struct {
 
 var standardPackages = make(map[string]struct{})
 
-func init() {
-	stdPackages, err := packages.Load(nil, "std")
-	if err != nil {
-		panic(err)
-	}
-	for _, p := range stdPackages {
-		standardPackages[p.ID] = struct{}{}
-	}
-}
+//func init() {
+//	stdPackages, err := packages.Load(nil, "std")
+//	if err != nil {
+//		panic(err)
+//	}
+//	for _, p := range stdPackages {
+//		standardPackages[p.ID] = struct{}{}
+//	}
+//}
 
 func NewEnumsParser(prefixes []string) *EnumsParser {
 	return &EnumsParser{

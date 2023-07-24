@@ -12,7 +12,6 @@ type CronDeleteReq struct {
 
 type CronDeleteRes struct {
 	tcp.ServerRes
-	sysin.CronDeleteModel
 }
 
 // CronEditReq 编辑任务
@@ -22,7 +21,6 @@ type CronEditReq struct {
 
 type CronEditRes struct {
 	tcp.ServerRes
-	*sysin.CronEditModel
 }
 
 // CronStatusReq 修改任务状态
@@ -32,7 +30,6 @@ type CronStatusReq struct {
 
 type CronStatusRes struct {
 	tcp.ServerRes
-	*sysin.CronStatusModel
 }
 
 // CronOnlineExecReq 在线执行
@@ -42,5 +39,4 @@ type CronOnlineExecReq struct {
 
 type CronOnlineExecRes struct {
 	tcp.ServerRes
-	*sysin.OnlineExecModel
 }

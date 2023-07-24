@@ -32,13 +32,8 @@ func (c *cNotice) Edit(ctx context.Context, req *notice.EditReq) (res *notice.Ed
 
 // MaxSort 最大排序
 func (c *cNotice) MaxSort(ctx context.Context, req *notice.MaxSortReq) (res *notice.MaxSortRes, err error) {
-	data, err := service.AdminNotice().MaxSort(ctx, &req.NoticeMaxSortInp)
-	if err != nil {
-		return
-	}
-
 	res = new(notice.MaxSortRes)
-	res.Sort = data.Sort
+	res.NoticeMaxSortModel, err = service.AdminNotice().MaxSort(ctx, &req.NoticeMaxSortInp)
 	return
 }
 

@@ -7,7 +7,6 @@ package sys
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -168,7 +167,8 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 	}
 
 	// 请求头
-	if reqHeadersBytes, _ := json.Marshal(request.Header); len(gconv.String(reqHeadersBytes)) > 0 {
+
+	if reqHeadersBytes, _ := gjson.New(request.Header).MarshalJSON(); len(reqHeadersBytes) > 0 {
 		headerData = gjson.New(reqHeadersBytes)
 	}
 
@@ -322,25 +322,12 @@ func (s *sSysLog) List(ctx context.Context, in *sysin.LogListInp) (list []*sysin
 			list[i].MemberName = memberName.String()
 		}
 
-		//// 接口
-		//if list[i].AppId == consts.AppApi {
-		//	//memberName, err = dao.Member.Ctx(ctx).Fields("realname").Where("id", res.List[i].MemberId).Value()
-		//	//if err != nil {
-		//	//	err = gerror.Wrap(err, consts.ErrorORM)
-		//	//	return nil, err
-		//	//}
-		//}
+		// 接口
+		// ...
 
 		if list[i].MemberName == "" {
 			list[i].MemberName = "游客"
 		}
-
-		//// 获取省市编码对应的地区名称
-		//region, err := dao.SysProvinces.GetRegion(ctx, list[i].ProvinceId, list[i].CityId)
-		//if err != nil {
-		//	return list, totalCount, err
-		//}
-		//list[i].Region = region
 
 		// 截取请求url路径
 		if gstr.Contains(list[i].Url, "?") {
@@ -354,7 +341,6 @@ func (s *sSysLog) List(ctx context.Context, in *sysin.LogListInp) (list []*sysin
 			   ]
 			}`)
 		}
-
 	}
 	return
 }

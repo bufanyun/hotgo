@@ -96,7 +96,7 @@ func (s *sAuthClient) onLoginEvent() {
 	ctx := gctx.New()
 
 	// 获取授权信息
-	s.client.Send(ctx, &servmsg.AuthSummaryReq{})
+	_ = s.client.Send(ctx, &servmsg.AuthSummaryReq{})
 
 	// 测试例子，实际使用时可以注释掉
 	s.testExample(ctx)

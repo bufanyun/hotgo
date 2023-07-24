@@ -85,7 +85,7 @@ type MenuListModel struct {
 type MenuRouteMeta struct {
 	// 解释参考：https://naive-ui-admin-docs.vercel.app/guide/router.html#%E5%A4%9A%E7%BA%A7%E8%B7%AF%E7%94%B1
 	Title string `json:"title"` // 菜单名称 一般必填
-	//Disabled   bool   `json:"disabled,omitempty"`   // 禁用菜单
+	// Disabled   bool   `json:"disabled,omitempty"`   // 禁用菜单
 	Icon       string `json:"icon,omitempty"`       // 菜单图标
 	KeepAlive  bool   `json:"keepAlive,omitempty"`  // 缓存该路由
 	Hidden     bool   `json:"hidden,omitempty"`     // 隐藏菜单

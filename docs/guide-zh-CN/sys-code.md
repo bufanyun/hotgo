@@ -31,7 +31,7 @@
 
 ### 生成模板配置
 
-- 注意：线上环境务必将allowedIPs参数设为空，考虑到项目安全问题请勿线上生成使用！
+- 注意：线上环境务必将`allowedIPs`参数设为空，考虑到项目安全问题请勿线上生成使用！
 
 - 默认配置路径：server/manifest/config/config.yaml
 

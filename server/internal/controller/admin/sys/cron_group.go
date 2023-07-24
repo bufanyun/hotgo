@@ -31,13 +31,8 @@ func (c *cCronGroup) Edit(ctx context.Context, req *cron.GroupEditReq) (res *cro
 
 // MaxSort 最大排序
 func (c *cCronGroup) MaxSort(ctx context.Context, req *cron.GroupMaxSortReq) (res *cron.GroupMaxSortRes, err error) {
-	data, err := service.SysCronGroup().MaxSort(ctx, &req.CronGroupMaxSortInp)
-	if err != nil {
-		return
-	}
-
 	res = new(cron.GroupMaxSortRes)
-	res.Sort = data.Sort
+	res.CronGroupMaxSortModel, err = service.SysCronGroup().MaxSort(ctx, &req.CronGroupMaxSortInp)
 	return
 }
 

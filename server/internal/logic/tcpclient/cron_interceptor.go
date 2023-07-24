@@ -12,7 +12,7 @@ import (
 
 // DefaultInterceptor 默认拦截器
 func (s *sCronClient) DefaultInterceptor(ctx context.Context, msg *tcp.Message) (err error) {
-	//conn := tcp.ConnFromCtx(ctx)
-	//g.Log().Debugf(ctx, "DefaultInterceptor msg:%+v, conn:%+v", msg, gjson.New(conn).String())
+	// conn := tcp.ConnFromCtx(ctx)
+	// g.Log().Debugf(ctx, "DefaultInterceptor msg:%+v, conn:%+v", msg, gjson.New(conn).String())
 	return
 }

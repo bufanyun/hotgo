@@ -203,7 +203,6 @@ func (server *Server) RegisterRouter(routers ...interface{}) {
 	if err != nil {
 		server.logger.Fatal(server.ctx, err)
 	}
-	return
 }
 
 // RegisterRPCRouter 注册RPC路由
@@ -212,7 +211,6 @@ func (server *Server) RegisterRPCRouter(routers ...interface{}) {
 	if err != nil {
 		server.logger.Fatal(server.ctx, err)
 	}
-	return
 }
 
 // RegisterInterceptor 注册拦截器

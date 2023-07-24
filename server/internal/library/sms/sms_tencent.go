@@ -85,14 +85,14 @@ func (d *TencentDrive) SendCode(ctx context.Context, in *sysin.SendCodeInp) (err
 	 * 示例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号，最多不要超过200个手机号*/
 	request.PhoneNumberSet = common.StringPtrs([]string{fmt.Sprintf("+86%v", in.Mobile)})
 
-	///* 用户的 session 内容（无需要可忽略）: 可以携带用户侧 ID 等上下文信息，server 会原样返回 */
-	//request.SessionContext = common.StringPtr("")
-	//
-	///* 短信码号扩展号（无需要可忽略）: 默认未开通，如需开通请联系 [腾讯云短信小助手] */
-	//request.ExtendCode = common.StringPtr("")
-	//
-	///* 国际/港澳台短信 SenderId（无需要可忽略）: 国内短信填空，默认未开通，如需开通请联系 [腾讯云短信小助手] */
-	//request.SenderId = common.StringPtr("")
+	/* 用户的 session 内容（无需要可忽略）: 可以携带用户侧 ID 等上下文信息，server 会原样返回 */
+	// request.SessionContext = common.StringPtr("")
+
+	/* 短信码号扩展号（无需要可忽略）: 默认未开通，如需开通请联系 [腾讯云短信小助手] */
+	// request.ExtendCode = common.StringPtr("")
+
+	/* 国际/港澳台短信 SenderId（无需要可忽略）: 国内短信填空，默认未开通，如需开通请联系 [腾讯云短信小助手] */
+	// request.SenderId = common.StringPtr("")
 
 	// 通过client对象调用想要访问的接口，需要传入请求对象
 	response, err := client.SendSms(request)
