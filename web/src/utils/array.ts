@@ -1,75 +1,3 @@
-export function arrayDelIndex(array: any, keyName: string, key: string): any {
-  if (array === null || array === undefined || array.length === 0) {
-    return array;
-  }
-
-  const newArray = [];
-  for (let i = 0; i < array.length; i++) {
-    if (array[i][keyName] !== undefined && array[i][keyName] === key) {
-      continue;
-    }
-    // @ts-ignore
-    newArray.push(array[i]);
-  }
-
-  return newArray;
-}
-
-export function arrayAddIndex(array: any, keyName: string, key: string, row: any): any {
-  if (array === null || array === undefined) {
-    return array;
-  }
-  const newArray = [];
-
-  if (array.length === 0) {
-    // @ts-ignore
-    newArray.push(row);
-  } else {
-    let isFor = false;
-    for (let i = 0; i < array.length; i++) {
-      if (array[i][keyName] !== undefined && array[i][keyName] === key) {
-        array[i] = row;
-        isFor = true;
-      }
-      // @ts-ignore
-      newArray.push(array[i]);
-    }
-
-    if (!isFor) {
-      // @ts-ignore
-      newArray.push(row);
-    }
-  }
-
-  return newArray;
-}
-
-export function objDalEmpty(obj: object): object {
-  for (const key in obj) {
-    if (obj[key] === '' || obj[key] === undefined || obj[key] == null || obj[key].length === 0) {
-      delete obj[key];
-    }
-  }
-  return obj;
-}
-
-export function filterArray(condition, data) {
-  return data.filter((item) => {
-    return Object.keys(condition).every((key) => {
-      return String(item[key]).toLowerCase().includes(String(condition[key]).trim().toLowerCase());
-    });
-  });
-}
-
-export function findIndex(value, arr) {
-  for (let i = 0; i < arr.length; i++) {
-    const item = arr[i];
-    if (item.value == value) {
-      return i;
-    }
-  }
-  return false;
-}
 
 export function delNullProperty(obj) {
   for (const i in obj) {
@@ -121,11 +49,6 @@ export function encodeParams(obj) {
   return arr.join('&');
 }
 
-/**
- * 对象拷贝
- * @param obj2
- * @param obj1
- */
 export function copyObj(obj2: any, obj1: any) {
   for (const key in obj1) {
     if (obj2[key] !== undefined) {
@@ -133,4 +56,9 @@ export function copyObj(obj2: any, obj1: any) {
     }
   }
   return obj2;
+}
+
+// 返回两个数组的差集
+export function findArrayDifference(arr1: number[], arr2: number[]): number[] {
+  return arr1.filter((num) => !arr2.includes(num));
 }

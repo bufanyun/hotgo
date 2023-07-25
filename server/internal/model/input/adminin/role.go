@@ -115,7 +115,7 @@ type RoleListModel struct {
 // RoleMemberListInp 查询列表
 type RoleMemberListInp struct {
 	form.PageReq
-	form.RangeDateReq
+
 	form.StatusReq
 	Role      int    `json:"role"        dc:"角色ID"`
 	DeptId    int    `json:"deptId"      dc:"部门ID"`

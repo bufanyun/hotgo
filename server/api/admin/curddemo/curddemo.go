@@ -3,7 +3,7 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-// @AutoGenerate Version 2.7.3
+// @AutoGenerate Version 2.7.6
 package curddemo
 
 import (
@@ -47,6 +47,7 @@ type EditReq struct {
 	g.Meta `path:"/curdDemo/edit" method:"post" tags:"生成演示" summary:"修改/新增生成演示"`
 	sysin.CurdDemoEditInp
 }
+
 type EditRes struct{}
 
 // DeleteReq 删除生成演示
@@ -60,6 +61,7 @@ type DeleteRes struct{}
 // MaxSortReq 获取生成演示最大排序
 type MaxSortReq struct {
 	g.Meta `path:"/curdDemo/maxSort" method:"get" tags:"生成演示" summary:"获取生成演示最大排序"`
+	sysin.CurdDemoMaxSortInp
 }
 
 type MaxSortRes struct {

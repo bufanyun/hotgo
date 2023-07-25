@@ -19,14 +19,7 @@ var (
 	ctxManager    context.Context                 // 主上下文
 	clientManager = NewClientManager()            // 客户端管理
 	routers       = make(map[string]EventHandler) // 消息路由
-	msgGo         = grpool.New(20)
-	upGrader      = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		CheckOrigin: func(r *http.Request) bool {
-			return true
-		},
-	}
+	msgGo         = grpool.New(20)                // 消息处理协程池
 )
 
 // Start 启动
@@ -44,6 +37,13 @@ func Stop() {
 
 // WsPage ws入口
 func WsPage(r *ghttp.Request) {
+	upGrader := websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
 	conn, err := upGrader.Upgrade(r.Response.ResponseWriter, r.Request, nil)
 	if err != nil {
 		return

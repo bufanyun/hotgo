@@ -23,7 +23,7 @@ type cEms struct{}
 
 // SendTest 发送测试邮件
 func (c *cEms) SendTest(ctx context.Context, req *common.SendTestEmailReq) (res *common.SendTestEmailRes, err error) {
-	err = service.SysEmsLog().Send(ctx, sysin.SendEmsInp{
+	err = service.SysEmsLog().Send(ctx, &sysin.SendEmsInp{
 		Event: consts.EmsTemplateText,
 		Email: req.To,
 		Content: `
@@ -47,16 +47,13 @@ func (c *cSms) SendBindEms(ctx context.Context, _ *common.SendBindEmsReq) (res *
 		memberId = contexts.GetUserId(ctx)
 		models   *entity.AdminMember
 	)
+
 	if memberId <= 0 {
 		err = gerror.New("用户身份异常，请重新登录！")
 		return
 	}
 
-	err = g.Model("admin_member").
-		Fields("email").
-		Where("id", memberId).
-		Scan(&models)
-	if err != nil {
+	if err = g.Model("admin_member").Fields("email").Where("id", memberId).Scan(&models); err != nil {
 		return
 	}
 
@@ -70,7 +67,7 @@ func (c *cSms) SendBindEms(ctx context.Context, _ *common.SendBindEmsReq) (res *
 		return
 	}
 
-	err = service.SysEmsLog().Send(ctx, sysin.SendEmsInp{
+	err = service.SysEmsLog().Send(ctx, &sysin.SendEmsInp{
 		Event: consts.EmsTemplateBind,
 		Email: models.Email,
 	})

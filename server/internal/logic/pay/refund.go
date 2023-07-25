@@ -49,7 +49,7 @@ func (s *sPayRefund) Model(ctx context.Context, option ...*handler.Option) *gdb.
 }
 
 // Refund 订单退款
-func (s *sPayRefund) Refund(ctx context.Context, in payin.PayRefundInp) (res *payin.PayRefundModel, err error) {
+func (s *sPayRefund) Refund(ctx context.Context, in *payin.PayRefundInp) (res *payin.PayRefundModel, err error) {
 	var models *entity.PayLog
 	if err = service.Pay().Model(ctx).Where(dao.PayLog.Columns().OrderSn, in.OrderSn).Scan(&models); err != nil {
 		return
@@ -135,12 +135,11 @@ func (s *sPayRefund) Refund(ctx context.Context, in payin.PayRefundInp) (res *pa
 	if _, err = s.Model(ctx).Data(data).Insert(); err != nil {
 		return
 	}
-
 	return
 }
 
 // List 获取交易退款列表
-func (s *sPayRefund) List(ctx context.Context, in payin.PayRefundListInp) (list []*payin.PayRefundListModel, totalCount int, err error) {
+func (s *sPayRefund) List(ctx context.Context, in *payin.PayRefundListInp) (list []*payin.PayRefundListModel, totalCount int, err error) {
 	mod := s.Model(ctx)
 
 	// 查询变动ID
@@ -192,7 +191,7 @@ func (s *sPayRefund) List(ctx context.Context, in payin.PayRefundListInp) (list 
 }
 
 // Export 导出交易退款
-func (s *sPayRefund) Export(ctx context.Context, in payin.PayRefundListInp) (err error) {
+func (s *sPayRefund) Export(ctx context.Context, in *payin.PayRefundListInp) (err error) {
 	list, totalCount, err := s.List(ctx, in)
 	if err != nil {
 		return

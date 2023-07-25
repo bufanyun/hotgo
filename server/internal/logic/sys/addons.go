@@ -28,7 +28,7 @@ func init() {
 }
 
 // List 获取列表
-func (s *sSysAddons) List(ctx context.Context, in sysin.AddonsListInp) (list []*sysin.AddonsListModel, totalCount int, err error) {
+func (s *sSysAddons) List(ctx context.Context, in *sysin.AddonsListInp) (list []*sysin.AddonsListModel, totalCount int, err error) {
 	sks := addons.GetSkeletons()
 	if len(sks) == 0 {
 		return
@@ -36,7 +36,7 @@ func (s *sSysAddons) List(ctx context.Context, in sysin.AddonsListInp) (list []*
 
 	var (
 		i                  int
-		_, perPage, offset = form.CalPage(ctx, in.Page, in.PerPage)
+		_, perPage, offset = form.CalPage(in.Page, in.PerPage)
 	)
 
 	for k, skeleton := range sks {
@@ -94,7 +94,7 @@ func (s *sSysAddons) List(ctx context.Context, in sysin.AddonsListInp) (list []*
 }
 
 // Selects 选项
-func (s *sSysAddons) Selects(ctx context.Context, in sysin.AddonsSelectsInp) (res *sysin.AddonsSelectsModel, err error) {
+func (s *sSysAddons) Selects(ctx context.Context, in *sysin.AddonsSelectsInp) (res *sysin.AddonsSelectsModel, err error) {
 	res = new(sysin.AddonsSelectsModel)
 	for k, v := range consts.AddonsGroupNameMap {
 		res.GroupType = append(res.GroupType, &form.Select{
@@ -118,7 +118,7 @@ func (s *sSysAddons) Selects(ctx context.Context, in sysin.AddonsSelectsInp) (re
 }
 
 // Build 提交生成
-func (s *sSysAddons) Build(ctx context.Context, in sysin.AddonsBuildInp) (err error) {
+func (s *sSysAddons) Build(ctx context.Context, in *sysin.AddonsBuildInp) (err error) {
 	genConfig, err := service.SysConfig().GetLoadGenerate(ctx)
 	if err != nil {
 		return
@@ -132,16 +132,16 @@ func (s *sSysAddons) Build(ctx context.Context, in sysin.AddonsBuildInp) (err er
 }
 
 // Install 安装模块
-func (s *sSysAddons) Install(ctx context.Context, in sysin.AddonsInstallInp) (err error) {
+func (s *sSysAddons) Install(ctx context.Context, in *sysin.AddonsInstallInp) (err error) {
 	return addons.Install(in.GetModule())
 }
 
 // Upgrade 更新模块
-func (s *sSysAddons) Upgrade(ctx context.Context, in sysin.AddonsUpgradeInp) (err error) {
+func (s *sSysAddons) Upgrade(ctx context.Context, in *sysin.AddonsUpgradeInp) (err error) {
 	return addons.Upgrade(in.GetModule())
 }
 
 // UnInstall 卸载模块
-func (s *sSysAddons) UnInstall(ctx context.Context, in sysin.AddonsUnInstallInp) (err error) {
+func (s *sSysAddons) UnInstall(ctx context.Context, in *sysin.AddonsUnInstallInp) (err error) {
 	return addons.UnInstall(in.GetModule())
 }

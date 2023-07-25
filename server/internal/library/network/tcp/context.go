@@ -8,23 +8,21 @@ package tcp
 import (
 	"context"
 	"github.com/gogf/gf/v2/net/gtrace"
-	"hotgo/internal/consts"
 )
 
+// Context tcp上下文
+type Context struct {
+	Conn *Conn
+}
+
 // initCtx 初始化上下文对象指针到上下文对象中，以便后续的请求流程中可以修改
-func initCtx(ctx context.Context, model *Context) (newCtx context.Context) {
-	if model.TraceID != "" {
-		newCtx, _ = gtrace.WithTraceID(ctx, model.TraceID)
-	} else {
-		newCtx = ctx
-	}
-	newCtx = context.WithValue(newCtx, consts.ContextTCPKey, model)
-	return
+func initCtx(ctx context.Context, model *Context) context.Context {
+	return context.WithValue(ctx, ContextKey, model)
 }
 
 // GetCtx 获得上下文变量，如果没有设置，那么返回nil
 func GetCtx(ctx context.Context) *Context {
-	value := ctx.Value(consts.ContextTCPKey)
+	value := ctx.Value(ContextKey)
 	if value == nil {
 		return nil
 	}
@@ -32,4 +30,21 @@ func GetCtx(ctx context.Context) *Context {
 		return localCtx
 	}
 	return nil
+}
+
+// ConnFromCtx retrieves and returns the Conn object from context.
+func ConnFromCtx(ctx context.Context) *Conn {
+	user := GetCtx(ctx)
+	if user == nil {
+		return nil
+	}
+	return user.Conn
+}
+
+// SetCtxTraceID 将自定义跟踪ID注入上下文以进行传播
+func SetCtxTraceID(ctx context.Context, traceID string) (context.Context, error) {
+	if len(traceID) > 0 {
+		return gtrace.WithTraceID(ctx, traceID)
+	}
+	return ctx, nil
 }

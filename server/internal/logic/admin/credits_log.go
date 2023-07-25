@@ -20,6 +20,7 @@ import (
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
 	"hotgo/utility/excel"
+	"hotgo/utility/validate"
 
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/os/gctx"
@@ -42,8 +43,8 @@ func (s *sAdminCreditsLog) Model(ctx context.Context, option ...*handler.Option)
 }
 
 // SaveBalance 更新余额
-func (s *sAdminCreditsLog) SaveBalance(ctx context.Context, in adminin.CreditsLogSaveBalanceInp) (res *adminin.CreditsLogSaveBalanceModel, err error) {
-	if err = in.Filter(ctx); err != nil {
+func (s *sAdminCreditsLog) SaveBalance(ctx context.Context, in *adminin.CreditsLogSaveBalanceInp) (res *adminin.CreditsLogSaveBalanceModel, err error) {
+	if err = validate.PreFilter(ctx, in); err != nil {
 		return
 	}
 
@@ -101,8 +102,8 @@ func (s *sAdminCreditsLog) SaveBalance(ctx context.Context, in adminin.CreditsLo
 }
 
 // SaveIntegral 更新积分
-func (s *sAdminCreditsLog) SaveIntegral(ctx context.Context, in adminin.CreditsLogSaveIntegralInp) (res *adminin.CreditsLogSaveIntegralModel, err error) {
-	if err = in.Filter(ctx); err != nil {
+func (s *sAdminCreditsLog) SaveIntegral(ctx context.Context, in *adminin.CreditsLogSaveIntegralInp) (res *adminin.CreditsLogSaveIntegralModel, err error) {
+	if err = validate.PreFilter(ctx, in); err != nil {
 		return
 	}
 
@@ -160,7 +161,7 @@ func (s *sAdminCreditsLog) SaveIntegral(ctx context.Context, in adminin.CreditsL
 }
 
 // List 获取资产变动列表
-func (s *sAdminCreditsLog) List(ctx context.Context, in adminin.CreditsLogListInp) (list []*adminin.CreditsLogListModel, totalCount int, err error) {
+func (s *sAdminCreditsLog) List(ctx context.Context, in *adminin.CreditsLogListInp) (list []*adminin.CreditsLogListModel, totalCount int, err error) {
 	mod := s.Model(ctx)
 
 	// 查询变动ID
@@ -222,7 +223,7 @@ func (s *sAdminCreditsLog) List(ctx context.Context, in adminin.CreditsLogListIn
 }
 
 // Export 导出资产变动
-func (s *sAdminCreditsLog) Export(ctx context.Context, in adminin.CreditsLogListInp) (err error) {
+func (s *sAdminCreditsLog) Export(ctx context.Context, in *adminin.CreditsLogListInp) (err error) {
 	list, totalCount, err := s.List(ctx, in)
 	if err != nil {
 		return

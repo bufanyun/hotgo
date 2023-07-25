@@ -7,13 +7,7 @@
         </n-form-item>
 
         <n-form-item label="网站logo" path="basicLogo">
-          <UploadImage
-            :maxNumber="1"
-            v-model:value="formValue.basicLogo"
-            :helpText="
-              '网站logo适用于客户端使用，图片大小不超过' + componentSetting.upload.maxSize + 'MB'
-            "
-          />
+          <FileChooser v-model:value="formValue.basicLogo" file-type="image" />
         </n-form-item>
 
         <n-form-item label="网站域名" path="basicDomain">
@@ -67,8 +61,8 @@
 <script lang="ts" setup>
   import { ref, onMounted } from 'vue';
   import { useDialog, useMessage } from 'naive-ui';
-  import componentSetting from '@/settings/componentSetting';
   import { getConfig, updateConfig } from '@/api/sys/config';
+  import FileChooser from '@/components/FileChooser/index.vue';
 
   const group = ref('basic');
   const show = ref(false);

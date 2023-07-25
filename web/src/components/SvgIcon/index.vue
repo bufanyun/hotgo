@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue'
+  import { defineComponent } from 'vue';
 
   export default defineComponent({
     name: 'SvgIcon',
@@ -21,22 +21,22 @@
     },
     computed: {
       component(): string {
-        return this.prefix === 'icon' ? 'svg' : 'i'
+        return this.prefix === 'icon' ? 'svg' : 'i';
       },
       iconName(): string {
-        return `#${this.prefix}-${this.name}`
+        return `#${this.prefix}-${this.name}`;
       },
       className(): string {
         if (this.prefix === 'icon') {
-          return 'svg-icon'
+          return 'svg-icon';
         } else if (this.prefix === 'iconfont') {
-          return 'iconfont icon-' + this.name
+          return 'iconfont icon-' + this.name;
         } else {
-          return ''
+          return '';
         }
       },
     },
-  })
+  });
 </script>
 
 <style scoped>

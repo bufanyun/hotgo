@@ -1,3 +1,9 @@
+// Copyright GoFrame gf Author(https://goframe.org). All Rights Reserved.
+//
+// This Source Code Form is subject to the terms of the MIT License.
+// If a copy of the MIT was not distributed with this file,
+// You can obtain one at https://github.com/gogf/gf.
+
 package gendao
 
 import (
@@ -6,12 +12,12 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/olekukonko/tablewriter"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gfile"
-	"github.com/gogf/gf/v2/text/gregex"
 	"github.com/gogf/gf/v2/text/gstr"
-	"github.com/olekukonko/tablewriter"
 
 	"hotgo/internal/library/hggen/internal/consts"
 	"hotgo/internal/library/hggen/internal/utility/mlog"
@@ -53,23 +59,13 @@ func generateDaoSingle(ctx context.Context, in generateDaoSingleInput) {
 		mlog.Fatalf(`fetching tables fields failed for table "%s": %+v`, in.TableName, err)
 	}
 	var (
-		dirRealPath             = gfile.RealPath(in.Path)
 		tableNameCamelCase      = gstr.CaseCamel(in.NewTableName)
 		tableNameCamelLowerCase = gstr.CaseCamelLower(in.NewTableName)
 		tableNameSnakeCase      = gstr.CaseSnake(in.NewTableName)
 		importPrefix            = in.ImportPrefix
 	)
 	if importPrefix == "" {
-		if dirRealPath == "" {
-			dirRealPath = in.Path
-			importPrefix = dirRealPath
-			importPrefix = gstr.Trim(dirRealPath, "./")
-		} else {
-			importPrefix = gstr.Replace(dirRealPath, gfile.Pwd(), "")
-		}
-		importPrefix = gstr.Replace(importPrefix, gfile.Separator, "/")
-		importPrefix = gstr.Join(g.SliceStr{in.ModName, importPrefix, in.DaoPath}, "/")
-		importPrefix, _ = gregex.ReplaceString(`\/{2,}`, `/`, gstr.Trim(importPrefix, "/"))
+		importPrefix = utils.GetImportPath(gfile.Join(in.Path, in.DaoPath))
 	} else {
 		importPrefix = gstr.Join(g.SliceStr{importPrefix, in.DaoPath}, "/")
 	}

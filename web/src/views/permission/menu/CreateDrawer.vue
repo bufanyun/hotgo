@@ -296,7 +296,7 @@
       },
     },
     emits: ['loadData'],
-    setup(props, context) {
+    setup(_props, context) {
       const message = useMessage();
       const formRef: any = ref(null);
       const state = reactive<any>({

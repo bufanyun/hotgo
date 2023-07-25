@@ -29,6 +29,10 @@ type Join struct {
 	fields map[string]*gdb.TableField // 表字段列表
 }
 
+func LeftJoin(m *gdb.Model, masterTable, masterField, joinTable, alias, onField string) *gdb.Model {
+	return m.LeftJoin(GenJoinOnRelation(masterTable, masterField, joinTable, alias, onField)...)
+}
+
 // GenJoinOnRelation 生成关联表关联条件
 func GenJoinOnRelation(masterTable, masterField, joinTable, alias, onField string) []string {
 	relation := fmt.Sprintf("`%s`.`%s` = `%s`.`%s`", alias, onField, masterTable, masterField)

@@ -64,9 +64,9 @@ func (c *cMonitor) RunInfo(client *websocket.Client, req *websocket.WRequest) {
 		"intranet_ip": meta.IntranetIP,
 		"public_ip":   meta.PublicIP,
 
-		// GO运行信息
-		"goName":    "Golang",
-		"version":   runtime.Version(),
+		// 运行信息
+		"version":   runtime.Version(), // GO 版本
+		"hgVersion": consts.VersionApp, // HG 版本
 		"startTime": gtime.New(meta.STartTime),
 		"runTime":   gtime.Now().Timestamp() - meta.STartTime,
 		"rootPath":  runtime.GOROOT(),
@@ -111,22 +111,22 @@ func (c *cMonitor) Trends(client *websocket.Client, req *websocket.WRequest) {
 	)
 
 	if cpuErr != nil {
-		g.Log().Warningf(client.Context(), "read CPU info fail:%+v", cpuErr)
+		g.Log().Infof(client.Context(), "read CPU info fail:%+v", cpuErr)
 		mCpu = []cpu.InfoStat{{VendorID: "", ModelName: ""}}
 	}
 
 	if memErr != nil {
-		g.Log().Warningf(client.Context(), "read mem info fail:%+v", memErr)
+		g.Log().Infof(client.Context(), "read mem info fail:%+v", memErr)
 		mMem = new(mem.VirtualMemoryStat)
 	}
 
 	if diskErr != nil {
-		g.Log().Warningf(client.Context(), "read disk info fail:%+v", diskErr)
+		g.Log().Infof(client.Context(), "read disk info fail:%+v", diskErr)
 		mDisk = new(disk.UsageStat)
 	}
 
 	if processErr != nil {
-		g.Log().Warningf(client.Context(), "read process.Pids fail:%+v", processErr)
+		g.Log().Infof(client.Context(), "read process.Pids fail:%+v", processErr)
 	}
 
 	// cpu使用率

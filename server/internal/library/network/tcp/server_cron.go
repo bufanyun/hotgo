@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"github.com/gogf/gf/v2/os/gcron"
 	"github.com/gogf/gf/v2/os/gtime"
-	"hotgo/internal/consts"
 )
 
 // getCronKey 生成服务端定时任务名称
@@ -20,40 +19,42 @@ func (server *Server) getCronKey(s string) string {
 
 // stopCron 停止定时任务
 func (server *Server) stopCron() {
-	for _, v := range gcron.Entries() {
-		gcron.Remove(v.Name)
-	}
+	gcron.Remove(server.getCronKey(CronHeartbeatVerify))
+	gcron.Remove(server.getCronKey(CronAuthVerify))
 }
 
 // startCron 启动定时任务
 func (server *Server) startCron() {
 	// 心跳超时检查
-	if gcron.Search(server.getCronKey(consts.TCPCronHeartbeatVerify)) == nil {
-		_, _ = gcron.AddSingleton(server.Ctx, "@every 300s", func(ctx context.Context) {
-			if server.clients == nil {
+	if gcron.Search(server.getCronKey(CronHeartbeatVerify)) == nil {
+		_, _ = gcron.AddSingleton(server.ctx, "@every 300s", func(ctx context.Context) {
+			if server == nil || server.clients == nil {
 				return
 			}
 			for _, client := range server.clients {
-				if client.heartbeat < gtime.Timestamp()-consts.TCPHeartbeatTimeout {
-					_ = client.Conn.Close()
-					server.Logger.Debugf(server.Ctx, "client heartbeat timeout, close conn. auth:%+v", client.Auth)
+				if client.Heartbeat < gtime.Timestamp()-HeartbeatTimeout {
+					client.Conn.Close()
+					server.logger.Debugf(server.ctx, "client heartbeat timeout, close conn. auth:%+v", client.Auth)
 				}
 			}
-		}, server.getCronKey(consts.TCPCronHeartbeatVerify))
+		}, server.getCronKey(CronHeartbeatVerify))
 	}
 
 	// 认证检查
-	if gcron.Search(server.getCronKey(consts.TCPCronAuthVerify)) == nil {
-		_, _ = gcron.AddSingleton(server.Ctx, "@every 300s", func(ctx context.Context) {
-			if server.clients == nil {
+	if gcron.Search(server.getCronKey(CronAuthVerify)) == nil {
+		_, _ = gcron.AddSingleton(server.ctx, "@every 300s", func(ctx context.Context) {
+			if server == nil || server.clients == nil {
 				return
 			}
 			for _, client := range server.clients {
+				if client.Auth == nil {
+					continue
+				}
 				if client.Auth.EndAt.Before(gtime.Now()) {
 					_ = client.Conn.Close()
-					server.Logger.Debugf(server.Ctx, "client auth expired, close conn. auth:%+v", client.Auth)
+					server.logger.Debugf(server.ctx, "client auth expired, close conn. auth:%+v", client.Auth)
 				}
 			}
-		}, server.getCronKey(consts.TCPCronAuthVerify))
+		}, server.getCronKey(CronAuthVerify))
 	}
 }

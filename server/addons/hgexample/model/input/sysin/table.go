@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 	"github.com/gogf/gf/v2/encoding/gjson"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
@@ -147,6 +148,24 @@ type TableMaxSortModel struct {
 type TableStatusInp struct {
 	Id     int64 `json:"id" v:"required#表格ID不能为空" dc:"表格ID"`
 	Status int   `json:"status" dc:"状态"`
+}
+
+func (in *TableStatusInp) Filter(ctx context.Context) (err error) {
+	if in.Id <= 0 {
+		err = gerror.New("ID不能为空")
+		return
+	}
+
+	if in.Status <= 0 {
+		err = gerror.New("状态不能为空")
+		return
+	}
+
+	if !validate.InSlice(consts.StatusSlice, in.Status) {
+		err = gerror.New("状态不正确")
+		return
+	}
+	return
 }
 
 type TableStatusModel struct{}

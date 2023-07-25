@@ -7,18 +7,24 @@ package service
 
 import (
 	"context"
-	"hotgo/internal/model/input/msgin"
+	"hotgo/api/servmsg"
+	"hotgo/internal/library/network/tcp"
 )
 
 type (
 	ITCPServer interface {
-		OnAuthSummary(ctx context.Context, args ...interface{})
-		CronDelete(ctx context.Context, in *msgin.CronDelete) (err error)
-		CronEdit(ctx context.Context, in *msgin.CronEdit) (err error)
-		CronStatus(ctx context.Context, in *msgin.CronStatus) (err error)
-		CronOnlineExec(ctx context.Context, in *msgin.CronOnlineExec) (err error)
+		OnAuthSummary(ctx context.Context, req *servmsg.AuthSummaryReq)
+		CronDelete(ctx context.Context, in *servmsg.CronDeleteReq) (err error)
+		CronEdit(ctx context.Context, in *servmsg.CronEditReq) (err error)
+		CronStatus(ctx context.Context, in *servmsg.CronStatusReq) (err error)
+		CronOnlineExec(ctx context.Context, in *servmsg.CronOnlineExecReq) (err error)
+		OnExampleHello(ctx context.Context, req *servmsg.ExampleHelloReq)
+		OnExampleRPCHello(ctx context.Context, req *servmsg.ExampleRPCHelloReq) (res *servmsg.ExampleRPCHelloRes, err error)
+		Instance() *tcp.Server
 		Start(ctx context.Context)
 		Stop(ctx context.Context)
+		DefaultInterceptor(ctx context.Context, msg *tcp.Message) (err error)
+		PreFilterInterceptor(ctx context.Context, msg *tcp.Message) (err error)
 	}
 )
 

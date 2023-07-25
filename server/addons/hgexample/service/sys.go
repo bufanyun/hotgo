@@ -17,29 +17,29 @@ import (
 type (
 	ISysConfig interface {
 		GetBasic(ctx context.Context) (conf *model.BasicConfig, err error)
-		GetConfigByGroup(ctx context.Context, in sysin.GetConfigInp) (res *sysin.GetConfigModel, err error)
-		UpdateConfigByGroup(ctx context.Context, in sysin.UpdateConfigInp) error
+		GetConfigByGroup(ctx context.Context, in *sysin.GetConfigInp) (res *sysin.GetConfigModel, err error)
+		UpdateConfigByGroup(ctx context.Context, in *sysin.UpdateConfigInp) error
 	}
 	ISysIndex interface {
-		Test(ctx context.Context, in sysin.IndexTestInp) (res *sysin.IndexTestModel, err error)
+		Test(ctx context.Context, in *sysin.IndexTestInp) (res *sysin.IndexTestModel, err error)
 	}
 	ISysTable interface {
 		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
-		List(ctx context.Context, in sysin.TableListInp) (list []*sysin.TableListModel, totalCount int, err error)
-		Export(ctx context.Context, in sysin.TableListInp) (err error)
-		Edit(ctx context.Context, in sysin.TableEditInp) (err error)
-		Delete(ctx context.Context, in sysin.TableDeleteInp) (err error)
-		Status(ctx context.Context, in sysin.TableStatusInp) (err error)
-		Switch(ctx context.Context, in sysin.TableSwitchInp) (err error)
-		MaxSort(ctx context.Context, in sysin.TableMaxSortInp) (res *sysin.TableMaxSortModel, err error)
-		View(ctx context.Context, in sysin.TableViewInp) (res *sysin.TableViewModel, err error)
+		List(ctx context.Context, in *sysin.TableListInp) (list []*sysin.TableListModel, totalCount int, err error)
+		Export(ctx context.Context, in *sysin.TableListInp) (err error)
+		Edit(ctx context.Context, in *sysin.TableEditInp) (err error)
+		Delete(ctx context.Context, in *sysin.TableDeleteInp) (err error)
+		Status(ctx context.Context, in *sysin.TableStatusInp) (err error)
+		Switch(ctx context.Context, in *sysin.TableSwitchInp) (err error)
+		MaxSort(ctx context.Context, in *sysin.TableMaxSortInp) (res *sysin.TableMaxSortModel, err error)
+		View(ctx context.Context, in *sysin.TableViewInp) (res *sysin.TableViewModel, err error)
 	}
 )
 
 var (
-	localSysTable  ISysTable
 	localSysConfig ISysConfig
 	localSysIndex  ISysIndex
+	localSysTable  ISysTable
 )
 
 func SysConfig() ISysConfig {

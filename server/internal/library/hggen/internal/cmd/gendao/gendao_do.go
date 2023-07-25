@@ -1,3 +1,9 @@
+// Copyright GoFrame gf Author(https://goframe.org). All Rights Reserved.
+//
+// This Source Code Form is subject to the terms of the MIT License.
+// If a copy of the MIT was not distributed with this file,
+// You can obtain one at https://github.com/gogf/gf.
+
 package gendao
 
 import (
@@ -30,9 +36,9 @@ func generateDo(ctx context.Context, in CGenDaoInternalInput) {
 			mlog.Fatalf("fetching tables fields failed for table '%s':\n%v", tableName, err)
 		}
 		var (
-			newTableName     = in.NewTableNames[i]
-			doFilePath       = gfile.Join(dirPathDo, gstr.CaseSnake(newTableName)+".go")
-			structDefinition = generateStructDefinition(ctx, generateStructDefinitionInput{
+			newTableName        = in.NewTableNames[i]
+			doFilePath          = gfile.Join(dirPathDo, gstr.CaseSnake(newTableName)+".go")
+			structDefinition, _ = generateStructDefinition(ctx, generateStructDefinitionInput{
 				CGenDaoInternalInput: in,
 				TableName:            tableName,
 				StructName:           gstr.CaseCamel(newTableName),
@@ -53,6 +59,7 @@ func generateDo(ctx context.Context, in CGenDaoInternalInput) {
 			},
 		)
 		modelContent := generateDoContent(
+			ctx,
 			in,
 			tableName,
 			gstr.CaseCamel(newTableName),
@@ -68,15 +75,18 @@ func generateDo(ctx context.Context, in CGenDaoInternalInput) {
 	}
 }
 
-func generateDoContent(in CGenDaoInternalInput, tableName, tableNameCamelCase, structDefine string) string {
+func generateDoContent(
+	ctx context.Context, in CGenDaoInternalInput, tableName, tableNameCamelCase, structDefine string,
+) string {
 	doContent := gstr.ReplaceByMap(
 		getTemplateFromPathOrDefault(in.TplDaoDoPath, consts.TemplateGenDaoDoContent),
 		g.MapStrStr{
 			tplVarTableName:          tableName,
-			tplVarPackageImports:     getImportPartContent(structDefine, true),
+			tplVarPackageImports:     getImportPartContent(ctx, structDefine, true, nil),
 			tplVarTableNameCamelCase: tableNameCamelCase,
 			tplVarStructDefine:       structDefine,
-		})
+		},
+	)
 	doContent = replaceDefaultVar(in, doContent)
 	return doContent
 }

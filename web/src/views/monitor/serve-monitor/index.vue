@@ -22,7 +22,7 @@
                 <n-progress type="line" :percentage="extra.data" />
               </template>
               <template v-else-if="index === 3" #extra>
-                <LoadChart ref="mLoadChart" :data-model="dataSource.load" />
+                <LoadChart ref="loadChartRef" :data-model="dataSource.load" />
               </template>
             </DataItem>
           </n-grid-item>
@@ -31,7 +31,7 @@
         <n-grid class="mt-2">
           <n-grid-item :span="24">
             <FullYearSalesChart
-              ref="fullYearSalesChart"
+              ref="fullYearSalesChartRef"
               :data-model="dataSource.net"
               :loading="loading"
             />
@@ -57,15 +57,18 @@
               <n-descriptions-item label="系统架构"> {{ dataRunInfo.arch }}</n-descriptions-item>
             </n-descriptions>
           </n-card>
-          <n-card title="GO运行信息">
+          <n-card title="运行信息">
             <n-descriptions
               label-placement="top"
               bordered
               cols="1 s:1 m:2 l:3 xl:4 2xl:4"
               :label-style="{ 'font-weight': 'bold', 'font-size': '16px' }"
             >
-              <n-descriptions-item label="语言环境"> {{ dataRunInfo.goName }}</n-descriptions-item>
-              <n-descriptions-item label="版本号"> {{ dataRunInfo.version }}</n-descriptions-item>
+              <n-descriptions-item label="Go版本"> {{ dataRunInfo.version }}</n-descriptions-item>
+
+              <n-descriptions-item label="HotGo版本">
+                {{ dataRunInfo.hgVersion }}</n-descriptions-item
+              >
               <n-descriptions-item label="启动时间">
                 {{ dataRunInfo.startTime }}</n-descriptions-item
               >
@@ -107,7 +110,7 @@
       const dataRunInfo = ref({
         arch: '',
         goMem: '0MB',
-        goName: 'Golang',
+        hgVersion: '',
         goSize: '0MB',
         goroutine: 0,
         hostname: '',
@@ -169,9 +172,12 @@
         net: {},
       });
 
+      const collapse = true;
       const message = useMessage();
       const dialog = useDialog();
       const loading = ref(true);
+      const loadChartRef = ref<InstanceType<typeof LoadChart>>();
+      const fullYearSalesChartRef = ref<InstanceType<typeof FullYearSalesChart>>();
       const onMessageList = inject('onMessageList');
 
       const onAdminMonitor = (res) => {
@@ -237,20 +243,11 @@
         }, 1000 * 10);
       }
 
-      const mLoadChart = ref<InstanceType<typeof LoadChart>>();
-      const fullYearSalesChart = ref<InstanceType<typeof FullYearSalesChart>>();
-      const onResize = () => {
-        setTimeout(() => {
-          mLoadChart.value?.updateChart();
-        }, 500);
-      };
-      const collapse = true;
-      onResize();
       return {
         loading,
         collapse,
-        mLoadChart,
-        fullYearSalesChart,
+        loadChartRef,
+        fullYearSalesChartRef,
         dataSource,
         dataRunInfo,
         formatBefore,

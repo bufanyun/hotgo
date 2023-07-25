@@ -18,11 +18,11 @@ import (
 
 // GenCodesMaxSortInp 最大排序
 type GenCodesMaxSortInp struct {
-	Id int64
+	Id int64 `json:"id" dc:"生成代码ID"`
 }
 
 type GenCodesMaxSortModel struct {
-	Sort int
+	Sort int `json:"sort" dc:"排序"`
 }
 
 // GenCodesEditInp 修改/新增数据
@@ -40,13 +40,14 @@ type GenCodesEditModel struct {
 
 // GenCodesDeleteInp 删除
 type GenCodesDeleteInp struct {
-	Id interface{}
+	Id interface{} `json:"id" v:"required#生成代码ID不能为空" dc:"生成代码ID"`
 }
+
 type GenCodesDeleteModel struct{}
 
 // GenCodesViewInp 获取信息
 type GenCodesViewInp struct {
-	Id int64
+	Id int64 `json:"id" v:"required#生成代码ID不能为空" dc:"生成代码ID"`
 }
 
 type GenCodesViewModel struct {
@@ -57,8 +58,8 @@ type GenCodesViewModel struct {
 type GenCodesListInp struct {
 	form.PageReq
 	form.StatusReq
-	GenType int    `json:"genType"`
-	VarName string `json:"varName"`
+	GenType int    `json:"genType" dc:"生成类型"`
+	VarName string `json:"varName" dc:"实体"`
 }
 
 type GenCodesListModel struct {
@@ -76,6 +77,7 @@ type GenCodesStatusModel struct{}
 // GenCodesSelectsInp 选项
 type GenCodesSelectsInp struct {
 }
+
 type GenCodesSelectsModel struct {
 	GenType   GenTypeSelects `json:"genType" dc:"生成类型"`
 	Db        form.Selects   `json:"db" dc:"数据库选项"`
@@ -100,6 +102,7 @@ type GenTypeSelect struct {
 }
 
 type GenTemplateSelects []*GenTemplateSelect
+
 type GenTemplateSelect struct {
 	Value   interface{} `json:"value"`
 	Label   string      `json:"label"`
@@ -110,9 +113,11 @@ type GenTemplateSelect struct {
 func (p GenTemplateSelects) Len() int {
 	return len(p)
 }
+
 func (p GenTemplateSelects) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
+
 func (p GenTemplateSelects) Less(i, j int) bool {
 	return gconv.Int64(p[j].Value) > gconv.Int64(p[i].Value)
 }
@@ -120,9 +125,11 @@ func (p GenTemplateSelects) Less(i, j int) bool {
 func (p GenTypeSelects) Len() int {
 	return len(p)
 }
+
 func (p GenTypeSelects) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
+
 func (p GenTypeSelects) Less(i, j int) bool {
 	return gconv.Int64(p[j].Value) > gconv.Int64(p[i].Value)
 }
@@ -131,6 +138,7 @@ func (p GenTypeSelects) Less(i, j int) bool {
 type GenCodesTableSelectInp struct {
 	Name string `json:"name" dc:"数据库配置名称"`
 }
+
 type GenCodesTableSelectModel struct {
 	Value           string `json:"value"`
 	Label           string `json:"label"`
@@ -146,6 +154,7 @@ type GenCodesColumnSelectInp struct {
 	Name  string `json:"name" dc:"数据库配置名称"`
 	Table string `json:"table" dc:"表名称"`
 }
+
 type GenCodesColumnSelectModel struct {
 	Value string `json:"value"`
 	Label string `json:"label"`
@@ -159,6 +168,7 @@ type GenCodesColumnListInp struct {
 	IsLink int64  `json:"isLink" dc:"是否是关联表"`
 	Alias  string `json:"alias" dc:"关联表别名"`
 }
+
 type GenCodesColumnListModel struct {
 	model.GenCodesColumn
 }

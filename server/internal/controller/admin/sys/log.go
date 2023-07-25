@@ -8,10 +8,7 @@ package sys
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/log"
-	"hotgo/internal/model/input/form"
-	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 )
 
@@ -28,54 +25,32 @@ func (c *sLog) Clear(ctx context.Context, _ *log.ClearReq) (res *log.ClearRes, e
 
 // Export 导出
 func (c *sLog) Export(ctx context.Context, req *log.ExportReq) (res *log.ExportRes, err error) {
-	var in sysin.LogListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	err = service.SysLog().Export(ctx, in)
+	err = service.SysLog().Export(ctx, &req.LogListInp)
 	return
 }
 
 // List 获取访问日志列表
 func (c *sLog) List(ctx context.Context, req *log.ListReq) (res *log.ListRes, err error) {
-	var in sysin.LogListInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	list, totalCount, err := service.SysLog().List(ctx, in)
+	list, totalCount, err := service.SysLog().List(ctx, &req.LogListInp)
 	if err != nil {
 		return
 	}
 
 	res = new(log.ListRes)
 	res.List = list
-	res.PageCount = form.CalPageCount(totalCount, req.PerPage)
-	res.Page = req.Page
-	res.PerPage = req.PerPage
+	res.PageRes.Pack(req, totalCount)
 	return
 }
 
 // View 获取指定信息
 func (c *sLog) View(ctx context.Context, req *log.ViewReq) (res *log.ViewRes, err error) {
-	data, err := service.SysLog().View(ctx, sysin.LogViewInp{Id: req.Id})
-	if err != nil {
-		return
-	}
-
 	res = new(log.ViewRes)
-	res.LogViewModel = data
+	res.LogViewModel, err = service.SysLog().View(ctx, &req.LogViewInp)
 	return
 }
 
 // Delete 删除
 func (c *sLog) Delete(ctx context.Context, req *log.DeleteReq) (res *log.DeleteRes, err error) {
-	var in sysin.LogDeleteInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	err = service.SysLog().Delete(ctx, in)
+	err = service.SysLog().Delete(ctx, &req.LogDeleteInp)
 	return
 }

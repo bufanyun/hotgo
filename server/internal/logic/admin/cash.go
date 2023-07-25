@@ -36,7 +36,7 @@ func init() {
 }
 
 // View 获取指定提现信息
-func (s *sAdminCash) View(ctx context.Context, in adminin.CashViewInp) (res *adminin.CashViewModel, err error) {
+func (s *sAdminCash) View(ctx context.Context, in *adminin.CashViewInp) (res *adminin.CashViewModel, err error) {
 	if !service.AdminMember().VerifySuperId(ctx, contexts.GetUserId(ctx)) {
 		err = gerror.New("没有访问权限")
 		return
@@ -68,7 +68,7 @@ func (s *sAdminCash) View(ctx context.Context, in adminin.CashViewInp) (res *adm
 }
 
 // List 获取列表
-func (s *sAdminCash) List(ctx context.Context, in adminin.CashListInp) (list []*adminin.CashListModel, totalCount int, err error) {
+func (s *sAdminCash) List(ctx context.Context, in *adminin.CashListInp) (list []*adminin.CashListModel, totalCount int, err error) {
 	var (
 		mod        = dao.AdminCash.Ctx(ctx)
 		opMemberId = contexts.GetUserId(ctx)
@@ -109,9 +109,7 @@ func (s *sAdminCash) List(ctx context.Context, in adminin.CashListInp) (list []*
 
 	for _, v := range list {
 		var member *entity.AdminMember
-		err = dao.AdminMember.Ctx(ctx).
-			Fields("real_name", "username").Where("id", v.MemberId).Scan(&member)
-		if err != nil {
+		if err = dao.AdminMember.Ctx(ctx).Fields("real_name", "username").Where("id", v.MemberId).Scan(&member); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
 			return list, totalCount, err
 		}
@@ -125,7 +123,7 @@ func (s *sAdminCash) List(ctx context.Context, in adminin.CashListInp) (list []*
 }
 
 // Apply 申请提现
-func (s *sAdminCash) Apply(ctx context.Context, in adminin.CashApplyInp) (err error) {
+func (s *sAdminCash) Apply(ctx context.Context, in *adminin.CashApplyInp) (err error) {
 	var (
 		config *model.CashConfig
 		member *entity.AdminMember
@@ -185,7 +183,7 @@ func (s *sAdminCash) Apply(ctx context.Context, in adminin.CashApplyInp) (err er
 		return
 	}
 
-	conf, err := service.SysConfig().GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "cash"})
+	conf, err := service.SysConfig().GetConfigByGroup(ctx, &sysin.GetConfigInp{Group: "cash"})
 	if err != nil {
 		return
 	}
@@ -232,7 +230,7 @@ func (s *sAdminCash) Apply(ctx context.Context, in adminin.CashApplyInp) (err er
 		}
 
 		// 更新余额
-		_, err = service.AdminCreditsLog().SaveBalance(ctx, adminin.CreditsLogSaveBalanceInp{
+		_, err = service.AdminCreditsLog().SaveBalance(ctx, &adminin.CreditsLogSaveBalanceInp{
 			MemberId:    in.MemberId,
 			AppId:       contexts.GetModule(ctx),
 			AddonsName:  contexts.GetAddonName(ctx),
@@ -253,7 +251,7 @@ func (s *sAdminCash) Apply(ctx context.Context, in adminin.CashApplyInp) (err er
 }
 
 // Payment 提现打款处理
-func (s *sAdminCash) Payment(ctx context.Context, in adminin.CashPaymentInp) (err error) {
+func (s *sAdminCash) Payment(ctx context.Context, in *adminin.CashPaymentInp) (err error) {
 	if !service.AdminMember().VerifySuperId(ctx, contexts.GetUserId(ctx)) {
 		err = gerror.New("没有访问权限")
 		return

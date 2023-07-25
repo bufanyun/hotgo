@@ -52,10 +52,9 @@ func loadPermissions(ctx context.Context) {
 		Permissions string `json:"permissions"`
 	}
 	var (
-		rules        [][]string
-		polices      []*Policy
-		err          error
-		superRoleKey = g.Cfg().MustGet(ctx, "hotgo.admin.superRoleKey")
+		rules   [][]string
+		polices []*Policy
+		err     error
 	)
 
 	err = g.Model("hg_admin_role r").
@@ -65,7 +64,7 @@ func loadPermissions(ctx context.Context) {
 		Where("r.status", consts.StatusEnabled).
 		Where("m.status", consts.StatusEnabled).
 		Where("m.permissions !=?", "").
-		Where("r.key !=?", superRoleKey.String()).
+		Where("r.key !=?", consts.SuperRoleKey).
 		Scan(&polices)
 	if err != nil {
 		g.Log().Fatalf(ctx, "loadPermissions Scan err:%v", err)

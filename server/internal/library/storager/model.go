@@ -4,9 +4,9 @@ package storager
 type FileMeta struct {
 	Filename  string // 文件名称
 	Size      int64  // 文件大小
-	Kind      string // 文件所属分类
-	MetaType  string // 文件类型
+	Kind      string // 文件上传类型
+	MimeType  string // 文件扩展类型
 	NaiveType string // NaiveUI类型
-	Ext       string // 文件后缀名
+	Ext       string // 文件扩展名
 	Md5       string // 文件hash
 }

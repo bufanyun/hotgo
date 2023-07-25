@@ -38,7 +38,6 @@ func (in *CronGroupEditInp) Filter(ctx context.Context) (err error) {
 		err = gerror.New("上级分组不能是自己")
 		return
 	}
-
 	return
 }
 
@@ -83,7 +82,7 @@ type CronGroupViewModel struct {
 // CronGroupListInp 获取列表
 type CronGroupListInp struct {
 	form.PageReq
-	form.RangeDateReq
+
 	form.StatusReq
 	Name string
 }
@@ -112,7 +111,6 @@ func (in *CronGroupStatusInp) Filter(ctx context.Context) (err error) {
 		err = gerror.New("状态不正确")
 		return
 	}
-
 	return
 }
 

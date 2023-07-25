@@ -46,7 +46,7 @@ func (d *QiNiuDrive) Upload(ctx context.Context, file *ghttp.UploadFile) (fullPa
 		return
 	}
 
-	fullPath = GenFullPath(config.UCloudPath, gfile.Ext(file.Filename))
+	fullPath = GenFullPath(config.QiNiuPath, gfile.Ext(file.Filename))
 	err = storage.NewFormUploader(&cfg).Put(ctx, &storage.PutRet{}, token, fullPath, f2, file.Size, &storage.PutExtra{})
 	return
 }

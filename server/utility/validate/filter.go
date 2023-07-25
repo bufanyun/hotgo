@@ -3,11 +3,11 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package validate
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/frame/g"
 )
 
 // Filter 通用过滤器
@@ -21,8 +21,12 @@ type Filter interface {
 
 // PreFilter 预过滤
 func PreFilter(ctx context.Context, in interface{}) error {
-	if c, ok := in.(Filter); ok {
-		return c.Filter(ctx)
-	}
-	return nil
+	return g.Try(ctx, func(ctx context.Context) {
+		if c, ok := in.(Filter); ok {
+			if err := c.Filter(ctx); err != nil {
+				g.Throw(err)
+			}
+			return
+		}
+	})
 }

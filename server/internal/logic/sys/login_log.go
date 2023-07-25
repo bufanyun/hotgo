@@ -49,7 +49,7 @@ func (s *sSysLoginLog) Model(ctx context.Context) *gdb.Model {
 }
 
 // List 获取登录日志列表
-func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list []*sysin.LoginLogListModel, totalCount int, err error) {
+func (s *sSysLoginLog) List(ctx context.Context, in *sysin.LoginLogListInp) (list []*sysin.LoginLogListModel, totalCount int, err error) {
 	mod := dao.SysLoginLog.Ctx(ctx)
 
 	// 查询状态
@@ -83,7 +83,7 @@ func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list
 		return
 	}
 
-	//关联表select
+	// 关联表select
 	fields, err := hgorm.GenJoinSelect(ctx, sysin.LoginLogListModel{}, &dao.SysLoginLog, []*hgorm.Join{
 		{Dao: &dao.SysLog, Alias: "sysLog"},
 	})
@@ -98,12 +98,6 @@ func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list
 	}
 
 	for _, v := range list {
-		//// 获取省市编码对应的地区名称
-		//region, err := location.ParseRegion(ctx, v.SysLogProvinceId, v.SysLogCityId, 0)
-		//if err != nil {
-		//	return list, totalCount, err
-		//}
-		//v.Region = region
 		v.Os = useragent.GetOs(v.SysLogUserAgent)
 		v.Browser = useragent.GetBrowser(v.SysLogUserAgent)
 	}
@@ -111,7 +105,7 @@ func (s *sSysLoginLog) List(ctx context.Context, in sysin.LoginLogListInp) (list
 }
 
 // Export 导出登录日志
-func (s *sSysLoginLog) Export(ctx context.Context, in sysin.LoginLogListInp) (err error) {
+func (s *sSysLoginLog) Export(ctx context.Context, in *sysin.LoginLogListInp) (err error) {
 	list, totalCount, err := s.List(ctx, in)
 	if err != nil {
 		return
@@ -138,19 +132,19 @@ func (s *sSysLoginLog) Export(ctx context.Context, in sysin.LoginLogListInp) (er
 }
 
 // Delete 删除登录日志
-func (s *sSysLoginLog) Delete(ctx context.Context, in sysin.LoginLogDeleteInp) (err error) {
+func (s *sSysLoginLog) Delete(ctx context.Context, in *sysin.LoginLogDeleteInp) (err error) {
 	_, err = dao.SysLoginLog.Ctx(ctx).Where(dao.SysLoginLog.Columns().Id, in.Id).Delete()
 	return
 }
 
 // View 获取登录日志指定信息
-func (s *sSysLoginLog) View(ctx context.Context, in sysin.LoginLogViewInp) (res *sysin.LoginLogViewModel, err error) {
+func (s *sSysLoginLog) View(ctx context.Context, in *sysin.LoginLogViewInp) (res *sysin.LoginLogViewModel, err error) {
 	err = dao.SysLoginLog.Ctx(ctx).Where(dao.SysLoginLog.Columns().Id, in.Id).Scan(&res)
 	return
 }
 
 // Push 推送登录日志
-func (s *sSysLoginLog) Push(ctx context.Context, in sysin.LoginLogPushInp) {
+func (s *sSysLoginLog) Push(ctx context.Context, in *sysin.LoginLogPushInp) {
 	if in.Response == nil {
 		in.Response = new(adminin.LoginModel)
 	}

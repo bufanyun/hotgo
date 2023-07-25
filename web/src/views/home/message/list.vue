@@ -1,7 +1,7 @@
 <template>
   <n-spin :show="loading">
     <n-empty
-      v-show="dataSource.list?.length === undefined || dataSource.list?.length === 0"
+      v-show="!dataSource.list || dataSource.list.length === 0"
       description="无数据"
     />
 

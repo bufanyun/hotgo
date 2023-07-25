@@ -98,34 +98,30 @@
 </template>
 
 <script lang="ts" setup>
-  import { h, onMounted, reactive, ref } from 'vue';
+  import { h, reactive, ref } from 'vue';
   import { NTag, useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
   import { Delete, Edit, List, Status } from '@/api/sys/blacklist';
   import { DeleteOutlined, PlusOutlined } from '@vicons/antd';
-  import { statusActions, statusOptions } from '@/enums/optionsiEnum';
-  import { Dict } from '@/api/dict/dict';
-  import { getOptionLabel, getOptionTag } from '@/utils/hotgo';
+  import { statusActions } from '@/enums/optionsiEnum';
+  import { getOptionLabel, getOptionTag, Option } from '@/utils/hotgo';
+  import { defRangeShortcuts } from '@/utils/dateUtil';
 
-  const blacklistOptions = [
+  const blacklistOptions: Option[] = [
     {
+      key: 1,
       value: 1,
       label: '封禁中',
       listClass: 'warning',
     },
     {
+      key: 2,
       value: 2,
       label: '已解封',
       listClass: 'success',
     },
-  ].map((s) => {
-    return s;
-  });
-
-  const options = ref({
-    status: blacklistOptions,
-  });
+  ];
 
   const columns = [
     {
@@ -150,16 +146,15 @@
             style: {
               marginRight: '6px',
             },
-            type: getOptionTag(options.value.status, row.status),
+            type: getOptionTag(blacklistOptions, row.status),
             bordered: false,
           },
           {
-            default: () => getOptionLabel(options.value.status, row.status),
+            default: () => getOptionLabel(blacklistOptions, row.status),
           }
         );
       },
     },
-
     {
       title: '创建时间',
       key: 'createdAt',
@@ -173,13 +168,7 @@
     status: null,
   });
 
-  const rules = {
-    title: {
-      // required: true,
-      trigger: ['blur', 'input'],
-      message: '请输入标题',
-    },
-  };
+  const rules = {};
 
   const schemas = ref<FormSchema[]>([
     {
@@ -206,6 +195,31 @@
           console.log(e);
         },
       },
+    },
+    {
+      field: 'created_at',
+      component: 'NDatePicker',
+      label: '创建时间',
+      componentProps: {
+        type: 'datetimerange',
+        clearable: true,
+        shortcuts: defRangeShortcuts(),
+        onUpdateValue: (e: any) => {
+          console.log(e);
+        },
+      },
+    },
+    {
+      field: 'remark',
+      component: 'NInput',
+      label: '备注',
+      componentProps: {
+        placeholder: '请输入备注',
+        onUpdateValue: (e: any) => {
+          console.log(e);
+        },
+      },
+      rules: [{ message: '请输入备注', trigger: ['blur'] }],
     },
   ]);
 

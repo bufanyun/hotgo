@@ -36,5 +36,4 @@ func WebSocket(ctx context.Context, group *ghttp.RouterGroup) {
 	ws.RegisterMsg(ws.EventHandlers{
 		// ...
 	})
-
 }

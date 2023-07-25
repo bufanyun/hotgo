@@ -8,7 +8,6 @@ package common
 import (
 	"context"
 	"github.com/gogf/gf/v2/net/ghttp"
-	"hotgo/internal/consts"
 	"hotgo/internal/library/storager"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
@@ -26,23 +25,8 @@ func init() {
 }
 
 // UploadFile 上传文件
-func (s *sCommonUpload) UploadFile(ctx context.Context, file *ghttp.UploadFile) (res *sysin.AttachmentListModel, err error) {
-	attachment, err := storager.DoUpload(ctx, file, consts.UploadTypeFile)
-	if err != nil {
-		return
-	}
-
-	attachment.FileUrl = storager.LastUrl(ctx, attachment.FileUrl, attachment.Drive)
-	res = &sysin.AttachmentListModel{
-		SysAttachment: *attachment,
-		SizeFormat:    format.FileSize(attachment.Size),
-	}
-	return
-}
-
-// UploadImage 上传图片
-func (s *sCommonUpload) UploadImage(ctx context.Context, file *ghttp.UploadFile) (res *sysin.AttachmentListModel, err error) {
-	attachment, err := storager.DoUpload(ctx, file, consts.UploadTypeImage)
+func (s *sCommonUpload) UploadFile(ctx context.Context, uploadType string, file *ghttp.UploadFile) (res *sysin.AttachmentListModel, err error) {
+	attachment, err := storager.DoUpload(ctx, uploadType, file)
 	if err != nil {
 		return
 	}

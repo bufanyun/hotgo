@@ -50,14 +50,12 @@ func (s *sMiddleware) responseHtml(r *ghttp.Request) {
 
 	r.Response.ClearBuffer()
 	_ = r.Response.WriteTplContent(simple.DefaultErrorTplContent(r.Context()), g.Map{"code": code, "message": message, "stack": resp})
-	return
 }
 
 // responseXml xml响应
 func (s *sMiddleware) responseXml(r *ghttp.Request) {
 	code, message, data := parseResponse(r)
 	response.RXml(r, code, message, data)
-	return
 }
 
 // responseJson json响应

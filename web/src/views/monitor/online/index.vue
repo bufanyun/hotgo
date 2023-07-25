@@ -1,20 +1,25 @@
 <template>
-  <n-card :bordered="false" class="proCard">
-    <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset">
-      <template #statusSlot="{ model, field }">
-        <n-input v-model:value="model[field]" />
-      </template>
-    </BasicForm>
+  <div>
+    <div class="n-layout-page-header">
+      <n-card :bordered="false" title="在线用户" />
+    </div>
+    <n-card :bordered="false" class="proCard">
+      <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset">
+        <template #statusSlot="{ model, field }">
+          <n-input v-model:value="model[field]" />
+        </template>
+      </BasicForm>
 
-    <BasicTable
-      :columns="columns"
-      :request="loadDataTable"
-      :row-key="(row) => row.id"
-      ref="actionRef"
-      :actionColumn="actionColumn"
-      :scroll-x="1800"
-    />
-  </n-card>
+      <BasicTable
+        :columns="columns"
+        :request="loadDataTable"
+        :row-key="(row) => row.id"
+        ref="actionRef"
+        :actionColumn="actionColumn"
+        :scroll-x="1800"
+      />
+    </n-card>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -24,8 +29,8 @@
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
   import { OnlineList, Offline } from '@/api/monitor/monitor';
   import { columns } from './columns';
+  import { defRangeShortcuts } from '@/utils/dateUtil';
 
-  const dialog = useDialog();
   const schemas: FormSchema[] = [
     {
       field: 'userId',
@@ -33,6 +38,18 @@
       label: '用户ID',
       componentProps: {
         placeholder: '请输入用户ID',
+        onInput: (e: any) => {
+          console.log(e);
+        },
+      },
+      rules: [{ trigger: ['blur'] }],
+    },
+    {
+      field: 'username',
+      component: 'NInput',
+      label: '用户名',
+      componentProps: {
+        placeholder: '请输入用户名',
         onInput: (e: any) => {
           console.log(e);
         },
@@ -51,8 +68,22 @@
       },
       rules: [{ trigger: ['blur'] }],
     },
+    {
+      field: 'firstTime',
+      component: 'NDatePicker',
+      label: '登录时间',
+      componentProps: {
+        type: 'datetimerange',
+        clearable: true,
+        shortcuts: defRangeShortcuts(),
+        onUpdateValue: (e: any) => {
+          console.log(e);
+        },
+      },
+    },
   ];
 
+  const dialog = useDialog();
   const message = useMessage();
   const actionRef = ref();
   const formParams = ref({});

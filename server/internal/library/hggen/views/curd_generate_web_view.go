@@ -31,7 +31,6 @@ func (l *gCurd) generateWebViewItem(ctx context.Context, in *CurdPreviewInput) s
 		)
 
 		switch field.FormMode {
-
 		case FormModeInputTextarea, FormModeInputEditor:
 			component = fmt.Sprintf("<n-descriptions-item>\n          <template #label>%s</template>\n          <span v-html=\"formValue.%s\"></span></n-descriptions-item>", field.Dc, field.TsName)
 

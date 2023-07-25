@@ -41,13 +41,13 @@ func (s *sAdminNotice) Model(ctx context.Context, option ...*handler.Option) *gd
 }
 
 // Delete 删除
-func (s *sAdminNotice) Delete(ctx context.Context, in adminin.NoticeDeleteInp) (err error) {
+func (s *sAdminNotice) Delete(ctx context.Context, in *adminin.NoticeDeleteInp) (err error) {
 	_, err = s.Model(ctx).Where("id", in.Id).Delete()
 	return
 }
 
 // Edit 修改/新增
-func (s *sAdminNotice) Edit(ctx context.Context, in adminin.NoticeEditInp) (err error) {
+func (s *sAdminNotice) Edit(ctx context.Context, in *adminin.NoticeEditInp) (err error) {
 	var member = contexts.Get(ctx).User
 	if member == nil {
 		err = gerror.New("获取用户信息失败！")
@@ -108,12 +108,11 @@ func (s *sAdminNotice) Edit(ctx context.Context, in adminin.NoticeEditInp) (err 
 			websocket.SendToAll(response)
 		}
 	})
-
 	return
 }
 
 // Status 更新部门状态
-func (s *sAdminNotice) Status(ctx context.Context, in adminin.NoticeStatusInp) (err error) {
+func (s *sAdminNotice) Status(ctx context.Context, in *adminin.NoticeStatusInp) (err error) {
 	if in.Id <= 0 {
 		err = gerror.New("ID不能为空")
 		return
@@ -135,7 +134,7 @@ func (s *sAdminNotice) Status(ctx context.Context, in adminin.NoticeStatusInp) (
 }
 
 // MaxSort 最大排序
-func (s *sAdminNotice) MaxSort(ctx context.Context, in adminin.NoticeMaxSortInp) (res *adminin.NoticeMaxSortModel, err error) {
+func (s *sAdminNotice) MaxSort(ctx context.Context, in *adminin.NoticeMaxSortInp) (res *adminin.NoticeMaxSortModel, err error) {
 	if err = dao.AdminNotice.Ctx(ctx).Order("sort desc").Scan(&res); err != nil {
 		return
 	}
@@ -144,12 +143,12 @@ func (s *sAdminNotice) MaxSort(ctx context.Context, in adminin.NoticeMaxSortInp)
 		res = new(adminin.NoticeMaxSortModel)
 	}
 
-	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	res.Sort = form.DefaultMaxSort(res.Sort)
 	return
 }
 
 // View 获取指定字典类型信息
-func (s *sAdminNotice) View(ctx context.Context, in adminin.NoticeViewInp) (res *adminin.NoticeViewModel, err error) {
+func (s *sAdminNotice) View(ctx context.Context, in *adminin.NoticeViewInp) (res *adminin.NoticeViewModel, err error) {
 	if err = s.Model(ctx).Where("id", in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return nil, err
@@ -159,7 +158,7 @@ func (s *sAdminNotice) View(ctx context.Context, in adminin.NoticeViewInp) (res 
 }
 
 // List 获取列表
-func (s *sAdminNotice) List(ctx context.Context, in adminin.NoticeListInp) (list []*adminin.NoticeListModel, totalCount int, err error) {
+func (s *sAdminNotice) List(ctx context.Context, in *adminin.NoticeListInp) (list []*adminin.NoticeListModel, totalCount int, err error) {
 	var memberId = contexts.GetUserId(ctx)
 	if memberId <= 0 {
 		err = gerror.New("获取用户信息失败！")
@@ -224,7 +223,7 @@ func (s *sAdminNotice) List(ctx context.Context, in adminin.NoticeListInp) (list
 }
 
 // PullMessages 拉取未读消息列表
-func (s *sAdminNotice) PullMessages(ctx context.Context, in adminin.PullMessagesInp) (res *adminin.PullMessagesModel, err error) {
+func (s *sAdminNotice) PullMessages(ctx context.Context, in *adminin.PullMessagesInp) (res *adminin.PullMessagesModel, err error) {
 	var memberId = contexts.GetUserId(ctx)
 	if memberId <= 0 {
 		err = gerror.New("获取用户信息失败！")
@@ -237,7 +236,7 @@ func (s *sAdminNotice) PullMessages(ctx context.Context, in adminin.PullMessages
 	}
 
 	res = new(adminin.PullMessagesModel)
-	unread, err := s.UnreadCount(ctx, adminin.NoticeUnreadCountInp{MemberId: memberId, MessageIds: messageIds})
+	unread, err := s.UnreadCount(ctx, &adminin.NoticeUnreadCountInp{MemberId: memberId, MessageIds: messageIds})
 	if err != nil {
 		return
 	}
@@ -268,7 +267,7 @@ func (s *sAdminNotice) PullMessages(ctx context.Context, in adminin.PullMessages
 }
 
 // UnreadCount 获取所有类型消息的未读数量
-func (s *sAdminNotice) UnreadCount(ctx context.Context, in adminin.NoticeUnreadCountInp) (res *adminin.NoticeUnreadCountModel, err error) {
+func (s *sAdminNotice) UnreadCount(ctx context.Context, in *adminin.NoticeUnreadCountInp) (res *adminin.NoticeUnreadCountModel, err error) {
 	if in.MemberId <= 0 {
 		if in.MemberId = contexts.GetUserId(ctx); in.MemberId <= 0 {
 			err = gerror.New("获取用户信息失败！")
@@ -338,7 +337,7 @@ func (s *sAdminNotice) messageIds(ctx context.Context, memberId int64) (ids []in
 }
 
 // UpRead 更新已读
-func (s *sAdminNotice) UpRead(ctx context.Context, in adminin.NoticeUpReadInp) (err error) {
+func (s *sAdminNotice) UpRead(ctx context.Context, in *adminin.NoticeUpReadInp) (err error) {
 	var (
 		data     *entity.AdminNotice
 		memberId = contexts.GetUserId(ctx)
@@ -361,7 +360,7 @@ func (s *sAdminNotice) UpRead(ctx context.Context, in adminin.NoticeUpReadInp) (
 }
 
 // ReadAll 已读全部
-func (s *sAdminNotice) ReadAll(ctx context.Context, in adminin.NoticeReadAllInp) (err error) {
+func (s *sAdminNotice) ReadAll(ctx context.Context, in *adminin.NoticeReadAllInp) (err error) {
 	var memberId = contexts.GetUserId(ctx)
 	if memberId <= 0 {
 		err = gerror.New("获取用户信息失败！")
@@ -417,9 +416,7 @@ func (s *sAdminNotice) ReadAll(ctx context.Context, in adminin.NoticeReadAllInp)
 
 // updatedReadClicks 更新公告已读次数
 func (s *sAdminNotice) updatedReadClicks(ctx context.Context, noticeId, memberId int64) (err error) {
-	var (
-		models *entity.AdminNoticeRead
-	)
+	var models *entity.AdminNoticeRead
 	err = dao.AdminNoticeRead.Ctx(ctx).
 		Where(dao.AdminNoticeRead.Columns().NoticeId, noticeId).
 		Where(dao.AdminNoticeRead.Columns().MemberId, memberId).
@@ -437,7 +434,7 @@ func (s *sAdminNotice) updatedReadClicks(ctx context.Context, noticeId, memberId
 }
 
 // MessageList 我的消息列表
-func (s *sAdminNotice) MessageList(ctx context.Context, in adminin.NoticeMessageListInp) (list []*adminin.NoticeMessageListModel, totalCount int, err error) {
+func (s *sAdminNotice) MessageList(ctx context.Context, in *adminin.NoticeMessageListInp) (list []*adminin.NoticeMessageListModel, totalCount int, err error) {
 	var memberId = contexts.GetUserId(ctx)
 	if memberId <= 0 {
 		err = gerror.New("获取用户信息失败！")
@@ -457,16 +454,16 @@ func (s *sAdminNotice) MessageList(ctx context.Context, in adminin.NoticeMessage
 	totalCount, err = mod.Count()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
 	if totalCount == 0 {
-		return list, totalCount, nil
+		return
 	}
 
 	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, totalCount, err
+		return
 	}
 
 	for _, v := range list {
@@ -482,5 +479,5 @@ func (s *sAdminNotice) MessageList(ctx context.Context, in adminin.NoticeMessage
 			}
 		}
 	}
-	return list, totalCount, err
+	return
 }

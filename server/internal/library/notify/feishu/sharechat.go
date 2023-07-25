@@ -18,7 +18,7 @@ func NewShareChatMessage() *ShareChatMessage {
 	return &ShareChatMessage{}
 }
 
-func (m *ShareChatMessage) SetShareChatID(ID string) *ShareChatMessage {
-	m.Content.ShareChatID = ID
+func (m *ShareChatMessage) SetShareChatID(id string) *ShareChatMessage {
+	m.Content.ShareChatID = id
 	return m
 }

@@ -32,8 +32,8 @@ func GenLabel(basic string, appendId int64) string {
 }
 
 // GetIdLabel 获取指定Id的树标签
-func GetIdLabel(Id int64) string {
-	return fmt.Sprintf("%v%v%v", treeBeginCut, Id, treeEndCut)
+func GetIdLabel(id int64) string {
+	return fmt.Sprintf("%v%v%v", treeBeginCut, id, treeEndCut)
 }
 
 // GetIds 获取上级ID集合

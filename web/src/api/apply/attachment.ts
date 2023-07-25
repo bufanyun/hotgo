@@ -39,3 +39,18 @@ export function View(params) {
     params,
   });
 }
+
+export function ChooserOption() {
+  return http.request({
+    url: '/attachment/chooserOption',
+    method: 'GET',
+  });
+}
+
+export function ClearKind(params) {
+  return http.request({
+    url: '/attachment/clearKind',
+    method: 'POST',
+    params,
+  });
+}

@@ -16,25 +16,26 @@ import (
 // AddonsListInp 获取列表
 type AddonsListInp struct {
 	form.PageReq
-	Name   string `json:"name"`
-	Group  int    `json:"group"`
-	Status int    `json:"status"`
+	Name   string `json:"name"           dc:"插件名称"`
+	Group  int    `json:"group"          dc:"分组"`
+	Status int    `json:"status"         dc:"安装状态"`
 }
 
 type AddonsListModel struct {
 	addons.Skeleton
-	GroupName      string `json:"groupName" dc:"分组名称"`
-	InstallVersion string `json:"installVersion" dc:"安装版本"`
-	InstallStatus  int    `json:"installStatus" dc:"安装状态"`
-	CanSave        bool   `json:"canSave" dc:"是否可以更新"`
+	GroupName      string `json:"groupName"        dc:"分组名称"`
+	InstallVersion string `json:"installVersion"   dc:"安装版本"`
+	InstallStatus  int    `json:"installStatus"    dc:"安装状态"`
+	CanSave        bool   `json:"canSave"          dc:"是否可以更新"`
 }
 
 // AddonsSelectsInp 选项
 type AddonsSelectsInp struct {
 }
+
 type AddonsSelectsModel struct {
 	GroupType form.Selects `json:"groupType" dc:"分组类型"`
-	Status    form.Selects `json:"status" dc:"安装状态"`
+	Status    form.Selects `json:"status"    dc:"安装状态"`
 }
 
 // AddonsBuildInp 提交生成
@@ -52,7 +53,6 @@ func (in *AddonsBuildInp) Filter(ctx context.Context) (err error) {
 		err = gerror.New("插件名称格式不正确，字母开头，只能包含字母、数字和下划线，长度在2~24之间")
 		return
 	}
-
 	return
 }
 

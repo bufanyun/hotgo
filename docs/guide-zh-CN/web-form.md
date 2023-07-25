@@ -20,6 +20,7 @@
 - 多图上传 UploadImage
 - 单文件上传 UploadFile
 - 多文件上传 UploadFile
+- 文件选择器 FileChooser
 - 开关 Switch
 - 评分 Rate
 - 省市区选择器 CitySelector
@@ -763,6 +764,35 @@ import { ref } from 'vue'
 import UploadFile from '@/components/Upload/uploadFile.vue';
 const value = ref(null);
 </script>
+```
+
+### 文件选择器 FileChooser
+- 基础用法
+```vue
+<template>
+  <FileChooser v-model:value="value" />
+</template>
+
+<script lang="ts" setup>
+import { ref } from 'vue'
+import FileChooser from '@/components/FileChooser/index.vue';
+const value = ref(null);
+</script>
+```
+
+- 指定fileType，支持多种选择器类型，默认情况是全部都可以选择
+```ts
+type FileType = 'image' | 'doc' | 'audio' | 'video' | 'zip' | 'other' | 'default';
+```
+
+- 图片选择器
+```vue
+<FileChooser v-model:value="value" fileType="image" />
+```
+
+- 多选支持，指定`maxNumber`多选数量
+```vue
+<FileChooser v-model:value="value" :maxNumber="10" fileType="image" />
 ```
 
 ### 开关 Switch

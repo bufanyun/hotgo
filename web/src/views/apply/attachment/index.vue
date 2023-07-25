@@ -25,7 +25,16 @@
         :resizeHeightOffset="-20000"
       >
         <template #tableTitle>
-          <n-button type="primary" @click="addTable">
+          <n-button type="primary" @click="handleUpload">
+            <template #icon>
+              <n-icon>
+                <UploadOutlined />
+              </n-icon>
+            </template>
+            上传文件
+          </n-button>
+          &nbsp;
+          <n-button type="primary" @click="handleUploadImage">
             <template #icon>
               <n-icon>
                 <UploadOutlined />
@@ -34,13 +43,13 @@
             上传图片
           </n-button>
           &nbsp;
-          <n-button type="primary" @click="addFileTable">
+          <n-button type="primary" @click="handleUploadDoc">
             <template #icon>
               <n-icon>
                 <UploadOutlined />
               </n-icon>
             </template>
-            上传文件
+            上传文档
           </n-button>
           &nbsp;
           <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
@@ -53,109 +62,34 @@
           </n-button>
         </template>
       </BasicTable>
-
-      <n-modal
-        v-model:show="showModal"
-        :show-icon="false"
-        preset="dialog"
-        style="width: 60%"
-        title="上传图片"
-      >
-        <n-upload
-          multiple
-          directory-dnd
-          :action="`${uploadUrl}${urlPrefix}/upload/image`"
-          :headers="uploadHeaders"
-          :data="{ type: 0 }"
-          @before-upload="beforeUpload"
-          @finish="finish"
-          name="file"
-          :max="20"
-          :default-file-list="fileList"
-          list-type="image"
-        >
-          <n-upload-dragger>
-            <div style="margin-bottom: 12px">
-              <n-icon size="48" :depth="3">
-                <CloudUploadOutlined />
-              </n-icon>
-            </div>
-            <n-text style="font-size: 16px"> 点击或者拖动图片到该区域来上传</n-text>
-            <n-p depth="3" style="margin: 8px 0 0 0"> 单次最多允许20个图片</n-p>
-          </n-upload-dragger>
-        </n-upload>
-      </n-modal>
-
-      <n-modal
-        v-model:show="showFileModal"
-        :show-icon="false"
-        preset="dialog"
-        style="width: 60%"
-        title="上传文件"
-      >
-        <n-upload
-          multiple
-          directory-dnd
-          :action="`${uploadUrl}${urlPrefix}/upload/file`"
-          :headers="uploadHeaders"
-          :data="{ type: 0 }"
-          @before-upload="beforeUpload"
-          @finish="finish"
-          name="file"
-          :max="20"
-          :default-file-list="fileList"
-          list-type="image"
-        >
-          <n-upload-dragger>
-            <div style="margin-bottom: 12px">
-              <n-icon size="48" :depth="3">
-                <FileAddOutlined />
-              </n-icon>
-            </div>
-            <n-text style="font-size: 16px"> 点击或者拖动文件到该区域来上传</n-text>
-            <n-p depth="3" style="margin: 8px 0 0 0"> 单次最多允许20个文件</n-p>
-          </n-upload-dragger>
-        </n-upload>
-      </n-modal>
     </n-card>
+
+    <FileUpload ref="fileUploadRef" :finish-call="handleFinishCall" />
+    <FileUpload ref="imageUploadRef" :finish-call="handleFinishCall" upload-type="image" />
+    <FileUpload ref="docUploadRef" :finish-call="handleFinishCall" upload-type="doc" />
   </div>
 </template>
 
 <script lang="ts" setup>
   import { h, reactive, ref } from 'vue';
-  import { UploadFileInfo, useDialog, useMessage } from 'naive-ui';
+  import { useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, useForm } from '@/components/Form/index';
   import { Delete, List } from '@/api/apply/attachment';
   import { columns, schemas } from './columns';
-  import {
-    DeleteOutlined,
-    UploadOutlined,
-    FileAddOutlined,
-    CloudUploadOutlined,
-  } from '@vicons/antd';
-  import { useGlobSetting } from '@/hooks/setting';
-  import { useUserStoreWidthOut } from '@/store/modules/user';
-  import componentSetting from '@/settings/componentSetting';
-  import { ResultEnum } from '@/enums/httpEnum';
+  import { DeleteOutlined, UploadOutlined } from '@vicons/antd';
+  import FileUpload from '@/components/FileChooser/src/Upload.vue';
+  import { Attachment } from '@/components/FileChooser/src/model';
 
-  const useUserStore = useUserStoreWidthOut();
-  const globSetting = useGlobSetting();
-  const { uploadUrl } = globSetting;
-  const urlPrefix = globSetting.urlPrefix || '';
-  const uploadHeaders = reactive({
-    Authorization: useUserStore.token,
-  });
-
-  const fileList = ref<UploadFileInfo[]>([]);
   const message = useMessage();
   const actionRef = ref();
   const dialog = useDialog();
-  const showFileModal = ref(false);
-  const showModal = ref(false);
   const searchFormRef = ref<any>({});
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
+  const fileUploadRef = ref();
+  const imageUploadRef = ref();
+  const docUploadRef = ref();
 
   const actionColumn = reactive({
     width: 150,
@@ -182,20 +116,20 @@
 
   const [register, {}] = useForm({
     gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
-    labelWidth: 80,
+    labelWidth: 100,
     schemas,
   });
 
-  function addTable() {
-    showFileModal.value = false;
-    showModal.value = true;
-    fileList.value = [];
+  function handleUpload() {
+    fileUploadRef.value.openModal();
   }
 
-  function addFileTable() {
-    showModal.value = false;
-    showFileModal.value = true;
-    fileList.value = [];
+  function handleUploadImage() {
+    imageUploadRef.value.openModal();
+  }
+
+  function handleUploadDoc() {
+    docUploadRef.value.openModal();
   }
 
   const loadDataTable = async (res) => {
@@ -260,32 +194,9 @@
     reloadTable();
   }
 
-  //上传之前
-  function beforeUpload({ _file }) {
-    return true;
-  }
-
-  //上传结束
-  function finish({ event: Event }) {
-    const res = eval('(' + Event.target.response + ')');
-    const infoField = componentSetting.upload.apiSetting.infoField;
-    const { code } = res;
-    const msg = res.msg || res.message || '上传失败';
-    const result = res[infoField];
-
-    //成功
-    if (code === ResultEnum.SUCCESS) {
-      fileList.value.push({
-        id: result.id,
-        name: result.name,
-        status: 'finished',
-        type: result.naiveType,
-      });
-
-      message.success('上传' + result.name + '成功');
+  function handleFinishCall(result: Attachment, success: boolean) {
+    if (success) {
       reloadTable();
-    } else {
-      message.error(msg);
     }
   }
 </script>

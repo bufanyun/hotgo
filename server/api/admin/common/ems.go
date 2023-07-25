@@ -11,8 +11,8 @@ import (
 
 // SendTestEmailReq 发送测试邮件
 type SendTestEmailReq struct {
-	To     string `json:"to" v:"required#接收者邮件不能为空" dc:"接收者邮件，多个用;隔开"`
 	g.Meta `path:"/ems/sendTest" tags:"邮件" method:"post" summary:"发送测试邮件"`
+	To     string `json:"to" v:"required#接收者邮件不能为空" dc:"接收者邮件，多个用;隔开"`
 }
 
 type SendTestEmailRes struct {

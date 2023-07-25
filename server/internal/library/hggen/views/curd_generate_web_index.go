@@ -31,9 +31,9 @@ func (l *gCurd) webIndexTplData(ctx context.Context, in *CurdPreviewInput) (g.Ma
 		iconsImport = append(iconsImport, " PlusOutlined")
 	}
 
-	//// 编辑
-	//if in.options.Step.HasEdit {
-	//}
+	// 编辑
+	// if in.options.Step.HasEdit {
+	// }
 
 	// 导出
 	if in.options.Step.HasExport {
@@ -83,6 +83,5 @@ func (l *gCurd) webIndexTplData(ctx context.Context, in *CurdPreviewInput) (g.Ma
 		}
 	}
 	data["isSearchForm"] = isSearchForm
-
 	return data, nil
 }

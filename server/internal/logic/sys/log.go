@@ -7,7 +7,6 @@ package sys
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -41,7 +40,7 @@ func init() {
 }
 
 // Export 导出
-func (s *sSysLog) Export(ctx context.Context, in sysin.LogListInp) (err error) {
+func (s *sSysLog) Export(ctx context.Context, in *sysin.LogListInp) (err error) {
 	//  导出格式
 	type exportImage struct {
 		Id         int64       `json:"id"           description:""`
@@ -168,7 +167,8 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 	}
 
 	// 请求头
-	if reqHeadersBytes, _ := json.Marshal(request.Header); len(gconv.String(reqHeadersBytes)) > 0 {
+
+	if reqHeadersBytes, _ := gjson.New(request.Header).MarshalJSON(); len(reqHeadersBytes) > 0 {
 		headerData = gjson.New(reqHeadersBytes)
 	}
 
@@ -235,7 +235,7 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 }
 
 // View 获取指定字典类型信息
-func (s *sSysLog) View(ctx context.Context, in sysin.LogViewInp) (res *sysin.LogViewModel, err error) {
+func (s *sSysLog) View(ctx context.Context, in *sysin.LogViewInp) (res *sysin.LogViewModel, err error) {
 	if err = dao.SysLog.Ctx(ctx).Hook(hook.CityLabel).Where("id", in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return
@@ -252,13 +252,13 @@ func (s *sSysLog) View(ctx context.Context, in sysin.LogViewInp) (res *sysin.Log
 }
 
 // Delete 删除
-func (s *sSysLog) Delete(ctx context.Context, in sysin.LogDeleteInp) (err error) {
+func (s *sSysLog) Delete(ctx context.Context, in *sysin.LogDeleteInp) (err error) {
 	_, err = dao.SysLog.Ctx(ctx).Where("id", in.Id).Delete()
 	return
 }
 
 // List 列表
-func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.LogListModel, totalCount int, err error) {
+func (s *sSysLog) List(ctx context.Context, in *sysin.LogListInp) (list []*sysin.LogListModel, totalCount int, err error) {
 	mod := dao.SysLog.Ctx(ctx).FieldsEx("get_data", "header_data", "post_data")
 
 	// 访问路径
@@ -287,13 +287,6 @@ func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.
 	}
 
 	// 日期范围
-	if in.StartTime != "" {
-		mod = mod.WhereGTE("created_at", in.StartTime)
-	}
-	if in.EndTime != "" {
-		mod = mod.WhereLTE("created_at", in.EndTime)
-	}
-
 	if len(in.CreatedAt) == 2 {
 		mod = mod.WhereBetween("created_at", gtime.New(in.CreatedAt[0]), gtime.New(in.CreatedAt[1]))
 	}
@@ -329,25 +322,12 @@ func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.
 			list[i].MemberName = memberName.String()
 		}
 
-		//// 接口
-		//if list[i].AppId == consts.AppApi {
-		//	//memberName, err = dao.Member.Ctx(ctx).Fields("realname").Where("id", res.List[i].MemberId).Value()
-		//	//if err != nil {
-		//	//	err = gerror.Wrap(err, consts.ErrorORM)
-		//	//	return nil, err
-		//	//}
-		//}
+		// 接口
+		// ...
 
 		if list[i].MemberName == "" {
 			list[i].MemberName = "游客"
 		}
-
-		//// 获取省市编码对应的地区名称
-		//region, err := dao.SysProvinces.GetRegion(ctx, list[i].ProvinceId, list[i].CityId)
-		//if err != nil {
-		//	return list, totalCount, err
-		//}
-		//list[i].Region = region
 
 		// 截取请求url路径
 		if gstr.Contains(list[i].Url, "?") {
@@ -361,7 +341,6 @@ func (s *sSysLog) List(ctx context.Context, in sysin.LogListInp) (list []*sysin.
 			   ]
 			}`)
 		}
-
 	}
 	return
 }

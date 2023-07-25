@@ -2,7 +2,7 @@
   <div>
     <div class="n-layout-page-header">
       <n-card :bordered="false" title="服务日志">
-        在这里开发者可以快速定位服务端在运行时产生的重要日志，方便排查系统异常和日常运维工作
+        在这里，开发者可以快速定位重要的运行时日志，以便更方便地排查系统异常和进行日常运维
       </n-card>
     </div>
     <n-card :bordered="false" class="proCard">
@@ -131,12 +131,6 @@
         style: 'button',
         actions: [
           {
-            label: '访问日志',
-            onClick: handleView.bind(null, record),
-            ifShow: record.sysLogId > 0,
-            type: 'default',
-          },
-          {
             label: '堆栈',
             onClick: handleStack.bind(null, record),
             type: 'primary',
@@ -145,6 +139,12 @@
             label: '删除',
             onClick: handleDelete.bind(null, record),
             auth: ['/serveLog/delete'],
+          },
+          {
+            label: '访问日志',
+            onClick: handleView.bind(null, record),
+            ifShow: record.sysLogId > 0,
+            type: 'default',
           },
         ],
       });

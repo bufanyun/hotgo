@@ -7,56 +7,88 @@ package tcp
 
 import (
 	"context"
-	"encoding/json"
+	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/net/gtcp"
-	"github.com/gogf/gf/v2/util/gconv"
+	"github.com/gogf/gf/v2/text/gstr"
+	"reflect"
+	"runtime"
 )
 
-// RouterHandler 路由消息处理器
-type RouterHandler func(ctx context.Context, args ...interface{})
-
-// Message 路由消息
-type Message struct {
-	Router string      `json:"router"`
-	Data   interface{} `json:"data"`
+// RouteHandler 路由处理器
+type RouteHandler struct {
+	Id     string        // 路由ID
+	IsRPC  bool          // 是否支持rpc协议
+	Func   reflect.Value // 路由处理方法
+	Input  reflect.Value // 输入参数
+	Output reflect.Value // 输出参数
 }
 
-// SendPkg 打包发送的数据包
-func SendPkg(conn *gtcp.Conn, message *Message) error {
-	b, err := json.Marshal(message)
-	if err != nil {
-		return err
+// ParseRouteHandler 解析路由
+func ParseRouteHandler(router interface{}, isRPC bool) (info *RouteHandler, err error) {
+	funcName := runtime.FuncForPC(reflect.ValueOf(router).Pointer()).Name()
+	funcType := reflect.ValueOf(router).Type()
+
+	if funcType.NumIn() != 2 {
+		err = gerror.Newf(ParseRouterErrInvalidParams, funcName)
+		return
 	}
-	return conn.SendPkg(b)
-}
 
-// RecvPkg 解包
-func RecvPkg(conn *gtcp.Conn) (*Message, error) {
-	if data, err := conn.RecvPkg(); err != nil {
-		return nil, err
-	} else {
-		var msg = new(Message)
-		if err = gconv.Scan(data, &msg); err != nil {
-			return nil, gerror.Newf("invalid package structure: %s", err.Error())
-		}
-		if msg.Router == "" {
-			return nil, gerror.Newf("message is not routed: %+v", msg)
-		}
-		return msg, err
+	if funcType.In(0) != reflect.TypeOf((*context.Context)(nil)).Elem() {
+		err = gerror.Newf(ParseRouterErrInvalidFirstParam, funcName)
+		return
 	}
-}
 
-// MsgPkg 打包消息
-func MsgPkg(data interface{}, auth *AuthMeta, traceID string) string {
-	// 打包签名
-	msg := PkgSign(data, auth.AppId, auth.SecretKey, traceID)
-
-	// 打包响应消息
-	PkgResponse(data)
-
-	if msg == nil {
-		return ""
+	inputType := funcType.In(1)
+	if !(inputType.Kind() == reflect.Ptr && inputType.Elem().Kind() == reflect.Struct) {
+		err = gerror.Newf(ParseRouterErrInvalidSecondParam, funcName)
+		return
 	}
-	return msg.TraceID
+
+	// The request struct should be named as `xxxReq`.
+	if !gstr.HasSuffix(inputType.String(), `Req`) && !gstr.HasSuffix(inputType.String(), `Res`) {
+		err = gerror.NewCodef(
+			gcode.CodeInvalidParameter,
+			`invalid struct naming of the request: defined as "%s", but should be named with the "Req" or "Res" suffix, such as "XxxReq" or "XxxRes"`,
+			inputType.String(),
+		)
+		return
+	}
+
+	info = &RouteHandler{
+		Id:    gstr.SubStrFromREx(inputType.String(), `.`),
+		IsRPC: isRPC,
+		Func:  reflect.ValueOf(router),
+		Input: reflect.New(inputType.Elem()),
+	}
+
+	if !isRPC {
+		return
+	}
+
+	if funcType.NumOut() != 2 {
+		err = gerror.Newf(ParseRouterRPCErrInvalidParams, funcName)
+		return
+	}
+	outputType := funcType.Out(0)
+	// The response struct should be named as `xxxRes`.
+	if !gstr.HasSuffix(outputType.String(), `Res`) {
+		err = gerror.NewCodef(
+			gcode.CodeInvalidParameter,
+			`invalid struct naming for response: defined as "%s", but it should be named with "Res" suffix like "XxxRes"`,
+			outputType.String(),
+		)
+		return
+	}
+
+	if !funcType.Out(1).Implements(reflect.TypeOf((*error)(nil)).Elem()) {
+		err = gerror.NewCodef(
+			gcode.CodeInvalidParameter,
+			`invalid handler: defined as "%s", but the last output parameter should be type of "error"`,
+			reflect.TypeOf(funcType).String(),
+		)
+		return
+	}
+
+	info.Output = reflect.New(outputType.Elem())
+	return
 }

@@ -7,7 +7,6 @@ package sys
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/config"
 	"hotgo/internal/consts"
 	"hotgo/internal/model/input/form"
@@ -23,24 +22,14 @@ type cConfig struct{}
 
 // GetConfig 获取指定分组的配置
 func (c *cConfig) GetConfig(ctx context.Context, req *config.GetReq) (res *config.GetRes, err error) {
-	var in sysin.GetConfigInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
 	res = new(config.GetRes)
-	res.GetConfigModel, err = service.SysConfig().GetConfigByGroup(ctx, in)
+	res.GetConfigModel, err = service.SysConfig().GetConfigByGroup(ctx, &req.GetConfigInp)
 	return
 }
 
 // UpdateConfig 更新指定分组的配置
 func (c *cConfig) UpdateConfig(ctx context.Context, req *config.UpdateReq) (res *config.UpdateRes, err error) {
-	var in sysin.UpdateConfigInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	err = service.SysConfig().UpdateConfigByGroup(ctx, in)
+	err = service.SysConfig().UpdateConfigByGroup(ctx, &req.UpdateConfigInp)
 	return
 }
 
@@ -56,9 +45,9 @@ func (c *cConfig) TypeSelect(_ context.Context, _ *config.TypeSelectReq) (res co
 	return
 }
 
-// GetCash 获取指定分组的配置
+// GetCash 获取提现的配置
 func (c *cConfig) GetCash(ctx context.Context, _ *config.GetCashReq) (res *config.GetCashRes, err error) {
 	res = new(config.GetCashRes)
-	res.GetConfigModel, err = service.SysConfig().GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "cash"})
+	res.GetConfigModel, err = service.SysConfig().GetConfigByGroup(ctx, &sysin.GetConfigInp{Group: "cash"})
 	return
 }

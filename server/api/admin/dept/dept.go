@@ -7,26 +7,22 @@ package dept
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
-	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
 )
 
 // ListReq 查询列表
 type ListReq struct {
-	Name   string `json:"name" dc:"部门名称"`
-	Code   string `json:"code" dc:"部门编码"`
 	g.Meta `path:"/dept/list" method:"get" tags:"部门" summary:"获取部门列表"`
+	adminin.DeptListInp
 }
 
-type ListRes struct {
-	adminin.DeptListModel
-}
+type ListRes *adminin.DeptListModel
 
 // ViewReq 获取指定信息
 type ViewReq struct {
-	Id     int64 `json:"id" v:"required#部门ID不能为空" dc:"部门ID"`
 	g.Meta `path:"/dept/view" method:"get" tags:"部门" summary:"获取指定信息"`
+	adminin.DeptViewInp
 }
 
 type ViewRes struct {
@@ -35,34 +31,34 @@ type ViewRes struct {
 
 // EditReq 修改/新增字典数据
 type EditReq struct {
-	entity.AdminDept
 	g.Meta `path:"/dept/edit" method:"post" tags:"部门" summary:"修改/新增部门"`
+	adminin.DeptEditInp
 }
 
 type EditRes struct{}
 
 // DeleteReq 删除字典类型
 type DeleteReq struct {
-	Id     interface{} `json:"id" v:"required#部门ID不能为空" dc:"部门ID"`
 	g.Meta `path:"/dept/delete" method:"post" tags:"部门" summary:"删除部门"`
+	adminin.DeptDeleteInp
 }
 
 type DeleteRes struct{}
 
 // MaxSortReq 最大排序
 type MaxSortReq struct {
-	Id     int64 `json:"id" dc:"部门ID"`
 	g.Meta `path:"/dept/maxSort" method:"get" tags:"部门" summary:"部门最大排序"`
+	adminin.DeptMaxSortInp
 }
 
 type MaxSortRes struct {
-	Sort int `json:"sort" dc:"排序"`
+	*adminin.DeptMaxSortModel
 }
 
 // StatusReq 更新部门状态
 type StatusReq struct {
-	entity.AdminDept
 	g.Meta `path:"/dept/status" method:"post" tags:"部门" summary:"更新部门状态"`
+	adminin.DeptStatusInp
 }
 
 type StatusRes struct{}

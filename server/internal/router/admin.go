@@ -47,6 +47,7 @@ func Admin(ctx context.Context, group *ghttp.RouterGroup) {
 			sys.LoginLog,     // 登录日志
 			sys.ServeLog,     // 服务日志
 			sys.SmsLog,       // 短信记录
+			sys.ServeLicense, // 服务许可证
 			admin.Member,     // 用户
 			admin.Monitor,    // 监控
 			admin.Role,       // 路由

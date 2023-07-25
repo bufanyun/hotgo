@@ -25,9 +25,11 @@ var crons = &cronManager{
 	tasks: make(map[string]*TaskItem),
 }
 
-// cronStrategy 任务接口
-type cronStrategy interface {
+// Cron 定时任务接口
+type Cron interface {
+	// GetName 获取任务名称
 	GetName() string
+	// Execute 执行一次任务
 	Execute(ctx context.Context)
 }
 
@@ -51,7 +53,7 @@ func Logger() *glog.Logger {
 }
 
 // Register 注册任务
-func Register(c cronStrategy) {
+func Register(c Cron) {
 	crons.Lock()
 	defer crons.Unlock()
 
@@ -72,6 +74,9 @@ func StopALL() {
 
 // StartALL 启动所有任务
 func StartALL(sysCron []*entity.SysCron) (err error) {
+	crons.Lock()
+	defer crons.Unlock()
+
 	if len(crons.tasks) == 0 {
 		g.Log().Debug(gctx.GetInitCtx(), "no scheduled task is available.")
 		return
@@ -156,6 +161,9 @@ func Stop(sysCron *entity.SysCron) (err error) {
 
 // Once 立即执行一次某个任务
 func Once(ctx context.Context, sysCron *entity.SysCron) error {
+	crons.RLock()
+	defer crons.RUnlock()
+
 	for _, v := range crons.tasks {
 		if v.Name == sysCron.Name {
 			simple.SafeGo(ctx, func(ctx context.Context) {

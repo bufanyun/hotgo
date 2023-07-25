@@ -14,7 +14,7 @@ type GenCodesColumn struct {
 	Index        string      `json:"index" dc:"索引"`
 	Extra        string      `json:"extra" dc:"额外选项"`
 	// 自定义生成属性
-	//Alias      string `json:"alias" dc:"字段别名"`
+	// Alias      string `json:"alias" dc:"字段别名"`
 	GoName     string `json:"goName" dc:"Go属性"`
 	GoType     string `json:"goType" dc:"Go类型"`
 	TsName     string `json:"tsName" dc:"Ts属性"`

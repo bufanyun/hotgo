@@ -24,6 +24,7 @@ type ListRes struct {
 
 type SelectsReq struct {
 	g.Meta `path:"/addons/selects" method:"get" tags:"插件管理" summary:"生成入口选项"`
+	sysin.AddonsSelectsInp
 }
 
 type SelectsRes struct {

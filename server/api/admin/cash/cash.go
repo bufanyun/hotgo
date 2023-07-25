@@ -34,18 +34,16 @@ type ViewRes struct {
 
 // ApplyReq 申请提现
 type ApplyReq struct {
-	Money  float64 `json:"money"     description:"提现金额"`
 	g.Meta `path:"/cash/apply" method:"post" tags:"提现" summary:"申请提现"`
+	Money  float64 `json:"money"     description:"提现金额"`
 }
 
 type ApplyRes struct{}
 
 // PaymentReq 提现打款处理
 type PaymentReq struct {
-	Id     int64  `json:"id"        description:"ID"`
-	Status int64  `json:"status"    description:"状态码"`
-	Msg    string `json:"msg"       description:"处理结果"`
 	g.Meta `path:"/cash/payment" method:"post" tags:"提现" summary:"提现打款处理"`
+	adminin.CashPaymentInp
 }
 
 type PaymentRes struct{}

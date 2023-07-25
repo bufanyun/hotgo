@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package notice
 
 import (
@@ -56,7 +55,7 @@ type MaxSortReq struct {
 }
 
 type MaxSortRes struct {
-	Sort int `json:"sort" dc:"排序"`
+	*adminin.NoticeMaxSortModel
 }
 
 // StatusReq 更新公告状态

@@ -27,7 +27,6 @@ func (in *DictTypeEditInp) Filter(ctx context.Context) (err error) {
 		err = gerror.New("上级字典不能是自己")
 		return
 	}
-
 	return
 }
 
@@ -56,8 +55,9 @@ type DictTypeInsertFields struct {
 
 // DictTypeDeleteInp 删除字典类型
 type DictTypeDeleteInp struct {
-	Id interface{}
+	Id interface{} `json:"id" v:"required#字典类型ID不能为空" dc:"字典类型ID"`
 }
+
 type DictTypeDeleteModel struct{}
 
 // DictTreeSelectInp 获取类型关系树选项

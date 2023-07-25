@@ -36,7 +36,7 @@ func init() {
 }
 
 // Delete 删除
-func (s *sAdminMenu) Delete(ctx context.Context, in adminin.MenuDeleteInp) (err error) {
+func (s *sAdminMenu) Delete(ctx context.Context, in *adminin.MenuDeleteInp) (err error) {
 	exist, err := dao.AdminMenu.Ctx(ctx).Where("pid", in.Id).One()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
@@ -50,7 +50,7 @@ func (s *sAdminMenu) Delete(ctx context.Context, in adminin.MenuDeleteInp) (err 
 }
 
 // VerifyUnique 验证菜单唯一属性
-func (s *sAdminMenu) VerifyUnique(ctx context.Context, in adminin.VerifyUniqueInp) (err error) {
+func (s *sAdminMenu) VerifyUnique(ctx context.Context, in *adminin.VerifyUniqueInp) (err error) {
 	if in.Where == nil {
 		return
 	}
@@ -78,9 +78,9 @@ func (s *sAdminMenu) VerifyUnique(ctx context.Context, in adminin.VerifyUniqueIn
 }
 
 // Edit 修改/新增
-func (s *sAdminMenu) Edit(ctx context.Context, in adminin.MenuEditInp) (err error) {
+func (s *sAdminMenu) Edit(ctx context.Context, in *adminin.MenuEditInp) (err error) {
 	// 验证唯一性
-	err = s.VerifyUnique(ctx, adminin.VerifyUniqueInp{
+	err = s.VerifyUnique(ctx, &adminin.VerifyUniqueInp{
 		Id: in.Id,
 		Where: g.Map{
 			dao.AdminMenu.Columns().Title: in.Title,
@@ -132,7 +132,7 @@ func (s *sAdminMenu) Edit(ctx context.Context, in adminin.MenuEditInp) (err erro
 }
 
 // List 获取菜单列表
-func (s *sAdminMenu) List(ctx context.Context, in adminin.MenuListInp) (res *adminin.MenuListModel, err error) {
+func (s *sAdminMenu) List(ctx context.Context, in *adminin.MenuListInp) (res *adminin.MenuListModel, err error) {
 	var models []*entity.AdminMenu
 	if err = dao.AdminMenu.Ctx(ctx).Order("sort asc,id desc").Scan(&models); err != nil {
 		return
@@ -144,14 +144,14 @@ func (s *sAdminMenu) List(ctx context.Context, in adminin.MenuListInp) (res *adm
 }
 
 // genNaiveMenus 生成NaiveUI菜单格式
-func (s *sAdminMenu) genNaiveMenus(menus []adminin.MenuRouteSummary) (sources []adminin.MenuRoute) {
+func (s *sAdminMenu) genNaiveMenus(menus []*adminin.MenuRouteSummary) (sources []*adminin.MenuRoute) {
 	for _, men := range menus {
-		var source adminin.MenuRoute
+		var source = new(adminin.MenuRoute)
 		source.Name = men.Name
 		source.Path = men.Path
 		source.Redirect = men.Redirect
 		source.Component = men.Component
-		source.Meta = adminin.MenuRouteMeta{
+		source.Meta = &adminin.MenuRouteMeta{
 			Title:      men.Title,
 			Icon:       men.Icon,
 			KeepAlive:  men.KeepAlive == 1,
@@ -174,10 +174,10 @@ func (s *sAdminMenu) genNaiveMenus(menus []adminin.MenuRouteSummary) (sources []
 }
 
 // getChildrenList 生成菜单树
-func (s *sAdminMenu) getChildrenList(menu *adminin.MenuRouteSummary, treeMap map[string][]adminin.MenuRouteSummary) (err error) {
+func (s *sAdminMenu) getChildrenList(menu *adminin.MenuRouteSummary, treeMap map[string][]*adminin.MenuRouteSummary) (err error) {
 	menu.Children = treeMap[gconv.String(menu.Id)]
 	for i := 0; i < len(menu.Children); i++ {
-		if err = s.getChildrenList(&menu.Children[i], treeMap); err != nil {
+		if err = s.getChildrenList(menu.Children[i], treeMap); err != nil {
 			return
 		}
 	}
@@ -187,9 +187,9 @@ func (s *sAdminMenu) getChildrenList(menu *adminin.MenuRouteSummary, treeMap map
 // GetMenuList 获取菜单列表
 func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (res *role.DynamicRes, err error) {
 	var (
-		allMenus []adminin.MenuRouteSummary
-		menus    []adminin.MenuRouteSummary
-		treeMap  = make(map[string][]adminin.MenuRouteSummary)
+		allMenus []*adminin.MenuRouteSummary
+		menus    []*adminin.MenuRouteSummary
+		treeMap  = make(map[string][]*adminin.MenuRouteSummary)
 		mod      = dao.AdminMenu.Ctx(ctx).Where("status", consts.StatusEnabled).WhereIn("type", []int{1, 2})
 	)
 
@@ -221,7 +221,7 @@ func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (res *role
 
 	menus = treeMap["0"]
 	for i := 0; i < len(menus); i++ {
-		err = s.getChildrenList(&menus[i], treeMap)
+		err = s.getChildrenList(menus[i], treeMap)
 	}
 
 	res = new(role.DynamicRes)

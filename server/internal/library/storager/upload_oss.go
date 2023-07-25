@@ -36,7 +36,7 @@ func (d *OssDrive) Upload(ctx context.Context, file *ghttp.UploadFile) (fullPath
 		return
 	}
 
-	fullPath = GenFullPath(config.UCloudPath, gfile.Ext(file.Filename))
+	fullPath = GenFullPath(config.OssPath, gfile.Ext(file.Filename))
 	err = bucket.PutObject(fullPath, f2)
 	return
 }

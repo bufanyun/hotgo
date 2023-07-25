@@ -7,9 +7,7 @@
             <n-button type="primary" text @click="openUpdatePassForm">修改</n-button>
           </template>
           <n-thing title="绑定微信">
-            <template #description
-              ><span class="text-gray-400">已绑定微信号：xxx</span></template
-            >
+            <template #description><span class="text-gray-400">已绑定微信号：xxx</span></template>
           </n-thing>
         </n-list-item>
         <n-list-item>
@@ -17,11 +15,7 @@
             <n-button type="primary" text @click="openUpdateMobileForm">修改</n-button>
           </template>
           <n-thing title="绑定抖音">
-            <template #description
-              ><span class="text-gray-400"
-                >已绑定抖音号：xxx</span
-              ></template
-            >
+            <template #description><span class="text-gray-400">已绑定抖音号：xxx</span></template>
           </n-thing>
         </n-list-item>
       </n-list>
@@ -217,7 +211,7 @@
 
   function openUpdatePassForm() {
     message.error('未开放');
-    return
+    return;
     showModal.value = true;
     formValue.value.newPassword = '';
     formValue.value.oldPassword = '';
@@ -255,7 +249,7 @@
 
   function openUpdateMobileForm() {
     message.error('未开放');
-    return
+    return;
     showMobileModal.value = true;
     formMobileValue.value.mobile = '';
     formMobileValue.value.code = '';

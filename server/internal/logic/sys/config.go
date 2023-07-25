@@ -16,6 +16,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/payment"
+	"hotgo/internal/library/sms"
 	"hotgo/internal/library/storager"
 	"hotgo/internal/library/token"
 	"hotgo/internal/library/wechat"
@@ -56,6 +57,12 @@ func (s *sSysConfig) InitConfig(ctx context.Context) {
 	}
 	storager.SetConfig(upload)
 
+	sm, err := s.GetSms(ctx)
+	if err != nil {
+		g.Log().Fatalf(ctx, "init sms conifg fail：%+v", err)
+	}
+	sms.SetConfig(sm)
+
 	tk, err := s.GetLoadToken(ctx)
 	if err != nil {
 		g.Log().Fatalf(ctx, "init token conifg fail：%+v", err)
@@ -65,7 +72,7 @@ func (s *sSysConfig) InitConfig(ctx context.Context) {
 
 // GetLogin 获取登录配置
 func (s *sSysConfig) GetLogin(ctx context.Context) (conf *model.LoginConfig, err error) {
-	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "login"})
+	models, err := s.GetConfigByGroup(ctx, &sysin.GetConfigInp{Group: "login"})
 	if err != nil {
 		return
 	}
@@ -75,7 +82,7 @@ func (s *sSysConfig) GetLogin(ctx context.Context) (conf *model.LoginConfig, err
 
 // GetWechat 获取微信配置
 func (s *sSysConfig) GetWechat(ctx context.Context) (conf *model.WechatConfig, err error) {
-	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "wechat"})
+	models, err := s.GetConfigByGroup(ctx, &sysin.GetConfigInp{Group: "wechat"})
 	if err != nil {
 		return
 	}
@@ -85,7 +92,7 @@ func (s *sSysConfig) GetWechat(ctx context.Context) (conf *model.WechatConfig, e
 
 // GetPay 获取支付配置
 func (s *sSysConfig) GetPay(ctx context.Context) (conf *model.PayConfig, err error) {
-	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "pay"})
+	models, err := s.GetConfigByGroup(ctx, &sysin.GetConfigInp{Group: "pay"})
 	if err != nil {
 		return
 	}
@@ -95,7 +102,7 @@ func (s *sSysConfig) GetPay(ctx context.Context) (conf *model.PayConfig, err err
 
 // GetSms 获取短信配置
 func (s *sSysConfig) GetSms(ctx context.Context) (conf *model.SmsConfig, err error) {
-	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "sms"})
+	models, err := s.GetConfigByGroup(ctx, &sysin.GetConfigInp{Group: "sms"})
 	if err != nil {
 		return
 	}
@@ -105,7 +112,7 @@ func (s *sSysConfig) GetSms(ctx context.Context) (conf *model.SmsConfig, err err
 
 // GetGeo 获取地理配置
 func (s *sSysConfig) GetGeo(ctx context.Context) (conf *model.GeoConfig, err error) {
-	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "geo"})
+	models, err := s.GetConfigByGroup(ctx, &sysin.GetConfigInp{Group: "geo"})
 	if err != nil {
 		return
 	}
@@ -115,7 +122,7 @@ func (s *sSysConfig) GetGeo(ctx context.Context) (conf *model.GeoConfig, err err
 
 // GetUpload 获取上传配置
 func (s *sSysConfig) GetUpload(ctx context.Context) (conf *model.UploadConfig, err error) {
-	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "upload"})
+	models, err := s.GetConfigByGroup(ctx, &sysin.GetConfigInp{Group: "upload"})
 	if err != nil {
 		return
 	}
@@ -125,7 +132,7 @@ func (s *sSysConfig) GetUpload(ctx context.Context) (conf *model.UploadConfig, e
 
 // GetSmtp 获取邮件配置
 func (s *sSysConfig) GetSmtp(ctx context.Context) (conf *model.EmailConfig, err error) {
-	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "smtp"})
+	models, err := s.GetConfigByGroup(ctx, &sysin.GetConfigInp{Group: "smtp"})
 	if err != nil {
 		return
 	}
@@ -140,7 +147,7 @@ func (s *sSysConfig) GetSmtp(ctx context.Context) (conf *model.EmailConfig, err 
 
 // GetBasic 获取基础配置
 func (s *sSysConfig) GetBasic(ctx context.Context) (conf *model.BasicConfig, err error) {
-	models, err := s.GetConfigByGroup(ctx, sysin.GetConfigInp{Group: "basic"})
+	models, err := s.GetConfigByGroup(ctx, &sysin.GetConfigInp{Group: "basic"})
 	if err != nil {
 		return
 	}
@@ -185,7 +192,7 @@ func (s *sSysConfig) GetLoadServeLog(ctx context.Context) (conf *model.ServeLogC
 }
 
 // GetConfigByGroup 获取指定分组的配置
-func (s *sSysConfig) GetConfigByGroup(ctx context.Context, in sysin.GetConfigInp) (res *sysin.GetConfigModel, err error) {
+func (s *sSysConfig) GetConfigByGroup(ctx context.Context, in *sysin.GetConfigInp) (res *sysin.GetConfigModel, err error) {
 	if in.Group == "" {
 		err = gerror.New("分组不能为空")
 		return
@@ -223,7 +230,7 @@ func (s *sSysConfig) ConversionType(ctx context.Context, models *entity.SysConfi
 }
 
 // UpdateConfigByGroup 更新指定分组的配置
-func (s *sSysConfig) UpdateConfigByGroup(ctx context.Context, in sysin.UpdateConfigInp) (err error) {
+func (s *sSysConfig) UpdateConfigByGroup(ctx context.Context, in *sysin.UpdateConfigInp) (err error) {
 	if in.Group == "" {
 		err = gerror.New("分组不能为空")
 		return
@@ -242,19 +249,6 @@ func (s *sSysConfig) UpdateConfigByGroup(ctx context.Context, in sysin.UpdateCon
 			row := s.getConfigByKey(k, models)
 			// 新增
 			if row == nil {
-				//row.Id = 0
-				//row.Key = k
-				//row.Value = gconv.String(v)
-				//row.Group = in.Group
-				//row.Status = consts.StatusEnabled
-				//row.CreatedAt = gtime.Now()
-				//row.UpdatedAt = gtime.Now()
-				//_, err := dao.SysConfig.Ctx(ctx).Data(row).Insert()
-				//if err != nil {
-				//	err = gerror.Wrap(err, consts.ErrorORM)
-				//	return err
-				//}
-				//continue
 				err = gerror.Newf("暂不支持从前台添加变量，请先在数据库表[%v]中配置变量：%v", dao.SysConfig.Table(), k)
 				return
 			}
@@ -285,7 +279,7 @@ func (s *sSysConfig) getConfigByKey(key string, models []*entity.SysConfig) *ent
 }
 
 // syncUpdate 同步更新一些加载配置
-func (s *sSysConfig) syncUpdate(ctx context.Context, in sysin.UpdateConfigInp) (err error) {
+func (s *sSysConfig) syncUpdate(ctx context.Context, in *sysin.UpdateConfigInp) (err error) {
 	switch in.Group {
 	case "wechat":
 		wx, err := s.GetWechat(ctx)
@@ -301,6 +295,11 @@ func (s *sSysConfig) syncUpdate(ctx context.Context, in sysin.UpdateConfigInp) (
 		upload, err := s.GetUpload(ctx)
 		if err == nil {
 			storager.SetConfig(upload)
+		}
+	case "sms":
+		sm, err := s.GetSms(ctx)
+		if err == nil {
+			sms.SetConfig(sm)
 		}
 	}
 

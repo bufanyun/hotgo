@@ -82,20 +82,20 @@ func CheckPassword(input, salt, hash string) (err error) {
 }
 
 // SafeGo 安全的调用协程，遇到错误时输出错误日志而不是抛出panic
-func SafeGo(ctx context.Context, f func(ctx context.Context), level ...interface{}) {
-	var newLevel = glog.LEVEL_ERRO
-	if len(level) > 0 {
-		newLevel = gconv.Int(level[0])
+func SafeGo(ctx context.Context, f func(ctx context.Context), lv ...interface{}) {
+	var level = glog.LEVEL_ERRO
+	if len(lv) > 0 {
+		level = gconv.Int(lv[0])
 	}
 
 	err := grpool.AddWithRecover(ctx, func(ctx context.Context) {
 		f(ctx)
 	}, func(ctx context.Context, err error) {
-		Logf(newLevel, ctx, "SafeGo exec failed:%+v", err)
+		Logf(level, ctx, "SafeGo exec failed:%+v", err)
 	})
 
 	if err != nil {
-		Logf(newLevel, ctx, "SafeGo AddWithRecover err:%+v", err)
+		Logf(level, ctx, "SafeGo AddWithRecover err:%+v", err)
 		return
 	}
 }

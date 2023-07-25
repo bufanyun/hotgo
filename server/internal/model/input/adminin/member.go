@@ -72,7 +72,7 @@ type MemberUpdateProfileInp struct {
 
 // MemberUpdatePwdInp 修改登录密码
 type MemberUpdatePwdInp struct {
-	Id          int64
+	Id          int64  `json:"id" dc:"用户ID"`
 	OldPassword string `json:"oldPassword" v:"required#原密码不能为空"  dc:"原密码"`
 	NewPassword string `json:"newPassword" v:"required|length:6,16#新密码不能为空#新密码需在6~16之间"  dc:"新密码"`
 }
@@ -134,7 +134,7 @@ type MemberEditInp struct {
 }
 
 type MemberAddInp struct {
-	MemberEditInp
+	*MemberEditInp
 	Salt       string `json:"salt"               dc:"密码盐"`
 	Pid        int64  `json:"pid"                dc:"上级ID"`
 	Level      int    `json:"level"              dc:"等级"`
@@ -182,7 +182,6 @@ type MemberViewModel struct {
 // MemberListInp 获取列表
 type MemberListInp struct {
 	form.PageReq
-	form.RangeDateReq
 	form.StatusReq
 	RoleId    int     `json:"roleId"     dc:"角色ID"`
 	DeptId    int     `json:"deptId"     dc:"部门ID"`
@@ -250,13 +249,13 @@ type MemberAddBalanceInp struct {
 	Id               int64   `json:"id"          v:"required#用户ID不能为空"         dc:"管理员ID"`
 	OperateMode      int64   `json:"operateMode"      v:"in:1,2#输入的操作方式是无效的"     dc:"操作方式"`
 	Num              float64 `json:"num"                dc:"操作数量"`
-	AppId            string  `json:"-"`
-	AddonsName       string  `json:"-"`
-	SelfNum          float64 `json:"-"`
-	SelfCreditGroup  string  `json:"-"`
-	OtherNum         float64 `json:"-"`
-	OtherCreditGroup string  `json:"-"`
-	Remark           string  `json:"-"`
+	AppId            string  `json:"appId"`
+	AddonsName       string  `json:"addonsName"`
+	SelfNum          float64 `json:"selfNum"`
+	SelfCreditGroup  string  `json:"selfCreditGroup"`
+	OtherNum         float64 `json:"otherNum"`
+	OtherCreditGroup string  `json:"otherCreditGroup"`
+	Remark           string  `json:"remark"`
 }
 
 func (in *MemberAddBalanceInp) Filter(ctx context.Context) (err error) {
@@ -293,13 +292,13 @@ type MemberAddIntegralInp struct {
 	Id               int64   `json:"id"        v:"required#用户ID不能为空"           dc:"管理员ID"`
 	OperateMode      int64   `json:"operateMode"        dc:"操作方式"`
 	Num              float64 `json:"num"                dc:"操作数量"`
-	AppId            string  `json:"-"`
-	AddonsName       string  `json:"-"`
-	SelfNum          float64 `json:"-"`
-	SelfCreditGroup  string  `json:"-"`
-	OtherNum         float64 `json:"-"`
-	OtherCreditGroup string  `json:"-"`
-	Remark           string  `json:"-"`
+	AppId            string  `json:"appId"`
+	AddonsName       string  `json:"addonsName"`
+	SelfNum          float64 `json:"selfNum"`
+	SelfCreditGroup  string  `json:"selfCreditGroup"`
+	OtherNum         float64 `json:"otherNum"`
+	OtherCreditGroup string  `json:"otherCreditGroup"`
+	Remark           string  `json:"remark"`
 }
 
 func (in *MemberAddIntegralInp) Filter(ctx context.Context) (err error) {

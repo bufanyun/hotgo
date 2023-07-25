@@ -85,7 +85,7 @@ type MenuListModel struct {
 type MenuRouteMeta struct {
 	// 解释参考：https://naive-ui-admin-docs.vercel.app/guide/router.html#%E5%A4%9A%E7%BA%A7%E8%B7%AF%E7%94%B1
 	Title string `json:"title"` // 菜单名称 一般必填
-	//Disabled   bool   `json:"disabled,omitempty"`   // 禁用菜单
+	// Disabled   bool   `json:"disabled,omitempty"`   // 禁用菜单
 	Icon       string `json:"icon,omitempty"`       // 菜单图标
 	KeepAlive  bool   `json:"keepAlive,omitempty"`  // 缓存该路由
 	Hidden     bool   `json:"hidden,omitempty"`     // 隐藏菜单
@@ -103,16 +103,45 @@ type MenuRouteMeta struct {
 }
 
 type MenuRoute struct {
-	Name      string        `json:"name"`
-	Path      string        `json:"path"`
-	Redirect  string        `json:"redirect"`
-	Component string        `json:"component"`
-	Meta      MenuRouteMeta `json:"meta"`
-	Children  []MenuRoute   `json:"children,omitempty" dc:"子路由"`
+	Name      string         `json:"name"`
+	Path      string         `json:"path"`
+	Redirect  string         `json:"redirect"`
+	Component string         `json:"component"`
+	Meta      *MenuRouteMeta `json:"meta"`
+	Children  []*MenuRoute   `json:"children,omitempty" dc:"子路由"`
 }
 
 // MenuRouteSummary 菜单树结构
 type MenuRouteSummary struct {
 	entity.AdminMenu
-	Children []MenuRouteSummary
+	Children []*MenuRouteSummary
+}
+
+// DynamicMeta 动态路由元数据
+type DynamicMeta struct {
+	Title   string `json:"title"       description:"菜单标题"`
+	Icon    string `json:"icon"        description:"菜单图标"`
+	NoCache bool   `json:"noCache"     description:"是否缓存"`
+	Remark  string `json:"remark"      description:"备注"`
+}
+
+// DynamicBase 动态路由
+type DynamicBase struct {
+	Id         int64        `json:"id"             description:"菜单ID"`
+	Pid        int64        `json:"pid"            description:"父ID"`
+	Name       string       `json:"name"           description:"菜单名称"`
+	Code       string       `json:"code"           description:"菜单编码"`
+	Path       string       `json:"path"           description:"路由地址"`
+	Hidden     bool         `json:"hidden"         description:"是否隐藏"`
+	Redirect   string       `json:"redirect"       description:"重定向"`
+	Component  string       `json:"component"      description:"组件路径"`
+	AlwaysShow bool         `json:"alwaysShow"     description:"暂时不知道干啥"`
+	IsFrame    string       `json:"isFrame"        description:"是否为外链（0是 1否）"`
+	Meta       *DynamicMeta `json:"meta"           description:"配置数据集"`
+}
+
+// DynamicMenu 动态路由菜单
+type DynamicMenu struct {
+	DynamicBase
+	Children []*DynamicBase `json:"children"   description:"子菜单"`
 }

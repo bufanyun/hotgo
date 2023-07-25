@@ -9,14 +9,12 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/api/admin/common"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"hotgo/utility/validate"
 )
 
 var Sms = new(cSms)
@@ -25,16 +23,7 @@ type cSms struct{}
 
 // SendTest 发送测试短信
 func (c *cSms) SendTest(ctx context.Context, req *common.SendTestSmsReq) (res *common.SendTestSmsRes, err error) {
-	var in sysin.SendCodeInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	err = service.SysSmsLog().SendCode(ctx, in)
+	err = service.SysSmsLog().SendCode(ctx, &req.SendCodeInp)
 	return
 }
 
@@ -50,11 +39,7 @@ func (c *cSms) SendBindSms(ctx context.Context, _ *common.SendBindSmsReq) (res *
 		return
 	}
 
-	err = g.Model("admin_member").
-		Fields("mobile").
-		Where("id", memberId).
-		Scan(&models)
-	if err != nil {
+	if err = g.Model("admin_member").Fields("mobile").Where("id", memberId).Scan(&models); err != nil {
 		return
 	}
 
@@ -68,7 +53,7 @@ func (c *cSms) SendBindSms(ctx context.Context, _ *common.SendBindSmsReq) (res *
 		return
 	}
 
-	err = service.SysSmsLog().SendCode(ctx, sysin.SendCodeInp{
+	err = service.SysSmsLog().SendCode(ctx, &sysin.SendCodeInp{
 		Event:  consts.SmsTemplateBind,
 		Mobile: models.Mobile,
 	})
@@ -77,15 +62,6 @@ func (c *cSms) SendBindSms(ctx context.Context, _ *common.SendBindSmsReq) (res *
 
 // SendSms 发送短信
 func (c *cSms) SendSms(ctx context.Context, req *common.SendSmsReq) (res *common.SendSmsRes, err error) {
-	var in sysin.SendCodeInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	err = service.SysSmsLog().SendCode(ctx, in)
+	err = service.SysSmsLog().SendCode(ctx, &req.SendCodeInp)
 	return
 }

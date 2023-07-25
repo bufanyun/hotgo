@@ -42,15 +42,15 @@ func IsIp(ip string) bool {
 }
 
 // IsPublicIp 是否是公网IP
-func IsPublicIp(Ip string) bool {
-	ip := net.ParseIP(Ip)
+func IsPublicIp(ip string) bool {
+	i := net.ParseIP(ip)
 
-	if ip.IsLoopback() || ip.IsPrivate() || ip.IsMulticast() || ip.IsUnspecified() || ip.IsLinkLocalUnicast() || ip.IsLinkLocalMulticast() {
+	if i.IsLoopback() || i.IsPrivate() || i.IsMulticast() || i.IsUnspecified() || i.IsLinkLocalUnicast() || i.IsLinkLocalMulticast() {
 		return false
 	}
 
-	if ip4 := ip.To4(); ip4 != nil {
-		return !ip.Equal(net.IPv4bcast)
+	if ip4 := i.To4(); ip4 != nil {
+		return !i.Equal(net.IPv4bcast)
 	}
 	return true
 }
@@ -89,7 +89,7 @@ func IsMobile(mobile string) bool {
 
 // IsEmail 是否为邮箱地址
 func IsEmail(email string) bool {
-	//pattern := `\w+([-+.]\w+)@\w+([-.]\w+).\w+([-.]\w+)*` //匹配电子邮箱
+	// pattern := `\w+([-+.]\w+)@\w+([-.]\w+).\w+([-.]\w+)*` //匹配电子邮箱
 	pattern := `^[0-9a-z][_.0-9a-z-]{0,31}@([0-9a-z][0-9a-z-]{0,30}[0-9a-z].){1,4}[a-z]{2,4}$`
 	reg := regexp.MustCompile(pattern)
 	return reg.MatchString(email)

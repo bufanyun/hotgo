@@ -178,7 +178,7 @@ export const options = ref<any>({
   post: [],
 });
 
-async function loadOptions() {
+export async function loadOptions() {
   const dept = await getDeptOption();
   if (dept.list !== undefined) {
     options.value.dept = dept.list;
@@ -187,6 +187,7 @@ async function loadOptions() {
   const role = await getRoleOption();
   if (role.list !== undefined) {
     options.value.role = role.list;
+    options.value.roleTabs = [{ id: -1, name: '全部' }];
     treeDataToCompressed(role.list);
   }
 
@@ -207,8 +208,5 @@ function treeDataToCompressed(source) {
       ? treeDataToCompressed(source[i].children)
       : ''; // 子级递归
   }
-
   return options.value.roleTabs;
 }
-
-await loadOptions();

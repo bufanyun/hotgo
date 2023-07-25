@@ -12,7 +12,7 @@ import (
 
 // 异步回调
 
-type NotifyCallFunc func(ctx context.Context, pay payin.NotifyCallFuncInp) (err error)
+type NotifyCallFunc func(ctx context.Context, pay *payin.NotifyCallFuncInp) (err error)
 
 var (
 	notifyCall = make(map[string]NotifyCallFunc)
@@ -37,7 +37,7 @@ func RegisterNotifyCallMap(calls map[string]NotifyCallFunc) {
 }
 
 // NotifyCall 执行订单分组的异步回调
-func NotifyCall(ctx context.Context, in payin.NotifyCallFuncInp) {
+func NotifyCall(ctx context.Context, in *payin.NotifyCallFuncInp) {
 	f, ok := notifyCall[in.Pay.OrderGroup]
 	if ok {
 		ctx = contexts.Detach(ctx)

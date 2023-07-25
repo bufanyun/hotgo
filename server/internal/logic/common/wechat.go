@@ -53,7 +53,7 @@ func init() {
 }
 
 // Authorize 微信用户授权
-func (s *sCommonWechat) Authorize(ctx context.Context, in commonin.WechatAuthorizeInp) (res *commonin.WechatAuthorizeModel, err error) {
+func (s *sCommonWechat) Authorize(ctx context.Context, in *commonin.WechatAuthorizeInp) (res *commonin.WechatAuthorizeModel, err error) {
 	basic, err := service.SysConfig().GetBasic(ctx)
 	if err != nil {
 		return
@@ -100,7 +100,7 @@ func (s *sCommonWechat) Authorize(ctx context.Context, in commonin.WechatAuthori
 	return
 }
 
-func (s *sCommonWechat) AuthorizeCall(ctx context.Context, in commonin.WechatAuthorizeCallInp) (res *commonin.WechatAuthorizeCallModel, err error) {
+func (s *sCommonWechat) AuthorizeCall(ctx context.Context, in *commonin.WechatAuthorizeCallInp) (res *commonin.WechatAuthorizeCallModel, err error) {
 	data, ok := s.temp[in.State]
 	if !ok || data == nil {
 		err = gerror.New("授权无效或已过期，请重试")

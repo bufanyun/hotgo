@@ -31,7 +31,7 @@
           </n-form-item>
 
           <n-form-item label="内容" path="content">
-            <Editor style="height: 450px" v-model:value="params.content" />
+            <Editor style="height: 450px" id="content" v-model:value="params.content" />
           </n-form-item>
 
           <n-form-item label="单图" path="image">

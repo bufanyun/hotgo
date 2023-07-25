@@ -27,13 +27,13 @@ func init() {
 }
 
 // Delete 删除
-func (s *sSysCronGroup) Delete(ctx context.Context, in sysin.CronGroupDeleteInp) (err error) {
+func (s *sSysCronGroup) Delete(ctx context.Context, in *sysin.CronGroupDeleteInp) (err error) {
 	_, err = dao.SysCronGroup.Ctx(ctx).Where("id", in.Id).Delete()
 	return
 }
 
 // Edit 修改/新增
-func (s *sSysCronGroup) Edit(ctx context.Context, in sysin.CronGroupEditInp) (err error) {
+func (s *sSysCronGroup) Edit(ctx context.Context, in *sysin.CronGroupEditInp) (err error) {
 	// 修改
 	if in.Id > 0 {
 		if _, err = dao.SysCronGroup.Ctx(ctx).Fields(sysin.CronGroupUpdateFields{}).Where("id", in.Id).Data(in).Update(); err != nil {
@@ -50,7 +50,7 @@ func (s *sSysCronGroup) Edit(ctx context.Context, in sysin.CronGroupEditInp) (er
 }
 
 // Status 更新状态
-func (s *sSysCronGroup) Status(ctx context.Context, in sysin.CronGroupStatusInp) (err error) {
+func (s *sSysCronGroup) Status(ctx context.Context, in *sysin.CronGroupStatusInp) (err error) {
 	if _, err = dao.SysCronGroup.Ctx(ctx).Where("id", in.Id).Data("status", in.Status).Update(); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 	}
@@ -58,7 +58,7 @@ func (s *sSysCronGroup) Status(ctx context.Context, in sysin.CronGroupStatusInp)
 }
 
 // MaxSort 最大排序
-func (s *sSysCronGroup) MaxSort(ctx context.Context, in sysin.CronGroupMaxSortInp) (res *sysin.CronGroupMaxSortModel, err error) {
+func (s *sSysCronGroup) MaxSort(ctx context.Context, in *sysin.CronGroupMaxSortInp) (res *sysin.CronGroupMaxSortModel, err error) {
 	if in.Id > 0 {
 		if err = dao.SysCronGroup.Ctx(ctx).Where("id", in.Id).Order("sort desc").Scan(&res); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
@@ -70,12 +70,12 @@ func (s *sSysCronGroup) MaxSort(ctx context.Context, in sysin.CronGroupMaxSortIn
 		res = new(sysin.CronGroupMaxSortModel)
 	}
 
-	res.Sort = form.DefaultMaxSort(ctx, res.Sort)
+	res.Sort = form.DefaultMaxSort(res.Sort)
 	return
 }
 
 // View 获取指定信息
-func (s *sSysCronGroup) View(ctx context.Context, in sysin.CronGroupViewInp) (res *sysin.CronGroupViewModel, err error) {
+func (s *sSysCronGroup) View(ctx context.Context, in *sysin.CronGroupViewInp) (res *sysin.CronGroupViewModel, err error) {
 	if err = dao.SysCronGroup.Ctx(ctx).Where("id", in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 	}
@@ -83,7 +83,7 @@ func (s *sSysCronGroup) View(ctx context.Context, in sysin.CronGroupViewInp) (re
 }
 
 // List 获取列表
-func (s *sSysCronGroup) List(ctx context.Context, in sysin.CronGroupListInp) (list []*sysin.CronGroupListModel, totalCount int, err error) {
+func (s *sSysCronGroup) List(ctx context.Context, in *sysin.CronGroupListInp) (list []*sysin.CronGroupListModel, totalCount int, err error) {
 	mod := dao.SysCronGroup.Ctx(ctx)
 
 	if in.Name != "" {
@@ -111,7 +111,7 @@ func (s *sSysCronGroup) List(ctx context.Context, in sysin.CronGroupListInp) (li
 }
 
 // Select 选项
-func (s *sSysCronGroup) Select(ctx context.Context, in sysin.CronGroupSelectInp) (res *sysin.CronGroupSelectModel, err error) {
+func (s *sSysCronGroup) Select(ctx context.Context, in *sysin.CronGroupSelectInp) (res *sysin.CronGroupSelectModel, err error) {
 	var (
 		mod    = dao.SysCronGroup.Ctx(ctx)
 		models []*entity.SysCronGroup

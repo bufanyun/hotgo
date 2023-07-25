@@ -5,14 +5,15 @@
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package common
 
-import "github.com/gogf/gf/v2/frame/g"
+import (
+	"github.com/gogf/gf/v2/frame/g"
+	"hotgo/internal/model/input/sysin"
+)
 
 // SendTestSmsReq 发送测试短信
 type SendTestSmsReq struct {
-	Event  string `json:"event" v:"required#事件模板不能为空" dc:"事件模板"`
-	Mobile string `json:"mobile" v:"required#接收手机号不能为空" dc:"接收手机号"`
-	Code   string `json:"code" v:"required#接收验证码不能为空" dc:"接收验证码"`
 	g.Meta `path:"/sms/sendTest" tags:"短信" method:"post" summary:"发送测试短信"`
+	sysin.SendCodeInp
 }
 
 type SendTestSmsRes struct {
@@ -29,8 +30,7 @@ type SendBindSmsRes struct {
 // SendSmsReq 发送短信
 type SendSmsReq struct {
 	g.Meta `path:"/sms/send" tags:"短信" method:"post" summary:"发送短信"`
-	Event  string `json:"event" v:"required#事件模板不能为空" dc:"事件模板"`
-	Mobile string `json:"mobile" v:"required#接收手机号不能为空" dc:"接收手机号"`
+	sysin.SendCodeInp
 }
 
 type SendSmsRes struct {

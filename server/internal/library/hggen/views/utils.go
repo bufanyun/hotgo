@@ -25,7 +25,6 @@ func (l *gCurd) parseServFunName(templateGroup, varName string) string {
 	if gstr.HasPrefix(varName, templateGroup) && varName != templateGroup {
 		return varName
 	}
-
 	return templateGroup + varName
 }
 
@@ -94,7 +93,6 @@ func ImportSql(ctx context.Context, path string) error {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -144,7 +142,6 @@ func checkCurdPath(temp *model.GenerateAppCrudTemplate, addonName string) (err e
 	if !gfile.Exists(temp.WebViewsPath) {
 		return gerror.Newf(tip, "WebViewsPath", temp.WebViewsPath)
 	}
-
 	return
 }
 

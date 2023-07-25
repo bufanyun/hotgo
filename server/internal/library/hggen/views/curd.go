@@ -7,7 +7,6 @@ package views
 
 import (
 	"context"
-	"fmt"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gfile"
@@ -67,14 +66,14 @@ type CurdOptions struct {
 	HeadOps       []string           `json:"headOps"`
 	Join          []*CurdOptionsJoin `json:"join"`
 	Menu          *CurdOptionsMenu   `json:"menu"`
-	Step          *CurdStep          // 转换后的流程控制条件
-	dictMap       g.Map              // 字典选项 -> 字段映射关系
 	TemplateGroup string             `json:"templateGroup"`
 	ApiPrefix     string             `json:"apiPrefix"`
+	Step          *CurdStep          // 转换后的流程控制条件
+	dictMap       g.Map              // 字典选项 -> 字段映射关系
 }
 
 type CurdPreviewInput struct {
-	In           sysin.GenCodesPreviewInp         // 提交参数
+	In           *sysin.GenCodesPreviewInp        // 提交参数
 	DaoConfig    gendao.CGenDaoInput              // 生成dao配置
 	Config       *model.GenerateConfig            // 生成配置
 	view         *gview.View                      // 视图模板
@@ -102,7 +101,7 @@ func (l *gCurd) initInput(ctx context.Context, in *CurdPreviewInput) (err error)
 	}
 
 	if len(in.masterFields) == 0 {
-		if in.masterFields, err = DoTableColumns(ctx, sysin.GenCodesColumnListInp{Name: in.In.DbName, Table: in.In.TableName}, in.DaoConfig); err != nil {
+		if in.masterFields, err = DoTableColumns(ctx, &sysin.GenCodesColumnListInp{Name: in.In.DbName, Table: in.In.TableName}, in.DaoConfig); err != nil {
 			return
 		}
 	}
@@ -236,7 +235,7 @@ func (l *gCurd) DoBuild(ctx context.Context, in *CurdBuildInput) (err error) {
 		for name, f := range in.BeforeEvent {
 			if gstr.InArray(in.PreviewIn.options.AutoOps, name) {
 				if err = f(ctx); err != nil {
-					return fmt.Errorf("in doBuild operation beforeEvent to '%s' failed::%v", name, err)
+					return gerror.Newf("in doBuild operation beforeEvent to '%s' failed:%v", name, err)
 				}
 			}
 		}
@@ -254,7 +253,7 @@ func (l *gCurd) DoBuild(ctx context.Context, in *CurdBuildInput) (err error) {
 		}
 
 		if err = gfile.PutContents(vi.Path, strings.TrimSpace(vi.Content)); err != nil {
-			return fmt.Errorf("writing content to '%s' failed: %v", vi.Path, err)
+			return gerror.Newf("writing content to '%s' failed: %v", vi.Path, err)
 		}
 
 		if gstr.Str(vi.Path, `.`) == ".sql" && needExecSql {
@@ -266,7 +265,6 @@ func (l *gCurd) DoBuild(ctx context.Context, in *CurdBuildInput) (err error) {
 		if gstr.Str(vi.Path, `.`) == ".go" {
 			utils.GoFmt(vi.Path)
 		}
-
 	}
 
 	// 后置操作
@@ -274,7 +272,7 @@ func (l *gCurd) DoBuild(ctx context.Context, in *CurdBuildInput) (err error) {
 		for name, f := range in.AfterEvent {
 			if gstr.InArray(in.PreviewIn.options.AutoOps, name) {
 				if err = f(ctx); err != nil {
-					return fmt.Errorf("in doBuild operation afterEvent to '%s' failed::%v", name, err)
+					return gerror.Newf("in doBuild operation afterEvent to '%s' failed:%v", name, err)
 				}
 			}
 		}
@@ -515,12 +513,12 @@ func (l *gCurd) generateWebModelContent(ctx context.Context, in *CurdPreviewInpu
 
 	tplData, err := l.webModelTplData(ctx, in)
 	if err != nil {
-		return err
+		return
 	}
 
 	genFile.Content, err = in.view.Parse(ctx, name+".template", tplData)
 	if err != nil {
-		return err
+		return
 	}
 
 	genFile.Path = file.MergeAbs(in.Config.Application.Crud.Templates[in.In.GenTemplate].WebViewsPath, gstr.LcFirst(in.In.VarName), "model.ts")
@@ -564,7 +562,6 @@ func (l *gCurd) generateWebIndexContent(ctx context.Context, in *CurdPreviewInpu
 		genFile.Meth = consts.GenCodesBuildMethCover
 	}
 	in.content.Views[name] = genFile
-
 	return
 }
 

@@ -164,7 +164,6 @@ func (l *gCurd) generateStructFieldDefinition(field *sysin.GenCodesColumnListMod
 	default:
 		panic("inputType is invalid")
 	}
-
 	return result
 }
 

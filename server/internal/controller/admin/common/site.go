@@ -15,7 +15,6 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/library/captcha"
 	"hotgo/internal/library/token"
-	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/service"
 	"hotgo/utility/validate"
 )
@@ -51,7 +50,6 @@ func (c *cSite) getWsAddr(ctx context.Context, request *ghttp.Request) string {
 	if err != nil || basic == nil {
 		return ""
 	}
-
 	return basic.WsAddr
 }
 
@@ -66,7 +64,6 @@ func (c *cSite) getDomain(ctx context.Context, request *ghttp.Request) string {
 	if err != nil || basic == nil {
 		return ""
 	}
-
 	return basic.Domain
 }
 
@@ -91,26 +88,12 @@ func (c *cSite) Captcha(ctx context.Context, _ *common.LoginCaptchaReq) (res *co
 
 // Register 账号注册
 func (c *cSite) Register(ctx context.Context, req *common.RegisterReq) (res *common.RegisterRes, err error) {
-	var in adminin.RegisterInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	if err = validate.PreFilter(ctx, &in); err != nil {
-		return
-	}
-
-	err = service.AdminSite().Register(ctx, in)
+	err = service.AdminSite().Register(ctx, &req.RegisterInp)
 	return
 }
 
 // AccountLogin 账号登录
 func (c *cSite) AccountLogin(ctx context.Context, req *common.AccountLoginReq) (res *common.AccountLoginRes, err error) {
-	var in adminin.AccountLoginInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
 	login, err := service.SysConfig().GetLogin(ctx)
 	if err != nil {
 		return
@@ -124,7 +107,7 @@ func (c *cSite) AccountLogin(ctx context.Context, req *common.AccountLoginReq) (
 		}
 	}
 
-	model, err := service.AdminSite().AccountLogin(ctx, in)
+	model, err := service.AdminSite().AccountLogin(ctx, &req.AccountLoginInp)
 	if err != nil {
 		return
 	}
@@ -135,12 +118,7 @@ func (c *cSite) AccountLogin(ctx context.Context, req *common.AccountLoginReq) (
 
 // MobileLogin 手机号登录
 func (c *cSite) MobileLogin(ctx context.Context, req *common.MobileLoginReq) (res *common.MobileLoginRes, err error) {
-	var in adminin.MobileLoginInp
-	if err = gconv.Scan(req, &in); err != nil {
-		return
-	}
-
-	model, err := service.AdminSite().MobileLogin(ctx, in)
+	model, err := service.AdminSite().MobileLogin(ctx, &req.MobileLoginInp)
 	if err != nil {
 		return
 	}

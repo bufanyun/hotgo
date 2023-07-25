@@ -81,9 +81,7 @@ func (c *Client) read() {
 		}
 	}()
 
-	defer func() {
-		c.close()
-	}()
+	defer c.close()
 
 	for {
 		_, message, err := c.Socket.ReadMessage()

@@ -21,23 +21,16 @@ hotgo:
     switch: true                                    # 日志开关，默认为true
     queue: true                                     # 是否启用队列，启用时需要配置队列信息，默认为true
     levelFormat: ["WARN", "ERRO", "FATA", "PANI"]   # 需要记录的等级
-  # admin
-  admin:
-    superIds: [ 1 ]                                 # 后台超管账号ID，通过ID验证超管
-    superRoleKey: "super"                           # 超管角色唯一标识符，通过角色验证超管
-    defaultPage: 10                                 # 列表分页默认加载数量
-    defaultPageSize: 1                              # 列表分页默认加载页码
-    maxSortIncrement: 10                            # 最大排序值增量
 
 
-# gf配置
+# gf配置，配置参考：https://goframe.org/pages/viewpage.action?pageId=44449486
 server:
-  address: ":8000"
-  openapiPath: "/api.json"
-  swaggerPath: "/swagger"
-  serverRoot: "resource/public"
-  DumpRouterMap: false
-  logPath: "logs/server"
+  address: ":8000"                            # 本地监听地址。默认":8000"，多个地址以","号分隔。例如："192.168.2.3:8000,10.0.3.10:8001"
+  openapiPath: "/api.json"                    # OpenAPI接口文档地址
+  swaggerPath: "/swagger"                     # 内置SwaggerUI展示地址
+  serverRoot: "resource/public"               # 静态文件服务的目录根路径，配置时自动开启静态文件服务。
+  DumpRouterMap: false                        # 是否在Server启动时打印所有的路由列表。
+  logPath: "logs/server"                      # 服务日志保存路径
   ErrorStack: true                            # 当Server捕获到异常时是否记录堆栈信息到日志中。默认为true
   ErrorLogEnabled: true                       # 是否记录异常日志信息到日志中。默认为true
   errorLogPattern: "error/{Y-m-d}.log"        # 异常错误日志文件格式。默认为"error-{Ymd}.log"
@@ -45,7 +38,7 @@ server:
   accessLogPattern: "access/{Y-m-d}.log"      # 访问日志文件格式。默认为"access-{Ymd}.log"
   maxHeaderBytes: "100KB"                     # 请求头大小限制，请求头包括客户端提交的Cookie数据，默认设置为100KB
   clientMaxBodySize: "200MB"                  # 客户端提交的Body大小限制，同时也影响文件上传大小，默认设置为200MB
-  serverAgent: "HG HTTP Server"
+  serverAgent: "HG HTTP Server"               # 服务端Agent信息。默认为"HG HTTP Server"
   # PProf配置
   pprofEnabled: true                          # 是否开启PProf性能调试特性。默认为false
   pprofPattern: "/pprof"                      # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
@@ -115,7 +108,7 @@ logger:
     <<: *defaultLogger
 
 
-# 模板配置
+# Viewer. 配置参考：https://goframe.org/pages/viewpage.action?pageId=1114335
 viewer:
   paths: "resource/template"
   defaultFile:  "index.html"
@@ -204,9 +197,9 @@ queue:
     segmentLimit: 3000                                # 每个topic最大分片数据文件数量，超出部分将会丢弃
   #redis，默认使用全局redis运行队列
   redis:
-    timeout: 0                                        # 队列超时时间(s) ，0为永不超时，当队列一直没有被消费到达超时时间则队列会被销毁
+    timeout: 0                                        # 队列超时时间以秒为单位，0表示永不超时。如果队列在设定的超时时间内没有被消费，则会被销毁
   rocketmq:
-    address: "127.0.0.1:9876"                         # brocker地址+端口
+    address: "127.0.0.1:9876"                         # broker地址+端口
     logLevel: "all"                                   # 系统日志级别，可选：all|close|debug|info|warn|error|fatal
   kafka:
     address: "127.0.0.1:9092"                         # kafka地址+端口
@@ -215,7 +208,7 @@ queue:
     multiConsumer: true                               # 是否支持创建多个消费者
 
 
-# Redis
+# Redis. 配置参考：https://goframe.org/pages/viewpage.action?pageId=1114217
 redis:
   default:
     address: "127.0.0.1:6379"
@@ -224,7 +217,7 @@ redis:
     idleTimeout: "20"
 
 
-# Database.
+# Database. 配置参考：https://goframe.org/pages/viewpage.action?pageId=1114245
 database:
   logger:
     level: "all"
@@ -237,8 +230,8 @@ database:
 
 # 链路追踪
 jaeger:
-  switch: false                                    # 链路追踪开关，默认为false
-  endpoint: "127.0.0.1:6831"                       # jaeger-agent上报地址
+  switch: false                                   # 链路追踪开关，可选：true|false，默认为false
+  endpoint: "127.0.0.1:6831"                      # jaeger-agent上报地址
 
 
 # 生成代码
@@ -257,7 +250,7 @@ hggen:
           isAddon: false                                                # 是否为插件模板 false｜true
           masterPackage: "sys"                                          # 主包名称，需和controllerPath、logicPath、inputPath保持关联
           templatePath: "./resource/generate/default/curd"              # 模板路径
-          apiPath: "./api/admin"                                        # gfApi生成路径
+          apiPath: "./api/admin"                                        # goApi生成路径
           controllerPath: "./internal/controller/admin/sys"             # 控制器生成路径
           logicPath : "./internal/logic/sys"                            # 主要业务生成路径
           inputPath: "./internal/model/input/sysin"                     # 表单过滤器生成路径
@@ -271,7 +264,7 @@ hggen:
           isAddon: true                                                 # 是否为插件模板 false｜true
           masterPackage: "sys"                                          # 主包名称，需和controllerPath、logicPath、inputPath保持关联
           templatePath: "./resource/generate/default/curd"              # 模板路径
-          apiPath: "./addons/{$name}/api/admin"                         # gfApi生成路径
+          apiPath: "./addons/{$name}/api/admin"                         # goApi生成路径
           controllerPath: "./addons/{$name}/controller/admin/sys"       # 控制器生成路径
           logicPath : "./addons/{$name}/logic/sys"                      # 主要业务生成路径
           inputPath: "./addons/{$name}/model/input/sysin"               # 表单过滤器生成路径

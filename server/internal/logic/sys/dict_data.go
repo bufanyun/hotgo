@@ -25,7 +25,7 @@ func init() {
 }
 
 // Delete 删除
-func (s *sSysDictData) Delete(ctx context.Context, in sysin.DictDataDeleteInp) error {
+func (s *sSysDictData) Delete(ctx context.Context, in *sysin.DictDataDeleteInp) error {
 	_, err := dao.SysDictData.Ctx(ctx).Where("id", in.Id).Delete()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
@@ -35,7 +35,7 @@ func (s *sSysDictData) Delete(ctx context.Context, in sysin.DictDataDeleteInp) e
 }
 
 // Edit 修改/新增
-func (s *sSysDictData) Edit(ctx context.Context, in sysin.DictDataEditInp) (err error) {
+func (s *sSysDictData) Edit(ctx context.Context, in *sysin.DictDataEditInp) (err error) {
 	// 修改
 	if in.Id > 0 {
 		_, err = dao.SysDictData.Ctx(ctx).Fields(sysin.DictDataUpdateFields{}).WherePri(in.Id).Data(in).Update()
@@ -66,7 +66,7 @@ func (s *sSysDictData) Edit(ctx context.Context, in sysin.DictDataEditInp) (err 
 }
 
 // List 获取列表
-func (s *sSysDictData) List(ctx context.Context, in sysin.DictDataListInp) (list []*sysin.DictDataListModel, totalCount int, err error) {
+func (s *sSysDictData) List(ctx context.Context, in *sysin.DictDataListInp) (list []*sysin.DictDataListModel, totalCount int, err error) {
 	mod := dao.SysDictData.Ctx(ctx)
 	// 类型ID
 	if in.TypeID > 0 {
@@ -113,7 +113,7 @@ func (s *sSysDictData) List(ctx context.Context, in sysin.DictDataListInp) (list
 }
 
 // Select 获取列表
-func (s *sSysDictData) Select(ctx context.Context, in sysin.DataSelectInp) (list sysin.DataSelectModel, err error) {
+func (s *sSysDictData) Select(ctx context.Context, in *sysin.DataSelectInp) (list sysin.DataSelectModel, err error) {
 	mod := dao.SysDictData.Ctx(ctx).Where("type", in.Type)
 	if in.Type != "" {
 		mod = mod.Where("type", in.Type)

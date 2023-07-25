@@ -31,8 +31,8 @@
       <div class="py-3 menu-list" :style="{ maxHeight: '90vh', height: '70vh' }">
         <n-tree
           block-line
-          cascade
           checkable
+          :check-on-click="true"
           :default-expand-all="true"
           :virtual-scroll="true"
           :data="treeData"
@@ -155,7 +155,7 @@
 
 <script lang="ts" setup>
   import { h, onMounted, reactive, ref } from 'vue';
-  import { TreeSelectOption, useDialog, useMessage } from 'naive-ui';
+  import { useDialog, useMessage } from 'naive-ui';
   import { BasicColumn, BasicTable, TableAction } from '@/components/Table';
   import {
     Delete,
@@ -189,6 +189,12 @@
   const checkedKeys = ref<any>([]);
   const updatePermissionsParams = ref<any>({});
   const optionTreeData = ref<any>([]);
+  const dataScopeOption = ref<any>();
+  const deptList = ref<any>([]);
+  const dataFormRef = ref<any>();
+  const dataFormBtnLoading = ref(false);
+  const showDataModal = ref(false);
+  const dataForm = ref<any>();
 
   const rules = {
     name: {
@@ -217,10 +223,10 @@
     customDept: [],
   };
 
-  let formParams = ref<any>(cloneDeep(defaultState));
+  const formParams = ref<any>(cloneDeep(defaultState));
 
   const actionColumn = reactive<BasicColumn>({
-    width: 320,
+    width: 300,
     title: '操作',
     key: 'action',
     fixed: 'right',
@@ -350,21 +356,12 @@
     showModal.value = true;
   }
 
-  const dataScopeOption = ref<any>();
-  const deptList = ref<any>([]);
-  const dataFormRef = ref<any>();
-  const dataFormBtnLoading = ref(false);
-  const showDataModal = ref(false);
-  const dataForm = ref<any>();
   function handleDataAuth(record: Recordable) {
     dataForm.value = cloneDeep(record);
     showDataModal.value = true;
   }
 
-  function handleUpdateDeptValue(
-    value: string | number | Array<string | number> | null,
-    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
-  ) {
+  function handleUpdateDeptValue(value: string | number | Array<string | number> | null) {
     dataForm.value.customDept = value;
   }
 
