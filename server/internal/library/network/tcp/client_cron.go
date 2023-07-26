@@ -19,6 +19,9 @@ func (client *Client) getCronKey(s string) string {
 
 // stopCron 停止定时任务
 func (client *Client) stopCron() {
+	if client.conn == nil {
+		return
+	}
 	gcron.Remove(client.getCronKey(CronHeartbeatVerify))
 	gcron.Remove(client.getCronKey(CronHeartbeat))
 }

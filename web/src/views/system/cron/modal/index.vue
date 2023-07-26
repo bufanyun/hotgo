@@ -40,6 +40,7 @@
               :default-value="formParams.pid"
               @update:value="handleUpdateValue"
             />
+            <template #feedback>不选视为顶级分组</template>
           </n-form-item>
           <n-form-item label="分组名称" path="name">
             <n-input placeholder="请输入分组名称" v-model:value="formParams.name" />
@@ -78,13 +79,14 @@
 
 <script lang="ts" setup>
   import { h, reactive, ref, onMounted } from 'vue';
-  import { TreeSelectOption, useDialog, useMessage } from 'naive-ui';
+  import { useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { columns } from './columns';
   import { PlusOutlined } from '@vicons/antd';
   import { GroupDelete, GroupEdit, GroupList, getSelect } from '@/api/sys/cron';
   import { statusOptions } from '@/enums/optionsiEnum';
 
+  const emit = defineEmits(['reloadGroupOption']);
   const optionTreeData = ref([]);
   const message = useMessage();
   const statusValue = ref(1);
@@ -206,6 +208,7 @@
 
   function reloadTable() {
     actionRef.value.reload();
+    emit('reloadGroupOption');
   }
 
   async function setDictSelect() {
@@ -221,10 +224,7 @@
   });
 
   // 处理选项更新
-  function handleUpdateValue(
-    value: string | number | Array<string | number> | null,
-    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
-  ) {
+  function handleUpdateValue(value: string | number | Array<string | number> | null) {
     formParams.value.pid = value;
   }
 </script>

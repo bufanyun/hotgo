@@ -7,12 +7,16 @@ package sys
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/database/gredis"
+	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/global"
+	"hotgo/internal/library/location"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
@@ -21,10 +25,13 @@ import (
 
 type sSysBlacklist struct {
 	sync.RWMutex
+	list map[string]struct{}
 }
 
 func NewSysBlacklist() *sSysBlacklist {
-	return &sSysBlacklist{}
+	return &sSysBlacklist{
+		list: make(map[string]struct{}),
+	}
 }
 
 func init() {
@@ -111,6 +118,7 @@ func (s *sSysBlacklist) List(ctx context.Context, in *sysin.BlacklistListInp) (l
 func (s *sSysBlacklist) VariableLoad(ctx context.Context, err error) {
 	if err == nil {
 		s.Load(ctx)
+		global.PublishClusterSync(ctx, consts.ClusterSyncSysBlacklist, nil)
 	}
 }
 
@@ -119,14 +127,14 @@ func (s *sSysBlacklist) Load(ctx context.Context) {
 	s.RLock()
 	defer s.RUnlock()
 
-	global.Blacklists = make(map[string]struct{})
+	s.list = make(map[string]struct{})
 
 	array, err := dao.SysBlacklist.Ctx(ctx).
 		Fields(dao.SysBlacklist.Columns().Ip).
 		Where(dao.SysBlacklist.Columns().Status, consts.StatusEnabled).
 		Array()
 	if err != nil {
-		g.Log().Fatalf(ctx, "load blacklist fail：%+v", err)
+		g.Log().Errorf(ctx, "load blacklist fail：%+v", err)
 		return
 	}
 
@@ -134,8 +142,26 @@ func (s *sSysBlacklist) Load(ctx context.Context) {
 		list := convert.IpFilterStrategy(v.String())
 		if len(list) > 0 {
 			for k := range list {
-				global.Blacklists[k] = struct{}{}
+				s.list[k] = struct{}{}
 			}
 		}
 	}
+}
+
+// VerifyRequest 验证请求的访问IP是否在黑名单，如果存在则返回错误
+func (s *sSysBlacklist) VerifyRequest(r *ghttp.Request) (err error) {
+	if len(s.list) == 0 {
+		return
+	}
+
+	if _, ok := s.list[location.GetClientIp(r)]; ok {
+		err = gerror.NewCode(gcode.New(gcode.CodeServerBusy.Code(), "请求异常，已被封禁，如有疑问请联系管理员！", nil))
+		return
+	}
+	return
+}
+
+// ClusterSync 集群同步
+func (s *sSysBlacklist) ClusterSync(ctx context.Context, message *gredis.Message) {
+	s.Load(ctx)
 }

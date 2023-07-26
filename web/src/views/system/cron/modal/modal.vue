@@ -7,7 +7,7 @@
       preset="dialog"
       :title="title"
     >
-      <Index />
+      <Index @reloadGroupOption="reloadGroupOption" />
     </n-modal>
   </div>
 </template>
@@ -16,11 +16,16 @@
   import { ref } from 'vue';
   import Index from './index.vue';
 
+  const emit = defineEmits(['reloadGroupOption']);
   const showModal = ref(false);
   const title = ref('管理分组');
 
   function openDrawer() {
     showModal.value = true;
+  }
+
+  function reloadGroupOption() {
+    emit('reloadGroupOption');
   }
 
   defineExpose({ openDrawer });

@@ -51,6 +51,9 @@ func Init(ctx context.Context) {
 
 	// 加载超管数据
 	service.AdminMember().LoadSuperAdmin(ctx)
+
+	// 订阅集群同步
+	SubscribeClusterSync(ctx)
 }
 
 // LoggingServeLogHandler 服务日志处理
