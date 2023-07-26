@@ -9,12 +9,14 @@ import (
 	"context"
 	"fmt"
 	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/database/gredis"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/global"
 	"hotgo/internal/library/payment"
 	"hotgo/internal/library/sms"
 	"hotgo/internal/library/storager"
@@ -37,37 +39,48 @@ func init() {
 	service.RegisterSysConfig(NewSysConfig())
 }
 
-// InitConfig 初始化一些系统启动就需要用到的配置
+// InitConfig 初始化系统配置
 func (s *sSysConfig) InitConfig(ctx context.Context) {
+	if err := s.LoadConfig(ctx); err != nil {
+		g.Log().Fatalf(ctx, "InitConfig fail：%+v", err)
+	}
+}
+
+// LoadConfig 加载系统配置
+func (s *sSysConfig) LoadConfig(ctx context.Context) (err error) {
 	wx, err := s.GetWechat(ctx)
 	if err != nil {
-		g.Log().Fatalf(ctx, "init wechat conifg fail：%+v", err)
+		return
 	}
 	wechat.SetConfig(wx)
 
 	pay, err := s.GetPay(ctx)
 	if err != nil {
-		g.Log().Fatalf(ctx, "init pay conifg fail：%+v", err)
+		return
 	}
 	payment.SetConfig(pay)
 
 	upload, err := s.GetUpload(ctx)
 	if err != nil {
-		g.Log().Fatalf(ctx, "init upload conifg fail：%+v", err)
+		return
 	}
 	storager.SetConfig(upload)
 
 	sm, err := s.GetSms(ctx)
 	if err != nil {
-		g.Log().Fatalf(ctx, "init sms conifg fail：%+v", err)
+		return
 	}
 	sms.SetConfig(sm)
 
 	tk, err := s.GetLoadToken(ctx)
 	if err != nil {
-		g.Log().Fatalf(ctx, "init token conifg fail：%+v", err)
+		return
 	}
 	token.SetConfig(tk)
+
+	// 更多
+	// ...
+	return
 }
 
 // GetLogin 获取登录配置
@@ -259,9 +272,14 @@ func (s *sSysConfig) UpdateConfigByGroup(ctx context.Context, in *sysin.UpdateCo
 				return
 			}
 		}
-
 		return s.syncUpdate(ctx, in)
 	})
+
+	if err != nil {
+		return
+	}
+
+	global.PublishClusterSync(ctx, consts.ClusterSyncSysconfig, nil)
 	return
 }
 
@@ -307,4 +325,11 @@ func (s *sSysConfig) syncUpdate(ctx context.Context, in *sysin.UpdateConfigInp) 
 		err = gerror.Newf("syncUpdate %v conifg fail：%+v", in.Group, err.Error())
 	}
 	return
+}
+
+// ClusterSync 集群同步
+func (s *sSysConfig) ClusterSync(ctx context.Context, message *gredis.Message) {
+	if err := s.LoadConfig(ctx); err != nil {
+		g.Log().Errorf(ctx, "ClusterSync fail：%+v", err)
+	}
 }

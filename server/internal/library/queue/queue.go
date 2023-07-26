@@ -68,7 +68,7 @@ type MqMsg struct {
 }
 
 var (
-	ctx                   = gctx.New()
+	ctx                   = gctx.GetInitCtx()
 	mqProducerInstanceMap map[string]MqProducer
 	mqConsumerInstanceMap map[string]MqConsumer
 	mutex                 sync.Mutex

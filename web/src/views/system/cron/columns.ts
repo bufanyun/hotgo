@@ -51,10 +51,10 @@ export const columns = [
     title: '表达式',
     key: 'pattern',
   },
-  {
-    title: '执行次数',
-    key: 'count',
-  },
+  // {
+  //   title: '执行次数',
+  //   key: 'count',
+  // },
   {
     title: '状态',
     key: 'status',

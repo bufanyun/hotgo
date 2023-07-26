@@ -144,7 +144,7 @@
       </n-modal>
     </n-card>
 
-    <GroupModal ref="GroupModalRef" />
+    <GroupModal ref="GroupModalRef" @reloadGroupOption="reloadGroupOption"/>
   </div>
 </template>
 
@@ -450,7 +450,7 @@
     openDrawer();
   }
 
-  async function setDictSelect() {
+  async function reloadGroupOption() {
     const tmp = await getSelect({});
     optionTreeData.value = tmp.list;
     if (optionTreeData.value === undefined || optionTreeData.value === null) {
@@ -467,7 +467,7 @@
   }
 
   onBeforeMount(async () => {
-    await setDictSelect();
+    await reloadGroupOption();
   });
 
   // 处理选项更新

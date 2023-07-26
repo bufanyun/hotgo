@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/gogf/gf/v2/crypto/gmd5"
 	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/database/gredis"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
@@ -18,6 +19,7 @@ import (
 	"github.com/gogf/gf/v2/util/grand"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/global"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/hgorm"
 	"hotgo/internal/library/hgorm/handler"
@@ -467,6 +469,16 @@ func (s *sAdminMember) Edit(ctx context.Context, in *adminin.MemberEditInp) (err
 		return
 	}
 
+	needLoadSuperAdmin := false
+	defer func() {
+		if needLoadSuperAdmin {
+			// 本地先更新
+			s.LoadSuperAdmin(ctx)
+			// 推送消息让所有集群再同步一次
+			global.PublishClusterSync(ctx, consts.ClusterSyncSysSuperAdmin, nil)
+		}
+	}()
+
 	// 修改
 	if in.Id > 0 {
 		if s.VerifySuperId(ctx, in.Id) {
@@ -503,9 +515,7 @@ func (s *sAdminMember) Edit(ctx context.Context, in *adminin.MemberEditInp) (err
 				err = gerror.Wrap(err, "更新用户岗位失败，请稍后重试！")
 			}
 
-			if in.RoleId == s.superAdmin.RoleId {
-				s.LoadSuperAdmin(ctx)
-			}
+			needLoadSuperAdmin = in.RoleId == s.superAdmin.RoleId
 			return
 		})
 	}
@@ -541,9 +551,7 @@ func (s *sAdminMember) Edit(ctx context.Context, in *adminin.MemberEditInp) (err
 			err = gerror.Wrap(err, "新增用户岗位失败，请稍后重试！")
 		}
 
-		if in.RoleId == s.superAdmin.RoleId {
-			s.LoadSuperAdmin(ctx)
-		}
+		needLoadSuperAdmin = in.RoleId == s.superAdmin.RoleId
 		return
 	})
 }
@@ -690,8 +698,7 @@ func (s *sAdminMember) MemberLoginStat(ctx context.Context, in *adminin.MemberLo
 		cols   = dao.SysLoginLog.Columns()
 	)
 
-	err = dao.SysLoginLog.Ctx(ctx).
-		Fields(cols.LoginAt, cols.LoginIp).
+	err = dao.SysLoginLog.Ctx(ctx).Fields(cols.LoginAt, cols.LoginIp).
 		Where(cols.MemberId, in.MemberId).
 		Where(cols.Status, consts.StatusEnabled).
 		OrderDesc(cols.Id).
@@ -725,8 +732,7 @@ func (s *sAdminMember) GetIdByCode(ctx context.Context, in *adminin.GetIdByCodeI
 
 // Select 获取可选的用户选项
 func (s *sAdminMember) Select(ctx context.Context, in *adminin.MemberSelectInp) (res []*adminin.MemberSelectModel, err error) {
-	err = dao.AdminMember.Ctx(ctx).
-		Fields("id as value,real_name as label,username,avatar").
+	err = dao.AdminMember.Ctx(ctx).Fields("id as value,real_name as label,username,avatar").
 		Handler(handler.FilterAuthWithField("id")).
 		Scan(&res)
 	if err != nil {
@@ -737,13 +743,13 @@ func (s *sAdminMember) Select(ctx context.Context, in *adminin.MemberSelectInp) 
 
 // VerifySuperId 验证是否为超管
 func (s *sAdminMember) VerifySuperId(ctx context.Context, verifyId int64) bool {
+	s.superAdmin.RLock()
+	defer s.superAdmin.RUnlock()
+
 	if s.superAdmin == nil || s.superAdmin.MemberIds == nil {
 		g.Log().Error(ctx, "superAdmin is not initialized.")
 		return false
 	}
-
-	s.superAdmin.RLock()
-	defer s.superAdmin.RUnlock()
 
 	_, ok := s.superAdmin.MemberIds[verifyId]
 	return ok
@@ -751,9 +757,6 @@ func (s *sAdminMember) VerifySuperId(ctx context.Context, verifyId int64) bool {
 
 // LoadSuperAdmin 加载超管数据
 func (s *sAdminMember) LoadSuperAdmin(ctx context.Context) {
-	s.superAdmin.Lock()
-	defer s.superAdmin.Unlock()
-
 	value, err := dao.AdminRole.Ctx(ctx).Where(dao.AdminRole.Columns().Key, consts.SuperRoleKey).Value()
 	if err != nil {
 		g.Log().Errorf(ctx, "LoadSuperAdmin AdminRole err:%+v", err)
@@ -771,6 +774,9 @@ func (s *sAdminMember) LoadSuperAdmin(ctx context.Context) {
 		return
 	}
 
+	s.superAdmin.Lock()
+	defer s.superAdmin.Unlock()
+
 	s.superAdmin.MemberIds = make(map[int64]struct{}, len(array))
 	for _, v := range array {
 		s.superAdmin.MemberIds[v.Int64()] = struct{}{}
@@ -778,6 +784,12 @@ func (s *sAdminMember) LoadSuperAdmin(ctx context.Context) {
 	s.superAdmin.RoleId = value.Int64()
 }
 
+// ClusterSyncSuperAdmin 集群同步
+func (s *sAdminMember) ClusterSyncSuperAdmin(ctx context.Context, message *gredis.Message) {
+	s.LoadSuperAdmin(ctx)
+}
+
+// FilterAuthModel 过滤查询权限，如果不是超管则排除掉自己
 func (s *sAdminMember) FilterAuthModel(ctx context.Context, memberId int64) *gdb.Model {
 	m := dao.AdminMember.Ctx(ctx)
 	if !s.VerifySuperId(ctx, memberId) {
