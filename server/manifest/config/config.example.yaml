@@ -11,7 +11,7 @@ hotgo:
   # 是否为演示系统 false|true
   isDemo: false
   # 是否为集群部署 false|true ，默认为false。开启集群必须配置redis，通过redis发布订阅进行集群之间的数据同步
-  isCluster: true
+  isCluster: false
   # 全局请求日志
   log:
     switch: true                                    # 日志开关，默认为true
