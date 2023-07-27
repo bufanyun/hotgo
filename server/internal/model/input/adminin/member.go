@@ -41,6 +41,7 @@ type MemberUpdateMobileInp struct {
 type GetIdByCodeInp struct {
 	Code string `json:"code"`
 }
+
 type GetIdByCodeModel struct {
 	Id int64
 }
@@ -49,6 +50,7 @@ type GetIdByCodeModel struct {
 type MemberProfileInp struct {
 	Id int64
 }
+
 type MemberProfileModel struct {
 	PostGroup string           `json:"postGroup" dc:"岗位名称"`
 	RoleGroup string           `json:"roleGroup" dc:"角色名称"`
@@ -109,7 +111,7 @@ type LoginMemberInfoModel struct {
 	*MemberLoginStatModel
 }
 
-// MemberEditInp 修改/新增管理员
+// MemberEditInp 修改用户
 type MemberEditInp struct {
 	Id           int64       `json:"id"                                            dc:"管理员ID"`
 	RoleId       int64       `json:"roleId"    v:"required#角色不能为空"            dc:"角色ID"`
@@ -133,6 +135,7 @@ type MemberEditInp struct {
 	Status       int         `json:"status"                                        dc:"状态"`
 }
 
+// MemberAddInp 新增用户
 type MemberAddInp struct {
 	*MemberEditInp
 	Salt       string `json:"salt"               dc:"密码盐"`
@@ -162,13 +165,14 @@ type VerifyUniqueInp struct {
 	Where g.Map
 }
 
-// MemberDeleteInp 删除字典类型
+// MemberDeleteInp 删除用户
 type MemberDeleteInp struct {
 	Id interface{} `json:"id" v:"required#用户ID不能为空" dc:"用户ID"`
 }
+
 type MemberDeleteModel struct{}
 
-// MemberViewInp 获取信息
+// MemberViewInp 获取用户信息
 type MemberViewInp struct {
 	Id int64 `json:"id" dc:"用户ID"`
 }
@@ -179,7 +183,7 @@ type MemberViewModel struct {
 	RoleName string `json:"roleName"    dc:"所属角色"`
 }
 
-// MemberListInp 获取列表
+// MemberListInp 获取用户列表
 type MemberListInp struct {
 	form.PageReq
 	form.StatusReq

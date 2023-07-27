@@ -20,6 +20,7 @@ import (
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
 	"hotgo/utility/tree"
+	"hotgo/utility/validate"
 )
 
 type sAdminDept struct{}
@@ -330,6 +331,38 @@ func (s *sAdminDept) treeList(pid int64, nodes []*entity.AdminDept) (list []*adm
 			}
 			list = append(list, item)
 		}
+	}
+	return
+}
+
+// VerifyDeptId 验证部门ID
+func (s *sAdminDept) VerifyDeptId(ctx context.Context, id int64) (err error) {
+	var (
+		pid int64 = 0
+		mb        = contexts.GetUser(ctx)
+		mod       = dao.AdminDept.Ctx(ctx).Fields(dao.AdminDept.Columns().Id)
+	)
+
+	if mb == nil {
+		err = gerror.New("用户信息获取失败！")
+		return
+	}
+
+	// 非超管只获取下级
+	if !service.AdminMember().VerifySuperId(ctx, mb.Id) {
+		pid = mb.DeptId
+		mod = mod.WhereLike(dao.AdminDept.Columns().Tree, "%"+tree.GetIdLabel(pid)+"%")
+	}
+
+	columns, err := mod.Array()
+	if err != nil {
+		return err
+	}
+
+	ids := g.NewVar(columns).Int64s()
+	if !validate.InSlice(ids, id) {
+		err = gerror.New("部门ID是无效的")
+		return
 	}
 	return
 }
