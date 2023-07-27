@@ -26,6 +26,23 @@ var subscribes = &subscribeManager{
 	List: make(map[string]SubHandler),
 }
 
+// SubscribeMap 订阅多个消息
+func SubscribeMap(channels map[string]SubHandler) (err error) {
+	if channels == nil || len(channels) == 0 {
+		return
+	}
+
+	subscribes.mutex.Lock()
+	defer subscribes.mutex.Unlock()
+
+	for channel, hr := range channels {
+		if err = Subscribe(channel, hr); err != nil {
+			return
+		}
+	}
+	return
+}
+
 // Subscribe 订阅消息
 func Subscribe(channel string, hr SubHandler) (err error) {
 	subscribes.mutex.Lock()

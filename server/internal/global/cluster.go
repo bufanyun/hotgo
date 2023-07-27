@@ -1,4 +1,4 @@
-// Package consts
+// Package global
 // @Link  https://github.com/bufanyun/hotgo
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
@@ -22,21 +22,15 @@ func SubscribeClusterSync(ctx context.Context) {
 		return
 	}
 
-	// 系统配置
-	if err := pubsub.Subscribe(consts.ClusterSyncSysconfig, service.SysConfig().ClusterSync); err != nil {
+	err := pubsub.SubscribeMap(map[string]pubsub.SubHandler{
+		consts.ClusterSyncSysconfig:     service.SysConfig().ClusterSync,             // 系统配置
+		consts.ClusterSyncSysBlacklist:  service.SysBlacklist().ClusterSync,          // 系统黑名单
+		consts.ClusterSyncSysSuperAdmin: service.AdminMember().ClusterSyncSuperAdmin, // 超管
+	})
+
+	if err != nil {
 		g.Log().Fatal(ctx, err)
 	}
-
-	// 系统黑名单
-	if err := pubsub.Subscribe(consts.ClusterSyncSysBlacklist, service.SysBlacklist().ClusterSync); err != nil {
-		g.Log().Fatal(ctx, err)
-	}
-
-	// 超管
-	if err := pubsub.Subscribe(consts.ClusterSyncSysSuperAdmin, service.AdminMember().ClusterSyncSuperAdmin); err != nil {
-		g.Log().Fatal(ctx, err)
-	}
-
 }
 
 // PublishClusterSync 推送集群同步消息，如果没有开启集群部署，则不进行推送

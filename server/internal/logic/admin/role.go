@@ -22,6 +22,7 @@ import (
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
 	"hotgo/utility/tree"
+	"hotgo/utility/validate"
 	"sort"
 )
 
@@ -53,7 +54,7 @@ func (s *sAdminRole) Verify(ctx context.Context, path, method string) bool {
 
 	ok, err := casbin.Enforcer.Enforce(user.RoleKey, path, method)
 	if err != nil {
-		g.Log().Infof(ctx, "admin Verify Enforce  err:%+v", err)
+		g.Log().Infof(ctx, "admin Verify Enforce err:%+v", err)
 		return false
 	}
 	return ok
@@ -91,11 +92,7 @@ func (s *sAdminRole) List(ctx context.Context, in *adminin.RoleListInp) (res *ad
 
 // GetName 获取指定角色的名称
 func (s *sAdminRole) GetName(ctx context.Context, id int64) (name string, err error) {
-	r, err := dao.AdminRole.Ctx(ctx).
-		Fields("name").
-		WherePri(id).
-		Order("id desc").
-		Value()
+	r, err := dao.AdminRole.Ctx(ctx).Fields("name").WherePri(id).Order("id desc").Value()
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return
@@ -310,6 +307,38 @@ func (s *sAdminRole) treeList(pid int64, nodes []*entity.AdminRole) (list []*adm
 			}
 			list = append(list, item)
 		}
+	}
+	return
+}
+
+// VerifyRoleId 验证角色ID
+func (s *sAdminRole) VerifyRoleId(ctx context.Context, id int64) (err error) {
+	var (
+		pid int64 = 0
+		mb        = contexts.GetUser(ctx)
+		mod       = dao.AdminRole.Ctx(ctx).Fields(dao.AdminRole.Columns().Id)
+	)
+
+	if mb == nil {
+		err = gerror.New("用户信息获取失败！")
+		return
+	}
+
+	// 非超管只获取下级
+	if !service.AdminMember().VerifySuperId(ctx, mb.Id) {
+		pid = mb.RoleId
+		mod = mod.WhereLike(dao.AdminRole.Columns().Tree, "%"+tree.GetIdLabel(pid)+"%")
+	}
+
+	columns, err := mod.Array()
+	if err != nil {
+		return err
+	}
+
+	ids := g.NewVar(columns).Int64s()
+	if !validate.InSlice(ids, id) {
+		err = gerror.New("角色ID是无效的")
+		return
 	}
 	return
 }

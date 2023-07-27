@@ -265,7 +265,7 @@
   }
 
   function handleSelect(item: Attachment) {
-    if (selectList.value === null || props.maxNumber == 1) {
+    if (!selectList.value || props.maxNumber == 1) {
       selectList.value = [];
     }
 
@@ -289,7 +289,7 @@
   }
 
   function isSelected(item: Attachment) {
-    if (selectList.value === null) {
+    if (!selectList.value) {
       return false;
     }
     return selectList.value.some((selected) => selected === item.fileUrl);
@@ -297,11 +297,11 @@
 
   function generateKindOptions(kinds: KindRawOption[]): any {
     const option: KindOption[] = [];
-    kinds.forEach((item) => {
+    kinds.forEach((item: KindRawOption) => {
       const data: KindOption = {
         label: () => h(NEllipsis, null, { default: () => item.label }),
         key: item.key,
-        extra: () => createExtraContent(item),
+        extra: () => (item.key !== '' ? createExtraContent(item) : null),
         icon: constantRouterIcon[item.icon] || null,
         disabled: isDisabledKindOption(item),
       };

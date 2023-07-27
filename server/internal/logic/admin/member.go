@@ -401,7 +401,7 @@ func (s *sAdminMember) VerifyUnique(ctx context.Context, in *adminin.VerifyUniqu
 	return
 }
 
-// Delete 删除
+// Delete 删除用户
 func (s *sAdminMember) Delete(ctx context.Context, in *adminin.MemberDeleteInp) (err error) {
 	if s.VerifySuperId(ctx, gconv.Int64(in.Id)) {
 		err = gerror.New("超管账号禁止删除！")
@@ -438,7 +438,7 @@ func (s *sAdminMember) Delete(ctx context.Context, in *adminin.MemberDeleteInp) 
 	})
 }
 
-// Edit 修改/新增
+// Edit 修改/新增用户
 func (s *sAdminMember) Edit(ctx context.Context, in *adminin.MemberEditInp) (err error) {
 	opMemberId := contexts.GetUserId(ctx)
 	if opMemberId <= 0 {
@@ -461,6 +461,16 @@ func (s *sAdminMember) Edit(ctx context.Context, in *adminin.MemberEditInp) (err
 		},
 	})
 	if err != nil {
+		return
+	}
+
+	// 验证角色ID
+	if err = service.AdminRole().VerifyRoleId(ctx, in.RoleId); err != nil {
+		return
+	}
+
+	// 验证部门ID
+	if err = service.AdminDept().VerifyDeptId(ctx, in.DeptId); err != nil {
 		return
 	}
 
@@ -564,7 +574,7 @@ func (s *sAdminMember) View(ctx context.Context, in *adminin.MemberViewInp) (res
 	return
 }
 
-// List 获取列表
+// List 获取用户列表
 func (s *sAdminMember) List(ctx context.Context, in *adminin.MemberListInp) (list []*adminin.MemberListModel, totalCount int, err error) {
 	mod := s.FilterAuthModel(ctx, contexts.GetUserId(ctx))
 	cols := dao.AdminMember.Columns()
