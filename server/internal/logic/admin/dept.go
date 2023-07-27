@@ -351,7 +351,7 @@ func (s *sAdminDept) VerifyDeptId(ctx context.Context, id int64) (err error) {
 	// 非超管只获取下级
 	if !service.AdminMember().VerifySuperId(ctx, mb.Id) {
 		pid = mb.DeptId
-		mod = mod.WhereLike(dao.AdminDept.Columns().Tree, "%"+tree.GetIdLabel(pid)+"%")
+		mod = mod.WhereNot(dao.AdminDept.Columns().Id, pid).WhereLike(dao.AdminDept.Columns().Tree, "%"+tree.GetIdLabel(pid)+"%")
 	}
 
 	columns, err := mod.Array()

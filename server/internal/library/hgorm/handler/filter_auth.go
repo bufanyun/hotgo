@@ -63,17 +63,23 @@ func FilterAuthWithField(filterField string) func(m *gdb.Model) *gdb.Model {
 			g.Log().Panic(ctx, "failed to role information roleModel == nil")
 		}
 
-		sq := g.Model("admin_member").Fields("id")
+		getDeptIds := func(in interface{}) []gdb.Value {
+			ds, err := g.Model("admin_member").Fields("id").Where("dept_id", in).Array()
+			if err != nil {
+				g.Log().Panic(ctx, "failed to get member dept data")
+			}
+			return ds
+		}
 
 		switch role.DataScope {
 		case consts.RoleDataAll: // 全部权限
 			// ...
 		case consts.RoleDataNowDept: // 当前部门
-			m = m.WhereIn(filterField, sq.Where("dept_id", co.User.DeptId))
-		case consts.RoleDataDeptAndSub: // 当前部门及以下部门
-			m = m.WhereIn(filterField, sq.WhereIn("dept_id", GetDeptAndSub(co.User.DeptId)))
+			m = m.WhereIn(filterField, getDeptIds(co.User.DeptId))
+		case consts.RoleDataDeptAndSub: // 当前部门及以下部门ds
+			m = m.WhereIn(filterField, getDeptIds(GetDeptAndSub(co.User.DeptId)))
 		case consts.RoleDataDeptCustom: // 自定义部门
-			m = m.WhereIn(filterField, sq.WhereIn("dept_id", role.CustomDept.Var().Ints()))
+			m = m.WhereIn(filterField, getDeptIds(role.CustomDept.Var().Ints()))
 		case consts.RoleDataSelf: // 仅自己
 			m = m.Where(filterField, co.User.Id)
 		case consts.RoleDataSelfAndSub: // 自己和直属下级
