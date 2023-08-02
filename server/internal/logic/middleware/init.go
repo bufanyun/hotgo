@@ -17,7 +17,6 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"go.opentelemetry.io/otel/attribute"
 	"hotgo/internal/consts"
-	"hotgo/internal/global"
 	"hotgo/internal/library/addons"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/response"
@@ -27,12 +26,14 @@ import (
 	"hotgo/utility/validate"
 	"net/http"
 	"strings"
+	"sync"
 )
 
 type sMiddleware struct {
 	LoginUrl      string                      // 登录路由地址
 	DemoWhiteList g.Map                       // 演示模式放行的路由白名单
 	FilterRoutes  map[string]ghttp.RouterItem // 支持预处理的web路由
+	routeMutex    sync.Mutex
 }
 
 func init() {
@@ -52,7 +53,7 @@ func NewMiddleware() *sMiddleware {
 
 // Ctx 初始化请求上下文
 func (s *sMiddleware) Ctx(r *ghttp.Request) {
-	if global.JaegerSwitch {
+	if g.Cfg().MustGet(r.Context(), "jaeger.switch").Bool() {
 		ctx, span := gtrace.NewSpan(r.Context(), "middleware.ctx")
 		span.SetAttributes(attribute.KeyValue{
 			Key:   "traceID",

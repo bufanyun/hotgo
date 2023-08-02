@@ -57,6 +57,9 @@ func Generate(ctx context.Context) (id string, base64 string) {
 
 // Verify 验证输入的验证码是否正确
 func Verify(id, answer string) bool {
+	if id == "" || answer == "" {
+		return false
+	}
 	c := base64Captcha.NewCaptcha(new(base64Captcha.DriverString), base64Captcha.DefaultMemStore)
 	return c.Verify(id, gstr.ToLower(answer), true)
 }

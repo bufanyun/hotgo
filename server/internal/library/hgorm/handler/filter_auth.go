@@ -6,6 +6,7 @@
 package handler
 
 import (
+	"context"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/text/gstr"
@@ -63,6 +64,11 @@ func FilterAuthWithField(filterField string) func(m *gdb.Model) *gdb.Model {
 			g.Log().Panic(ctx, "failed to role information roleModel == nil")
 		}
 
+		// 超管拥有全部权限
+		if role.Key == consts.SuperRoleKey {
+			return m
+		}
+
 		getDeptIds := func(in interface{}) []gdb.Value {
 			ds, err := g.Model("admin_member").Fields("id").Where("dept_id", in).Array()
 			if err != nil {
@@ -77,19 +83,18 @@ func FilterAuthWithField(filterField string) func(m *gdb.Model) *gdb.Model {
 		case consts.RoleDataNowDept: // 当前部门
 			m = m.WhereIn(filterField, getDeptIds(co.User.DeptId))
 		case consts.RoleDataDeptAndSub: // 当前部门及以下部门ds
-			m = m.WhereIn(filterField, getDeptIds(GetDeptAndSub(co.User.DeptId)))
+			m = m.WhereIn(filterField, getDeptIds(GetDeptAndSub(ctx, co.User.DeptId)))
 		case consts.RoleDataDeptCustom: // 自定义部门
 			m = m.WhereIn(filterField, getDeptIds(role.CustomDept.Var().Ints()))
 		case consts.RoleDataSelf: // 仅自己
 			m = m.Where(filterField, co.User.Id)
 		case consts.RoleDataSelfAndSub: // 自己和直属下级
-			m = m.WhereIn(filterField, GetSelfAndSub(co.User.Id))
+			m = m.WhereIn(filterField, GetSelfAndSub(ctx, co.User.Id))
 		case consts.RoleDataSelfAndAllSub: // 自己和全部下级
-			m = m.WhereIn(filterField, GetSelfAndAllSub(co.User.Id))
+			m = m.WhereIn(filterField, GetSelfAndAllSub(ctx, co.User.Id))
 		default:
 			g.Log().Panic(ctx, "dataScope is not registered")
 		}
-
 		return m
 	}
 }
@@ -100,12 +105,13 @@ func escapeFieldsToSlice(s string) []string {
 }
 
 // GetDeptAndSub 获取指定部门的所有下级，含本部门
-func GetDeptAndSub(deptId int64) (ids []int64) {
+func GetDeptAndSub(ctx context.Context, deptId int64) (ids []int64) {
 	array, err := g.Model("admin_dept").
 		WhereLike("tree", "%"+tree.GetIdLabel(deptId)+"%").
 		Fields("id").
 		Array()
 	if err != nil {
+		g.Log().Panicf(ctx, "GetDeptAndSub err:%+v", err)
 		return
 	}
 
@@ -118,12 +124,13 @@ func GetDeptAndSub(deptId int64) (ids []int64) {
 }
 
 // GetSelfAndSub 获取直属下级，包含自己
-func GetSelfAndSub(memberId int64) (ids []int64) {
+func GetSelfAndSub(ctx context.Context, memberId int64) (ids []int64) {
 	array, err := g.Model("admin_member").
 		Where("pid", memberId).
 		Fields("id").
 		Array()
 	if err != nil {
+		g.Log().Panicf(ctx, "GetSelfAndSub err:%+v", err)
 		return
 	}
 
@@ -136,12 +143,13 @@ func GetSelfAndSub(memberId int64) (ids []int64) {
 }
 
 // GetSelfAndAllSub 获取全部下级，包含自己
-func GetSelfAndAllSub(memberId int64) (ids []int64) {
+func GetSelfAndAllSub(ctx context.Context, memberId int64) (ids []int64) {
 	array, err := g.Model("admin_member").
 		WhereLike("tree", "%"+tree.GetIdLabel(memberId)+"%").
 		Fields("id").
 		Array()
 	if err != nil {
+		g.Log().Panicf(ctx, "GetSelfAndAllSub err:%+v", err)
 		return
 	}
 

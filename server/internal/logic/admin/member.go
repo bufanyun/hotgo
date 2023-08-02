@@ -799,11 +799,31 @@ func (s *sAdminMember) ClusterSyncSuperAdmin(ctx context.Context, message *gredi
 	s.LoadSuperAdmin(ctx)
 }
 
-// FilterAuthModel 过滤查询权限，如果不是超管则排除掉自己
+// FilterAuthModel 过滤用户操作权限
+// 非超管用户只能操作自己的下级角色用户，并且需要满足自身角色的数据权限设置
 func (s *sAdminMember) FilterAuthModel(ctx context.Context, memberId int64) *gdb.Model {
 	m := dao.AdminMember.Ctx(ctx)
-	if !s.VerifySuperId(ctx, memberId) {
-		m = m.Where("id <> ?", memberId)
+	if s.VerifySuperId(ctx, memberId) {
+		return m
 	}
-	return m.Handler(handler.FilterAuthWithField("id"))
+
+	var roleId int64
+	if contexts.GetUserId(ctx) == memberId {
+		// 当前登录用户直接从上下文中取角色ID
+		roleId = contexts.GetRoleId(ctx)
+	} else {
+		ro, err := dao.AdminMember.Ctx(ctx).Fields("role_id").Where("id", memberId).Value()
+		if err != nil {
+			g.Log().Panicf(ctx, "failed to get role information, err:%+v", err)
+			return nil
+		}
+		roleId = ro.Int64()
+	}
+
+	roleIds, err := service.AdminRole().GetSubRoleIds(ctx, roleId, false)
+	if err != nil {
+		g.Log().Panicf(ctx, "get the subordinate role permission exception, err:%+v", err)
+		return nil
+	}
+	return m.Where("id <> ?", memberId).WhereIn("role_id", roleIds).Handler(handler.FilterAuthWithField("id"))
 }

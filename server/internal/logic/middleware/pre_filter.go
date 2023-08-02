@@ -13,6 +13,13 @@ import (
 func (s *sMiddleware) GetFilterRoutes(r *ghttp.Request) map[string]ghttp.RouterItem {
 	// 首次访问时加载
 	if s.FilterRoutes == nil {
+		s.routeMutex.Lock()
+		defer s.routeMutex.Unlock()
+
+		if s.FilterRoutes != nil {
+			return s.FilterRoutes
+		}
+
 		s.FilterRoutes = make(map[string]ghttp.RouterItem)
 		for _, v := range r.Server.GetRoutes() {
 			// 非规范路由不加载

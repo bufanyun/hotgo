@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package consts
 
 // 数据范围
@@ -29,4 +28,63 @@ var RoleDataNameMap = map[int]string{
 	RoleDataSelf:          "仅自己",
 	RoleDataSelfAndSub:    "自己和直属下级",
 	RoleDataSelfAndAllSub: "自己和全部下级",
+}
+
+type GroupScopeSelect struct {
+	Type     string        `json:"type,omitempty"`
+	Label    string        `json:"label"`
+	Key      int           `json:"key"`
+	Value    int           `json:"value,omitempty"`
+	Children []ScopeSelect `json:"children,omitempty"`
+}
+
+type ScopeSelect struct {
+	Label string `json:"label"`
+	Value int    `json:"value"`
+}
+
+var DataScopeSelect = []GroupScopeSelect{
+	{
+		Label: RoleDataNameMap[RoleDataAll],
+		Key:   RoleDataAll,
+		Value: RoleDataAll,
+	},
+	{
+		Type:  "group",
+		Label: "按部门划分",
+		Key:   -1,
+		Children: []ScopeSelect{
+			{
+				Label: RoleDataNameMap[RoleDataNowDept],
+				Value: RoleDataNowDept,
+			},
+			{
+				Label: RoleDataNameMap[RoleDataDeptAndSub],
+				Value: RoleDataDeptAndSub,
+			},
+			{
+				Label: RoleDataNameMap[RoleDataDeptCustom],
+				Value: RoleDataDeptCustom,
+			},
+		},
+	},
+	{
+		Type:  "group",
+		Label: "按上下级关系划分",
+		Key:   -2,
+		Children: []ScopeSelect{
+			{
+				Label: RoleDataNameMap[RoleDataSelf],
+				Value: RoleDataSelf,
+			},
+			{
+				Label: RoleDataNameMap[RoleDataSelfAndSub],
+				Value: RoleDataSelfAndSub,
+			},
+			{
+				Label: RoleDataNameMap[RoleDataSelfAndAllSub],
+				Value: RoleDataSelfAndAllSub,
+			},
+		},
+	},
 }

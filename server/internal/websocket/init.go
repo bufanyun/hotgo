@@ -6,9 +6,9 @@
 package websocket
 
 import (
-	"context"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gorilla/websocket"
@@ -16,18 +16,17 @@ import (
 )
 
 var (
-	ctxManager    context.Context                 // 主上下文
+	mctx          = gctx.GetInitCtx()             // 上下文
 	clientManager = NewClientManager()            // 客户端管理
 	routers       = make(map[string]EventHandler) // 消息路由
 	msgGo         = grpool.New(20)                // 消息处理协程池
 )
 
 // Start 启动
-func Start(c context.Context) {
-	ctxManager = c
+func Start() {
 	go clientManager.start()
 	go clientManager.ping()
-	g.Log().Debug(ctxManager, "start websocket..")
+	g.Log().Debug(mctx, "start websocket..")
 }
 
 // Stop 关闭

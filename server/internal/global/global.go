@@ -5,15 +5,4 @@
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package global
 
-import (
-	"runtime"
-)
-
-var (
-	// RootPtah 运行根路径
-	RootPtah string
-	// SysType 操作系统类型  windows | linux
-	SysType = runtime.GOOS
-	// JaegerSwitch 链路追踪开关
-	JaegerSwitch bool
-)
+// 在这里可以配置一些全局公用的变量
