@@ -33,9 +33,8 @@ type login struct {
 }
 
 // GetKey 读取客户端数据
-func (l *login) GetKey() (key string) {
-	key = GetUserKey(l.UserId)
-	return
+func (l *login) GetKey() string {
+	return GetUserKey(l.UserId)
 }
 
 // Client 客户端连接
@@ -77,7 +76,7 @@ func NewClient(r *ghttp.Request, socket *websocket.Conn, firstTime uint64) (clie
 func (c *Client) read() {
 	defer func() {
 		if r := recover(); r != nil {
-			g.Log().Warningf(ctxManager, "client read err: %+v, stack:%+v, user:%+v", r, string(debug.Stack()), c.User)
+			g.Log().Warningf(mctx, "client read err: %+v, stack:%+v, user:%+v", r, string(debug.Stack()), c.User)
 		}
 	}()
 
@@ -97,7 +96,7 @@ func (c *Client) read() {
 func (c *Client) write() {
 	defer func() {
 		if r := recover(); r != nil {
-			g.Log().Warningf(ctxManager, "client write err: %+v, stack:%+v, user:%+v", r, string(debug.Stack()), c.User)
+			g.Log().Warningf(mctx, "client write err: %+v, stack:%+v, user:%+v", r, string(debug.Stack()), c.User)
 		}
 	}()
 	defer func() {
@@ -107,12 +106,12 @@ func (c *Client) write() {
 	for {
 		select {
 		case <-c.closeSignal:
-			g.Log().Infof(ctxManager, "websocket client quit, user:%+v", c.User)
+			g.Log().Infof(mctx, "websocket client quit, user:%+v", c.User)
 			return
 		case message, ok := <-c.Send:
 			if !ok {
 				// 发送数据错误 关闭连接
-				g.Log().Warningf(ctxManager, "client write message, user:%+v", c.User)
+				g.Log().Warningf(mctx, "client write message, user:%+v", c.User)
 				return
 			}
 			_ = c.Socket.WriteJSON(message)
@@ -127,7 +126,7 @@ func (c *Client) SendMsg(msg *WResponse) {
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			g.Log().Infof(ctxManager, "SendMsg err:%+v, stack:%+v", r, string(debug.Stack()))
+			g.Log().Infof(mctx, "SendMsg err:%+v, stack:%+v", r, string(debug.Stack()))
 		}
 	}()
 	c.Send <- msg

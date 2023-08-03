@@ -338,13 +338,13 @@
   function addTable() {
     showModal.value = true;
     formParams.value = cloneDeep(defaultState);
-    optionsDefaultValue.value = null;
+    optionsDefaultValue.value = 0;
   }
 
   function handleEdit(record: Recordable) {
     showModal.value = true;
     formParams.value = cloneDeep(record);
-    formParams.value.children = null;
+    formParams.value.children = 0;
     optionsDefaultValue.value = formParams.value.pid;
   }
 
@@ -370,7 +370,7 @@
     });
   }
 
-  function updateStatus(id, status) {
+  function updateStatus(id: any, status: any) {
     Status({ id: id, status: status })
       .then((_res) => {
         message.success('操作成功');
@@ -383,10 +383,10 @@
       });
   }
 
-  function confirmForm(e) {
+  function confirmForm(e: { preventDefault: () => void }) {
     e.preventDefault();
     formBtnLoading.value = true;
-    formRef.value.validate((errors) => {
+    formRef.value.validate((errors: any) => {
       if (!errors) {
         Edit(formParams.value).then((_res) => {
           message.success('操作成功');
@@ -408,17 +408,18 @@
 
   function handleReset(_values: Recordable) {}
 
-  const loadDataTable = async (res) => {
+  const loadDataTable = async (res: Recordable<any>) => {
     loading.value = true;
     const tmp = await getDeptList({ ...res, ...formRef.value?.formModel });
     data.value = tmp?.list;
     if (data.value === undefined || data.value === null) {
       data.value = [];
     }
+
     options.value = [
       {
         index: 0,
-        key: 0,
+        id: 0,
         label: '顶级部门',
         children: data.value,
       },
@@ -431,7 +432,7 @@
     await loadDataTable({});
   });
 
-  function handleUpdateValue(value) {
+  function handleUpdateValue(value: any) {
     formParams.value.pid = value;
   }
 </script>

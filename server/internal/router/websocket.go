@@ -33,7 +33,7 @@ func WebSocket(ctx context.Context, group *ghttp.RouterGroup) {
 	})
 
 	// 启动websocket监听
-	websocket.Start(ctx)
+	websocket.Start()
 
 	// 注册消息路由
 	websocket.RegisterMsg(websocket.EventHandlers{

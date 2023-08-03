@@ -7,6 +7,7 @@ package role
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
+	"hotgo/internal/consts"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
 )
@@ -69,7 +70,7 @@ type DataScopeSelectReq struct {
 }
 
 type DataScopeSelectRes struct {
-	List form.Selects `json:"list" dc:"数据选项"`
+	List []consts.GroupScopeSelect `json:"list" dc:"数据选项"`
 }
 
 // DataScopeEditReq 修改指定角色的数据权限

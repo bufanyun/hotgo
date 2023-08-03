@@ -205,7 +205,7 @@ func (manager *ClientManager) clearTimeoutConnections() {
 func (manager *ClientManager) ping() {
 	defer func() {
 		if r := recover(); r != nil {
-			g.Log().Warningf(ctxManager, "websocket gcron ping recover:%+v, stack:%+v", r, string(debug.Stack()))
+			g.Log().Warningf(mctx, "websocket gcron ping recover:%+v, stack:%+v", r, string(debug.Stack()))
 			return
 		}
 	}()
@@ -220,7 +220,7 @@ func (manager *ClientManager) ping() {
 	// })
 
 	// 定时任务，清理超时连接
-	_, _ = gcron.Add(ctxManager, "*/30 * * * * *", func(ctx context.Context) {
+	_, _ = gcron.Add(mctx, "*/30 * * * * *", func(ctx context.Context) {
 		manager.clearTimeoutConnections()
 	})
 }
@@ -229,7 +229,7 @@ func (manager *ClientManager) ping() {
 func (manager *ClientManager) start() {
 	defer func() {
 		if r := recover(); r != nil {
-			g.Log().Warningf(ctxManager, "websocket start recover:%+v, stack:%+v", r, string(debug.Stack()))
+			g.Log().Warningf(mctx, "websocket start recover:%+v, stack:%+v", r, string(debug.Stack()))
 			return
 		}
 	}()
@@ -287,7 +287,7 @@ func (manager *ClientManager) start() {
 				}
 			}
 		case <-manager.closeSignal:
-			g.Log().Debug(ctxManager, "websocket closeSignal quit..")
+			g.Log().Debug(mctx, "websocket closeSignal quit..")
 			return
 		}
 	}

@@ -33,7 +33,7 @@
       password: '123456',
     },
     {
-      label: '普通用户',
+      label: '代理商',
       username: 'ameng',
       password: '123456',
     },

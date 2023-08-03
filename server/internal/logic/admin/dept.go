@@ -106,14 +106,6 @@ func (s *sAdminDept) Edit(ctx context.Context, in *adminin.DeptEditInp) (err err
 
 	// 修改
 	if in.Id > 0 {
-		// 获取父级tree
-		var pTree gdb.Value
-		pTree, err = dao.AdminDept.Ctx(ctx).WherePri(in.Pid).Fields("tree").Value()
-		if err != nil {
-			return
-		}
-		in.Tree = tree.GenLabel(pTree.String(), in.Id)
-
 		err = dao.AdminDept.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 			// 更新数据
 			_, err = dao.AdminDept.Ctx(ctx).Fields(adminin.DeptUpdateFields{}).WherePri(in.Id).Data(in).Update()
@@ -139,7 +131,7 @@ func updateChildrenTree(ctx context.Context, _id int64, _level int, _tree string
 	}
 	for _, child := range list {
 		child.Level = _level + 1
-		child.Tree = tree.GenLabel(_tree, child.Id)
+		child.Tree = tree.GenLabel(_tree, child.Pid)
 
 		if _, err = dao.AdminDept.Ctx(ctx).Where("id", child.Id).Data("level", child.Level, "tree", child.Tree).Update(); err != nil {
 			return

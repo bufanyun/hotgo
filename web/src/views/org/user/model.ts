@@ -180,19 +180,19 @@ export const options = ref<any>({
 
 export async function loadOptions() {
   const dept = await getDeptOption();
-  if (dept.list !== undefined) {
+  if (dept.list) {
     options.value.dept = dept.list;
   }
 
   const role = await getRoleOption();
-  if (role.list !== undefined) {
+  if (role.list) {
     options.value.role = role.list;
     options.value.roleTabs = [{ id: -1, name: '全部' }];
     treeDataToCompressed(role.list);
   }
 
   const post = await getPostOption();
-  if (post.list !== undefined && post.list.length > 0) {
+  if (post.list && post.list.length > 0) {
     for (let i = 0; i < post.list.length; i++) {
       post.list[i].label = post.list[i].name;
       post.list[i].value = post.list[i].id;

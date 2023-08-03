@@ -174,14 +174,6 @@ func (s *sAdminRole) Edit(ctx context.Context, in *adminin.RoleEditInp) (err err
 
 	// 修改
 	if in.Id > 0 {
-		// 获取父级tree
-		var pTree gdb.Value
-		pTree, err = dao.AdminRole.Ctx(ctx).Where("id", in.Pid).Fields("tree").Value()
-		if err != nil {
-			return
-		}
-		in.Tree = tree.GenLabel(pTree.String(), in.Id)
-
 		err = dao.AdminRole.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 			// 更新数据
 			_, err = dao.AdminRole.Ctx(ctx).Fields(adminin.RoleUpdateFields{}).WherePri(in.Id).Data(in).Update()
@@ -211,7 +203,7 @@ func updateRoleChildrenTree(ctx context.Context, _id int64, _level int, _tree st
 	}
 	for _, child := range list {
 		child.Level = _level + 1
-		child.Tree = tree.GenLabel(_tree, child.Id)
+		child.Tree = tree.GenLabel(_tree, child.Pid)
 
 		if _, err = dao.AdminRole.Ctx(ctx).Where("id", child.Id).Data("level", child.Level, "tree", child.Tree).Update(); err != nil {
 			return
@@ -313,32 +305,37 @@ func (s *sAdminRole) treeList(pid int64, nodes []*entity.AdminRole) (list []*adm
 
 // VerifyRoleId 验证角色ID
 func (s *sAdminRole) VerifyRoleId(ctx context.Context, id int64) (err error) {
-	var (
-		pid int64 = 0
-		mb        = contexts.GetUser(ctx)
-		mod       = dao.AdminRole.Ctx(ctx).Fields(dao.AdminRole.Columns().Id)
-	)
-
+	mb := contexts.GetUser(ctx)
 	if mb == nil {
 		err = gerror.New("用户信息获取失败！")
 		return
 	}
 
-	// 非超管只获取下级
-	if !service.AdminMember().VerifySuperId(ctx, mb.Id) {
-		pid = mb.RoleId
-		mod = mod.WhereNot(dao.AdminRole.Columns().Id, pid).WhereLike(dao.AdminRole.Columns().Tree, "%"+tree.GetIdLabel(pid)+"%")
-	}
-
-	columns, err := mod.Array()
+	ids, err := s.GetSubRoleIds(ctx, mb.RoleId, service.AdminMember().VerifySuperId(ctx, mb.Id))
 	if err != nil {
-		return err
+		err = gerror.New("验证角色信息失败！")
+		return
 	}
 
-	ids := g.NewVar(columns).Int64s()
 	if !validate.InSlice(ids, id) {
 		err = gerror.New("角色ID是无效的")
 		return
 	}
+	return
+}
+
+// GetSubRoleIds 获取所有下级角色ID
+func (s *sAdminRole) GetSubRoleIds(ctx context.Context, roleId int64, isSuper bool) (ids []int64, err error) {
+	mod := dao.AdminRole.Ctx(ctx).Fields(dao.AdminRole.Columns().Id)
+	if !isSuper {
+		mod = mod.WhereNot(dao.AdminRole.Columns().Id, roleId).WhereLike(dao.AdminRole.Columns().Tree, "%"+tree.GetIdLabel(roleId)+"%")
+	}
+
+	columns, err := mod.Array()
+	if err != nil {
+		return nil, err
+	}
+
+	ids = g.NewVar(columns).Int64s()
 	return
 }

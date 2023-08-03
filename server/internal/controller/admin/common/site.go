@@ -99,9 +99,9 @@ func (c *cSite) AccountLogin(ctx context.Context, req *common.AccountLoginReq) (
 		return
 	}
 
-	if login.CaptchaSwitch == 1 {
+	if !req.IsLock && login.CaptchaSwitch == 1 {
 		// 校验 验证码
-		if !req.IsLock && !captcha.Verify(req.Cid, req.Code) {
+		if !captcha.Verify(req.Cid, req.Code) {
 			err = gerror.New("验证码错误")
 			return
 		}

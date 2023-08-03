@@ -24,7 +24,6 @@ func (f *MockFilter) Filter(ctx context.Context) error {
 
 	// 过滤操作的例子
 	f.Bar += 10
-
 	return nil
 }
 

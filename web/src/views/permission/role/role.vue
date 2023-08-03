@@ -439,15 +439,16 @@
 
   async function loadDeptList() {
     const tmp = await getDeptList({});
-    deptList.value = tmp?.list;
-    if (deptList.value === undefined || deptList.value === null) {
-      deptList.value = [];
+    if (tmp.list) {
+      deptList.value = tmp.list;
     }
   }
 
   async function loadDataScopeSelect() {
     const option = await DataScopeSelect();
-    dataScopeOption.value = option.list;
+    if (option.list) {
+      dataScopeOption.value = option.list;
+    }
   }
 
   function onUpdateValuePid(value: string | number) {
