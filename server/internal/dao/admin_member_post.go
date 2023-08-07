@@ -5,10 +5,7 @@
 package dao
 
 import (
-	"context"
-	"github.com/gogf/gf/v2/errors/gerror"
 	"hotgo/internal/dao/internal"
-	"hotgo/internal/model/entity"
 )
 
 // internalAdminMemberPostDao is internal type for wrapping internal DAO implements.
@@ -27,27 +24,4 @@ var (
 	}
 )
 
-// UpdatePostIds 更新管理员岗位
-func (dao *adminMemberPostDao) UpdatePostIds(ctx context.Context, memberId int64, postIds []int64) (err error) {
-	_, err = dao.Ctx(ctx).
-		Where("member_id", memberId).
-		Delete()
-	if err != nil {
-		err = gerror.Wrap(err, "删除失败")
-		return err
-	}
-
-	for i := 0; i < len(postIds); i++ {
-		_, err = dao.Ctx(ctx).
-			Insert(entity.AdminMemberPost{
-				MemberId: memberId,
-				PostId:   postIds[i],
-			})
-		if err != nil {
-			err = gerror.Wrap(err, "插入用户岗位失败")
-			return err
-		}
-	}
-
-	return nil
-}
+// Fill with you ideas below.

@@ -41,14 +41,13 @@ func PublishClusterSync(ctx context.Context, channel string, message interface{}
 	}
 
 	mutex := lock.Mutex(fmt.Sprintf("%s:%s", "lock", channel))
-	if err := mutex.Lock(ctx); err != nil {
-		g.Log().Warningf(ctx, "PublishClusterSync %v lock err:%v", channel, err)
-		return
-	}
-	_ = mutex.Unlock(ctx)
-
-	if _, err := pubsub.Publish(ctx, channel, message); err != nil {
-		g.Log().Warningf(ctx, "PublishClusterSync %v err:%v", channel, err)
+	err := mutex.LockFunc(ctx, func() {
+		if _, err := pubsub.Publish(ctx, channel, message); err != nil {
+			g.Log().Warningf(ctx, "PublishClusterSync %v err:%v", channel, err)
+		}
+	})
+	if err != nil {
+		g.Log().Warningf(ctx, "PublishClusterSync %v LockFunc err:%v", channel, err)
 	}
 	return
 }

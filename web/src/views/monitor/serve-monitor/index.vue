@@ -93,7 +93,7 @@
   import DataItem from './components/DataItem.vue';
   import LoadChart from './components/chart/LoadChart.vue';
   import FullYearSalesChart from './components/chart/FullYearSalesChart.vue';
-  import { defineComponent, inject, onMounted, ref, onUpdated } from 'vue';
+  import { defineComponent, inject, onMounted, ref, onUnmounted } from 'vue';
   import { SocketEnum } from '@/enums/socketEnum';
   import { addOnMessage, sendMsg } from '@/utils/websocket';
   import { formatBefore } from '@/utils/dateUtil';
@@ -107,6 +107,7 @@
       FullYearSalesChart,
     },
     setup() {
+      const timer = ref(0);
       const dataRunInfo = ref({
         arch: '',
         goMem: '0MB',
@@ -180,7 +181,7 @@
       const fullYearSalesChartRef = ref<InstanceType<typeof FullYearSalesChart>>();
       const onMessageList = inject('onMessageList');
 
-      const onAdminMonitor = (res) => {
+      const onAdminMonitor = (res: { data: string }) => {
         const data = JSON.parse(res.data);
         if (data.event === SocketEnum.EventAdminMonitorRunInfo) {
           loading.value = false;
@@ -207,7 +208,14 @@
       addOnMessage(onMessageList, onAdminMonitor);
 
       onMounted(() => {
-        getInfo();
+        loading.value = true;
+        sendMsg(SocketEnum.EventAdminMonitorTrends);
+        sendMsg(SocketEnum.EventAdminMonitorRunInfo);
+
+        timer.value = window.setInterval(function () {
+          sendMsg(SocketEnum.EventAdminMonitorTrends);
+          sendMsg(SocketEnum.EventAdminMonitorRunInfo);
+        }, 2000);
 
         setTimeout(() => {
           if (loading.value) {
@@ -221,27 +229,9 @@
         }, 5000);
       });
 
-      onUpdated(() => {
-        // 切换页面后直接出发一次
-        if (loading.value === false) {
-          sendMsg(SocketEnum.EventAdminMonitorTrends);
-          sendMsg(SocketEnum.EventAdminMonitorRunInfo);
-        }
+      onUnmounted(() => {
+        window.clearInterval(timer.value);
       });
-
-      function getInfo() {
-        loading.value = true;
-        sendMsg(SocketEnum.EventAdminMonitorTrends);
-        sendMsg(SocketEnum.EventAdminMonitorRunInfo);
-
-        setInterval(function () {
-          sendMsg(SocketEnum.EventAdminMonitorTrends);
-        }, 1000 * 2);
-
-        setInterval(function () {
-          sendMsg(SocketEnum.EventAdminMonitorRunInfo);
-        }, 1000 * 10);
-      }
 
       return {
         loading,

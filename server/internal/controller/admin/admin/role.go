@@ -70,7 +70,7 @@ func (c *cRole) UpdatePermissions(ctx context.Context, req *role.UpdatePermissio
 // DataScopeSelect 获取数据权限选项
 func (c *cRole) DataScopeSelect(_ context.Context, _ *role.DataScopeSelectReq) (res *role.DataScopeSelectRes, err error) {
 	res = new(role.DataScopeSelectRes)
-	res.List = consts.DataScopeSelect //service.AdminRole().DataScopeSelect()
+	res.List = consts.DataScopeSelect
 	return
 }
 

@@ -23,3 +23,5 @@ var (
 		internal.NewSysAttachmentDao(),
 	}
 )
+
+// Fill with you ideas below.

@@ -183,9 +183,20 @@ func (s *sSysCron) List(ctx context.Context, in *sysin.CronListInp) (list []*sys
 	}
 
 	for _, v := range list {
-		v.GroupName, _ = dao.SysCronGroup.GetName(ctx, v.GroupId)
+		v.GroupName, _ = s.GetName(ctx, v.GroupId)
 	}
 	return
+}
+
+// GetName 获取分组名称
+func (s *sSysCron) GetName(ctx context.Context, id int64) (name string, err error) {
+	m := dao.SysCronGroup.Ctx(ctx).Fields("name").Where("id", id)
+	list, err := m.Value()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return name, err
+	}
+	return list.String(), nil
 }
 
 // OnlineExec 在线执行
