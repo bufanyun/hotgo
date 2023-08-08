@@ -8,6 +8,7 @@ package sys
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/model/input/sysin"
@@ -47,7 +48,7 @@ func (s *sSysDictData) Edit(ctx context.Context, in *sysin.DictDataEditInp) (err
 	}
 
 	// 新增
-	in.Type, err = dao.SysDictType.GetType(ctx, in.TypeID)
+	in.Type, err = s.GetType(ctx, in.TypeID)
 	if err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return err
@@ -70,7 +71,7 @@ func (s *sSysDictData) List(ctx context.Context, in *sysin.DictDataListInp) (lis
 	mod := dao.SysDictData.Ctx(ctx)
 	// 类型ID
 	if in.TypeID > 0 {
-		types, err := dao.SysDictType.GetTypes(ctx, in.TypeID)
+		types, err := s.GetTypes(ctx, in.TypeID)
 		if err != nil {
 			return list, totalCount, err
 		}
@@ -107,9 +108,40 @@ func (s *sSysDictData) List(ctx context.Context, in *sysin.DictDataListInp) (lis
 	}
 
 	for _, v := range list {
-		v.TypeID, _ = dao.SysDictType.GetId(ctx, v.Type)
+		v.TypeID, _ = s.GetId(ctx, v.Type)
 	}
 	return list, totalCount, err
+}
+
+// GetId 获取指定类型的ID
+func (s *sSysDictData) GetId(ctx context.Context, t string) (id int64, err error) {
+	m := dao.SysDictType.Ctx(ctx).Fields("id").Where("type", t).Where("status", consts.StatusEnabled)
+	val, err := m.Value()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return 0, err
+	}
+	return val.Int64(), nil
+}
+
+// GetType 获取指定ID的类型标识
+func (s *sSysDictData) GetType(ctx context.Context, id int64) (types string, err error) {
+	m := dao.SysDictType.Ctx(ctx).Fields("type").Where("id", id).Where("status", consts.StatusEnabled)
+	val, err := m.Value()
+	if err != nil {
+		err = gerror.Wrap(err, consts.ErrorORM)
+		return types, err
+	}
+	return val.String(), nil
+}
+
+// GetTypes 获取指定ID的所有类型标识，包含下级
+func (s *sSysDictData) GetTypes(ctx context.Context, id int64) (types []string, err error) {
+	columns, err := dao.SysDictType.Ctx(ctx).Fields("type").
+		Where("id", id).WhereOr("pid", id).Where("status", consts.StatusEnabled).
+		Array()
+	types = g.NewVar(columns).Strings()
+	return
 }
 
 // Select 获取列表

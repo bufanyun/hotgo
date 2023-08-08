@@ -116,6 +116,33 @@ func (l *Lock) Unlock(ctx context.Context) error {
 	return err
 }
 
+func (l *Lock) LockFunc(ctx context.Context, f func()) error {
+	if err := l.Lock(ctx); err != nil {
+		return err
+	}
+	defer func() {
+		_ = l.Unlock(ctx)
+	}()
+	f()
+	return nil
+}
+
+// TryLockFunc tries locking the mutex for writing with given callback function `f`.
+// it returns true immediately if success, or if there's a lock on the mutex,
+// it returns error immediately.
+//
+// It releases the lock after `f` is executed.
+func (l *Lock) TryLockFunc(ctx context.Context, f func()) error {
+	err := l.TryLock(ctx)
+	if err != nil {
+		defer func() {
+			_ = l.Unlock(ctx)
+		}()
+		f()
+	}
+	return err
+}
+
 // startWatchDog 看门狗
 func (l *Lock) startWatchDog() {
 	resetTTLInterval := l.ttl / 3

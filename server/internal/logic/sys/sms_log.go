@@ -245,7 +245,7 @@ func (s *sSysSmsLog) AllowSend(ctx context.Context, models *entity.SysSmsLog, co
 	}
 
 	if config.SmsMaxIpLimit > 0 {
-		count, err := dao.SysSmsLog.NowDayCount(ctx, models.Event, models.Mobile)
+		count, err := s.NowDayCount(ctx, models.Event, models.Mobile)
 		if err != nil {
 			return err
 		}
@@ -256,6 +256,15 @@ func (s *sSysSmsLog) AllowSend(ctx context.Context, models *entity.SysSmsLog, co
 		}
 	}
 	return
+}
+
+// NowDayCount 当天发送次数
+func (s *sSysSmsLog) NowDayCount(ctx context.Context, event, mobile string) (count int, err error) {
+	return dao.SysSmsLog.Ctx(ctx).
+		Where("mobile", mobile).
+		Where("event", event).
+		WhereGTE("created_at", gtime.Now().Format("Y-m-d")).
+		Count()
 }
 
 // VerifyCode 效验验证码

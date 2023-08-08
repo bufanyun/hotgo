@@ -2,7 +2,7 @@
   <div>
     <div class="n-layout-page-header">
       <n-card :bordered="false" title="我的消息">
-        在这里你可以查看平台中通知、公告和与你相关的私信
+        在这里，您可以方便地查看平台中的通知、公告和与您相关的私信消息
       </n-card>
     </div>
     <n-card :bordered="false" class="proCard">
@@ -13,9 +13,9 @@
         animated
         @before-leave="handleBeforeLeave"
       >
-        <n-tab-pane name="1" tab="系统通知"> <List :type="defaultTab" /></n-tab-pane>
-        <n-tab-pane name="2" tab="系统公告"> <List :type="defaultTab" /> </n-tab-pane>
-        <n-tab-pane name="3" tab="私信消息"> <List :type="defaultTab" /> </n-tab-pane>
+        <n-tab-pane name="1" tab="通知"> <List :type="defaultTab" /></n-tab-pane>
+        <n-tab-pane name="2" tab="公告"> <List :type="defaultTab" /> </n-tab-pane>
+        <n-tab-pane name="3" tab="私信"> <List :type="defaultTab" /> </n-tab-pane>
       </n-tabs>
     </n-card>
   </div>

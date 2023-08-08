@@ -5,11 +5,7 @@
 package dao
 
 import (
-	"context"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"hotgo/internal/consts"
 	"hotgo/internal/dao/internal"
-	"hotgo/internal/model/entity"
 )
 
 // internalAdminDeptDao is internal type for wrapping internal DAO implements.
@@ -28,23 +24,4 @@ var (
 	}
 )
 
-// IsUniqueName 判断名称是否唯一
-func (dao *adminDeptDao) IsUniqueName(ctx context.Context, id int64, name string) (bool, error) {
-	var data *entity.AdminDept
-	m := dao.Ctx(ctx).Where("name", name)
-
-	if id > 0 {
-		m = m.WhereNot("id", id)
-	}
-
-	if err := m.Scan(&data); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return false, err
-	}
-
-	if data == nil {
-		return true, nil
-	}
-
-	return false, nil
-}
+// Fill with you ideas below.

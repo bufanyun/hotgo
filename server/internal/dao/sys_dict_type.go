@@ -5,12 +5,7 @@
 package dao
 
 import (
-	"context"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
-	"hotgo/internal/consts"
 	"hotgo/internal/dao/internal"
-	"hotgo/internal/model/entity"
 )
 
 // internalSysDictTypeDao is internal type for wrapping internal DAO implements.
@@ -30,60 +25,3 @@ var (
 )
 
 // Fill with you ideas below.
-
-// IsUniqueType 判断类型是否唯一
-func (dao *sysDictTypeDao) IsUniqueType(ctx context.Context, id int64, typeName string) (bool, error) {
-	var data *entity.SysDictType
-	m := dao.Ctx(ctx).Where("type", typeName)
-
-	if id > 0 {
-		m = m.WhereNot("id", id)
-	}
-
-	if err := m.Scan(&data); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return false, err
-	}
-
-	if data == nil {
-		return true, nil
-	}
-
-	return false, nil
-}
-
-// GetTypes 获取指定ID的所有类型标识，包含下级
-func (dao *sysDictTypeDao) GetTypes(ctx context.Context, id int64) (types []string, err error) {
-	columns, err := dao.Ctx(ctx).Fields("type").
-		Where("id", id).
-		WhereOr("pid", id).
-		Where("status", consts.StatusEnabled).Array()
-	types = g.NewVar(columns).Strings()
-	return
-}
-
-// GetType 获取指定ID的类型标识
-func (dao *sysDictTypeDao) GetType(ctx context.Context, id int64) (types string, err error) {
-	m := dao.Ctx(ctx).Fields("type").Where("id", id).
-		Where("status", consts.StatusEnabled)
-	list, err := m.Value()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return types, err
-	}
-
-	return list.String(), nil
-}
-
-// GetId 获取指定类型的ID
-func (dao *sysDictTypeDao) GetId(ctx context.Context, t string) (id int64, err error) {
-	m := dao.Ctx(ctx).Fields("id").Where("type", t).
-		Where("status", consts.StatusEnabled)
-	list, err := m.Value()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return 0, err
-	}
-
-	return list.Int64(), nil
-}

@@ -5,9 +5,6 @@
 package dao
 
 import (
-	"context"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"hotgo/internal/consts"
 	"hotgo/internal/dao/internal"
 )
 
@@ -27,14 +24,4 @@ var (
 	}
 )
 
-// GetName 获取分组名称
-func (dao *sysCronGroupDao) GetName(ctx context.Context, id int64) (name string, err error) {
-	m := dao.Ctx(ctx).Fields("name").Where("id", id)
-	list, err := m.Value()
-	if err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
-		return name, err
-	}
-
-	return list.String(), nil
-}
+// Fill with you ideas below.

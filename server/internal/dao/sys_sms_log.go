@@ -5,8 +5,6 @@
 package dao
 
 import (
-	"context"
-	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/dao/internal"
 )
 
@@ -27,17 +25,3 @@ var (
 )
 
 // Fill with you ideas below.
-
-// NowDayCount 当天发送次数
-func (dao *sysSmsLogDao) NowDayCount(ctx context.Context, event, mobile string) (count int, err error) {
-	count, err = dao.Ctx(ctx).
-		Where("mobile", mobile).
-		Where("event", event).
-		WhereGTE("created_at", gtime.Now().Format("Y-m-d")).
-		Count()
-	if err != nil {
-		return 0, err
-	}
-
-	return
-}

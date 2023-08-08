@@ -132,7 +132,7 @@ func (s *sAdminSite) Register(ctx context.Context, in *adminin.RegisterInp) (err
 		}
 
 		// 更新岗位
-		if err = dao.AdminMemberPost.UpdatePostIds(ctx, id, config.PostIds); err != nil {
+		if err = service.AdminMemberPost().UpdatePostIds(ctx, id, config.PostIds); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
 		}
 		return

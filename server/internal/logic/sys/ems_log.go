@@ -335,7 +335,7 @@ func (s *sSysEmsLog) AllowSend(ctx context.Context, models *entity.SysEmsLog, co
 	}
 
 	if config.MaxIpLimit > 0 {
-		count, err := dao.SysEmsLog.NowDayCount(ctx, models.Event, models.Email)
+		count, err := s.NowDayCount(ctx, models.Event, models.Email)
 		if err != nil {
 			return err
 		}
@@ -346,6 +346,15 @@ func (s *sSysEmsLog) AllowSend(ctx context.Context, models *entity.SysEmsLog, co
 		}
 	}
 	return
+}
+
+// NowDayCount 当天发送次数
+func (s *sSysEmsLog) NowDayCount(ctx context.Context, event, email string) (count int, err error) {
+	return dao.SysEmsLog.Ctx(ctx).
+		Where("email", email).
+		Where("event", event).
+		WhereGTE("created_at", gtime.Now().Format("Y-m-d")).
+		Count()
 }
 
 // VerifyCode 效验验证码

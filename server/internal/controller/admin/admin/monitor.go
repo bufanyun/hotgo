@@ -130,6 +130,8 @@ func (c *cMonitor) NetOnlineList(ctx context.Context, req *monitor.NetOnlineList
 
 	conns := serv.GetClients()
 	if len(conns) == 0 {
+		res = new(monitor.NetOnlineListRes)
+		res.PageRes.Pack(req, 0)
 		return
 	}
 

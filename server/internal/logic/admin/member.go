@@ -521,7 +521,7 @@ func (s *sAdminMember) Edit(ctx context.Context, in *adminin.MemberEditInp) (err
 			}
 
 			// 更新岗位
-			if err = dao.AdminMemberPost.UpdatePostIds(ctx, in.Id, in.PostIds); err != nil {
+			if err = service.AdminMemberPost().UpdatePostIds(ctx, in.Id, in.PostIds); err != nil {
 				err = gerror.Wrap(err, "更新用户岗位失败，请稍后重试！")
 			}
 
@@ -557,7 +557,7 @@ func (s *sAdminMember) Edit(ctx context.Context, in *adminin.MemberEditInp) (err
 		}
 
 		// 更新岗位
-		if err = dao.AdminMemberPost.UpdatePostIds(ctx, id, in.PostIds); err != nil {
+		if err = service.AdminMemberPost().UpdatePostIds(ctx, id, in.PostIds); err != nil {
 			err = gerror.Wrap(err, "新增用户岗位失败，请稍后重试！")
 		}
 

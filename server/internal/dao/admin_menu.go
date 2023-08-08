@@ -23,3 +23,5 @@ var (
 		internal.NewAdminMenuDao(),
 	}
 )
+
+// Fill with you ideas below.

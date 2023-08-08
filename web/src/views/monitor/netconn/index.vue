@@ -56,7 +56,7 @@
   import GroupModal from './modal/modal.vue';
   import Edit from '@/views/monitor/netconn/modal/edit.vue';
   import { newState, options, State } from '@/views/monitor/netconn/modal/model';
-  import { defRangeShortcuts } from "@/utils/dateUtil";
+  import { defRangeShortcuts } from '@/utils/dateUtil';
 
   const message = useMessage();
   const dialog = useDialog();

@@ -1,20 +1,8 @@
 <template>
   <div>
-    <div class="n-layout-page-header">
-      <n-card :bordered="false" title="角色管理"> 在这里可以管理你权限下的角色权限</n-card>
-    </div>
-    <n-card :bordered="false" class="mt-4 proCard">
-      <BasicTable
-        :columns="columns"
-        :request="loadDataTable"
-        :row-key="(row) => row.id"
-        ref="actionRef"
-        :actionColumn="actionColumn"
-        @update:checked-row-keys="onCheckedRow"
-        :pagination="false"
-        :resizeHeightOffset="-20000"
-      >
-        <template #tableTitle>
+    <n-card :bordered="false"  title="角色管理">
+      <n-space vertical :size="12">
+        <n-space>
           <n-button type="primary" @click="addTable">
             <template #icon>
               <n-icon>
@@ -23,8 +11,18 @@
             </template>
             添加角色
           </n-button>
-        </template>
-      </BasicTable>
+        </n-space>
+
+        <n-data-table
+          v-if="data.length > 0 || !loading"
+          :columns="columns.concat(actionColumn)"
+          :data="data"
+          :row-key="(row) => row.id"
+          :loading="loading"
+          :resizeHeightOffset="-20000"
+          default-expand-all
+        />
+      </n-space>
     </n-card>
 
     <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" :title="editRoleTitle">
@@ -155,8 +153,8 @@
 
 <script lang="ts" setup>
   import { h, onMounted, reactive, ref } from 'vue';
-  import { useDialog, useMessage } from 'naive-ui';
-  import { BasicColumn, BasicTable, TableAction } from '@/components/Table';
+  import { NButton, useDialog, useMessage } from 'naive-ui';
+  import { BasicColumn, TableAction } from '@/components/Table';
   import {
     Delete,
     Edit,
@@ -195,6 +193,8 @@
   const dataFormBtnLoading = ref(false);
   const showDataModal = ref(false);
   const dataForm = ref<any>();
+  const loading = ref(false);
+  const data = ref<any>([]);
 
   const rules = {
     name: {
@@ -270,12 +270,18 @@
   });
 
   const loadDataTable = async (res: any) => {
-    return await getRoleList({ ...res, ...{ pageSize: 100, page: 1 } });
+    loading.value = true;
+    const tmp = await getRoleList({ ...res, ...{ pageSize: 100, page: 1 } });
+    data.value = tmp?.list;
+    if (data.value === undefined || data.value === null) {
+      data.value = [];
+    }
+    loading.value = false;
   };
 
-  function onCheckedRow(rowKeys: any[]) {
-    console.log(rowKeys);
-  }
+  onMounted(async () => {
+    await loadDataTable({});
+  });
 
   function reloadTable() {
     actionRef.value.reload();

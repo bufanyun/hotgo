@@ -32,9 +32,6 @@ func SubscribeMap(channels map[string]SubHandler) (err error) {
 		return
 	}
 
-	subscribes.mutex.Lock()
-	defer subscribes.mutex.Unlock()
-
 	for channel, hr := range channels {
 		if err = Subscribe(channel, hr); err != nil {
 			return
