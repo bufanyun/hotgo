@@ -2,7 +2,7 @@
   <div>
     <div class="n-layout-page-header">
       <n-card :bordered="false" title="通知公告">
-        在这里你可以发送通知、公告、私信到平台中的用户
+        在这里，您可以向平台中的用户发送通知、公告和私信消息
       </n-card>
     </div>
     <n-card :bordered="false" class="proCard">

@@ -25,6 +25,7 @@
         </n-space>
 
         <n-data-table
+          v-if="data.length > 0 || !loading"
           :columns="columns"
           :data="data"
           :row-key="rowKey"
@@ -318,6 +319,10 @@
           style: 'button',
           actions: [
             {
+              label: '添加',
+              onClick: handleAddSub.bind(null, record),
+            },
+            {
               label: '编辑',
               onClick: handleEdit.bind(null, record),
             },
@@ -339,6 +344,12 @@
     showModal.value = true;
     formParams.value = cloneDeep(defaultState);
     optionsDefaultValue.value = 0;
+  }
+
+  function handleAddSub(record: Recordable) {
+    showModal.value = true;
+    formParams.value = cloneDeep(defaultState);
+    optionsDefaultValue.value = record.id;
   }
 
   function handleEdit(record: Recordable) {
