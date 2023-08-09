@@ -1,6 +1,6 @@
 <template>
   <BasicUpload
-    :action="`${uploadUrl}${urlPrefix}/upload/image`"
+    :action="`${uploadUrl}${urlPrefix}/upload/file`"
     :headers="uploadHeaders"
     :data="{ type: 0 }"
     name="file"
@@ -36,6 +36,7 @@
   const useUserStore = useUserStoreWidthOut();
   const uploadHeaders = reactive({
     Authorization: useUserStore.token,
+    uploadType: 'image',
   });
 
   function uploadChange(list: string | string[]) {

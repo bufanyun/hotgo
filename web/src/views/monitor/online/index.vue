@@ -57,11 +57,11 @@
       rules: [{ trigger: ['blur'] }],
     },
     {
-      field: 'addr',
+      field: 'ip',
       component: 'NInput',
-      label: '登录地址',
+      label: '登录IP',
       componentProps: {
-        placeholder: '请输入登录地址',
+        placeholder: '请输入登录IP',
         onInput: (e: any) => {
           console.log(e);
         },

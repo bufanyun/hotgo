@@ -71,7 +71,7 @@ func (c *cMonitor) UserOnlineList(ctx context.Context, req *monitor.UserOnlineLi
 			continue
 		}
 
-		if req.Addr != "" && !gstr.Contains(conn.Addr, req.Addr) {
+		if req.IP != "" && !gstr.Contains(conn.IP, req.IP) {
 			continue
 		}
 
@@ -81,7 +81,7 @@ func (c *cMonitor) UserOnlineList(ctx context.Context, req *monitor.UserOnlineLi
 
 		clients = append(clients, &monitor.UserOnlineModel{
 			ID:            conn.ID,
-			Addr:          conn.Addr,
+			IP:            conn.IP,
 			Os:            useragent.GetOs(conn.UserAgent),
 			Browser:       useragent.GetBrowser(conn.UserAgent),
 			FirstTime:     conn.User.LoginAt.Unix(),
@@ -109,7 +109,7 @@ func (c *cMonitor) UserOnlineList(ctx context.Context, req *monitor.UserOnlineLi
 	for k, v := range clients {
 		if k >= offset && i <= perPage {
 			if isDemo {
-				v.Addr = consts.DemoTips
+				v.IP = consts.DemoTips
 			}
 			res.List = append(res.List, v)
 			i++
