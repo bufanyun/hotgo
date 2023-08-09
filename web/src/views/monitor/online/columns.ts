@@ -53,9 +53,9 @@ export const columns = [
     },
   },
   {
-    title: '登录地址',
-    key: 'addr',
-    width: 150,
+    title: '登录IP',
+    key: 'ip',
+    width: 120,
   },
 
   // {

@@ -36,6 +36,7 @@
   const useUserStore = useUserStoreWidthOut();
   const uploadHeaders = reactive({
     Authorization: useUserStore.token,
+    uploadType: 'default',
   });
   const emit = defineEmits(['update:value']);
   const props = withDefaults(defineProps<Props>(), { value: '', maxNumber: 1, helpText: '' });

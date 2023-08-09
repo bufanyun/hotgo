@@ -26,7 +26,7 @@ type UserOnlineListReq struct {
 	form.PageReq
 	UserId    int64         `json:"userId"      description:"用户ID"`
 	Username  string        `json:"username"    description:"用户名"`
-	Addr      string        `json:"addr"        description:"登录地址"`
+	IP        string        `json:"ip"        description:"登录IP"`
 	FirstTime []*gtime.Time `json:"firstTime"   description:"登录时间"`
 }
 
@@ -37,7 +37,7 @@ type UserOnlineListRes struct {
 
 type UserOnlineModel struct {
 	ID            string `json:"id"`            // 连接唯一标识
-	Addr          string `json:"addr"`          // 客户端地址
+	IP            string `json:"ip"`            // 客户端IP
 	Os            string `json:"os"`            // 客户端系统名称
 	Browser       string `json:"browser"`       // 浏览器
 	FirstTime     int64  `json:"firstTime"`     // 首次连接时间

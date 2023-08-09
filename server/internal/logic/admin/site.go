@@ -10,6 +10,7 @@ import (
 	"github.com/gogf/gf/v2/util/grand"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/token"
 	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
@@ -261,5 +262,53 @@ func (s *sAdminSite) handleLogin(ctx context.Context, mb *entity.AdminMember) (r
 		Token:    lt,
 		Expires:  expires,
 	}
+	return
+}
+
+// BindUserContext 绑定用户上下文
+func (s *sAdminSite) BindUserContext(ctx context.Context, claims *model.Identity) (err error) {
+	var mb *entity.AdminMember
+	if err = g.Model("admin_member").Ctx(ctx).Where("id", claims.Id).Scan(&mb); err != nil {
+		err = gerror.Wrap(err, "获取用户信息失败，请稍后重试！")
+		return
+	}
+
+	if mb == nil {
+		err = gerror.Wrap(err, "账号不存在或已被删除！")
+		return
+	}
+
+	if mb.Status != consts.StatusEnabled {
+		err = gerror.New("账号已被禁用，如有疑问请联系管理员")
+		return
+	}
+
+	var role *entity.AdminRole
+	if err = g.Model("admin_role").Ctx(ctx).Fields("id,key,status").Where("id", mb.RoleId).Scan(&role); err != nil || role == nil {
+		err = gerror.Wrap(err, "获取角色信息失败，请稍后重试！")
+		return
+	}
+
+	if role.Status != consts.StatusEnabled {
+		err = gerror.New("角色已被禁用，如有疑问请联系管理员")
+		return
+	}
+
+	user := &model.Identity{
+		Id:       mb.Id,
+		Pid:      mb.Pid,
+		DeptId:   mb.DeptId,
+		RoleId:   mb.RoleId,
+		RoleKey:  role.Key,
+		Username: mb.Username,
+		RealName: mb.RealName,
+		Avatar:   mb.Avatar,
+		Email:    mb.Email,
+		Mobile:   mb.Mobile,
+		App:      claims.App,
+		LoginAt:  claims.LoginAt,
+	}
+
+	contexts.SetUser(ctx, user)
 	return
 }

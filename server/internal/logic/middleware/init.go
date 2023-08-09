@@ -155,7 +155,15 @@ func (s *sMiddleware) DeliverUserContext(r *ghttp.Request) (err error) {
 	if err != nil {
 		return
 	}
-	contexts.SetUser(r.Context(), user)
+
+	switch user.App {
+	case consts.AppAdmin:
+		if err = service.AdminSite().BindUserContext(r.Context(), user); err != nil {
+			return
+		}
+	default:
+		contexts.SetUser(r.Context(), user)
+	}
 	return
 }
 
