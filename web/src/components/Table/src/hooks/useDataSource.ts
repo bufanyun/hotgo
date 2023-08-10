@@ -53,6 +53,7 @@ export function useDataSource(
       const sizeField = APISETTING.sizeField;
       const totalField = APISETTING.totalField;
       const listField = APISETTING.listField;
+      const itemCountField = APISETTING.itemCountField;
 
       let pageParams = {};
       const { page = 1, pageSize = 10 } = unref(getPaginationInfo) as PaginationProps;
@@ -75,6 +76,7 @@ export function useDataSource(
 
       const resultTotal = res[totalField] || 0;
       const currentPage = res[pageField];
+      const itemCount = res[itemCountField] || 0;
 
       // 如果数据异常，需获取正确的页码再次执行
       if (resultTotal) {
@@ -108,6 +110,9 @@ export function useDataSource(
       setPagination({
         [pageField]: currentPage,
         [totalField]: resultTotal,
+        prefix: () => {
+          return `共 ${itemCount} 条`;
+        },
       });
       if (opt && opt[pageField]) {
         setPagination({
