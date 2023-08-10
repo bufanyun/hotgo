@@ -33,11 +33,13 @@ func (req *PageReq) GetPerPage() int {
 // PageRes 分页响应
 type PageRes struct {
 	PageReq
-	PageCount int `json:"pageCount" example:"0" dc:"全部数据量"`
+	PageCount  int `json:"pageCount" example:"0"  dc:"分页个数"`
+	TotalCount int `json:"totalCount" example:"0" dc:"数据总行数"`
 }
 
 // Pack 打包分页数据
 func (res *PageRes) Pack(req ReqPageFunc, totalCount int) {
+	res.TotalCount = totalCount
 	res.PageCount = CalPageCount(totalCount, req.GetPerPage())
 	res.Page = req.GetPage()
 	res.PerPage = req.GetPerPage()
