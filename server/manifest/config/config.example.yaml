@@ -147,6 +147,8 @@ router:
       "/dictData/options",              # 多个数据字典
       "/provinces/select",              # 动态省市区选项
       "/provinces/cityLabel",           # 动态解析省市区名称
+      "/attachment/chooserOption",      # 附件选择器选项
+      "/member/option",                 # 用户选项
     ]
   # 接口
   api:

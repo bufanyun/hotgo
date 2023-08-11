@@ -1,6 +1,6 @@
 <template>
   <div>
-    <n-card :bordered="false"  title="角色管理">
+    <n-card :bordered="false" title="角色管理">
       <n-space vertical :size="12">
         <n-space>
           <n-button type="primary" @click="addTable">
@@ -174,7 +174,6 @@
 
   const formRef: any = ref(null);
   const message = useMessage();
-  const actionRef = ref();
   const dialog = useDialog();
   const showModal2 = ref(false);
   const showModal = ref(false);
@@ -272,20 +271,13 @@
   const loadDataTable = async (res: any) => {
     loading.value = true;
     const tmp = await getRoleList({ ...res, ...{ pageSize: 100, page: 1 } });
-    data.value = tmp?.list;
-    if (data.value === undefined || data.value === null) {
-      data.value = [];
-    }
+    data.value = tmp.list ?? [];
     loading.value = false;
   };
 
-  onMounted(async () => {
-    await loadDataTable({});
-  });
-
   function reloadTable() {
-    actionRef.value.reload();
     loadDataList();
+    loadDataTable({});
   }
 
   function confirmForm(e: any) {
@@ -421,6 +413,7 @@
     await loadMenuList();
     await loadDeptList();
     await loadDataScopeSelect();
+    await loadDataTable({});
   });
 
   async function loadDataList() {

@@ -1,9 +1,6 @@
 <template>
   <n-spin :show="loading">
-    <n-empty
-      v-show="!dataSource.list || dataSource.list.length === 0"
-      description="无数据"
-    />
+    <n-empty v-show="!dataSource.list || dataSource.list.length === 0" description="无数据" />
 
     <n-list hoverable clickable class="list-item">
       <n-list-item v-for="item in dataSource.list" :key="item.id" @click="UnRead(item)">
@@ -52,7 +49,9 @@
       show-size-picker
       :on-update:page="onUpdatePage"
       :on-update:page-size="onUpdatePageSize"
-    />
+    >
+      <template #prefix>共 {{ dataSource.totalCount }} 条</template>
+    </n-pagination>
   </n-space>
 </template>
 
@@ -75,6 +74,7 @@
     page: number;
     pageSize: number;
     pageCount: number;
+    totalCount: number;
     list: null | MessageRow[];
   }
 
