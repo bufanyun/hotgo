@@ -97,7 +97,8 @@ func (s *sSysTable) List(ctx context.Context, in *sysin.TableListInp) (list []*s
 		return
 	}
 
-	if err = mod.Fields(sysin.TableListModel{}).Page(in.Page, in.PerPage).OrderAsc(cols.Sort).OrderDesc(cols.Id).Scan(&list); err != nil {
+	// .OrderAsc(cols.Sort).OrderDesc(cols.Id)
+	if err = mod.Fields(sysin.TableListModel{}).Page(in.Page, in.PerPage).Handler(handler.Sorter(in)).Scan(&list); err != nil {
 		err = gerror.Wrap(err, "获取表格列表失败，请稍后重试！")
 		return
 	}

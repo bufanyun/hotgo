@@ -260,6 +260,7 @@ export const columns = [
   {
     title: 'ID',
     key: 'id',
+    sorter: true,
   },
   {
     title: '标题',
@@ -267,6 +268,7 @@ export const columns = [
     render(row) {
       return row.title;
     },
+    sorter: true,
   },
   {
     title: '标签',
@@ -394,6 +396,7 @@ export const columns = [
   {
     title: '价格',
     key: 'price',
+    sorter: true,
     render(row) {
       return h(
         NTag,

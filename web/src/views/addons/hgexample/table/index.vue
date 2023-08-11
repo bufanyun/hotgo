@@ -29,6 +29,7 @@
         :scroll-x="1090"
         :resizeHeightOffset="-10000"
         size="small"
+        @update:sorter="handleUpdateSorter"
       >
         <template #tableTitle>
           <n-button type="primary" @click="addTable" class="min-left-space">
@@ -83,6 +84,7 @@
   import { useRouter } from 'vue-router';
   import { getOptionLabel } from '@/utils/hotgo';
   import Edit from './edit.vue';
+  import { Sorter } from '/#/table';
 
   const router = useRouter();
   const dialog = useDialog();
@@ -93,6 +95,7 @@
   const showModal = ref(false);
   const formParams = ref<State>();
   const actionRef = ref();
+  const sortStatesRef = ref<Sorter[]>([]);
 
   const actionColumn = reactive({
     width: 300,
@@ -164,7 +167,11 @@
   });
 
   const loadDataTable = async (res) => {
-    return await List({ ...searchFormRef.value?.formModel, ...res });
+    return await List({
+      ...searchFormRef.value?.formModel,
+      ...{ sorters: sortStatesRef.value },
+      ...res,
+    });
   };
 
   function addTable() {
@@ -242,6 +249,19 @@
         reloadTable();
       });
     });
+  }
+
+  function handleUpdateSorter(sorter: Sorter) {
+    const index = sortStatesRef.value.findIndex((item) => item.columnKey === sorter.columnKey);
+
+    if (index !== -1) {
+      sortStatesRef.value[index].sorter = sorter.sorter;
+      sortStatesRef.value[index].order = sorter.order;
+    } else {
+      sortStatesRef.value.push(sorter);
+    }
+
+    reloadTable();
   }
 </script>
 
