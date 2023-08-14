@@ -75,6 +75,7 @@ type TableViewModel struct {
 // TableListInp 获取列表
 type TableListInp struct {
 	form.PageReq
+	form.Sorters
 	Id         int64         `json:"id"          description:""`
 	Flag       *gjson.Json   `json:"flag"        description:"标签"`
 	Title      string        `json:"title"       description:"标题"`

@@ -18,7 +18,7 @@ type NoticeMaxSortInp struct {
 }
 
 type NoticeMaxSortModel struct {
-	Sort int
+	Sort int `json:"sort"  dc:"排序"`
 }
 
 // NoticeEditInp 修改/新增
@@ -27,12 +27,14 @@ type NoticeEditInp struct {
 	Receiver     []int64 `json:"receiver"     dc:"接收者"`
 	SenderAvatar string  `json:"senderAvatar" dc:"发送者头像"`
 }
+
 type NoticeEditModel struct{}
 
 // NoticeDeleteInp 删除字典类型
 type NoticeDeleteInp struct {
 	Id interface{} `json:"id" v:"required#公告ID不能为空" dc:"公告ID"`
 }
+
 type NoticeDeleteModel struct{}
 
 // NoticeViewInp 获取信息
@@ -63,6 +65,7 @@ type NoticeListModel struct {
 type NoticeStatusInp struct {
 	entity.AdminNotice
 }
+
 type NoticeStatusModel struct{}
 
 // NoticeUpReadInp 更新已读
