@@ -6,16 +6,46 @@
 package convert
 
 import (
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/utility/validate"
 	"reflect"
 	"unicode"
+	"unsafe"
 )
 
 var (
 	descTags  = []string{"description", "dc", "json"} // 实体描述标签
 	fieldTags = []string{"json"}                      // 实体字段名称映射
 )
+
+// GetModelTable 获取模型中的表定义
+func GetModelTable(m *gdb.Model) (tablesInit, tables string) {
+	if m == nil {
+		return "", ""
+	}
+
+	v := reflect.ValueOf(m).Elem()
+	t := reflect.TypeOf(m).Elem()
+
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		val := v.Field(i)
+
+		if field.Name == "tablesInit" {
+			tablesInit = reflect.NewAt(val.Type(), unsafe.Pointer(val.UnsafeAddr())).Elem().String()
+			tablesInit = gstr.Replace(tablesInit, "`", "")
+			continue
+		}
+
+		if field.Name == "tables" {
+			tables = reflect.NewAt(val.Type(), unsafe.Pointer(val.UnsafeAddr())).Elem().String()
+			continue
+		}
+	}
+	return
+}
 
 // GetMapKeys 获取map的所有key
 func GetMapKeys[K comparable](m map[K]any) []K {

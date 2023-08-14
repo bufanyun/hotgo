@@ -487,6 +487,7 @@ export const columns = [
     render(row) {
       return formatToDate(row.activityAt);
     },
+    sorter: true,
   },
 ];
 
