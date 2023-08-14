@@ -26,7 +26,6 @@ require (
 	github.com/qiniu/go-sdk/v7 v7.14.0
 	github.com/shirou/gopsutil/v3 v3.23.3
 	github.com/silenceper/wechat/v2 v2.1.4
-	github.com/stretchr/testify v1.8.3
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.633
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.633
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.41
