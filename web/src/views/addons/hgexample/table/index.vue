@@ -78,13 +78,13 @@
   import { useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, useForm } from '@/components/Form/index';
+  import { useSorter } from '@/hooks/common';
   import { Delete, List, Status, Export } from '@/api/addons/hgexample/table';
   import { State, columns, schemas, options, newState } from './model';
   import { DeleteOutlined, PlusOutlined, ExportOutlined } from '@vicons/antd';
   import { useRouter } from 'vue-router';
   import { getOptionLabel } from '@/utils/hotgo';
   import Edit from './edit.vue';
-  import { Sorter } from '/#/table';
 
   const router = useRouter();
   const dialog = useDialog();
@@ -95,7 +95,7 @@
   const showModal = ref(false);
   const formParams = ref<State>();
   const actionRef = ref();
-  const sortStatesRef = ref<Sorter[]>([]);
+  const { updateSorter: handleUpdateSorter, sortStatesRef: sortStatesRef } = useSorter(reloadTable);
 
   const actionColumn = reactive({
     width: 300,
@@ -249,19 +249,6 @@
         reloadTable();
       });
     });
-  }
-
-  function handleUpdateSorter(sorter: Sorter) {
-    const index = sortStatesRef.value.findIndex((item) => item.columnKey === sorter.columnKey);
-
-    if (index !== -1) {
-      sortStatesRef.value[index].sorter = sorter.sorter;
-      sortStatesRef.value[index].order = sorter.order;
-    } else {
-      sortStatesRef.value.push(sorter);
-    }
-
-    reloadTable();
   }
 </script>
 
