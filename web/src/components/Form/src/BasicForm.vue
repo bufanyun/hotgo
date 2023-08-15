@@ -136,7 +136,7 @@
   import { deepMerge } from '@/utils';
 
   export default defineComponent({
-    name: 'BasicUpload',
+    name: 'BasicForm',
     components: { DownOutlined, UpOutlined, QuestionCircleOutlined },
     props: {
       ...basicProps,

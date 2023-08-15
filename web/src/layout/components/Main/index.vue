@@ -1,26 +1,27 @@
 <template>
   <RouterView>
     <template #default="{ Component, route }">
+      {{ retryKeepAlive(route) }}
       <template v-if="mode === 'production'">
-        <transition :name="getTransitionName" mode="out-in" appear>
+        <transition :name="getTransitionName" appear mode="out-in">
           <keep-alive v-if="keepAliveComponents.length" :include="keepAliveComponents">
             <component :is="Component" :key="route.fullPath" />
           </keep-alive>
-          <component v-else :is="Component" :key="route.fullPath" />
+          <component :is="Component" v-else :key="route.fullPath" />
         </transition>
       </template>
       <template v-else>
         <keep-alive v-if="keepAliveComponents.length" :include="keepAliveComponents">
           <component :is="Component" :key="route.fullPath" />
         </keep-alive>
-        <component v-else :is="Component" :key="route.fullPath" />
+        <component :is="Component" v-else :key="route.fullPath" />
       </template>
     </template>
   </RouterView>
 </template>
 
 <script>
-  import { defineComponent, computed, unref } from 'vue';
+  import { computed, defineComponent, unref } from 'vue';
   import { useAsyncRouteStore } from '@/store/modules/asyncRoute';
   import { useProjectSetting } from '@/hooks/setting/useProjectSetting';
   import { useRouter } from 'vue-router';
