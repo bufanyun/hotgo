@@ -260,7 +260,7 @@ export const columns = [
   {
     title: 'ID',
     key: 'id',
-    sorter: true,
+    sorter: true, // 单列排序
   },
   {
     title: '标题',
@@ -268,7 +268,9 @@ export const columns = [
     render(row) {
       return row.title;
     },
-    sorter: true,
+    sorter: {
+      multiple: 1, // 为多列排序的优先级，越高优先级越高
+    },
   },
   {
     title: '标签',
@@ -396,7 +398,9 @@ export const columns = [
   {
     title: '价格',
     key: 'price',
-    sorter: true,
+    sorter: {
+      multiple: 2, // 为多列排序的优先级，越高优先级越高
+    },
     render(row) {
       return h(
         NTag,
@@ -487,7 +491,9 @@ export const columns = [
     render(row) {
       return formatToDate(row.activityAt);
     },
-    sorter: true,
+    sorter: {
+      multiple: 3, // 为多列排序的优先级，越高优先级越高
+    },
   },
 ];
 
