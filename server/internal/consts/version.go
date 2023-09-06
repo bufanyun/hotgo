@@ -7,5 +7,5 @@ package consts
 
 // VersionApp HotGo版本
 const (
-	VersionApp = "2.8.4"
+	VersionApp = "2.8.9"
 )

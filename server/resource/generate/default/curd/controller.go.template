@@ -23,7 +23,7 @@ type c@{.varName} struct{}
 
 // List 查看@{.tableComment}列表
 func (c *c@{.varName}) List(ctx context.Context, req *@{.varName | ToLower}.ListReq) (res *@{.varName | ToLower}.ListRes, err error) {
-	list, totalCount, err := service.@{.templateGroup | UcFirst}@{.varName}().List(ctx, &req.@{.varName}ListInp)
+	list, totalCount, err := service.@{.servFunName}().List(ctx, &req.@{.varName}ListInp)
 	if err != nil {
 		return
 	}
@@ -36,21 +36,21 @@ func (c *c@{.varName}) List(ctx context.Context, req *@{.varName | ToLower}.List
 @{ if eq .options.Step.HasExport true }
 // Export 导出@{.tableComment}列表
 func (c *c@{.varName}) Export(ctx context.Context, req *@{.varName | ToLower}.ExportReq) (res *@{.varName | ToLower}.ExportRes, err error) {
-    err = service.@{.templateGroup | UcFirst}@{.varName}().Export(ctx, &req.@{.varName}ListInp)
+    err = service.@{.servFunName}().Export(ctx, &req.@{.varName}ListInp)
 	return
 }
 @{end}
 @{ if eq .options.Step.HasEdit true }
 // Edit 更新@{.tableComment}
 func (c *c@{.varName}) Edit(ctx context.Context, req *@{.varName | ToLower}.EditReq) (res *@{.varName | ToLower}.EditRes, err error) {
-    err = service.@{.templateGroup | UcFirst}@{.varName}().Edit(ctx, &req.@{.varName}EditInp)
+    err = service.@{.servFunName}().Edit(ctx, &req.@{.varName}EditInp)
 	return
 }
 @{end}
 @{ if and (eq .options.Step.HasEdit true) (eq .options.Step.HasMaxSort true) }
 // MaxSort 获取@{.tableComment}最大排序
 func (c *c@{.varName}) MaxSort(ctx context.Context, req *@{.varName | ToLower}.MaxSortReq) (res *@{.varName | ToLower}.MaxSortRes, err error) {
-	data, err := service.@{.templateGroup | UcFirst}@{.varName}().MaxSort(ctx, &req.@{.varName}MaxSortInp)
+	data, err := service.@{.servFunName}().MaxSort(ctx, &req.@{.varName}MaxSortInp)
 	if err != nil {
 		return
 	}
@@ -63,7 +63,7 @@ func (c *c@{.varName}) MaxSort(ctx context.Context, req *@{.varName | ToLower}.M
 @{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }
 // View 获取指定@{.tableComment}信息
 func (c *c@{.varName}) View(ctx context.Context, req *@{.varName | ToLower}.ViewReq) (res *@{.varName | ToLower}.ViewRes, err error) {
-	data, err := service.@{.templateGroup | UcFirst}@{.varName}().View(ctx, &req.@{.varName}ViewInp)
+	data, err := service.@{.servFunName}().View(ctx, &req.@{.varName}ViewInp)
 	if err != nil {
 		return
 	}
@@ -76,21 +76,21 @@ func (c *c@{.varName}) View(ctx context.Context, req *@{.varName | ToLower}.View
 @{ if eq .options.Step.HasDel true }
 // Delete 删除@{.tableComment}
 func (c *c@{.varName}) Delete(ctx context.Context, req *@{.varName | ToLower}.DeleteReq) (res *@{.varName | ToLower}.DeleteRes, err error) {
-    err = service.@{.templateGroup | UcFirst}@{.varName}().Delete(ctx, &req.@{.varName}DeleteInp)
+    err = service.@{.servFunName}().Delete(ctx, &req.@{.varName}DeleteInp)
 	return
 }
 @{end}
 @{ if eq .options.Step.HasStatus true }
 // Status 更新@{.tableComment}状态
 func (c *c@{.varName}) Status(ctx context.Context, req *@{.varName | ToLower}.StatusReq) (res *@{.varName | ToLower}.StatusRes, err error) {
-    err = service.@{.templateGroup | UcFirst}@{.varName}().Status(ctx, &req.@{.varName}StatusInp)
+    err = service.@{.servFunName}().Status(ctx, &req.@{.varName}StatusInp)
 	return
 }
 @{end}
 @{ if eq .options.Step.HasSwitch true }
 // Switch 更新@{.tableComment}开关状态
 func (c *c@{.varName}) Switch(ctx context.Context, req *@{.varName | ToLower}.SwitchReq) (res *@{.varName | ToLower}.SwitchRes, err error) {
-    err = service.@{.templateGroup | UcFirst}@{.varName}().Switch(ctx, &req.@{.varName}SwitchInp)
+    err = service.@{.servFunName}().Switch(ctx, &req.@{.varName}SwitchInp)
 	return
 }
 @{end}

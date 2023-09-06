@@ -161,7 +161,7 @@
             width: 48,
             height: 48,
             src: row.logo,
-            onError: errorImg,
+            fallbackSrc: errorImg,
             style: {
               width: '48px',
               height: '48px',

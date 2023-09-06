@@ -33,12 +33,12 @@ func (q *qServeLog) GetTopic() string {
 func (q *qServeLog) Handle(ctx context.Context, mqMsg queue.MqMsg) error {
 	var data entity.SysServeLog
 	if err := json.Unmarshal(mqMsg.Body, &data); err != nil {
-		g.Dump("ServeLog Handle Unmarshal err:%+v", err)
+		g.Dump("ServeLog Handle Unmarshal err:", err)
 		return nil
 	}
 
 	if err := service.SysServeLog().RealWrite(ctx, data); err != nil {
-		g.Dump("ServeLog Handle Write err:%+v", err)
+		g.Dump("ServeLog Handle Write err:", err)
 		return nil
 	}
 	return nil

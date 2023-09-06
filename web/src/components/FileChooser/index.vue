@@ -226,7 +226,11 @@
           'When the file picker is currently in multiple-file mode, but the passed value is not of type string array, there may be potential issues.'
         );
       }
-      fileList.value = value as string[];
+      if (!value) {
+        fileList.value = [];
+      } else {
+        fileList.value = value as string[];
+      }
     }
   }
 

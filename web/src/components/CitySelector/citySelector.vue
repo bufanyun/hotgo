@@ -72,7 +72,7 @@
   watch(
     () => props.value,
     async () => {
-      if (props.value === 0) {
+      if (!props.value || props.value === 0) {
         valueLabel.value = null;
         return;
       }

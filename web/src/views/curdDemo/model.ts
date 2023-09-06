@@ -173,7 +173,7 @@ export const columns = [
         width: 32,
         height: 32,
         src: row.image,
-        onError: errorImg,
+        fallbackSrc: errorImg,
         style: {
           width: '32px',
           height: '32px',
