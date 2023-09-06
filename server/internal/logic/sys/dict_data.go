@@ -153,12 +153,16 @@ func (s *sSysDictData) Select(ctx context.Context, in *sysin.DataSelectInp) (lis
 
 	if err = mod.Order("sort asc,id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
-		return list, err
+		return
 	}
 
 	for k, v := range list {
 		list[k].Value = consts.ConvType(v.Value, v.ValueType)
 		list[k].Key = list[k].Value
 	}
-	return list, err
+
+	if len(list) == 0 {
+		list = make(sysin.DataSelectModel, 0)
+	}
+	return
 }

@@ -165,11 +165,12 @@ func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) (err error) 
 		return
 	}
 
+	now := gtime.Now()
 	view.BindFuncMap(g.Map{
-		"NowYear": gtime.Now().Year, // 当前年
-		"ToLower": strings.ToLower,  // 全部小写
-		"LcFirst": gstr.LcFirst,     // 首字母小写
-		"UcFirst": gstr.UcFirst,     // 首字母大写
+		"NowYear": now.Year,        // 当前年
+		"ToLower": strings.ToLower, // 全部小写
+		"LcFirst": gstr.LcFirst,    // 首字母小写
+		"UcFirst": gstr.UcFirst,    // 首字母大写
 	})
 
 	dictOptions, err := l.generateWebModelDictOptions(ctx, in)
@@ -199,10 +200,11 @@ func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) (err error) 
 		componentPrefix = "addons/" + in.In.AddonName + "/" + componentPrefix
 	}
 
+	nowTime := now.Format("Y-m-d H:i:s")
 	view.Assigns(gview.Params{
 		"templateGroup":    in.options.TemplateGroup,                                    // 生成模板分组名称
 		"servFunName":      l.parseServFunName(in.options.TemplateGroup, in.In.VarName), // 业务服务名称
-		"nowTime":          gtime.Now().Format("Y-m-d H:i:s"),                           // 当前时间
+		"nowTime":          nowTime,                                                     // 当前时间
 		"version":          runtime.Version(),                                           // GO 版本
 		"hgVersion":        consts.VersionApp,                                           // HG 版本
 		"varName":          in.In.VarName,                                               // 实体名称
@@ -220,6 +222,7 @@ func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) (err error) 
 		"apiPrefix":        in.options.ApiPrefix,                                        // api前缀
 		"componentPrefix":  componentPrefix,                                             // vue子组件前缀
 	})
+
 	in.view = view
 	return
 }
@@ -241,25 +244,42 @@ func (l *gCurd) DoBuild(ctx context.Context, in *CurdBuildInput) (err error) {
 		}
 	}
 
-	var needExecSql bool
-	for _, vi := range preview.Views {
+	// 处理sql文件
+	handleSqlFile := func(vi *sysin.GenFile) (err error) {
 		// 无需生成
 		if vi.Meth != consts.GenCodesBuildMethCreate && vi.Meth != consts.GenCodesBuildMethCover {
-			continue
-		}
-
-		if gstr.Str(vi.Path, `.`) == ".sql" && !gfile.Exists(vi.Path) {
-			needExecSql = true
+			return
 		}
 
 		if err = gfile.PutContents(vi.Path, strings.TrimSpace(vi.Content)); err != nil {
 			return gerror.Newf("writing content to '%s' failed: %v", vi.Path, err)
 		}
 
-		if gstr.Str(vi.Path, `.`) == ".sql" && needExecSql {
-			if err = ImportSql(ctx, vi.Path); err != nil {
-				return err
-			}
+		// 导入失败，将sql文件删除
+		if err = ImportSql(ctx, vi.Path); err != nil {
+			_ = gfile.Remove(vi.Path)
+		}
+		return
+	}
+
+	// 将sql文件提取出来优先处理
+	// sql执行过程出错是高概率事件，后期在执行前要进行预效验，尽量减少在执行过程中出错的可能性
+	sqlGenFile, ok := preview.Views["source.sql"]
+	if ok {
+		delete(preview.Views, "source.sql")
+		if err = handleSqlFile(sqlGenFile); err != nil {
+			return
+		}
+	}
+
+	for _, vi := range preview.Views {
+		// 无需生成
+		if vi.Meth != consts.GenCodesBuildMethCreate && vi.Meth != consts.GenCodesBuildMethCover {
+			continue
+		}
+
+		if err = gfile.PutContents(vi.Path, strings.TrimSpace(vi.Content)); err != nil {
+			return gerror.Newf("writing content to '%s' failed: %v", vi.Path, err)
 		}
 
 		if gstr.Str(vi.Path, `.`) == ".go" {
@@ -400,7 +420,7 @@ func (l *gCurd) generateInputContent(ctx context.Context, in *CurdPreviewInput) 
 func (l *gCurd) generateControllerContent(ctx context.Context, in *CurdPreviewInput) (err error) {
 	var (
 		name    = "controller.go"
-		tplData = g.Map{"name": "test generateControllerContent..."}
+		tplData = g.Map{}
 		genFile = new(sysin.GenFile)
 	)
 

@@ -9,6 +9,7 @@
 - 常用组件
     - [websocket](https://github.com/gorilla/websocket)
     - [casbin](https://github.com/casbin/casbin)
+    - [tailwind](https://tailwind.docs.73zls.com/docs/flex-direction)
 
 
 - 系统通用

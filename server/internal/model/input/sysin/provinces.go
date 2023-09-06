@@ -160,7 +160,7 @@ type ProvincesSelectData struct {
 	Label  string `json:"label"     description:"地区名称"`
 	Value  int64  `json:"value"     description:"地区ID"`
 	Level  int    `json:"level"     description:"地区等级"`
-	IsLeaf bool   `json:"isLeaf"    description:"是否还有下一级"`
+	IsLeaf bool   `json:"isLeaf"    description:"是否是最后一个节点"`
 }
 
 // ProvincesCityLabelInp 获取指定城市标签

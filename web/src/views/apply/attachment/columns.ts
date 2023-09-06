@@ -153,7 +153,7 @@ export const columns = [
         width: 40,
         height: 40,
         src: row.fileUrl,
-        onError: errorImg,
+        fallbackSrc: errorImg,
         style: {
           width: '40px',
           height: '40px',

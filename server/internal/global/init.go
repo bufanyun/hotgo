@@ -93,18 +93,18 @@ func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 		var data entity.SysServeLog
 		data.TraceId = gctx.CtxId(ctx)
 		data.LevelFormat = in.LevelFormat
-		data.Content = in.Content
+		data.Content = gstr.StrLimit(in.Content, consts.MaxServeLogContentLen)
 		data.Stack = gjson.New(charset.ParseStack(in.Stack))
 		data.Line = strings.TrimRight(in.CallerPath, ":")
 		data.TriggerNs = in.Time.UnixNano()
 		data.Status = consts.StatusEnabled
 
-		if data.Stack.IsNil() {
-			data.Stack = gjson.New(consts.NilJsonToString)
-		}
-
 		if gstr.Contains(in.Content, `exception recovered`) {
 			data.LevelFormat = "PANI"
+		}
+
+		if data.Stack.IsNil() {
+			data.Stack = gjson.New(consts.NilJsonToString)
 		}
 
 		if conf.Queue {
@@ -115,7 +115,7 @@ func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 	})
 
 	if err != nil {
-		g.Dump("LoggingServeLogHandler err:%+v", err)
+		g.Dump("LoggingServeLogHandler err:", err)
 	}
 }
 
