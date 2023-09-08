@@ -431,7 +431,7 @@ func (s *sAdminMember) Delete(ctx context.Context, in *adminin.MemberDeleteInp) 
 			return
 		}
 
-		if _, err = dao.AdminMemberPost.Ctx(ctx).Where("member_id", memberId).Delete(); err != nil {
+		if _, err = dao.AdminMemberPost.Ctx(ctx).Where("member_id", in.Id).Delete(); err != nil {
 			err = gerror.Wrap(err, "删除用户岗位失败，请稍后重试！")
 		}
 		return

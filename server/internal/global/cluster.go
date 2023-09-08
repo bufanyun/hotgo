@@ -49,5 +49,4 @@ func PublishClusterSync(ctx context.Context, channel string, message interface{}
 	if err != nil {
 		g.Log().Warningf(ctx, "PublishClusterSync %v LockFunc err:%v", channel, err)
 	}
-	return
 }

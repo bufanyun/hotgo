@@ -28,13 +28,13 @@ func (server *Server) startCron() {
 	// 心跳超时检查
 	if gcron.Search(server.getCronKey(CronHeartbeatVerify)) == nil {
 		_, _ = gcron.AddSingleton(server.ctx, "@every 300s", func(ctx context.Context) {
+			if server == nil || server.clients == nil {
+				return
+			}
 
 			server.mutexConns.Lock()
 			defer server.mutexConns.Unlock()
 
-			if server == nil || server.clients == nil {
-				return
-			}
 			for _, client := range server.clients {
 				if client.Heartbeat < gtime.Timestamp()-HeartbeatTimeout {
 					client.Conn.Close()
@@ -47,13 +47,13 @@ func (server *Server) startCron() {
 	// 认证检查
 	if gcron.Search(server.getCronKey(CronAuthVerify)) == nil {
 		_, _ = gcron.AddSingleton(server.ctx, "@every 300s", func(ctx context.Context) {
+			if server == nil || server.clients == nil {
+				return
+			}
 
 			server.mutexConns.Lock()
 			defer server.mutexConns.Unlock()
 
-			if server == nil || server.clients == nil {
-				return
-			}
 			for _, client := range server.clients {
 				if client.Auth == nil {
 					continue
