@@ -241,7 +241,7 @@ func (s *sSysLog) View(ctx context.Context, in *sysin.LogViewInp) (res *sysin.Lo
 		return
 	}
 
-	if g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool() {
+	if g.Cfg().MustGet(ctx, simple.AppName(ctx)+".isDemo", false).Bool() {
 		res.HeaderData = gjson.New(`{
 		   "none": [
 		       "` + consts.DemoTips + `"
@@ -310,7 +310,7 @@ func (s *sSysLog) List(ctx context.Context, in *sysin.LogListInp) (list []*sysin
 		return
 	}
 
-	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool()
+	isDemo := g.Cfg().MustGet(ctx, simple.AppName(ctx)+"isDemo", false).Bool()
 	for i := 0; i < len(list); i++ {
 		// 管理员
 		if list[i].AppId == consts.AppAdmin {

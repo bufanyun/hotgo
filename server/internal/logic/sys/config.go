@@ -194,13 +194,13 @@ func (s *sSysConfig) GetLoadToken(ctx context.Context) (conf *model.TokenConfig,
 
 // GetLoadLog 获取本地日志配置
 func (s *sSysConfig) GetLoadLog(ctx context.Context) (conf *model.LogConfig, err error) {
-	err = g.Cfg().MustGet(ctx, "hotgo.log").Scan(&conf)
+	err = g.Cfg().MustGet(ctx, simple.AppName(ctx)+".log").Scan(&conf)
 	return
 }
 
 // GetLoadServeLog 获取本地服务日志配置
 func (s *sSysConfig) GetLoadServeLog(ctx context.Context) (conf *model.ServeLogConfig, err error) {
-	err = g.Cfg().MustGet(ctx, "hotgo.serveLog").Scan(&conf)
+	err = g.Cfg().MustGet(ctx, simple.AppName(ctx)+".serveLog").Scan(&conf)
 	return
 }
 

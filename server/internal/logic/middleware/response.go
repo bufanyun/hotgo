@@ -11,6 +11,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/util/gmeta"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/response"
@@ -73,7 +74,7 @@ func parseResponse(r *ghttp.Request) (code int, message string, resp interface{}
 	}
 
 	// 是否输出错误堆栈到页面
-	if g.Cfg().MustGet(ctx, "hotgo.debug", true).Bool() {
+	if g.Cfg().MustGet(ctx, simple.AppName(ctx)+".debug", true).Bool() {
 		message = gerror.Current(err).Error()
 		if getContentType(r) == consts.HTTPContentTypeHtml {
 			resp = charset.SerializeStack(err)

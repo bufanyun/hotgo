@@ -8,6 +8,12 @@ package location
 import (
 	"context"
 	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"strings"
+	"time"
+
 	"github.com/gogf/gf/v2/container/gmap"
 	"github.com/gogf/gf/v2/encoding/gcharset"
 	"github.com/gogf/gf/v2/frame/g"
@@ -15,12 +21,9 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/kayon/iploc"
+
+	"hotgo/utility/simple"
 	"hotgo/utility/validate"
-	"io"
-	"net"
-	"net/http"
-	"strings"
-	"time"
 )
 
 const (
@@ -141,7 +144,7 @@ func GetLocation(ctx context.Context, ip string) (data *IpLocationData, err erro
 		return data1, nil
 	}
 
-	mode := g.Cfg().MustGet(ctx, "hotgo.ipMethod", "cz88").String()
+	mode := g.Cfg().MustGet(ctx, simple.AppName(ctx)+".ipMethod", "cz88").String()
 	switch mode {
 	case "whois":
 		data, err = WhoisLocation(ctx, ip)

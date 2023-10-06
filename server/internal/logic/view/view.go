@@ -7,9 +7,11 @@ package view
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
+
 	"hotgo/internal/model"
 	"hotgo/internal/service"
 	"hotgo/utility/charset"
@@ -95,7 +97,7 @@ func (s *sView) Error(ctx context.Context, err error) {
 	)
 
 	// 是否输出错误堆栈到页面
-	if g.Cfg().MustGet(ctx, "hotgo.debug", true).Bool() {
+	if g.Cfg().MustGet(ctx, simple.AppName(ctx)+".debug", true).Bool() {
 		stack = charset.SerializeStack(err)
 	}
 

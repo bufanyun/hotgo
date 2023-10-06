@@ -103,7 +103,7 @@ func (c *cMonitor) UserOnlineList(ctx context.Context, req *monitor.UserOnlineLi
 		return clients[i].FirstTime < clients[j].FirstTime
 	})
 
-	isDemo := g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool()
+	isDemo := g.Cfg().MustGet(ctx, simple.AppName(ctx)+".isDemo", false).Bool()
 	_, perPage, offset := form.CalPage(req.Page, req.PerPage)
 
 	for k, v := range clients {
