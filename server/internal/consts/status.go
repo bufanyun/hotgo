@@ -11,6 +11,7 @@ const (
 	StatusEnabled int = 1  // 启用
 	StatusDisable int = 2  // 禁用
 	StatusDelete  int = 3  // 已删除
+	StatusOFF     int = 0  // 禁用
 )
 
-var StatusSlice = []int{StatusALL, StatusEnabled, StatusDisable, StatusDelete}
+var StatusSlice = []int{StatusALL, StatusEnabled, StatusDisable, StatusDelete, StatusOFF}

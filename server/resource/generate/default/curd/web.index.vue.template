@@ -123,7 +123,7 @@
           },@{end}
 @{ if eq .options.Step.HasStatus true }          {
             label: '禁用',
-            onClick: handleStatus.bind(null, record, 2),
+            onClick: handleStatus.bind(null, record, 0),
             ifShow: () => {
               return record.status === 1;
             },
@@ -133,7 +133,7 @@
             label: '启用',
             onClick: handleStatus.bind(null, record, 1),
             ifShow: () => {
-              return record.status === 2;
+              return record.status === 0;
             },
             auth: ['/@{.apiPrefix}/status'],
           },@{end}

@@ -112,7 +112,7 @@ func (in *@{.varName}StatusInp) Filter(ctx context.Context) (err error) {
 		return
 	}
 
-	if in.Status <= 0 {
+	if in.Status < 0 {
 		err = gerror.New("状态不能为空")
 		return
 	}
