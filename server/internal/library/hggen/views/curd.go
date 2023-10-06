@@ -186,8 +186,16 @@ func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) (err error) 
 	importInput := gstr.Replace(temp.InputPath, "./", modName+"/")
 	importController := gstr.Replace(temp.ControllerPath, "./", modName+"/")
 	importService := "hotgo/internal/service"
+	importDao := "hotgo/internal/dao"
+	importEntity := "hotgo/internal/model/entity"
 	if temp.IsAddon {
 		importService = "hotgo/addons/" + in.In.AddonName + "/service"
+	}
+	if temp.IsAddon {
+		importDao = "hotgo/addons/" + in.In.AddonName + "/dao"
+	}
+	if temp.IsAddon {
+		importEntity = "hotgo/addons/" + in.In.AddonName + "/model/entity"
 	}
 
 	importWebApi := "@/api/" + gstr.LcFirst(in.In.VarName)
@@ -221,6 +229,8 @@ func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) (err error) 
 		"importWebApi":     importWebApi,                                                // 导入webApi
 		"apiPrefix":        in.options.ApiPrefix,                                        // api前缀
 		"componentPrefix":  componentPrefix,                                             // vue子组件前缀
+		"importDao":        importDao,                                                   // vue子组件前缀
+		"importEntity":     importEntity,                                                // vue子组件前缀
 	})
 
 	in.view = view

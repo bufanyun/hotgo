@@ -129,6 +129,11 @@
           <n-form-item label="实体命名" path="varName">
             <n-input placeholder="请输入" v-model:value="formParams.varName" />
           </n-form-item>
+
+          <n-form-item label="实体模型" path="daoName">
+            <n-input placeholder="请输入" v-model:value="formParams.daoName" />
+          </n-form-item>
+
         </n-form>
 
         <template #action>
