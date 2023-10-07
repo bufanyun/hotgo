@@ -10,7 +10,7 @@
       >
         <n-form ref="formRef" :model="formValue">
           <n-row :gutter="24">
-            <n-col :span="6" style="min-width: 200px">
+            <n-col :span="4" style="min-width: 200px">
               <n-form-item label="生成类型" path="title">
                 <n-select
                   placeholder="请选择"
@@ -20,9 +20,15 @@
               </n-form-item>
             </n-col>
 
-            <n-col :span="6" style="min-width: 200px">
+            <n-col :span="4" style="min-width: 200px">
               <n-form-item label="实体命名" path="varName">
                 <n-input placeholder="请输入" v-model:value="formValue.varName" />
+              </n-form-item>
+            </n-col>
+
+            <n-col :span="4" style="min-width: 200px">
+              <n-form-item label="模型命名" path="daoName">
+                <n-input placeholder="请输入" v-model:value="formValue.daoName" />
               </n-form-item>
             </n-col>
 
@@ -236,7 +242,8 @@
           <n-alert :show-icon="false">关联表数量建议在三个以下</n-alert>
 
           <n-row :gutter="6" v-for="(join, index) in formValue.options.join" :key="index">
-            <n-col :span="6" style="min-width: 200px">
+            
+            <n-col :span="4" style="min-width: 200px">
               <n-form-item label="关联表" path="join.linkTable">
                 <n-select
                   filterable
@@ -267,6 +274,22 @@
               </n-form-item>
             </n-col>
 
+            <n-col :span="4" style="min-width: 100px">
+              <n-form-item
+                label="实体"
+                path="join.daoName"
+                v-show="formValue.genType >= 10 && formValue.genType < 20"
+              >
+                <n-input
+                  placeholder="请输入"
+                  v-model:value="join.daoName"
+                  @update:value="updateJoinAlias"
+                />
+
+                <template #feedback> {{ joinAliasFeedback }}</template>
+              </n-form-item>
+            </n-col>
+
             <n-col :span="3" style="min-width: 100px">
               <n-form-item label="关联方式" path="join.linkMode">
                 <n-select
@@ -276,7 +299,7 @@
                 />
               </n-form-item>
             </n-col>
-            <n-col :span="5" style="min-width: 180px">
+            <n-col :span="4" style="min-width: 180px">
               <n-form-item label="关联字段" path="join.field">
                 <n-select
                   filterable
@@ -289,7 +312,7 @@
               </n-form-item>
             </n-col>
 
-            <n-col :span="5" style="min-width: 180px">
+            <n-col :span="4" style="min-width: 180px">
               <n-form-item label="主表关联字段" path="join.masterField">
                 <n-select
                   filterable
