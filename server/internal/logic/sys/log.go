@@ -181,7 +181,7 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 	postForm := gjson.New(gconv.String(request.PostForm)).Map()
 	if len(postForm) > 0 {
 		for k, v := range postForm {
-			postData.MustAppend(k, v)
+			postData.MustSet(k, v)
 		}
 	}
 

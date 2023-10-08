@@ -34,7 +34,7 @@ export interface State {
   deletedAt: string;
 }
 
-export const defaultState = {
+export const defaultState: State = {
   id: 0,
   categoryId: 0,
   title: '',
@@ -173,7 +173,7 @@ export const columns = [
         width: 32,
         height: 32,
         src: row.image,
-        fallbackSrc: errorImg,
+        onError: errorImg,
         style: {
           width: '32px',
           height: '32px',

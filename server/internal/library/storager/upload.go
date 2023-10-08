@@ -117,7 +117,8 @@ func DoUpload(ctx context.Context, typ string, file *ghttp.UploadFile) (result *
 		return
 	}
 
-	if result != nil {
+	// 相同存储相同身份才复用
+	if result != nil && result.Drive == config.Drive && result.MemberId == contexts.GetUserId(ctx) && result.AppId == contexts.GetModule(ctx) {
 		return
 	}
 

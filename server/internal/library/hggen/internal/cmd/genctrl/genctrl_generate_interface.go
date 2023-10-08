@@ -17,6 +17,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/library/hggen/internal/consts"
 	"hotgo/internal/library/hggen/internal/utility/mlog"
+	"hotgo/internal/library/hggen/internal/utility/utils"
 )
 
 type apiInterfaceGenerator struct{}
@@ -42,6 +43,11 @@ func (c *apiInterfaceGenerator) doGenerate(apiModuleFolderPath string, module st
 		importPathMap  = gmap.NewListMap()
 		importPaths    []string
 	)
+	// if there's already exist file that with the same but not auto generated go file,
+	// it uses another file name.
+	if !utils.IsFileDoNotEdit(moduleFilePath) {
+		moduleFilePath = gfile.Join(apiModuleFolderPath, fmt.Sprintf(`%s.if.go`, module))
+	}
 	// all import paths.
 	importPathMap.Set("\t"+`"context"`, 1)
 	importPathMap.Set("\t"+``, 1)

@@ -62,7 +62,7 @@ func CustomAttributes(ctx context.Context, field *sysin.GenCodesColumnListModel,
 }
 
 // GenGotype 生成字段的go类型
-func GenGotype(ctx context.Context, field *sysin.GenCodesColumnListModel, in gendao.CGenDaoInput) (goName, typeName, tsName, tsType string) {
+func GenGotype(ctx context.Context, field *sysin.GenCodesColumnListModel, in gendao.CGenDaoInput) (goName, typeName, tsName string, tsType string) {
 	var err error
 	tsName = getJsonTagFromCase(field.Name, in.JsonCase)
 	goName = gstr.CaseCamel(field.Name)
@@ -71,7 +71,8 @@ func GenGotype(ctx context.Context, field *sysin.GenCodesColumnListModel, in gen
 	if err != nil {
 		panic(err)
 	}
-	switch typeName {
+
+	switch gdb.LocalType(typeName) {
 	case gdb.LocalTypeDate, gdb.LocalTypeDatetime:
 		if in.StdTime {
 			typeName = "time.Time"
@@ -120,7 +121,7 @@ func CheckLocalTypeForField(ctx context.Context, fieldType string, fieldValue in
 		"tinyblob",
 		"mediumblob",
 		"longblob":
-		return gdb.LocalTypeBytes, nil
+		return string(gdb.LocalTypeBytes), nil
 
 	case
 		"int",
@@ -131,22 +132,22 @@ func CheckLocalTypeForField(ctx context.Context, fieldType string, fieldValue in
 		"mediumint",
 		"serial":
 		if gstr.ContainsI(fieldType, "unsigned") {
-			return gdb.LocalTypeUint, nil
+			return string(gdb.LocalTypeUint), nil
 		}
-		return gdb.LocalTypeInt, nil
+		return string(gdb.LocalTypeInt), nil
 
 	case
 		"big_int",
 		"bigint",
 		"bigserial":
 		if gstr.ContainsI(fieldType, "unsigned") {
-			return gdb.LocalTypeUint64, nil
+			return string(gdb.LocalTypeUint64), nil
 		}
-		return gdb.LocalTypeInt64, nil
+		return string(gdb.LocalTypeInt64), nil
 
 	case
 		"real":
-		return gdb.LocalTypeFloat32, nil
+		return string(gdb.LocalTypeFloat32), nil
 
 	case
 		"float",
@@ -155,75 +156,75 @@ func CheckLocalTypeForField(ctx context.Context, fieldType string, fieldValue in
 		"money",
 		"numeric",
 		"smallmoney":
-		return gdb.LocalTypeFloat64, nil
+		return string(gdb.LocalTypeFloat64), nil
 
 	case
 		"bit":
 		// It is suggested using bit(1) as boolean.
 		if typePattern == "1" {
-			return gdb.LocalTypeBool, nil
+			return string(gdb.LocalTypeBool), nil
 		}
 		s := gconv.String(fieldValue)
 		// mssql is true|false string.
 		if strings.EqualFold(s, "true") || strings.EqualFold(s, "false") {
-			return gdb.LocalTypeBool, nil
+			return string(gdb.LocalTypeBool), nil
 		}
 		if gstr.ContainsI(fieldType, "unsigned") {
-			return gdb.LocalTypeUint64Bytes, nil
+			return string(gdb.LocalTypeUint64Bytes), nil
 		}
-		return gdb.LocalTypeInt64Bytes, nil
+		return string(gdb.LocalTypeInt64Bytes), nil
 
 	case
 		"bool":
-		return gdb.LocalTypeBool, nil
+		return string(gdb.LocalTypeBool), nil
 
 	case
 		"date":
-		return gdb.LocalTypeDate, nil
+		return string(gdb.LocalTypeDate), nil
 
 	case
 		"datetime",
 		"timestamp",
 		"timestamptz":
-		return gdb.LocalTypeDatetime, nil
+		return string(gdb.LocalTypeDatetime), nil
 
 	case
 		"json":
-		return gdb.LocalTypeJson, nil
+		return string(gdb.LocalTypeJson), nil
 
 	case
 		"jsonb":
-		return gdb.LocalTypeJsonb, nil
+		return string(gdb.LocalTypeJsonb), nil
 
 	default:
 		// Auto-detect field type, using key match.
 		switch {
 		case strings.Contains(typeName, "text") || strings.Contains(typeName, "char") || strings.Contains(typeName, "character"):
-			return gdb.LocalTypeString, nil
+			return string(gdb.LocalTypeString), nil
 
 		case strings.Contains(typeName, "float") || strings.Contains(typeName, "double") || strings.Contains(typeName, "numeric"):
-			return gdb.LocalTypeFloat64, nil
+			return string(gdb.LocalTypeFloat64), nil
 
 		case strings.Contains(typeName, "bool"):
-			return gdb.LocalTypeBool, nil
+			return string(gdb.LocalTypeBool), nil
 
 		case strings.Contains(typeName, "binary") || strings.Contains(typeName, "blob"):
-			return gdb.LocalTypeBytes, nil
+			return string(gdb.LocalTypeBytes), nil
 
 		case strings.Contains(typeName, "int"):
 			if gstr.ContainsI(fieldType, "unsigned") {
-				return gdb.LocalTypeUint, nil
+				return string(gdb.LocalTypeUint), nil
 			}
-			return gdb.LocalTypeInt, nil
+			return string(gdb.LocalTypeInt), nil
 
 		case strings.Contains(typeName, "time"):
-			return gdb.LocalTypeDatetime, nil
+			return string(gdb.LocalTypeDatetime), nil
 
 		case strings.Contains(typeName, "date"):
-			return gdb.LocalTypeDatetime, nil
+			return string(gdb.LocalTypeDatetime), nil
 
 		default:
-			return gdb.LocalTypeString, nil
+			return string(gdb.LocalTypeString), nil
 		}
 	}
 }

@@ -44,7 +44,7 @@ func (l *gCurd) generateWebModelState(ctx context.Context, in *CurdPreviewInput)
 
 func (l *gCurd) generateWebModelDefaultState(ctx context.Context, in *CurdPreviewInput) string {
 	buffer := bytes.NewBuffer(nil)
-	buffer.WriteString("export const defaultState = {\n")
+	buffer.WriteString("export const defaultState: State = {\n")
 	for _, field := range in.masterFields {
 		var value = field.DefaultValue
 		if value == nil {

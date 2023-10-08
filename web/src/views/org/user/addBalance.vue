@@ -139,7 +139,9 @@
   watch(
     () => props.formParams,
     (value) => {
-      loadForm(value);
+      if (isShowModal.value) {
+        loadForm(value);
+      }
     }
   );
 </script>
