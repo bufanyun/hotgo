@@ -17,6 +17,7 @@ import (
 
 	"github.com/gogf/gf/v2/encoding/gbase64"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gbuild"
 	"github.com/gogf/gf/v2/os/gcmd"
 	"github.com/gogf/gf/v2/os/genv"
 	"github.com/gogf/gf/v2/os/gfile"
@@ -46,7 +47,7 @@ const (
 	cBuildBrief = `cross-building go project for lots of platforms`
 	cBuildEg    = `
 gf build main.go
-gf build main.go --pack public,template
+gf build main.go --ps public,template
 gf build main.go --cgo
 gf build main.go -m none 
 gf build main.go -n my-app -a all -s all
@@ -311,9 +312,9 @@ func (c cBuild) getBuildInVarStr(ctx context.Context, in cBuildInput) string {
 	if buildInVarMap == nil {
 		buildInVarMap = make(g.Map)
 	}
-	buildInVarMap[`builtGit`] = c.getGitCommit(ctx)
-	buildInVarMap[`builtTime`] = gtime.Now().String()
-	buildInVarMap[`builtVersion`] = in.Version
+	buildInVarMap[gbuild.BuiltGit] = c.getGitCommit(ctx)
+	buildInVarMap[gbuild.BuiltTime] = gtime.Now().String()
+	buildInVarMap[gbuild.BuiltVersion] = in.Version
 	b, err := json.Marshal(buildInVarMap)
 	if err != nil {
 		mlog.Fatal(err)

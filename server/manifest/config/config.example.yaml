@@ -155,7 +155,7 @@ router:
     # 前缀
     prefix: "/api"
     # 不需要验证登录的路由地址
-    exceptPath: []
+    exceptLogin: []
   # websocket
   websocket:
     # 前缀
@@ -167,7 +167,7 @@ router:
     # 前缀
     prefix: "/home"
     # 不需要验证登录的路由地址
-    exceptPath: []
+    exceptLogin: []
 
 
 #缓存
@@ -263,7 +263,7 @@ hggen:
           webApiPath: "../web/src/api"                                  # webApi生成路径
           webViewsPath : "../web/src/views"                             # web页面生成路径
 
-        # 默认的插件包模板
+        # 默认的插件包模板，{$name}会自动替换成实际的插件名称
         - group: "addon"                                                # 分组名称
           isAddon: true                                                 # 是否为插件模板 false｜true
           masterPackage: "sys"                                          # 主包名称，需和controllerPath、logicPath、inputPath保持关联

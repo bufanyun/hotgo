@@ -236,6 +236,17 @@ func (s *sAdminSite) handleLogin(ctx context.Context, mb *entity.AdminMember) (r
 		return
 	}
 
+	var dept *entity.AdminDept
+	if err = g.Model("admin_dept").Ctx(ctx).Fields("id,status").Where("id", mb.DeptId).Scan(&dept); err != nil || dept == nil {
+		err = gerror.Wrap(err, "获取部门信息失败，请稍后重试！")
+		return
+	}
+
+	if dept.Status != consts.StatusEnabled {
+		err = gerror.New("部门已被禁用，如有疑问请联系管理员")
+		return
+	}
+
 	user := &model.Identity{
 		Id:       mb.Id,
 		Pid:      mb.Pid,
@@ -291,6 +302,17 @@ func (s *sAdminSite) BindUserContext(ctx context.Context, claims *model.Identity
 
 	if role.Status != consts.StatusEnabled {
 		err = gerror.New("角色已被禁用，如有疑问请联系管理员")
+		return
+	}
+
+	var dept *entity.AdminDept
+	if err = g.Model("admin_dept").Ctx(ctx).Fields("id,status").Where("id", mb.DeptId).Scan(&dept); err != nil || dept == nil {
+		err = gerror.Wrap(err, "获取部门信息失败，请稍后重试！")
+		return
+	}
+
+	if dept.Status != consts.StatusEnabled {
+		err = gerror.New("部门已被禁用，如有疑问请联系管理员")
 		return
 	}
 
