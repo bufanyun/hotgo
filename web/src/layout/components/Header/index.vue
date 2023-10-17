@@ -10,7 +10,7 @@
         <h2 v-show="!collapsed" class="title">HotGo</h2>
       </div>
       <AsideMenu
-        v-model:collapsed="collapsed"
+        @update:collapsed="updateMenu"
         v-model:location="getMenuLocation"
         :inverted="getInverted"
         mode="horizontal"
@@ -216,7 +216,7 @@
         type: Boolean,
       },
     },
-    setup(props) {
+    setup(props, { emit }) {
       const userStore = useUserStore();
       const notificationStore = notificationStoreWidthOut();
       const useLockscreen = useLockscreenStore();
@@ -473,6 +473,10 @@
         { immediate: true, deep: true }
       );
 
+      const updateMenu = () => {
+        emit('update:collapsed', !props.collapsed);
+      };
+
       onMounted(() => {
         if (notificationStore.getUnreadCount() === 0) {
           notificationStore.pullMessages();
@@ -500,6 +504,7 @@
         notificationStore,
         getIsMobile,
         userStore,
+        updateMenu,
       };
     },
   });
