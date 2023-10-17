@@ -82,6 +82,7 @@
     page: 1,
     pageSize: 5,
     pageCount: 1,
+    totalCount: 0,
     list: [],
   });
 
