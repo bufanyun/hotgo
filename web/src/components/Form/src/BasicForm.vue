@@ -8,7 +8,7 @@
             {{ schema.label }}
             <n-tooltip trigger="hover" :style="schema.labelMessageStyle">
               <template #trigger>
-                <n-icon size="18" class="cursor-pointer text-gray-400">
+                <n-icon size="18" class="text-gray-400 cursor-pointer">
                   <QuestionCircleOutlined />
                 </n-icon>
               </template>
@@ -262,6 +262,17 @@
         setProps,
         submit: handleSubmit,
       };
+
+      // 当showAdvancedButton为false时所有列表项应为全部显示
+      watch(
+        () => getProps.value.showAdvancedButton,
+        (show) => {
+          if (!show) gridCollapsed.value = false;
+        },
+        {
+          immediate: true,
+        }
+      );
 
       watch(
         () => getSchema.value,
