@@ -198,7 +198,7 @@
     <!--导航卡片-->
     <div class="mt-4">
       <n-grid cols="1 s:2 m:3 l:8 xl:8 2xl:8" responsive="screen" :x-gap="16" :y-gap="8">
-        <n-grid-item v-for="(item, index) in iconList" :key="index">
+        <n-grid-item v-for="(item, index) in iconList" :key="index" @click="item.eventObject || {}">
           <NCard content-style="padding-top: 0;" size="small" :bordered="false">
             <template #footer>
               <n-skeleton v-if="loading" size="medium" />
@@ -226,6 +226,7 @@
 </template>
 <script lang="ts" setup>
   import { ref, onMounted } from 'vue';
+  import { useRouter } from 'vue-router';
   import { getConsoleInfo } from '@/api/dashboard/console';
   import VisiTab from './components/VisiTab.vue';
   import { CountTo } from '@/components/CountTo/index';
@@ -247,6 +248,7 @@
   const saleroom = ref<any>({});
   const orderLarge = ref<any>({});
   const volume = ref({});
+  const router = useRouter();
 
   // 图标列表
   const iconList = [
@@ -256,7 +258,7 @@
       title: '用户',
       color: '#69c0ff',
       eventObject: {
-        click: () => {},
+        click: () => router.push({ name: 'user' }),
       },
     },
     {

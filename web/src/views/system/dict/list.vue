@@ -106,6 +106,7 @@
   import { statusOptions } from '@/enums/optionsiEnum';
   import { TypeSelect } from '@/api/sys/config';
   import { Option } from '@/utils/hotgo';
+  import {cloneDeep} from "lodash-es";
   const options = ref<Option>();
   interface Props {
     checkedId?: number;
@@ -292,7 +293,7 @@
 
   function handleEdit(record: Recordable) {
     showModal.value = true;
-    formParams.value = record;
+    formParams.value = cloneDeep(record);
   }
 
   function handleSubmit(_values: Recordable) {

@@ -119,6 +119,8 @@ var (
 		"dwf":   "model/vnd.dwf",
 		"ics":   "text/calendar",
 		"vcard": "text/vcard",
+		"apk":   "application/vnd.android.package-archive",
+		"ipa":   "application/octet-stream",
 	}
 )
 
