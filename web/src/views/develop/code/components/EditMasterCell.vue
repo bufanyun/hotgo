@@ -13,10 +13,9 @@
         :row-key="(row) => row.id"
         ref="actionRef"
         :canResize="true"
-        :resizeHeightOffset="-20000"
         :pagination="false"
-        :scroll-x="1090"
-        :scrollbar-props="{ trigger: 'none' }"
+        :scroll-x="3000"
+        :scroll-y="720"
       >
         <template #tableTitle>
           <n-tooltip placement="top-start" trigger="hover">

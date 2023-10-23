@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package websocket
 
 import (
@@ -19,7 +18,7 @@ var Send = send{}
 type send struct{}
 
 // SendToTag 发送标签消息
-func (c *send) SendToTag(ctx context.Context, req base.SendToTagReq) (res *base.SendToTagRes, err error) {
+func (c *send) SendToTag(ctx context.Context, req *base.SendToTagReq) (res *base.SendToTagRes, err error) {
 	simple.SafeGo(ctx, func(ctx context.Context) {
 		websocket.SendToTag(req.Tag, &websocket.WResponse{
 			Event: req.Response.Event,
