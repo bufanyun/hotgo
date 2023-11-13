@@ -327,8 +327,10 @@
       // 刷新页面
       const reloadPage = () => {
         delKeepAliveCompName();
+        const full = unref(route);
         router.push({
-          path: '/redirect' + unref(route).fullPath,
+          path: '/redirect' + full.path,
+          query: full.query,
         });
       };
 
