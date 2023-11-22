@@ -63,7 +63,7 @@
             type="primary"
             @click="handleExport"
             class="min-left-space"
-            v-if="hasPermission(['/@{.apiPrefix}/delete'])"
+            v-if="hasPermission(['/@{.apiPrefix}/export'])"
           >
             <template #icon>
               <n-icon>
