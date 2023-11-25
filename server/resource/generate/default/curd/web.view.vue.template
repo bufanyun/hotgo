@@ -1,29 +1,35 @@
 <template>
   <div>
-    <div class="n-layout-page-header">
-      <n-card :bordered="false" title="@{.tableComment}详情"> <!-- CURD详情页--> </n-card>
-    </div>
-    <n-card :bordered="false" class="proCard mt-4" size="small" :segmented="{ content: true }">
-      <n-descriptions label-placement="left" class="py-2" column="4">
+    <n-drawer v-model:show="isShowView" :width="502">
+      <n-drawer-content title="@{.tableComment}详情">
+        <div class="view">
+          <div class="section">
+            <div class="section-bd">
 @{.item}
-      </n-descriptions>
-    </n-card>
+            </div>
+          </div>
+        </div>
+        <template #footer>
+          <n-button @click="closeView">关闭</n-button>
+        </template>
+      </n-drawer-content>
+    </n-drawer>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref } from 'vue';
+  import { computed, watch, ref } from 'vue';
   import { useRouter } from 'vue-router';
   import { useMessage } from 'naive-ui';
   import { View } from '@{.importWebApi}';
-  import { newState, options } from './model';
+  import { newState, State, options } from './model';
   import { getOptionLabel, getOptionTag } from '@/utils/hotgo';
   import { getFileExt } from '@/utils/urlUtils';
+  import { useDesignSetting } from '@/hooks/setting/useDesignSetting';
 
+  const { getAppTheme } = useDesignSetting();
   const message = useMessage();
   const router = useRouter();
-  const id = Number(router.currentRoute.value.params.id);
-  const formValue = ref(newState(null));
   const fileAvatarCSS = computed(() => {
     return {
       '--n-merged-size': `var(--n-avatar-size-override, 80px)`,
@@ -31,18 +37,95 @@
     };
   });
 
+  const emit = defineEmits(['updateShowView']);
+  interface Props {
+    showView: boolean;
+    formParams?: State;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    showView: false,
+    formParams: () => {
+      return newState(null);
+    },
+  });
+
+  const isShowView = computed({
+    get: () => {
+      return props.showView;
+    },
+    set: (value) => {
+      emit('updateShowView', value);
+    },
+  });
+
+  const viewLoading = ref(false);
+  const params = ref<State>(props.formParams);
+
+  function closeView() {
+    isShowView.value = false;
+  }
+
   //下载
   function download(url: string) {
     window.open(url);
   }
 
-  onMounted(async () => {
-    if (id < 1) {
-      message.error('@{.pk.Dc}不正确，请检查！');
-      return;
+  function loadForm(value) {
+    viewLoading.value = true;
+    View({ id: value.id })
+      .then((res) => {
+        params.value = res;
+      })
+      .finally(() => {
+        viewLoading.value = false;
+      });
+  }
+
+  watch(
+    () => props.formParams,
+    (value) => {
+      console.log('watch数据：', value);
+      loadForm(value);
     }
-    formValue.value = await View({ @{.pk.TsName}: id });
-  });
+  );
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .view {
+    .section {
+      padding: 5px 0;
+      border-bottom: 1px dashed #eeeeee;
+
+      &-hd {
+        padding-left: 10px;
+        border-left: 3px solid v-bind(getAppTheme);
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
+        color: #303133;
+      }
+
+      &-bd {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .item {
+        flex: 0 0 calc((100% - 60px) / 1);
+        display: flex;
+        margin: 16px 30px 0 0;
+        font-size: 13px;
+        color: #666;
+
+        &:nth-child(1n + 1) {
+          margin: 16px 0 0;
+        }
+      }
+
+      .value {
+        flex: 1;
+      }
+    }
+  }
+</style>

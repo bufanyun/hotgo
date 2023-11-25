@@ -2,7 +2,7 @@
   <div>
     <div class="n-layout-page-header">
       <n-card :bordered="false" title="@{.tableComment}">
-        <!--  这是由系统生成的CURD表格，你可以将此行注释改为表格的描述 -->
+        <!--  @{.tableComment}列表页 -->
       </n-card>
     </div>
     <n-card :bordered="false" class="proCard">
@@ -26,7 +26,6 @@
         :row-key="(row) => row.id"
         ref="actionRef"
         :actionColumn="actionColumn"
-        :checked-row-keys="checkedIds"
         @update:checked-row-keys="onCheckedRow"
         :scroll-x="1090"
         :resizeHeightOffset="-10000"
@@ -82,6 +81,7 @@
       :showModal="showModal"
       :formParams="formParams"
     />@{end}
+@{ if eq .options.Step.HasView true }    <View @updateShowView="updateShowView" :formParams="formParams" :showView="showView" />@{end}
   </div>
 </template>
 
@@ -97,6 +97,8 @@
 @{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }  import { useRouter } from 'vue-router';@{end}
   import { getOptionLabel } from '@/utils/hotgo';
 @{ if eq .options.Step.HasEdit true }  import Edit from './edit.vue';@{end}
+@{ if eq .options.Step.HasView true }  import View from './view.vue';@{end}
+
   const { hasPermission } = usePermission();
 @{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }  const router = useRouter();@{end}
   const actionRef = ref();
@@ -106,6 +108,7 @@
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
   const showModal = ref(false);
+  const showView = ref(false);
   const formParams = ref<State>();
 
   const actionColumn = reactive({
@@ -189,7 +192,12 @@
   }
 @{ if eq .options.Step.HasView true }
   function handleView(record: Recordable) {
-    router.push({ name: '@{.varName | LcFirst}View', params: { id: record.@{.pk.TsName} } });
+    showView.value = true;
+    formParams.value = newState(record as State);
+  }
+
+  function updateShowView(value) {
+      showView.value = value;
   }@{end}
 @{ if eq .options.Step.HasEdit true }
   function handleEdit(record: Recordable) {
@@ -223,8 +231,6 @@
       negativeText: '取消',
       onPositiveClick: () => {
         Delete({ id: checkedIds.value }).then((_res) => {
-          batchDeleteDisabled.value = true;
-          checkedIds.value = [];
           message.success('删除成功');
           reloadTable();
         });
@@ -236,8 +242,19 @@
   }@{end}
 
 @{ if eq .options.Step.HasExport true }  function handleExport() {
-    message.loading('正在导出列表...', { duration: 1200 });
-    Export(searchFormRef.value?.formModel);
+    dialog.warning({
+      title: '警告',
+      content: '是否确定执行此操作？',
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: () => {
+        message.loading('正在导出列表...', { duration: 1200 });
+        Export(searchFormRef.value?.formModel);
+      },
+      onNegativeClick: () => {
+        // message.error('取消');
+      },
+    });
   }@{end}
 
 @{ if eq .options.Step.HasStatus true }  function handleStatus(record: Recordable, status: number) {
