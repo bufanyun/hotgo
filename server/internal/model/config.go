@@ -87,6 +87,14 @@ type UploadConfig struct {
 	QiNiuDomain    string `json:"uploadQiNiuDomain"`
 	QiNiuPath      string `json:"uploadQiNiuPath"`
 	QiNiuBucket    string `json:"uploadQiNiuBucket"`
+	// minio配置
+	MinioAccessKey string `json:"uploadMinioAccessKey"`
+	MinioSecretKey string `json:"uploadMinioSecretKey"`
+	MinioEndpoint  string `json:"uploadMinioEndpoint"`
+	MinioUseSSL    int    `json:"uploadMinioUseSSL"`
+	MinioPath      string `json:"uploadMinioPath"`
+	MinioBucket    string `json:"uploadMinioBucket"`
+	MinioDomain    string `json:"uploadMinioDomain"`
 }
 
 // GeoConfig 地理配置

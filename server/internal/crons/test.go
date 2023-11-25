@@ -27,6 +27,7 @@ func (c *cTest) GetName() string {
 }
 
 // Execute 执行任务
-func (c *cTest) Execute(ctx context.Context) {
-	cron.Logger().Infof(ctx, "cron test Execute:%v", time.Now())
+func (c *cTest) Execute(ctx context.Context, parser *cron.Parser) (err error) {
+	parser.Logger.Infof(ctx, "cron test Execute:%v", time.Now())
+	return
 }

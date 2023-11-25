@@ -7,22 +7,23 @@ package admin
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
+	"github.com/gogf/gf/v2/util/gmode"
 	"hotgo/api/admin/role"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/casbin"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/hgorm"
-	"hotgo/internal/model/do"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/service"
 	"hotgo/utility/convert"
+	"hotgo/utility/validate"
 )
 
 type sAdminMenu struct{}
@@ -91,44 +92,25 @@ func (s *sAdminMenu) Edit(ctx context.Context, in *adminin.MenuEditInp) (err err
 		return
 	}
 
-	var pd *do.AdminMenu
-
-	// 维护菜单等级
-	if in.Pid == 0 {
-		in.Level = 1
-	} else {
-		if err = dao.AdminMenu.Ctx(ctx).Where("id", in.Pid).Scan(&pd); err != nil {
-			err = gerror.Wrap(err, consts.ErrorORM)
+	return g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+		in.Pid, in.Level, in.Tree, err = hgorm.AutoUpdateTree(ctx, &dao.AdminMenu, in.Id, in.Pid)
+		if err != nil {
 			return err
 		}
-		if pd == nil {
-			return gerror.New("上级菜单信息错误")
-		}
-		in.Level = gconv.Int(pd.Level) + 1
-	}
 
-	// 修改
-	in.UpdatedAt = gtime.Now()
-	if in.Id > 0 {
-		if in.Pid == in.Id {
-			return gerror.New("上级菜单不能是当前菜单")
-		}
-
-		if _, err = dao.AdminMenu.Ctx(ctx).Where("id", in.Id).Data(in).Update(); err != nil {
-			err = gerror.Wrap(err, "修改菜单失败！")
-			return err
+		if in.Id > 0 {
+			if _, err = dao.AdminMenu.Ctx(ctx).Where("id", in.Id).Data(in).Update(); err != nil {
+				err = gerror.Wrap(err, "修改菜单失败！")
+				return err
+			}
+		} else {
+			if _, err = dao.AdminMenu.Ctx(ctx).Data(in).Insert(); err != nil {
+				err = gerror.Wrap(err, "新增菜单失败！")
+				return err
+			}
 		}
 		return casbin.Refresh(ctx)
-	}
-
-	// 新增
-	in.CreatedAt = gtime.Now()
-
-	if _, err = dao.AdminMenu.Ctx(ctx).Data(in).Insert(); err != nil {
-		err = gerror.Wrap(err, "新增菜单失败！")
-		return err
-	}
-	return casbin.Refresh(ctx)
+	})
 }
 
 // List 获取菜单列表
@@ -213,6 +195,18 @@ func (s *sAdminMenu) GetMenuList(ctx context.Context, memberId int64) (res *role
 
 	if err = mod.Order("sort asc,id desc").Scan(&allMenus); err != nil || len(allMenus) == 0 {
 		return
+	}
+
+	// 生产环境下隐藏一些菜单
+	if gmode.IsProduct() {
+		newMenus := make([]*adminin.MenuRouteSummary, 0)
+		devMenus := []string{"Develops", "doc"} // 如果你还有其他需要在生产环境隐藏的菜单，将菜单别名加入即可
+		for _, menu := range allMenus {
+			if !validate.InSlice(devMenus, menu.Name) {
+				newMenus = append(newMenus, menu)
+			}
+		}
+		allMenus = newMenus
 	}
 
 	for _, v := range allMenus {

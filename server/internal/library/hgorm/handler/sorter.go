@@ -104,7 +104,7 @@ func Sorter(in ISorter) func(m *gdb.Model) *gdb.Model {
 		// 不存在排序条件，默认使用主表主键做降序排序
 		var pk string
 		for name, field := range fields {
-			if gstr.ContainsI(field.Key, consts.GenCodesIndexPK) {
+			if gstr.ContainsI(gstr.ToUpper(field.Key), gstr.ToUpper(consts.GenCodesIndexPK)) {
 				pk = name
 				break
 			}

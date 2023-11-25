@@ -31,14 +31,15 @@ func (c *cCloseOrder) GetName() string {
 }
 
 // Execute 执行任务
-func (c *cCloseOrder) Execute(ctx context.Context) {
-	_, err := service.AdminOrder().Model(ctx).
+func (c *cCloseOrder) Execute(ctx context.Context, parser *cron.Parser) (err error) {
+	_, err = service.AdminOrder().Model(ctx).
 		Where(dao.AdminOrder.Columns().Status, consts.OrderStatusNotPay).
 		WhereLTE(dao.AdminOrder.Columns().CreatedAt, gtime.Now().AddDate(0, 0, -1)).
 		Data(g.Map{
 			dao.AdminOrder.Columns().Status: consts.OrderStatusClose,
 		}).Update()
 	if err != nil {
-		cron.Logger().Warning(ctx, "cron CloseOrder Execute err:%+v", err)
+		parser.Logger.Warning(ctx, "cron CloseOrder Execute err:%+v", err)
 	}
+	return
 }

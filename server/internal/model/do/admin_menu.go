@@ -14,6 +14,8 @@ type AdminMenu struct {
 	g.Meta         `orm:"table:hg_admin_menu, do:true"`
 	Id             interface{} // 菜单ID
 	Pid            interface{} // 父菜单ID
+	Level          interface{} // 关系树等级
+	Tree           interface{} // 关系树
 	Title          interface{} // 菜单名称
 	Name           interface{} // 名称编码
 	Path           interface{} // 路由地址
@@ -31,11 +33,9 @@ type AdminMenu struct {
 	KeepAlive      interface{} // 缓存该路由
 	Hidden         interface{} // 是否隐藏
 	Affix          interface{} // 是否固定
-	Level          interface{} // 关系树等级
-	Tree           interface{} // 关系树
 	Sort           interface{} // 排序
 	Remark         interface{} // 备注
 	Status         interface{} // 菜单状态
-	CreatedAt      *gtime.Time // 创建时间
 	UpdatedAt      *gtime.Time // 更新时间
+	CreatedAt      *gtime.Time // 创建时间
 }

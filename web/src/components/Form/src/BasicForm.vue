@@ -52,6 +52,13 @@
               </n-radio-button>
             </n-radio-group>
           </template>
+          <template v-else-if="schema.component === 'NTreeSelect'">
+            <n-tree-select
+              :class="{ isFull: schema.isFull !== false && getProps.isFull }"
+              v-model:value="formModel[schema.field]"
+              v-bind="getComponentProps(schema)"
+            />
+          </template>
           <!--动态渲染表单组件-->
           <component
             v-else

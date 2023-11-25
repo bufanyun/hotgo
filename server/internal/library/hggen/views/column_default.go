@@ -9,7 +9,6 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
 	"hotgo/internal/model/input/sysin"
-	"strings"
 )
 
 // 默认表单组件映射 Ts -> 表单组件
@@ -119,7 +118,7 @@ func setDefault(field *sysin.GenCodesColumnListModel) {
 		field.Required = true
 	}
 
-	if strings.Contains(field.Index, consts.GenCodesIndexUNI) {
+	if IsIndexUNI(field.Index) {
 		field.Unique = true
 	}
 
@@ -136,7 +135,7 @@ func setDefault(field *sysin.GenCodesColumnListModel) {
 func setDefaultEdit(field *sysin.GenCodesColumnListModel) {
 	field.IsEdit = true
 
-	if field.Index == consts.GenCodesIndexPK {
+	if IsIndexPK(field.Index) {
 		field.IsEdit = false
 		return
 	}
@@ -258,7 +257,7 @@ func setDefaultExport(field *sysin.GenCodesColumnListModel) {
 func setDefaultQuery(field *sysin.GenCodesColumnListModel) {
 	field.IsQuery = false
 
-	if field.Index == consts.GenCodesIndexPK {
+	if IsIndexPK(field.Index) {
 		field.IsQuery = true
 		return
 	}

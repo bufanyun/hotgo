@@ -138,6 +138,28 @@ const schemas: FormSchema[] = [
     },
   },
   {
+    field: 'id',
+    component: 'NInput',
+    label: '用户ID',
+    componentProps: {
+      placeholder: '请输入用户ID',
+      onInput: (e: any) => {
+        console.log(e);
+      },
+    },
+  },
+  {
+    field: 'pid',
+    component: 'NInput',
+    label: '上级ID',
+    componentProps: {
+      placeholder: '请输入上级用户ID',
+      onInput: (e: any) => {
+        console.log(e);
+      },
+    },
+  },
+  {
     field: 'status',
     component: 'NSelect',
     label: '状态',

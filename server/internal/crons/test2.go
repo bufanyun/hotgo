@@ -7,7 +7,7 @@ package crons
 
 import (
 	"context"
-	"hotgo/internal/consts"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"hotgo/internal/library/cron"
 	"time"
 )
@@ -28,22 +28,18 @@ func (c *cTest2) GetName() string {
 }
 
 // Execute 执行任务
-func (c *cTest2) Execute(ctx context.Context) {
-	args, ok := ctx.Value(consts.ContextKeyCronArgs).([]string)
-	if !ok {
-		cron.Logger().Warning(ctx, "参数解析失败!")
-		return
-	}
-	if len(args) != 3 {
-		cron.Logger().Warning(ctx, "test2 传入参数不正确!")
+func (c *cTest2) Execute(ctx context.Context, parser *cron.Parser) (err error) {
+	if len(parser.Args) != 3 {
+		err = gerror.New("传入参数不正确!")
 		return
 	}
 
 	var (
-		name = args[0]
-		age  = args[1]
-		msg  = args[2]
+		name = parser.Args[0]
+		age  = parser.Args[1]
+		msg  = parser.Args[2]
 	)
 
-	cron.Logger().Infof(ctx, "cron test2 Execute:%v, name:%v, age:%v, msg:%v", time.Now(), name, age, msg)
+	parser.Logger.Infof(ctx, "cron test2 Execute:%v, name:%v, age:%v, msg:%v", time.Now(), name, age, msg)
+	return
 }

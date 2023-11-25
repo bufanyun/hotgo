@@ -8,9 +8,11 @@ package common
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
+	"github.com/gogf/gf/v2/util/gmode"
 	"hotgo/api/admin/common"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/captcha"
@@ -35,6 +37,7 @@ func (c *cSite) Config(ctx context.Context, _ *common.SiteConfigReq) (res *commo
 		Version: consts.VersionApp,
 		WsAddr:  c.getWsAddr(ctx, request),
 		Domain:  c.getDomain(ctx, request),
+		Mode:    gmode.Mode(),
 	}
 	return
 }
@@ -43,7 +46,7 @@ func (c *cSite) getWsAddr(ctx context.Context, request *ghttp.Request) string {
 	// 如果是本地IP访问，则认为是调试模式，走实际请求地址，否则走配置中的地址
 	ip := ghttp.RequestFromCtx(ctx).GetHeader("hostname")
 	if validate.IsLocalIPAddr(ip) {
-		return "ws://" + ip + ":" + gstr.StrEx(request.Host, ":") + "/socket"
+		return "ws://" + ip + ":" + gstr.StrEx(request.Host, ":") + g.Cfg().MustGet(ctx, "router.websocket.prefix").String()
 	}
 
 	basic, err := service.SysConfig().GetBasic(ctx)

@@ -9,33 +9,32 @@ export const columns = [
     width: 100,
   },
   {
-    title: '上级ID',
-    dataIndex: 'pid',
-    key: 'pid',
-    width: 100,
-  },
-  {
     title: '分组名称',
     dataIndex: 'name',
     key: 'name',
-    width: 200,
+    width: 150,
   },
   {
-    title: '是否默认',
+    title: '上级分组',
+    dataIndex: 'supName',
+    key: 'supName',
+    width: 150,
+    render(row) {
+      if (row.supName == ''){
+        return '顶级分组';
+      }
+      return row.supName;
+    },
+  },
+  {
+    title: '默认',
     dataIndex: 'isDefault',
     key: 'isDefault',
     render(row) {
-      return row.is_default === 1 ? '是' : '否';
+      return row.isDefault === 1 ? '是' : '否';
     },
-    width: 100,
+    width: 80,
   },
-  {
-    title: '排序',
-    dataIndex: 'sort',
-    key: 'sort',
-    width: 100,
-  },
-
   {
     title: '状态',
     dataIndex: 'status',
@@ -57,6 +56,12 @@ export const columns = [
     },
     width: 150,
   },
+  // {
+  //   title: '排序',
+  //   dataIndex: 'sort',
+  //   key: 'sort',
+  //   width: 100,
+  // },
   {
     title: '备注',
     dataIndex: 'remark',

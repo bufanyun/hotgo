@@ -187,6 +187,8 @@ type MemberViewModel struct {
 type MemberListInp struct {
 	form.PageReq
 	form.StatusReq
+	Id        int64   `json:"id"         dc:"用户ID"`
+	Pid       int64   `json:"pid"        dc:"上级ID"`
 	RoleId    int     `json:"roleId"     dc:"角色ID"`
 	DeptId    int     `json:"deptId"     dc:"部门ID"`
 	Mobile    int     `json:"mobile"     dc:"手机号"`

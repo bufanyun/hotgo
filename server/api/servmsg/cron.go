@@ -45,3 +45,13 @@ type CronOnlineExecReq struct {
 type CronOnlineExecRes struct {
 	tcp.ServerRes
 }
+
+// CronDispatchLogReq 调度日志
+type CronDispatchLogReq struct {
+	*sysin.DispatchLogInp
+}
+
+type CronDispatchLogRes struct {
+	tcp.ServerRes
+	*sysin.DispatchLogModel
+}

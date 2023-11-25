@@ -31,7 +31,7 @@ gfcli:
 
 - 以下方式任选其一即可
 
-1、 make一键编译 （linux或mac环境推荐）
+1、 make一键编译 （确认已安装`make环境`）
 ```shell
 cd server &&  make build
 ``` 
@@ -46,16 +46,27 @@ cd ../web && yarn build                               # 切换到web项目下，
 echo "y" | gf build                                   # 编译hotgo服务端
 
 # 不出意外你已经编译好了hotgo可执行文件！
-``` 
+```
 
-3、分服务编译
+3、分端编译 （多人开发时推荐）
+```shell
+# 编译服务端
+cd server                                        # 切换到服务端目录下
+rm -rf ./resource/public/admin/                  # 删除之前的web资源，如果开发环境没有这个目录可以忽略此步骤
+echo "y" | gf build                              # 编译hotgo服务端
 
-待写。
+# 编译web端
+cd web                                           
+yarn build
+
+# web端编译完成后，将web/dist/*中的文件上传到`server`端线上运行目录：/resource/public/admin即可
+# 至此，web端和server端都可以独立覆盖更新
+```
 
 
 ### 修改生产配置文件
 - 配置文件：server/manifest/config/config.yaml
-> 如关闭代码生成功能、修改数据库地址、缓存驱动、队列驱动、日志路径等
+> 如关闭debug、mode设为生产环境、修改数据库地址、缓存驱动、队列驱动、日志路径等
 
 
 

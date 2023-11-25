@@ -21,6 +21,7 @@
         </n-form-item>
         <n-form-item label="上级目录" path="pid">
           <n-tree-select
+            filterable
             :options="optionTreeData"
             :default-value="formParams.pid"
             @update:value="handleUpdateValue"

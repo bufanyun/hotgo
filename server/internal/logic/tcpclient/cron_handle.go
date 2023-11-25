@@ -34,3 +34,10 @@ func (s *sCronClient) OnCronOnlineExec(ctx context.Context, req *servmsg.CronOnl
 	err = service.SysCron().OnlineExec(ctx, req.OnlineExecInp)
 	return
 }
+
+// OnCronDispatchLog 查看调度日志
+func (s *sCronClient) OnCronDispatchLog(ctx context.Context, req *servmsg.CronDispatchLogReq) (res *servmsg.CronDispatchLogRes, err error) {
+	res = new(servmsg.CronDispatchLogRes)
+	res.DispatchLogModel, err = service.SysCron().DispatchLog(ctx, req.DispatchLogInp)
+	return
+}

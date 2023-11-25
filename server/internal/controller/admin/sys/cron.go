@@ -10,6 +10,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"hotgo/api/admin/cron"
 	"hotgo/api/servmsg"
+	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 )
 
@@ -63,9 +64,13 @@ func (c *cCron) List(ctx context.Context, req *cron.ListReq) (res *cron.ListRes,
 	return
 }
 
-// Status 更新部门状态
+// Status 更新状态
 func (c *cCron) Status(ctx context.Context, req *cron.StatusReq) (res *cron.StatusRes, err error) {
-	err = service.SysCron().Status(ctx, &req.CronStatusInp)
+	if req.Id <= 0 {
+		return nil, gerror.New("定时任务ID不能为空")
+	}
+
+	err = service.TCPServer().CronStatus(ctx, &servmsg.CronStatusReq{CronStatusInp: &req.CronStatusInp})
 	return
 }
 
@@ -76,5 +81,17 @@ func (c *cCron) OnlineExec(ctx context.Context, req *cron.OnlineExecReq) (res *c
 	}
 
 	err = service.TCPServer().CronOnlineExec(ctx, &servmsg.CronOnlineExecReq{OnlineExecInp: &req.OnlineExecInp})
+	return
+}
+
+// DispatchLog 调度日志
+func (c *cCron) DispatchLog(ctx context.Context, req *cron.DispatchLogReq) (res *cron.DispatchLogRes, err error) {
+	if req.Id <= 0 {
+		return nil, gerror.New("定时任务ID不能为空")
+	}
+
+	res = new(cron.DispatchLogRes)
+	res.DispatchLogModel = new(sysin.DispatchLogModel)
+	res.Log, err = service.TCPServer().DispatchLog(ctx, &servmsg.CronDispatchLogReq{DispatchLogInp: &req.DispatchLogInp})
 	return
 }

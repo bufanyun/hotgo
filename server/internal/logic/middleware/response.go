@@ -87,8 +87,10 @@ func parseResponse(r *ghttp.Request) (code int, message string, resp interface{}
 	code = gerror.Code(err).Code()
 
 	// 记录异常日志
+	// 如果你想对错误做不同的处理，可以通过定义不同的错误码来区分
+	// 默认-1为安全可控错误码只记录文件日志，非-1为不可控错误，记录文件日志+服务日志并打印堆栈
 	if code == gcode.CodeNil.Code() {
-		g.Log().Stdout(false).Printf(ctx, "exception:%v", err)
+		g.Log().Stdout(false).Infof(ctx, "exception:%v", err)
 	} else {
 		g.Log().Errorf(ctx, "exception:%v", err)
 	}

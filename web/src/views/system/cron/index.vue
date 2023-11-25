@@ -76,9 +76,13 @@
             />
           </n-form-item>
 
-          <n-form-item label="任务名称" path="name">
-            <n-input placeholder="请输入公告标题" v-model:value="formParams.name" />
-            <template #feedback> go函数名称</template>
+          <n-form-item label="任务标题" path="title">
+            <n-input placeholder="请输入任务标题" v-model:value="formParams.title" />
+          </n-form-item>
+
+          <n-form-item label="执行方法" path="name">
+            <n-input placeholder="请输入执行方法" v-model:value="formParams.name" />
+            <template #feedback>go方法名称</template>
           </n-form-item>
 
           <n-form-item label="执行参数" path="params">
@@ -104,8 +108,8 @@
             <n-input placeholder="请输入执行次数" v-model:value="formParams.count" />
           </n-form-item>
 
-          <n-form-item label="定时表达式" path="pattern">
-            <n-input placeholder="请输入表达式" v-model:value="formParams.pattern" />
+          <n-form-item label="表达式" path="pattern">
+            <n-input placeholder="请输入定时表达式" v-model:value="formParams.pattern" />
             <template #feedback>
               表达式语法参考：<a
                 target="_blank"
@@ -144,25 +148,53 @@
       </n-modal>
     </n-card>
 
-    <GroupModal ref="GroupModalRef" @reloadGroupOption="reloadGroupOption"/>
+    <GroupModal ref="GroupModalRef" @reloadGroupOption="reloadGroupOption" />
+
+    <n-modal
+      v-model:show="showStdout"
+      style="width: 72%"
+      :show-icon="false"
+      preset="dialog"
+      title="调度日志"
+    >
+      <n-form ref="formRef" label-placement="left" :label-width="80" class="py-4">
+        <n-form-item label="日志文件" path="fileName">
+          <n-input placeholder="" v-model:value="log.fileName" readonly />
+        </n-form-item>
+
+        <n-form-item label="文件大小" path="sizeFormat">
+          <n-input placeholder="" v-model:value="log.sizeFormat" readonly />
+        </n-form-item>
+
+        <n-form-item label="日志内容" path="log" class="n-code-container">
+          <n-code
+            class="n-code-contents"
+            id="n-code"
+            :word-wrap="true"
+            :code="log?.contents ?? ''"
+            language="html"
+          />
+        </n-form-item>
+      </n-form>
+    </n-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
   import { h, reactive, ref, onBeforeMount } from 'vue';
-  import { TreeSelectOption, useDialog, useMessage } from 'naive-ui';
+  import { useDialog, useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { Delete, Edit, getSelect, List, Status, OnlineExec } from '@/api/sys/cron';
+  import { Delete, Edit, getSelect, List, Status, OnlineExec, DispatchLog } from '@/api/sys/cron';
   import { columns } from './columns';
   import { DeleteOutlined, GroupOutlined, PlusOutlined } from '@vicons/antd';
-  import { statusActions } from '@/enums/optionsiEnum';
   import GroupModal from './modal/modal.vue';
 
   const optionTreeData = ref<any>([]);
   const defaultValueRef = () => ({
     id: 0,
     groupId: 0,
+    title: '',
     name: '',
     params: '',
     pattern: '',
@@ -179,13 +211,7 @@
     status: null,
   });
 
-  const rules = {
-    name: {
-      // required: true,
-      trigger: ['blur', 'input'],
-      message: '请输入任务名称',
-    },
-  };
+  const rules = {};
 
   const policyOptions = [
     {
@@ -221,17 +247,34 @@
     return s;
   });
 
-  const groupOptions = ref<any>([]);
+  const statusActions = [
+    {
+      label: '设为运行中',
+      key: 1,
+    },
+    {
+      label: '设为已结束',
+      key: 2,
+    },
+    {
+      label: '删除任务',
+      key: 3,
+    },
+  ];
 
+  const groupOptions = ref<any>([]);
+  const showStdout = ref(false);
+  const log = ref();
   const schemas: FormSchema[] = [
     {
       field: 'groupId',
-      component: 'NSelect',
+      component: 'NTreeSelect',
       label: '任务分组',
       defaultValue: null,
       componentProps: {
         placeholder: '请选择分组',
         options: groupOptions,
+        clearable: true,
         onUpdateValue: (e: any) => {
           console.log(e);
         },
@@ -300,19 +343,28 @@
           {
             label: '在线执行',
             onClick: handleExecute.bind(null, record),
+            type: 'success',
+          },
+          {
+            label: '调度日志',
+            onClick: handleDispatchLog.bind(null, record),
+            type: 'default',
           },
           {
             label: '编辑',
             onClick: handleEdit.bind(null, record),
           },
-          {
-            label: '删除',
-            onClick: handleDelete.bind(null, record),
-          },
         ],
         dropDownActions: statusActions,
         select: (key) => {
-          updateStatus(record.id, key);
+          if (key < 3) {
+            updateStatus(record.id, key);
+            return;
+          }
+          if (key == 3) {
+            handleDelete(record);
+            return;
+          }
         },
       });
     },
@@ -367,9 +419,21 @@
     formParams.value = record;
   }
 
+  function handleDispatchLog(record: Recordable) {
+    DispatchLog(record).then((res) => {
+      showStdout.value = true;
+      log.value = res;
+
+      setTimeout(() => {
+        const container = document.getElementById('n-code');
+        container.scrollTop = container.scrollHeight;
+      }, 100);
+    });
+  }
+
   function handleExecute(record: Recordable) {
-    dialog.warning({
-      title: '警告',
+    dialog.info({
+      title: '提示',
       content: '提交成功后将立即执行一次，你确定要执行吗？',
       positiveText: '确定',
       negativeText: '取消',
@@ -378,9 +442,6 @@
           message.success('提交成功，执行结果请登录控制台查看日志！');
           reloadTable();
         });
-      },
-      onNegativeClick: () => {
-        // message.error('取消');
       },
     });
   }
@@ -397,9 +458,6 @@
           reloadTable();
         });
       },
-      onNegativeClick: () => {
-        // message.error('取消');
-      },
     });
   }
 
@@ -415,9 +473,6 @@
           reloadTable();
         });
       },
-      onNegativeClick: () => {
-        // message.error('取消');
-      },
     });
   }
 
@@ -432,16 +487,12 @@
   }
 
   function updateStatus(id, status) {
-    Status({ id: id, status: status })
-      .then((_res) => {
-        message.success('操作成功');
-        setTimeout(() => {
-          reloadTable();
-        });
-      })
-      .catch((e: Error) => {
-        message.error(e.message ?? '操作失败');
+    Status({ id: id, status: status }).then((_res) => {
+      message.success('操作成功');
+      setTimeout(() => {
+        reloadTable();
       });
+    });
   }
 
   const GroupModalRef = ref();
@@ -456,14 +507,18 @@
     if (optionTreeData.value === undefined || optionTreeData.value === null) {
       optionTreeData.value = [];
     }
+    groupOptions.value = transformGroupData(optionTreeData.value);
+  }
 
-    groupOptions.value = [];
-    for (let i = 0; i < optionTreeData.value?.length; i++) {
-      groupOptions.value.push({
-        value: optionTreeData.value[i].key,
-        label: optionTreeData.value[i].label,
-      });
-    }
+  function transformGroupData(data: any[]) {
+    return data.map((item) => {
+      return {
+        key: item.key,
+        value: item.key,
+        label: item.label,
+        children: item.children !== null ? transformGroupData(item.children) : null,
+      };
+    });
   }
 
   onBeforeMount(async () => {
@@ -471,12 +526,23 @@
   });
 
   // 处理选项更新
-  function handleUpdateValue(
-    value: string | number | Array<string | number> | null,
-    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
-  ) {
+  function handleUpdateValue(value: string | number) {
     formParams.value.groupId = value;
   }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .n-code-container {
+    height: 450px;
+    width: 100%;
+  }
+
+  .n-code-contents {
+    height: 450px;
+    width: 100%;
+    overflow: auto;
+    background: #2f3129;
+    color: wheat;
+    padding: 10px;
+  }
+</style>

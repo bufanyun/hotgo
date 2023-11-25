@@ -4,25 +4,39 @@ appName: "hotgo"
 
 # hotgo配置
 hotgo:
-  # debug开关，开启后接口出现错误时会向前端输出堆栈信息，默认为true
+  # debug开关，开启后接口出现错误时会向前端输出堆栈信息，可选：false|true，默认为true
   debug: true
+  # gf运行模式，可选：not-set|develop|testing|staging|product
+  mode: "develop"
   # IP归属地解析方法，可选：cz88|whois，默认为whois
   ipMethod: "whois"
-  # 是否为演示系统 false|true
+  # 是否为演示系统，可选：false|true
   isDemo: false
-  # 是否为集群部署 false|true ，默认为false。开启集群必须配置redis，通过redis发布订阅进行集群之间的数据同步
+  # 是否为集群部署，可选：false|true 默认为false。开启集群必须配置redis，通过redis发布订阅进行集群之间的数据同步
   isCluster: false
   # 全局请求日志
   log:
-    switch: true                                    # 日志开关，默认为true
-    queue: true                                     # 是否启用队列，启用时需要配置队列信息，默认为true
-    module: [ "admin", "api", "default" ]           # 需要记录的模块
-    skipCode: [ ]                                   # 不记录的状态码，如： ["0", "-1"]
+    switch: true                                      # 日志开关，可选：false|true，默认为true
+    queue: true                                       # 是否启用队列，启用时需要配置队列信息，可选：false|true，默认为true
+    module: [ "admin", "api", "default" ]             # 需要记录的模块
+    skipCode: [ ]                                     # 不记录的状态码，如： ["0", "-1"]
   # 系统日志，用于在后台统计异常日志
   serveLog:
-    switch: true                                    # 日志开关，默认为true
-    queue: true                                     # 是否启用队列，启用时需要配置队列信息，默认为true
-    levelFormat: ["WARN", "ERRO", "FATA", "PANI"]   # 需要记录的等级
+    switch: true                                      # 日志开关，可选：false|true，默认为true
+    queue: true                                       # 是否启用队列，启用时需要配置队列信息，可选：false|true，默认为true
+    levelFormat: [ "WARN", "ERRO", "FATA", "PANI" ]   # 需要记录的等级
+
+
+# 统一默认日志配置
+defaultLogger: &defaultLogger
+  level: "all"
+  flags: 42
+  file: "{Y-m-d}.log"                     # 日志文件格式。默认为"{Y-m-d}.log"
+  stdoutColorDisabled: false              # 关闭终端的颜色打印。可选：false|true，默认false
+  writerColorEnable: false                # 日志文件是否带上颜色。可选：false|true，默认false，表示不带颜色
+  rotateExpire: "7d"                      # 日志保留天数
+  rotateBackupLimit: 2                    # 最大备份数量
+  rotateBackupCompress: 2                 # 日志文件压缩级别，0-9,9最高
 
 
 # gf配置，配置参考：https://goframe.org/pages/viewpage.action?pageId=44449486
@@ -46,11 +60,8 @@ server:
   pprofPattern: "/pprof"                      # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
   # 服务日志配置
   logger:
-    level: "all"
-    flags: 42
-    rotateExpire: "7d"                      # 日志保留天数
-    rotateBackupLimit: 2                    # 最大备份数量
-    rotateBackupCompress: 2                 # 日志文件压缩级别，0-9,9最高
+    path: "logs/server"                       # 日志文件路径。默认为空，表示关闭，仅输出到终端
+    <<: *defaultLogger
 
 
 tcp:
@@ -73,18 +84,6 @@ tcp:
       address: "127.0.0.1:8099"                                     # 服务器地址
       appId: "mengshuai"                                            # 应用名称
       secretKey: "123456"                                           # 密钥
-
-
-# 统一默认日志配置
-defaultLogger: &defaultLogger
-  level: "all"
-  flags: 42
-  file: "{Y-m-d}.log"                     # 日志文件格式。默认为"{Y-m-d}.log"
-  stdoutColorDisabled: false              # 关闭终端的颜色打印。默认开启
-  writerColorEnable: false                # 日志文件是否带上颜色。默认false，表示不带颜色
-  rotateExpire: "7d"                      # 日志保留天数
-  rotateBackupLimit: 2                    # 最大备份数量
-  rotateBackupCompress: 2                 # 日志文件压缩级别，0-9,9最高
 
 
 # 日志配置
@@ -113,15 +112,15 @@ logger:
 # Viewer. 配置参考：https://goframe.org/pages/viewpage.action?pageId=1114335
 viewer:
   paths: "resource/template"
-  defaultFile:  "index.html"
-  delimiters: ["@{", "}"]
-  homeLayout:     "home/index.html"
+  defaultFile: "index.html"
+  delimiters: [ "@{", "}" ]
+  homeLayout: "home/index.html"
 
 
 # 内容设置
 setting:
-  title:       "HotGo"
-  keywords:    "中后台解决方案,gf框架,vue3"
+  title: "HotGo"
+  keywords: "中后台解决方案,gf框架,vue3"
   description: "hotgo 是一个基于 goframe2，vue3，vite2，TypeScript，uniapp 的中后台解决方案，它可以帮助你快速搭建企业级中后台项目，相信不管是从新技术使用还是其他方面，都能帮助到你，持续更新中。"
 
 
@@ -155,19 +154,19 @@ router:
     # 前缀
     prefix: "/api"
     # 不需要验证登录的路由地址
-    exceptLogin: []
+    exceptLogin: [ ]
   # websocket
   websocket:
     # 前缀
     prefix: "/socket"
     # 不需要验证登录的路由地址
-    exceptLogin: []
+    exceptLogin: [ ]
   # 前台页面
   home:
     # 前缀
     prefix: "/home"
     # 不需要验证登录的路由地址
-    exceptLogin: []
+    exceptLogin: [ ]
 
 
 #缓存
@@ -224,7 +223,8 @@ redis:
 # Database. 配置参考：https://goframe.org/pages/viewpage.action?pageId=1114245
 database:
   logger:
-    level: "all"
+    path: "logs/database"                       # 日志文件路径。默认为空，表示关闭，仅输出到终端
+    <<: *defaultLogger
     stdout: true
   default:
     link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
@@ -240,10 +240,10 @@ jaeger:
 
 # 生成代码
 hggen:
-  allowedIPs: ["127.0.0.1", "*"]                                      # 白名单，*代表所有，只有允许的IP后台才能使用生成代码功能
-  selectDbs: [ "default" ]                                            # 可选生成表的数据库配置名称，支持多库
-  disableTables : ["hg_sys_gen_codes","hg_admin_role_casbin"]         # 禁用的表，禁用以后将不会在选择表中看到
-  delimiters: ["@{", "}"]                                             # 模板引擎变量分隔符号
+  allowedIPs: [ "127.0.0.1", "*" ]                                      # 白名单，*代表所有，只有允许的IP后台才能使用生成代码功能
+  selectDbs: [ "default" ]                                              # 可选生成表的数据库配置名称，支持多库
+  disableTables: [ "hg_sys_gen_codes","hg_admin_role_casbin" ]          # 禁用的表，禁用以后将不会在选择表中看到
+  delimiters: [ "@{", "}" ]                                             # 模板引擎变量分隔符号
   # 生成应用模型，所有生成模板允许自定义，可以参考default模板进行改造
   application:
     # CRUD模板
@@ -256,12 +256,12 @@ hggen:
           templatePath: "./resource/generate/default/curd"              # 模板路径
           apiPath: "./api/admin"                                        # goApi生成路径
           controllerPath: "./internal/controller/admin/sys"             # 控制器生成路径
-          logicPath : "./internal/logic/sys"                            # 主要业务生成路径
+          logicPath: "./internal/logic/sys"                             # 主要业务生成路径
           inputPath: "./internal/model/input/sysin"                     # 表单过滤器生成路径
-          routerPath : "./internal/router/genrouter"                    # 生成路由表路径
-          sqlPath : "./storage/data/generate"                           # 生成sql语句路径
+          routerPath: "./internal/router/genrouter"                     # 生成路由表路径
+          sqlPath: "./storage/data/generate"                            # 生成sql语句路径
           webApiPath: "../web/src/api"                                  # webApi生成路径
-          webViewsPath : "../web/src/views"                             # web页面生成路径
+          webViewsPath: "../web/src/views"                              # web页面生成路径
 
         # 默认的插件包模板，{$name}会自动替换成实际的插件名称
         - group: "addon"                                                # 分组名称
@@ -270,12 +270,12 @@ hggen:
           templatePath: "./resource/generate/default/curd"              # 模板路径
           apiPath: "./addons/{$name}/api/admin"                         # goApi生成路径
           controllerPath: "./addons/{$name}/controller/admin/sys"       # 控制器生成路径
-          logicPath : "./addons/{$name}/logic/sys"                      # 主要业务生成路径
+          logicPath: "./addons/{$name}/logic/sys"                       # 主要业务生成路径
           inputPath: "./addons/{$name}/model/input/sysin"               # 表单过滤器生成路径
-          routerPath : "./addons/{$name}/router/genrouter"              # 生成路由表路径
-          sqlPath : "./storage/data/generate/addons"                    # 生成sql语句路径
+          routerPath: "./addons/{$name}/router/genrouter"               # 生成路由表路径
+          sqlPath: "./storage/data/generate/addons"                     # 生成sql语句路径
           webApiPath: "../web/src/api/addons/{$name}"                   # webApi生成路径
-          webViewsPath : "../web/src/views/addons/{$name}"              # web页面生成路径
+          webViewsPath: "../web/src/views/addons/{$name}"               # web页面生成路径
 
     # 关系树列表模板
     tree:

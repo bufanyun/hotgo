@@ -82,13 +82,13 @@ type CronGroupViewModel struct {
 // CronGroupListInp 获取列表
 type CronGroupListInp struct {
 	form.PageReq
-
 	form.StatusReq
 	Name string
 }
 
 type CronGroupListModel struct {
 	entity.SysCronGroup
+	SupName string `json:"supName"      description:"上级分组名称"`
 }
 
 // CronGroupStatusInp 更新状态

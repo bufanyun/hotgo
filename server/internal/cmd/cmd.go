@@ -36,7 +36,9 @@ var (
 		---------------------------------------------------------------------------------
 		工具
 		>> 释放casbin权限，用于清理无效的权限设置  [go run main.go tools -m=casbin -a1=refresh]
-
+		---------------------------------------------------------------------------------
+		升级更新
+		>> 修复菜单关系树  [go run main.go up -m=fix -a1=menuTree]
 		---------------------------------------------------------------------------------
 		更多
        	github地址：https://github.com/bufanyun/hotgo
@@ -76,7 +78,7 @@ var (
 )
 
 func init() {
-	if err := Main.AddCommand(All, Http, Queue, Cron, Auth, Tools, Help); err != nil {
+	if err := Main.AddCommand(All, Http, Queue, Cron, Auth, Tools, Up, Help); err != nil {
 		panic(err)
 	}
 }

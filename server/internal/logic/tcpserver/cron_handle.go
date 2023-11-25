@@ -10,6 +10,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"hotgo/api/servmsg"
 	"hotgo/internal/consts"
+	"hotgo/internal/library/cron"
 )
 
 // CronDelete 删除任务
@@ -94,4 +95,23 @@ func (s *sTCPServer) CronOnlineExec(ctx context.Context, in *servmsg.CronOnlineE
 		}
 	}
 	return
+}
+
+// DispatchLog 查看调度日志
+func (s *sTCPServer) DispatchLog(ctx context.Context, in *servmsg.CronDispatchLogReq) (log *cron.Log, err error) {
+	clients := s.serv.GetGroupClients(consts.LicenseGroupCron)
+	if len(clients) == 0 {
+		err = gerror.New("没有在线的定时任务服务")
+		return
+	}
+
+	var res servmsg.CronDispatchLogRes
+	if err = s.serv.RequestScan(ctx, clients[0], in, &res); err != nil {
+		return
+	}
+
+	if err = res.GetError(); err != nil {
+		return
+	}
+	return res.Log, nil
 }

@@ -164,7 +164,6 @@
       }
       //切换
       function onChange(checkList) {
-        console.log('checkList:' + JSON.stringify(checkList));
         if (state.selection) {
           checkList.unshift('selection');
         }

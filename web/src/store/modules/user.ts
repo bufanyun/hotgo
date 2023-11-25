@@ -55,6 +55,7 @@ export interface ConfigState {
   domain: string;
   version: string;
   wsAddr: string;
+  mode:string;
 }
 
 export interface LoginConfigState {
@@ -229,7 +230,6 @@ export const useUserStore = defineStore({
       if (this.loginConfig !== null && this.loginConfig.loginAutoOpenId !== 1) {
         return false;
       }
-
       return this.info === null || this.info.openId === '';
     },
     // 登出

@@ -22,9 +22,10 @@ type SysCronDao struct {
 type SysCronColumns struct {
 	Id        string // 任务ID
 	GroupId   string // 分组ID
-	Name      string // 任务名称
+	Title     string // 任务标题
+	Name      string // 任务方法
 	Params    string // 函数参数
-	Pattern   string // 定时表达式
+	Pattern   string // 表达式
 	Policy    string // 策略
 	Count     string // 执行次数
 	Sort      string // 排序
@@ -38,6 +39,7 @@ type SysCronColumns struct {
 var sysCronColumns = SysCronColumns{
 	Id:        "id",
 	GroupId:   "group_id",
+	Title:     "title",
 	Name:      "name",
 	Params:    "params",
 	Pattern:   "pattern",
