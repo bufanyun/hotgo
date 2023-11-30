@@ -27,7 +27,7 @@ func (s *sHook) accessLog(r *ghttp.Request) {
 	}
 
 	contexts.SetDataMap(ctx, g.Map{
-		"request.takeUpTime": gtime.TimestampMilli() - r.EnterTime,
+		"request.takeUpTime": gtime.Now().Sub(gtime.New(r.EnterTime)).Milliseconds(),
 		// ...
 	})
 

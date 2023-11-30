@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/gogf/gf/contrib/trace/jaeger/v2"
 	"github.com/gogf/gf/v2"
+	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
@@ -17,6 +18,7 @@ import (
 	"github.com/gogf/gf/v2/os/glog"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
+	"github.com/gogf/gf/v2/util/gmode"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/cache"
 	"hotgo/internal/library/queue"
@@ -24,13 +26,17 @@ import (
 	"hotgo/internal/service"
 	"hotgo/utility/charset"
 	"hotgo/utility/simple"
+	"hotgo/utility/validate"
 	"runtime"
 	"strings"
 )
 
 func Init(ctx context.Context) {
+	// 设置gf运行模式
+	SetGFMode(ctx)
+
 	// 设置服务日志处理
-	g.Log().SetHandlers(LoggingServeLogHandler)
+	glog.SetDefaultHandler(LoggingServeLogHandler)
 
 	// 默认上海时区
 	if err := gtime.SetTimeZone("Asia/Shanghai"); err != nil {
@@ -69,6 +75,12 @@ func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 			}
 		}()
 
+		// web服务日志不做记录，因为会导致重复记录
+		r := g.RequestFromCtx(ctx)
+		if r != nil && r.Server != nil && in.Logger.GetConfig().Path == r.Server.Logger().GetConfig().Path {
+			return
+		}
+
 		conf, err := service.SysConfig().GetLoadServeLog(ctx)
 		if err != nil {
 			return
@@ -90,10 +102,14 @@ func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 			in.Stack = in.Logger.GetStack()
 		}
 
+		if len(in.Content) == 0 {
+			in.Content = gstr.StrLimit(gvar.New(in.Values).String(), consts.MaxServeLogContentLen)
+		}
+
 		var data entity.SysServeLog
 		data.TraceId = gctx.CtxId(ctx)
 		data.LevelFormat = in.LevelFormat
-		data.Content = gstr.StrLimit(in.Content, consts.MaxServeLogContentLen)
+		data.Content = in.Content
 		data.Stack = gjson.New(charset.ParseStack(in.Stack))
 		data.Line = strings.TrimRight(in.CallerPath, ":")
 		data.TriggerNs = in.Time.UnixNano()
@@ -134,4 +150,19 @@ func InitTrace(ctx context.Context) {
 		_ = tp.Shutdown(ctx)
 		g.Log().Debug(ctx, "jaeger closed ..")
 	})
+}
+
+// SetGFMode 设置gf运行模式
+func SetGFMode(ctx context.Context) {
+	mode := g.Cfg().MustGet(ctx, "hotgo.mode").String()
+	if len(mode) == 0 {
+		mode = gmode.NOT_SET
+	}
+
+	var modes = []string{gmode.DEVELOP, gmode.TESTING, gmode.STAGING, gmode.PRODUCT}
+
+	// 如果是有效的运行模式，就进行设置
+	if validate.InSlice(modes, mode) {
+		gmode.Set(mode)
+	}
 }

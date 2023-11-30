@@ -36,6 +36,10 @@ type (
 
 const perm = 0o666
 
+var (
+	CacheExpiredErr = errors.New("cache expired")
+)
+
 // NewAdapterFile creates and returns a new memory cache object.
 func NewAdapterFile(dir string) gcache.Adapter {
 	return &AdapterFile{
@@ -77,7 +81,7 @@ func (c *AdapterFile) Get(ctx context.Context, key interface{}) (*gvar.Var, erro
 
 func (c *AdapterFile) GetOrSet(ctx context.Context, key interface{}, value interface{}, duration time.Duration) (result *gvar.Var, err error) {
 	result, err = c.Get(ctx, key)
-	if err != nil {
+	if err != nil && !errors.Is(err, CacheExpiredErr) {
 		return nil, err
 	}
 	if result.IsNil() {
@@ -88,7 +92,7 @@ func (c *AdapterFile) GetOrSet(ctx context.Context, key interface{}, value inter
 
 func (c *AdapterFile) GetOrSetFunc(ctx context.Context, key interface{}, f gcache.Func, duration time.Duration) (result *gvar.Var, err error) {
 	v, err := c.Get(ctx, key)
-	if err != nil {
+	if err != nil && !errors.Is(err, CacheExpiredErr) {
 		return nil, err
 	}
 	if v.IsNil() {
@@ -160,7 +164,6 @@ func (c *AdapterFile) UpdateExpire(ctx context.Context, key interface{}, duratio
 		return
 	}
 	err = c.Set(ctx, fileKey, v.Val(), duration)
-
 	return
 }
 
@@ -173,7 +176,6 @@ func (c *AdapterFile) GetExpire(ctx context.Context, key interface{}) (time.Dura
 	if content.Duration <= time.Now().Unix() {
 		return -1, nil
 	}
-
 	return time.Duration(time.Now().Unix()-content.Duration) * time.Second, nil
 }
 
@@ -202,7 +204,6 @@ func (c *AdapterFile) createName(key string) string {
 	h := sha256.New()
 	_, _ = h.Write([]byte(key))
 	hash := hex.EncodeToString(h.Sum(nil))
-
 	return filepath.Join(c.dir, fmt.Sprintf("%s.cache", hash))
 }
 
@@ -228,9 +229,8 @@ func (c *AdapterFile) read(key string) (*fileContent, error) {
 
 	if content.Duration <= time.Now().Unix() {
 		_ = c.Delete(key)
-		return nil, errors.New("cache expired")
+		return nil, CacheExpiredErr
 	}
-
 	return content, nil
 }
 
@@ -246,7 +246,6 @@ func (c *AdapterFile) Delete(key string) error {
 	if err != nil && os.IsNotExist(err) {
 		return nil
 	}
-
 	return os.Remove(c.createName(key))
 }
 
@@ -270,7 +269,6 @@ func (c *AdapterFile) Fetch(key string) (interface{}, error) {
 	if content == nil {
 		return nil, nil
 	}
-
 	return content.Data, nil
 }
 
@@ -282,7 +280,6 @@ func (c *AdapterFile) FetchMulti(keys []string) map[string]interface{} {
 			result[key] = value
 		}
 	}
-
 	return result
 }
 
@@ -302,7 +299,6 @@ func (c *AdapterFile) Flush() error {
 	for _, name := range names {
 		_ = os.Remove(filepath.Join(c.dir, name))
 	}
-
 	return nil
 }
 

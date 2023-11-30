@@ -20,7 +20,6 @@ import (
 	"hotgo/internal/service"
 	"hotgo/utility/simple"
 	"hotgo/utility/validate"
-	"strings"
 )
 
 type sSysCron struct{}
@@ -90,7 +89,16 @@ func (s *sSysCron) Edit(ctx context.Context, in *sysin.CronEditInp) (err error) 
 	}
 
 	// 新增
-	_, err = dao.SysCron.Ctx(ctx).Data(in).Insert()
+	in.SysCron.Id, err = dao.SysCron.Ctx(ctx).Data(in).InsertAndGetId()
+	if err != nil || in.SysCron.Id < 1 {
+		return
+	}
+
+	if in.SysCron.Status == consts.StatusEnabled {
+		simple.SafeGo(ctx, func(ctx context.Context) {
+			_ = cron.Start(&in.SysCron)
+		})
+	}
 	return
 }
 
@@ -163,6 +171,10 @@ func (s *sSysCron) List(ctx context.Context, in *sysin.CronListInp) (list []*sys
 		mod = mod.WhereLike("name", "%"+in.Name+"%")
 	}
 
+	if in.GroupId > 0 {
+		mod = mod.Where("group_id", in.GroupId)
+	}
+
 	if in.Status > 0 {
 		mod = mod.Where("status", in.Status)
 	}
@@ -210,7 +222,22 @@ func (s *sSysCron) OnlineExec(ctx context.Context, in *sysin.OnlineExecInp) (err
 		err = gerror.New("定时任务不存在")
 		return
 	}
+	return cron.Once(gctx.New(), data)
+}
 
-	newCtx := context.WithValue(gctx.New(), consts.ContextKeyCronArgs, strings.Split(data.Params, consts.CronSplitStr))
-	return cron.Once(newCtx, data)
+// DispatchLog 查看指定任务的调度日志
+func (s *sSysCron) DispatchLog(ctx context.Context, in *sysin.DispatchLogInp) (res *sysin.DispatchLogModel, err error) {
+	var data *entity.SysCron
+	if err = dao.SysCron.Ctx(ctx).Where(dao.SysCron.Columns().Id, in.Id).Scan(&data); err != nil {
+		return
+	}
+
+	if data == nil {
+		err = gerror.New("定时任务不存在")
+		return
+	}
+
+	res = new(sysin.DispatchLogModel)
+	res.Log, err = cron.DispatchLog(data)
+	return
 }

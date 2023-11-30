@@ -9,9 +9,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"strings"
+
 	"hotgo/internal/dao"
 	"hotgo/internal/model/input/sysin"
-	"strings"
 
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -175,9 +176,9 @@ func makeValidatorFunc(field *sysin.GenCodesColumnListModel) (err error, rule st
 	} else if field.FormRole == FormRolePercentage {
 		rule = fmt.Sprintf(EditInpValidatorGenerally, "min:0|max:100", field.GoName, field.Dc+"必须0-100之间")
 	} else if field.FormRole == FormRoleTel {
-		rule = fmt.Sprintf(EditInpValidatorGenerally, "phone", field.GoName, field.Dc+"不是手机号码")
-	} else if field.FormRole == FormRolePhone {
 		rule = fmt.Sprintf(EditInpValidatorGenerally, "telephone", field.GoName, field.Dc+"不是座机号码")
+	} else if field.FormRole == FormRolePhone {
+		rule = fmt.Sprintf(EditInpValidatorGenerally, "phone", field.GoName, field.Dc+"不是手机号码")
 	} else if field.FormRole == FormRoleQq {
 		rule = fmt.Sprintf(EditInpValidatorGenerally, "qq", field.GoName, field.Dc+"不是QQ号码")
 	} else if field.FormRole == FormRoleEmail {

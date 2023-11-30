@@ -66,10 +66,11 @@ func (s *sCronClient) Start(ctx context.Context) {
 
 		// 注册RPC路由
 		s.client.RegisterRPCRouter(
-			s.OnCronDelete,     // 删除任务
-			s.OnCronEdit,       // 编辑任务
-			s.OnCronStatus,     // 修改任务状态
-			s.OnCronOnlineExec, // 执行一次任务
+			s.OnCronDelete,      // 删除任务
+			s.OnCronEdit,        // 编辑任务
+			s.OnCronStatus,      // 修改任务状态
+			s.OnCronOnlineExec,  // 执行一次任务
+			s.OnCronDispatchLog, // 查看调度日志
 		)
 
 		// 注册拦截器

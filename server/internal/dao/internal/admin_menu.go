@@ -22,6 +22,8 @@ type AdminMenuDao struct {
 type AdminMenuColumns struct {
 	Id             string // 菜单ID
 	Pid            string // 父菜单ID
+	Level          string // 关系树等级
+	Tree           string // 关系树
 	Title          string // 菜单名称
 	Name           string // 名称编码
 	Path           string // 路由地址
@@ -39,19 +41,19 @@ type AdminMenuColumns struct {
 	KeepAlive      string // 缓存该路由
 	Hidden         string // 是否隐藏
 	Affix          string // 是否固定
-	Level          string // 关系树等级
-	Tree           string // 关系树
 	Sort           string // 排序
 	Remark         string // 备注
 	Status         string // 菜单状态
-	CreatedAt      string // 创建时间
 	UpdatedAt      string // 更新时间
+	CreatedAt      string // 创建时间
 }
 
 // adminMenuColumns holds the columns for table hg_admin_menu.
 var adminMenuColumns = AdminMenuColumns{
 	Id:             "id",
 	Pid:            "pid",
+	Level:          "level",
+	Tree:           "tree",
 	Title:          "title",
 	Name:           "name",
 	Path:           "path",
@@ -69,13 +71,11 @@ var adminMenuColumns = AdminMenuColumns{
 	KeepAlive:      "keep_alive",
 	Hidden:         "hidden",
 	Affix:          "affix",
-	Level:          "level",
-	Tree:           "tree",
 	Sort:           "sort",
 	Remark:         "remark",
 	Status:         "status",
-	CreatedAt:      "created_at",
 	UpdatedAt:      "updated_at",
+	CreatedAt:      "created_at",
 }
 
 // NewAdminMenuDao creates and returns a new DAO object for table data access.

@@ -95,3 +95,11 @@ export function OnlineExec(params) {
     params,
   });
 }
+
+export function DispatchLog(params) {
+  return http.request({
+    url: '/cron/dispatchLog',
+    method: 'POST',
+    params,
+  });
+}

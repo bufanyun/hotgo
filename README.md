@@ -6,7 +6,7 @@
     </p>
     <p align="center">
         <a href="https://goframe.org/pages/viewpage.action?pageId=1114119" target="_blank">
-	        <img src="https://img.shields.io/badge/goframe-2.4-green" alt="goframe">
+	        <img src="https://img.shields.io/badge/goframe-2.5-green" alt="goframe">
 	    </a>
 	    <a href="https://v3.vuejs.org/" target="_blank">
 	        <img src="https://img.shields.io/badge/vue.js-vue3.x-green" alt="vue">
@@ -68,7 +68,7 @@
 15. 代码生成：支持自动化生成前后端代码。CURD关联表、树表、消息队列、定时任务一键生成等。
 16. 插件应用：支持一键生成插件模板，每个插件之间开发隔离，拥有独立多应用入口、独立配置。完美支持多人协同开发、插件插拔不会对原系统产生影响等。
 17. 服务监控：监视当前系统CPU、内存、磁盘、网络、堆栈等相关信息。
-18. 附件管理：文件图片上传，支持本地、阿里云oss、腾讯云cos、ucloud对象存储、七牛云对象存储等多种上传驱动，后台一键切换配置，并集成了文件选择器。
+18. 附件管理：文件图片上传，支持本地、阿里云oss、腾讯云cos、ucloud对象存储、七牛云对象存储、minio等多种上传驱动，后台一键切换配置，并集成了文件选择器。
 19. TCP服务：基于gtcp的服务应用，支持长连接、断线重连、服务认证、路由分发、RPC消息、拦截器和数据绑定等。简化和规范了服务器开发流程。
 20. 消息队列：同时兼容 kafka、redis、rocketmq、磁盘队列，一键配置切换到场景适用的MQ。
 21. 通知公告：采用websocket实时推送在线用户最新通知、公告、私信消息。

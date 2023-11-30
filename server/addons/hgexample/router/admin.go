@@ -26,6 +26,7 @@ func Admin(ctx context.Context, group *ghttp.RouterGroup) {
 		group.Bind(
 			sys.Config,
 			sys.Table,
+			sys.TreeTable,
 		)
 	})
 

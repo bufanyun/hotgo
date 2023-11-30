@@ -50,6 +50,8 @@ func New(name ...string) UploadDrive {
 		drive = &OssDrive{}
 	case consts.UploadDriveQiNiu:
 		drive = &QiNiuDrive{}
+	case consts.UploadDriveMinio:
+		drive = &MinioDrive{}
 	default:
 		panic(fmt.Sprintf("暂不支持的存储驱动:%v", driveType))
 	}
@@ -82,6 +84,11 @@ func DoUpload(ctx context.Context, typ string, file *ghttp.UploadFile) (result *
 			err = gerror.Newf("图片大小不能超过%vMB", config.ImageSize)
 			return
 		}
+
+		if len(config.ImageType) > 0 && !validate.InSlice(strings.Split(config.ImageType, `,`), meta.Ext) {
+			err = gerror.New("上传图片类型未经允许")
+			return
+		}
 	case KindDoc:
 		if !IsDocType(meta.Ext) {
 			err = gerror.New("上传的文件不是文档")
@@ -108,6 +115,11 @@ func DoUpload(ctx context.Context, typ string, file *ghttp.UploadFile) (result *
 		// 默认为通用的文件上传
 		if config.FileSize > 0 && meta.Size > config.FileSize*1024*1024 {
 			err = gerror.Newf("文件大小不能超过%vMB", config.FileSize)
+			return
+		}
+
+		if len(config.FileType) > 0 && !validate.InSlice(strings.Split(config.FileType, `,`), meta.Ext) {
+			err = gerror.New("上传文件类型未经允许")
 			return
 		}
 	}
@@ -148,6 +160,8 @@ func LastUrl(ctx context.Context, fullPath, drive string) string {
 		return config.OssBucketURL + "/" + fullPath
 	case consts.UploadDriveQiNiu:
 		return config.QiNiuDomain + "/" + fullPath
+	case consts.UploadDriveMinio:
+		return fmt.Sprintf("%s/%s/%s", config.MinioDomain, config.MinioBucket, fullPath)
 	default:
 		return fullPath
 	}

@@ -34,7 +34,7 @@ func (l *gCurd) getPkField(in *CurdPreviewInput) *sysin.GenCodesColumnListModel 
 		panic("getPkField masterFields uninitialized.")
 	}
 	for _, field := range in.masterFields {
-		if field.Index == consts.GenCodesIndexPK {
+		if IsIndexPK(field.Index) {
 			return field
 		}
 	}
@@ -164,4 +164,14 @@ func GetModName(ctx context.Context) (modName string, err error) {
 		return
 	}
 	return
+}
+
+// IsIndexPK 是否是主键
+func IsIndexPK(index string) bool {
+	return gstr.ToUpper(index) == gstr.ToUpper(consts.GenCodesIndexPK)
+}
+
+// IsIndexUNI 是否是唯一索引
+func IsIndexUNI(index string) bool {
+	return gstr.ToUpper(index) == gstr.ToUpper(consts.GenCodesIndexUNI)
 }

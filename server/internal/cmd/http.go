@@ -10,6 +10,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
+	"github.com/gogf/gf/v2/util/gmode"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/addons"
 	"hotgo/internal/library/casbin"
@@ -79,7 +80,9 @@ var (
 			casbin.InitEnforcer(ctx)
 
 			// 初始化生成代码配置
-			hggen.InIt(ctx)
+			if !gmode.IsProduct() {
+				hggen.InIt(ctx)
+			}
 
 			// 启动tcp服务
 			service.TCPServer().Start(ctx)

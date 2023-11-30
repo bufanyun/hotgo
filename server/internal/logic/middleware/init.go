@@ -63,12 +63,18 @@ func (s *sMiddleware) Ctx(r *ghttp.Request) {
 		r.SetCtx(ctx)
 	}
 
+	data := g.Map{
+		"request.body": gjson.New(r.GetBodyString()),
+	}
+
 	contexts.Init(r, &model.Context{
-		Data:   make(g.Map),
+		Data:   data,
 		Module: getModule(r.URL.Path),
 	})
 
-	contexts.SetData(r.Context(), "request.body", gjson.New(r.GetBodyString()))
+	if len(r.Cookie.GetSessionId()) == 0 {
+		r.Cookie.SetSessionId(gctx.CtxId(r.Context()))
+	}
 	r.Middleware.Next()
 }
 

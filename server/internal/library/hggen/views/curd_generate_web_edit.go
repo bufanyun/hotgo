@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/text/gstr"
-	"hotgo/internal/consts"
 )
 
 func (l *gCurd) webEditTplData(ctx context.Context, in *CurdPreviewInput) (data g.Map, err error) {
@@ -28,7 +27,7 @@ func (l *gCurd) generateWebEditFormItem(ctx context.Context, in *CurdPreviewInpu
 			continue
 		}
 
-		if field.Index == consts.GenCodesIndexPK {
+		if IsIndexPK(field.Index) {
 			continue
 		}
 

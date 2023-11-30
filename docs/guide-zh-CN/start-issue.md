@@ -13,6 +13,9 @@
 
 线上或非本地运行时，请到 系统设置 -> 配置管理 -> 基本设置 -> 找到网站域名和websocket地址，改成你自己实际的地址，保存刷新页面即可
 
+#### 2、web页面菜单切换后页面出现白屏
+
+请参考：https://github.com/jekip/naive-ui-admin/issues/183
 
 
 ### 二、数据库相关
@@ -29,7 +32,17 @@
 
 > 报错信息：panic: possible config files "config" or "config.toml/yaml/yml/json/ini/xml/properties" not found in resource manager or following system searching paths:
 
-这是因为系统没有找到配置文件，将配置文件 `manifest/config/config.yaml.bak` 复制后改为`manifest/config/config.yaml`
+系统没有找到配置文件，将配置文件 `manifest/config/config.yaml.bak` 复制后改为`manifest/config/config.yaml`
+
+
+#### 2、net.DialTimeout failed with network
+
+> 报错信息：connect to 127.0.0.1:8099 error: net.DialTimeout failed with network "tcp", address "127.0.0.1:8099", timeout "10s": dial tcp
+
+- http服务没有启动或正在启动
+- 通过一键启动所有服务运行时属正常情况，多服务启动时存在先后顺序问题，`tcpClient`比`tcpServer`先启动完成导致的，等`tcpServer`启动完成后会自动重连
+
+
 
 
 详细请参考 - [系统安装](start-installation.md)

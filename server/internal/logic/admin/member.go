@@ -15,7 +15,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
-	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/grand"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
@@ -403,26 +402,37 @@ func (s *sAdminMember) VerifyUnique(ctx context.Context, in *adminin.VerifyUniqu
 
 // Delete 删除用户
 func (s *sAdminMember) Delete(ctx context.Context, in *adminin.MemberDeleteInp) (err error) {
-	if s.VerifySuperId(ctx, gconv.Int64(in.Id)) {
-		err = gerror.New("超管账号禁止删除！")
-		return
-	}
-
 	memberId := contexts.GetUserId(ctx)
 	if memberId <= 0 {
 		err = gerror.New("获取用户信息失败！")
 		return
 	}
 
-	var models *entity.AdminMember
-	if err = s.FilterAuthModel(ctx, memberId).WherePri(in.Id).Scan(&models); err != nil {
+	var list []*entity.AdminMember
+	if err = s.FilterAuthModel(ctx, memberId).WherePri(in.Id).Scan(&list); err != nil {
 		err = gerror.Wrap(err, "获取用户信息失败，请稍后重试！")
 		return
 	}
 
-	if models == nil {
+	if len(list) == 0 {
 		err = gerror.New("需要删除的用户不存在或已删除！")
 		return
+	}
+
+	for _, v := range list {
+		if s.VerifySuperId(ctx, v.Id) {
+			err = gerror.New("超管账号禁止删除！")
+			return
+		}
+		count, err := dao.AdminMember.Ctx(ctx).Where("pid", v.Id).Count()
+		if err != nil {
+			err = gerror.Wrap(err, "删除用户检查失败，请稍后重试！")
+			return err
+		}
+		if count > 0 {
+			err = gerror.Newf("用户[%v]存在下级，请先删除TA的下级用户！", v.Id)
+			return err
+		}
 	}
 
 	return g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
@@ -434,6 +444,9 @@ func (s *sAdminMember) Delete(ctx context.Context, in *adminin.MemberDeleteInp) 
 		if _, err = dao.AdminMemberPost.Ctx(ctx).Where("member_id", in.Id).Delete(); err != nil {
 			err = gerror.Wrap(err, "删除用户岗位失败，请稍后重试！")
 		}
+
+		// 这里如果需要，可以加入更多删除用户的相关处理
+		// ...
 		return
 	})
 }
@@ -601,6 +614,14 @@ func (s *sAdminMember) List(ctx context.Context, in *adminin.MemberListInp) (lis
 
 	if in.RoleId > 0 {
 		mod = mod.Where(cols.RoleId, in.RoleId)
+	}
+
+	if in.Id > 0 {
+		mod = mod.Where(cols.Id, in.Id)
+	}
+
+	if in.Pid > 0 {
+		mod = mod.Where(cols.Pid, in.Pid)
 	}
 
 	if len(in.CreatedAt) == 2 {

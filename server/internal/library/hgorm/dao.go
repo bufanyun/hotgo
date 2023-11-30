@@ -14,7 +14,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/utility/convert"
-	"hotgo/utility/tree"
 )
 
 type daoInstance interface {
@@ -117,6 +116,23 @@ func GetPkField(ctx context.Context, dao daoInstance) (string, error) {
 	return "", gerror.New("no primary key")
 }
 
+// GetFieldsToSlice 获取dao实例中的所有字段
+func GetFieldsToSlice(ctx context.Context, dao daoInstance) ([]string, error) {
+	fields, err := dao.Ctx(ctx).TableFields(dao.Table())
+	if err != nil {
+		return nil, err
+	}
+	if len(fields) == 0 {
+		return nil, gerror.New("field not found")
+	}
+
+	var keys []string
+	for _, field := range fields {
+		keys = append(keys, field.Name)
+	}
+	return keys, nil
+}
+
 // IsUnique 是否唯一
 func IsUnique(ctx context.Context, dao daoInstance, where g.Map, message string, pkId ...interface{}) error {
 	if len(where) == 0 {
@@ -147,41 +163,4 @@ func IsUnique(ctx context.Context, dao daoInstance, where g.Map, message string,
 		return gerror.New(message)
 	}
 	return nil
-}
-
-// GenSubTree 生成下级关系树
-func GenSubTree(ctx context.Context, dao daoInstance, oldPid int64) (newPid int64, newLevel int, subTree string, err error) {
-	// 顶级树
-	if oldPid <= 0 {
-		return 0, 1, "", nil
-	}
-
-	field, err := GetPkField(ctx, dao)
-	if err != nil {
-		return 0, 0, "", err
-	}
-
-	models, err := dao.Ctx(ctx).Where(field, oldPid).One()
-	if err != nil {
-		return 0, 0, "", err
-	}
-
-	if models.IsEmpty() {
-		return 0, 0, "", gerror.New("上级信息不存在")
-	}
-
-	level, ok := models["level"]
-	if !ok {
-		return 0, 0, "", gerror.New("表中必须包含`level`字段")
-	}
-
-	supTree, ok := models["tree"]
-	if !ok {
-		return 0, 0, "", gerror.New("表中必须包含`tree`字段")
-	}
-
-	newPid = oldPid
-	newLevel = level.Int() + 1
-	subTree = tree.GenLabel(supTree.String(), oldPid)
-	return
 }

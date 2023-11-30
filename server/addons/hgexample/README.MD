@@ -12,7 +12,7 @@
 
 ### 安装
 
-1、安装 HotGo (2.1.4及以上)
+1、安装 HotGo (2.11.4及以上)
 
 项目介绍：https://github.com/bufanyun/hotgo
 

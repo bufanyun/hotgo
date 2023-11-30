@@ -26,6 +26,7 @@ storage/cert/ssl/server.key
 storage/cert/pay/alipay/
 storage/cert/pay/wxpay/
 temp/
+logs/
 main.exe
 main.exe~
 *.exe

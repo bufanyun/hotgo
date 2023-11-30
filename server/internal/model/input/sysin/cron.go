@@ -6,6 +6,7 @@
 package sysin
 
 import (
+	"hotgo/internal/library/cron"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 )
@@ -43,9 +44,9 @@ type CronViewModel struct {
 // CronListInp 获取列表
 type CronListInp struct {
 	form.PageReq
-
 	form.StatusReq
-	Name string
+	GroupId int64  `json:"groupId"   description:"分组ID"`
+	Name    string `json:"name"      description:"任务名称"`
 }
 
 type CronListModel struct {
@@ -64,3 +65,11 @@ type OnlineExecInp struct {
 	entity.SysCron
 }
 type OnlineExecModel struct{}
+
+// DispatchLogInp 查看指定任务的调度日志
+type DispatchLogInp struct {
+	entity.SysCron
+}
+type DispatchLogModel struct {
+	*cron.Log
+}

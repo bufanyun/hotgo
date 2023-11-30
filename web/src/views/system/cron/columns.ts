@@ -14,20 +14,24 @@ export const columns = [
     key: 'id',
   },
   {
+    title: '任务标题',
+    key: 'title',
+  },
+  {
     title: '任务分组',
     key: 'groupName',
   },
   {
-    title: '任务名称',
+    title: '执行方法',
     key: 'name',
   },
-  {
-    title: '执行参数',
-    key: 'params',
-    render(row) {
-      return row.params;
-    },
-  },
+  // {
+  //   title: '执行参数',
+  //   key: 'params',
+  //   render(row) {
+  //     return row.params;
+  //   },
+  // },
   {
     title: '执行策略',
     key: 'policy',

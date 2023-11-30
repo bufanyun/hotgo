@@ -12,9 +12,10 @@ import (
 type SysCron struct {
 	Id        int64       `json:"id"        description:"任务ID"`
 	GroupId   int64       `json:"groupId"   description:"分组ID"`
-	Name      string      `json:"name"      description:"任务名称"`
+	Title     string      `json:"title"     description:"任务标题"`
+	Name      string      `json:"name"      description:"任务方法"`
 	Params    string      `json:"params"    description:"函数参数"`
-	Pattern   string      `json:"pattern"   description:"定时表达式"`
+	Pattern   string      `json:"pattern"   description:"表达式"`
 	Policy    int64       `json:"policy"    description:"策略"`
 	Count     int64       `json:"count"     description:"执行次数"`
 	Sort      int         `json:"sort"      description:"排序"`

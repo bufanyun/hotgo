@@ -81,3 +81,13 @@ type OnlineExecReq struct {
 type OnlineExecRes struct {
 	*sysin.OnlineExecModel
 }
+
+// DispatchLogReq 调度日志
+type DispatchLogReq struct {
+	g.Meta `path:"/cron/dispatchLog" method:"post" tags:"定时任务" summary:"调度日志"`
+	sysin.DispatchLogInp
+}
+
+type DispatchLogRes struct {
+	*sysin.DispatchLogModel
+}

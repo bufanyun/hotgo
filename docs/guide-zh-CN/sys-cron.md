@@ -17,8 +17,8 @@
 type Cron interface {
     // GetName 获取任务名称
     GetName() string
-    // Execute 执行一次任务
-    Execute(ctx context.Context)
+    // Execute 执行任务
+	Execute(ctx context.Context, parser *Parser) (err error)
 }
 ```
 
@@ -54,11 +54,10 @@ func (c *cTest) GetName() string {
 }
 
 // Execute 执行任务
-func (c *cTest) Execute(ctx context.Context) {
-	cron.Logger().Infof(ctx, "cron test Execute:%v", time.Now())
+func (c *cTest) Execute(ctx context.Context, parser *cron.Parser) (err error) {
+	parser.Logger.Infof(ctx, "cron test Execute:%v", time.Now()) // 记录任务调度日志
+	return
 }
-
-
 ```
 
 继续在后台系统设置-定时任务-添加任务，填写的任务名称需要和上面的名称保持一致，再进行简单的策略配置以后，一个后台可控的定时任务就添加好了！

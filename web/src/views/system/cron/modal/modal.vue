@@ -18,7 +18,7 @@
 
   const emit = defineEmits(['reloadGroupOption']);
   const showModal = ref(false);
-  const title = ref('管理分组');
+  const title = ref('任务分组');
 
   function openDrawer() {
     showModal.value = true;

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/gogf/gf/v2/errors/gcode"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/library/response"
@@ -68,7 +68,8 @@ func (s *sMiddleware) PreFilter(r *ghttp.Request) {
 
 	// 先验证基本校验规则
 	if err := r.Parse(inputObject.Interface()); err != nil {
-		response.JsonExit(r, gcode.CodeInvalidRequest.Code(), err.Error())
+		resp := gerror.Code(err)
+		response.JsonExit(r, resp.Code(), gerror.Current(err).Error(), resp.Detail())
 		return
 	}
 
@@ -80,7 +81,8 @@ func (s *sMiddleware) PreFilter(r *ghttp.Request) {
 
 	// 执行预处理
 	if err := validate.PreFilter(r.Context(), inputObject.Interface()); err != nil {
-		response.JsonExit(r, gcode.CodeInvalidParameter.Code(), err.Error())
+		resp := gerror.Code(err)
+		response.JsonExit(r, resp.Code(), gerror.Current(err).Error(), resp.Detail())
 		return
 	}
 

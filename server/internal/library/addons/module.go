@@ -10,6 +10,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gfile"
+	"github.com/gogf/gf/v2/os/gres"
 	"github.com/gogf/gf/v2/os/gview"
 	"hotgo/internal/model/input/form"
 	"sort"
@@ -157,6 +158,12 @@ func AddStaticPath(ctx context.Context, server *ghttp.Server, p ...string) {
 	for _, module := range filterInstalled() {
 		name := module.GetSkeleton().Name
 		prefix, path := StaticPath(name, basePath)
+		if !gres.Contains(path) {
+			if _, err := gfile.Search(path); err != nil {
+				g.Log().Warningf(ctx, `AddStaticPath failed: %v`, err)
+				continue
+			}
+		}
 		server.AddStaticPath(prefix, path)
 	}
 }

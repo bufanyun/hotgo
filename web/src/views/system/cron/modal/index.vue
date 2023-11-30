@@ -40,14 +40,9 @@
               :default-value="formParams.pid"
               @update:value="handleUpdateValue"
             />
-            <template #feedback>不选视为顶级分组</template>
           </n-form-item>
           <n-form-item label="分组名称" path="name">
             <n-input placeholder="请输入分组名称" v-model:value="formParams.name" />
-          </n-form-item>
-
-          <n-form-item label="排序" path="sort">
-            <n-input-number v-model:value="formParams.sort" clearable />
           </n-form-item>
 
           <n-form-item label="状态" path="status">
@@ -60,6 +55,10 @@
               />
             </n-radio-group>
           </n-form-item>
+
+<!--          <n-form-item label="排序" path="sort">-->
+<!--            <n-input-number v-model:value="formParams.sort" clearable />-->
+<!--          </n-form-item>-->
 
           <n-form-item label="备注" path="remark">
             <n-input type="textarea" placeholder="请输入备注" v-model:value="formParams.remark" />
@@ -87,7 +86,7 @@
   import { statusOptions } from '@/enums/optionsiEnum';
 
   const emit = defineEmits(['reloadGroupOption']);
-  const optionTreeData = ref([]);
+  const optionTreeData = ref<any>([]);
   const message = useMessage();
   const statusValue = ref(1);
   const defaultValueRef = () => ({
@@ -140,7 +139,7 @@
   const formRef = ref<any>({});
 
   const actionColumn = reactive({
-    width: 220,
+    width: 150,
     title: '操作',
     key: 'action',
     // fixed: 'right',
@@ -213,10 +212,16 @@
 
   async function setDictSelect() {
     const tmp = await getSelect({});
-    optionTreeData.value = tmp.list;
-    if (optionTreeData.value === undefined || optionTreeData.value === null) {
-      optionTreeData.value = [];
-    }
+    optionTreeData.value = [
+      {
+        id: 0,
+        key: 0,
+        label: '顶级分组',
+        pid: 0,
+        name: '顶级分组',
+      },
+    ];
+    optionTreeData.value = optionTreeData.value.concat(tmp.list);
   }
 
   onMounted(async () => {

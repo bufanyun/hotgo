@@ -107,6 +107,17 @@ func (s *sSysCronGroup) List(ctx context.Context, in *sysin.CronGroupListInp) (l
 	if err = mod.Page(in.Page, in.PerPage).Order("id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 	}
+
+	for _, v := range list {
+		if v.Pid < 1 {
+			continue
+		}
+		name, err := dao.SysCronGroup.Ctx(ctx).Fields("name").WherePri(v.Pid).Value()
+		if err != nil {
+			return nil, 0, err
+		}
+		v.SupName = name.String()
+	}
 	return
 }
 

@@ -12,6 +12,8 @@ import (
 type AdminMenu struct {
 	Id             int64       `json:"id"             description:"菜单ID"`
 	Pid            int64       `json:"pid"            description:"父菜单ID"`
+	Level          int         `json:"level"          description:"关系树等级"`
+	Tree           string      `json:"tree"           description:"关系树"`
 	Title          string      `json:"title"          description:"菜单名称"`
 	Name           string      `json:"name"           description:"名称编码"`
 	Path           string      `json:"path"           description:"路由地址"`
@@ -29,11 +31,9 @@ type AdminMenu struct {
 	KeepAlive      int         `json:"keepAlive"      description:"缓存该路由"`
 	Hidden         int         `json:"hidden"         description:"是否隐藏"`
 	Affix          int         `json:"affix"          description:"是否固定"`
-	Level          int         `json:"level"          description:"关系树等级"`
-	Tree           string      `json:"tree"           description:"关系树"`
 	Sort           int         `json:"sort"           description:"排序"`
 	Remark         string      `json:"remark"         description:"备注"`
 	Status         int         `json:"status"         description:"菜单状态"`
-	CreatedAt      *gtime.Time `json:"createdAt"      description:"创建时间"`
 	UpdatedAt      *gtime.Time `json:"updatedAt"      description:"更新时间"`
+	CreatedAt      *gtime.Time `json:"createdAt"      description:"创建时间"`
 }

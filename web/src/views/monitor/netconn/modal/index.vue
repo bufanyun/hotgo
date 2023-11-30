@@ -20,6 +20,7 @@
         :row-key="(row) => row.id"
         ref="actionRef"
         :actionColumn="actionColumn"
+        :checked-row-keys="checkedIds"
         @update:checked-row-keys="onCheckedRow"
         :scroll-x="1090"
         :resizeHeightOffset="-10000"
@@ -246,6 +247,8 @@
       negativeText: '取消',
       onPositiveClick: () => {
         Delete({ id: checkedIds.value }).then((_res) => {
+          batchDeleteDisabled.value = true;
+          checkedIds.value = [];
           message.success('删除成功');
           reloadTable();
         });

@@ -124,7 +124,8 @@
               <n-gi>
                 <n-form-item label="上级目录" path="pid">
                   <n-tree-select
-                    :options="optionTreeData"
+                    filterable
+                    :options="optionTreeDataEdit"
                     :value="formParams.pid"
                     @update:value="handleUpdateValue"
                   />
@@ -374,7 +375,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { onMounted, reactive, ref, unref } from 'vue';
+  import { onMounted, reactive, ref, unref, computed } from 'vue';
   import { FormItemRule, useDialog, useMessage } from 'naive-ui';
   import {
     AlignLeftOutlined,
@@ -388,6 +389,7 @@
   import CreateDrawer from './CreateDrawer.vue';
   import IconSelector from '@/components/IconSelector/index.vue';
   import { newState, State } from '@/views/permission/menu/model';
+  import { cloneDeep } from 'lodash-es';
 
   const menuTypes = [
     {
@@ -466,11 +468,52 @@
   const treeItemTitle = ref('');
   const pattern = ref('');
   const drawerTitle = ref('');
+  const treeItemKey = ref([]);
+  const expandedKeys = ref([]);
   const optionTreeData = ref<any>([]);
   const formParams = reactive<State>(newState(null));
+  const optionTreeDataEdit = computed(() => {
+    let list = cloneDeep(optionTreeData.value);
+    for (let i = 0; i < list.length; i++) {
+      const item = list[i];
+      if (item.id === formParams.id) {
+        item.disabled = true;
+        setChildrenDisabled(item.children);
+      } else {
+        const foundChild = findItemById(item.children, formParams.id);
+        if (foundChild) {
+          foundChild.disabled = true;
+          setChildrenDisabled(foundChild.children);
+        }
+      }
+    }
+    return list;
+  });
 
-  let treeItemKey = ref([]);
-  let expandedKeys = ref([]);
+  function setChildrenDisabled(children) {
+    if (!children) return;
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      child.disabled = true;
+      setChildrenDisabled(child.children);
+    }
+  }
+
+  function findItemById(children, id) {
+    if (!children) return null;
+    for (let i = 0; i < children.length; i++) {
+      const item = children[i];
+      if (item.id === id) {
+        return item;
+      }
+      const foundChild = findItemById(item.children, id);
+      if (foundChild) {
+        return foundChild;
+      }
+    }
+    return null;
+  }
+
 
   function openCreateDrawer() {
     drawerTitle.value = '添加菜单';
