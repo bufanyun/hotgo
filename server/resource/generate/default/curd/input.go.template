@@ -71,6 +71,7 @@ type @{.varName}ViewModel struct {
 // @{.varName}ListInp 获取@{.tableComment}列表
 type @{.varName}ListInp struct {
 	form.PageReq
+@{ if eq .options.Step.HasSort true}	form.Sorters@{end}
 @{.listInpColumns}
 }
 

@@ -8,14 +8,16 @@ package views
 import (
 	"context"
 	"fmt"
+	"strings"
+
+	"hotgo/internal/library/hggen/internal/cmd/gendao"
+	"hotgo/internal/model/input/sysin"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/text/gregex"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
-	"hotgo/internal/library/hggen/internal/cmd/gendao"
-	"hotgo/internal/model/input/sysin"
-	"strings"
 )
 
 // DoTableColumns 获取指定表生成字段列表
@@ -40,6 +42,8 @@ func DoTableColumns(ctx context.Context, in *sysin.GenCodesColumnListInp, config
 		} else {
 			CustomAttributes(ctx, field, config)
 		}
+		field.Width = 80
+		field.ListShow = 1
 	}
 	return
 }

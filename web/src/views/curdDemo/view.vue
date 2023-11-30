@@ -68,6 +68,11 @@
           >
         </n-descriptions-item>
 
+        <n-descriptions-item>
+          <template #label>修改时间</template>
+          {{ formValue.updatedAt }}
+        </n-descriptions-item>
+
 
       </n-descriptions>
     </n-card>

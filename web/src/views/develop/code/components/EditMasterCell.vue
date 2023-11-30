@@ -14,8 +14,8 @@
         ref="actionRef"
         :canResize="true"
         :pagination="false"
-        :scroll-x="3000"
         :scroll-y="720"
+        :actionColumn="actionColumn"
       >
         <template #tableTitle>
           <n-tooltip placement="top-start" trigger="hover">
@@ -35,17 +35,25 @@
       </BasicTable>
     </n-card>
   </n-spin>
+  <Field
+    @updateShowModal="updateShowModal"
+    @updateFieldInfo="updateFieldInfo"
+    :showModal="showModal"
+    :fieldInfo="fieldInfo"
+    :selectList="selectList"
+  />
 </template>
 
 <script lang="ts" setup>
-  import { computed, h, onMounted, ref } from 'vue';
-  import { BasicTable } from '@/components/Table';
+  import { computed, h, onMounted, ref, reactive } from 'vue';
+  import { BasicTable, TableAction } from '@/components/Table';
   import { genInfoObj, selectListObj } from '@/views/develop/code/components/model';
   import { ColumnList } from '@/api/develop/code';
-  import { NButton, NCheckbox, NInput, NSelect, NTooltip, NTreeSelect } from 'naive-ui';
+  import { NButton, NCheckbox, NInput, NTooltip } from 'naive-ui';
   import { HelpCircleOutline, Reload } from '@vicons/ionicons5';
   import { renderIcon } from '@/utils';
-  import { cloneDeep } from 'lodash-es';
+  //import { cloneDeep } from 'lodash-es';
+  import Field from '@/views/develop/code/components/EditField.vue';
 
   const renderTooltip = (trigger, content) => {
     return h(NTooltip, null, {
@@ -79,6 +87,9 @@
   const columns = ref<any>([]);
   const show = ref(false);
   const dataSource = ref(formValue.value.masterColumns);
+  const showModal = ref(false);
+  const fieldInfo = ref<any>({});
+  const selectList = ref<any>(selectListObj);
 
   async function reloadFields(loading = false) {
     dataSource.value = [];
@@ -94,6 +105,45 @@
     if (loading) {
       show.value = false;
     }
+  }
+
+  const actionColumn = reactive({
+    width: 60,
+    title: '操作',
+    key: 'action',
+    fixed: 'right',
+    render(record) {
+      return h(TableAction as any, {
+        style: 'button',
+        actions: [
+          {
+            label: '编辑',
+            onClick: handleEdit.bind(null, record),
+          },
+        ],
+      });
+    },
+  });
+
+  function updateShowModal(value) {
+    showModal.value = value;
+  }
+
+  function updateFieldInfo(field) {
+    const newData = dataSource.value.map((item) => {
+      if (item.name === field.value.name) {
+        return field.value;
+      }
+      return item;
+    });
+    dataSource.value = newData;
+    formValue.value.masterColumns = dataSource.value;
+  }
+
+  function handleEdit(record: Recordable) {
+    showModal.value = true;
+    fieldInfo.value = record;
+    selectList.value = props.selectList;
   }
 
   onMounted(async () => {
@@ -200,7 +250,8 @@
             width: 50,
             render(row) {
               return h(NCheckbox, {
-                defaultChecked: row.isEdit,
+                //defaultChecked: row.isEdit,
+                checked: row.isEdit,
                 disabled: row.name === 'id',
                 onUpdateChecked: function (e) {
                   row.isEdit = e;
@@ -215,7 +266,8 @@
             align: 'center',
             render(row) {
               return h(NCheckbox, {
-                defaultChecked: row.required,
+                //defaultChecked: row.required,
+                checked: row.required,
                 disabled: row.name === 'id',
                 onUpdateChecked: function (e) {
                   row.required = e;
@@ -230,7 +282,8 @@
             align: 'center',
             render(row) {
               return h(NCheckbox, {
-                defaultChecked: row.unique,
+                //defaultChecked: row.unique,
+                checked: row.unique,
                 disabled: row.name === 'id',
                 onUpdateChecked: function (e) {
                   row.unique = e;
@@ -238,147 +291,147 @@
               });
             },
           },
-          {
-            title: '表单组件',
-            key: 'formMode',
-            width: 200,
-            render(row) {
-              return h(NSelect, {
-                value: row.formMode,
-                options: getFormModeOptions(row.tsType),
-                // render: function (row) {
-                //   return props.selectList?.formMode ?? [];
-                // },
-                // onFocus: function (e) {
-                //   console.log('表单组件  onFocus row:', e);
-                // },
-                onUpdateValue: function (e) {
-                  row.formMode = e;
-                },
-              });
-            },
-          },
-          {
-            title: '表单验证',
-            key: 'formRole',
-            width: 200,
-            render(row) {
-              return h(NSelect, {
-                value: row.formRole,
-                disabled: row.name === 'id',
-                options: props.selectList?.formRole ?? [],
-                onUpdateValue: function (e) {
-                  row.formRole = e;
-                },
-              });
-            },
-          },
-          {
-            title: '字典类型',
-            key: 'dictType',
-            width: 300,
-            render(row) {
-              return h(NTreeSelect, {
-                value: row.dictType,
-                disabled: row.name === 'id',
-                clearable: true,
-                options: props.selectList?.dictMode ?? [],
-                onUpdateValue: function (e) {
-                  row.dictType = e;
-                },
-              });
-            },
-          },
+          // {
+          //   title: '表单组件',
+          //   key: 'formMode',
+          //   width: 200,
+          //   render(row) {
+          //     return h(NSelect, {
+          //       value: row.formMode,
+          //       options: getFormModeOptions(row.tsType),
+          //       // render: function (row) {
+          //       //   return props.selectList?.formMode ?? [];
+          //       // },
+          //       // onFocus: function (e) {
+          //       //   console.log('表单组件  onFocus row:', e);
+          //       // },
+          //       onUpdateValue: function (e) {
+          //         row.formMode = e;
+          //       },
+          //     });
+          //   },
+          // },
+          // {
+          //   title: '表单验证',
+          //   key: 'formRole',
+          //   width: 200,
+          //   render(row) {
+          //     return h(NSelect, {
+          //       value: row.formRole,
+          //       disabled: row.name === 'id',
+          //       options: props.selectList?.formRole ?? [],
+          //       onUpdateValue: function (e) {
+          //         row.formRole = e;
+          //       },
+          //     });
+          //   },
+          // },
+          // {
+          //   title: '字典类型',
+          //   key: 'dictType',
+          //   width: 300,
+          //   render(row) {
+          //     return h(NTreeSelect, {
+          //       value: row.dictType,
+          //       disabled: row.name === 'id',
+          //       clearable: true,
+          //       options: props.selectList?.dictMode ?? [],
+          //       onUpdateValue: function (e) {
+          //         row.dictType = e;
+          //       },
+          //     });
+          //   },
+          // },
         ],
       },
-      {
-        width: 800,
-        title: '列表',
-        key: 'list',
-        align: 'center',
-        children: [
-          {
-            title: '列表',
-            key: 'isList',
-            width: 50,
-            align: 'center',
-            render(row) {
-              return h(NCheckbox, {
-                defaultChecked: row.isList,
-                onUpdateChecked: function (e) {
-                  row.isList = e;
-                },
-              });
-            },
-          },
-          {
-            title: '导出',
-            key: 'isExport',
-            width: 50,
-            align: 'center',
-            render(row) {
-              return h(NCheckbox, {
-                defaultChecked: row.isExport,
-                onUpdateChecked: function (e) {
-                  row.isExport = e;
-                },
-              });
-            },
-          },
-          {
-            title: '查询',
-            key: 'isQuery',
-            width: 50,
-            align: 'center',
-            render(row) {
-              return h(NCheckbox, {
-                defaultChecked: row.isQuery,
-                onUpdateChecked: function (e) {
-                  row.isQuery = e;
-                },
-              });
-            },
-          },
-          {
-            title: '查询条件',
-            key: 'queryWhere',
-            width: 300,
-            render(row) {
-              return h(NSelect, {
-                value: row.queryWhere,
-                disabled: row.name === 'id',
-                options: props.selectList?.whereMode ?? [],
-                onUpdateValue: function (e) {
-                  row.queryWhere = e;
-                },
-              });
-            },
-          },
-        ],
-      },
+      // {
+      //   width: 800,
+      //   title: '列表',
+      //   key: 'list',
+      //   align: 'center',
+      //   children: [
+      //     {
+      //       title: '列表',
+      //       key: 'isList',
+      //       width: 50,
+      //       align: 'center',
+      //       render(row) {
+      //         return h(NCheckbox, {
+      //           defaultChecked: row.isList,
+      //           onUpdateChecked: function (e) {
+      //             row.isList = e;
+      //           },
+      //         });
+      //       },
+      //     },
+      //     {
+      //       title: '导出',
+      //       key: 'isExport',
+      //       width: 50,
+      //       align: 'center',
+      //       render(row) {
+      //         return h(NCheckbox, {
+      //           defaultChecked: row.isExport,
+      //           onUpdateChecked: function (e) {
+      //             row.isExport = e;
+      //           },
+      //         });
+      //       },
+      //     },
+      //     {
+      //       title: '查询',
+      //       key: 'isQuery',
+      //       width: 50,
+      //       align: 'center',
+      //       render(row) {
+      //         return h(NCheckbox, {
+      //           defaultChecked: row.isQuery,
+      //           onUpdateChecked: function (e) {
+      //             row.isQuery = e;
+      //           },
+      //         });
+      //       },
+      //     },
+      //     {
+      //       title: '查询条件',
+      //       key: 'queryWhere',
+      //       width: 300,
+      //       render(row) {
+      //         return h(NSelect, {
+      //           value: row.queryWhere,
+      //           disabled: row.name === 'id',
+      //           options: props.selectList?.whereMode ?? [],
+      //           onUpdateValue: function (e) {
+      //             row.queryWhere = e;
+      //           },
+      //         });
+      //       },
+      //     },
+      //   ],
+      // },
     ];
 
     show.value = false;
   });
 
-  function getFormModeOptions(type: string) {
-    const options = cloneDeep(props.selectList?.formMode ?? []);
-    if (options.length === 0) {
-      return [];
-    }
-    switch (type) {
-      case 'number':
-        for (let i = 0; i < options.length; i++) {
-          const allows = ['InputNumber', 'Radio', 'Select', 'Switch', 'Rate'];
-          if (!allows.includes(options[i].value)) {
-            options[i].disabled = true;
-          }
-        }
-        break;
-      default:
-    }
-    return options;
-  }
+  // function getFormModeOptions(type: string) {
+  //   const options = cloneDeep(props.selectList?.formMode ?? []);
+  //   if (options.length === 0) {
+  //     return [];
+  //   }
+  //   switch (type) {
+  //     case 'number':
+  //       for (let i = 0; i < options.length; i++) {
+  //         const allows = ['InputNumber', 'Radio', 'Select', 'Switch', 'Rate'];
+  //         if (!allows.includes(options[i].value)) {
+  //           options[i].disabled = true;
+  //         }
+  //       }
+  //       break;
+  //     default:
+  //   }
+  //   return options;
+  // }
 </script>
 
 <style lang="less" scoped></style>

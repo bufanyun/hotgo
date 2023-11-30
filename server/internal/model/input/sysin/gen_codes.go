@@ -7,9 +7,11 @@ package sysin
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/text/gregex"
 	"github.com/gogf/gf/v2/util/gconv"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
@@ -89,6 +91,7 @@ type GenCodesSelectsModel struct {
 	FormRole  form.Selects    `json:"formRole"  dc:"表单验证"`
 	DictMode  []*DictTypeTree `json:"dictMode"  dc:"字典类型"`
 	WhereMode form.Selects    `json:"whereMode" dc:"查询条件"`
+	ListShow  form.Selects    `json:"listShow"  dc:"显示位置"`
 	Addons    form.Selects    `json:"addons"    dc:"插件选项"`
 }
 

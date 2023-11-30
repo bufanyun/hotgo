@@ -28,6 +28,7 @@
         :actionColumn="actionColumn"
         :checked-row-keys="checkedIds"
         @update:checked-row-keys="onCheckedRow"
+@{ if eq .options.Step.HasSort true}        @update:sorter="handleUpdateSorter"@{end}
         :scroll-x="1090"
         :resizeHeightOffset="-10000"
         size="small"
@@ -91,6 +92,7 @@
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, useForm } from '@/components/Form/index';
   import { usePermission } from '@/hooks/web/usePermission';
+@{ if eq .options.Step.HasSort true}  import { useSorter } from '@/hooks/common';@{end}
 @{.apiImport}
   import { State, columns, schemas, options, newState } from './model';
 @{.iconsImport}
@@ -107,6 +109,7 @@
   const checkedIds = ref([]);
   const showModal = ref(false);
   const formParams = ref<State>();
+@{ if eq .options.Step.HasSort true}  const { updateSorter: handleUpdateSorter, sortStatesRef: sortStatesRef } = useSorter(reloadTable);@{end}
 
   const actionColumn = reactive({
     width: 300,
@@ -167,7 +170,11 @@
   });
 
   const loadDataTable = async (res) => {
-    return await List({ ...searchFormRef.value?.formModel, ...res });
+    return await List({
+      ...searchFormRef.value?.formModel,
+@{ if eq .options.Step.HasSort true}      ...{ sorters: sortStatesRef.value },@{end}
+      ...res,
+    });
   };
 @{ if eq .options.Step.HasAdd true }
   function addTable() {

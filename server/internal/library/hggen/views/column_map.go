@@ -3,11 +3,11 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package views
 
 import (
 	"github.com/gogf/gf/v2/text/gstr"
+
 	"hotgo/internal/model/input/sysin"
 )
 
@@ -257,4 +257,13 @@ func HasSwitch(headOps []string, masterFields []*sysin.GenCodesColumnListModel) 
 		return false
 	}
 	return HasColumnWithFormMode(masterFields, "Switch")
+}
+
+// HasTableSort 是否包含表排序字段
+func HasTableSort(masterFields []*sysin.GenCodesColumnListModel) bool {
+	for _, field := range masterFields {
+		return gstr.InArray(field.Attribute, "sort")
+	}
+
+	return false
 }
