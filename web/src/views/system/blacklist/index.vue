@@ -349,6 +349,8 @@
       onPositiveClick: () => {
         Delete({ id: checkedIds.value })
           .then((_res) => {
+            checkedIds.value = [];
+            batchDeleteDisabled.value = true;
             message.success('操作成功');
             reloadTable();
           })
