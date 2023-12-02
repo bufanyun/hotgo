@@ -6,13 +6,16 @@
 package hggen
 
 import (
-	_ "hotgo/internal/library/hggen/internal/cmd/gendao"
+	"context"
+	"sort"
 	_ "unsafe"
 
-	"context"
+	_ "hotgo/internal/library/hggen/internal/cmd/gendao"
+
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/library/addons"
 	"hotgo/internal/library/hggen/internal/cmd"
@@ -23,7 +26,6 @@ import (
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"sort"
 )
 
 //go:linkname doGenDaoForArray hotgo/internal/library/hggen/internal/cmd/gendao.doGenDaoForArray
@@ -129,6 +131,15 @@ func TableSelects(ctx context.Context, in *sysin.GenCodesSelectsInp) (res *sysin
 			Label: v,
 		})
 	}
+
+	for k, v := range consts.ListShowMap {
+		res.ListShow = append(res.ListShow, &form.Select{
+			Value: k,
+			Name:  v,
+			Label: v,
+		})
+	}
+	sort.Sort(res.ListShow)
 
 	res.Addons = addons.ModuleSelect()
 	return

@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/text/gstr"
 )
@@ -31,8 +32,18 @@ func (l *gCurd) generateWebEditFormItem(ctx context.Context, in *CurdPreviewInpu
 			continue
 		}
 
+		placeholder := fmt.Sprintf("请输入%s", field.Dc)
+		if len(field.Placeholder) > 0 {
+			placeholder = field.Placeholder
+		}
+
+		showCondition := ""
+		if len(field.ShowCondition) > 0 {
+			showCondition = fmt.Sprintf(" v-if=\"%s\"", field.ShowCondition)
+		}
+
 		var (
-			defaultComponent = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n          <n-input placeholder=\"请输入%s\" v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.Dc, field.TsName)
+			defaultComponent = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n          <n-input placeholder=\"%s\" v-model:value=\"params.%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, placeholder, field.TsName)
 			component        string
 		)
 
@@ -41,63 +52,63 @@ func (l *gCurd) generateWebEditFormItem(ctx context.Context, in *CurdPreviewInpu
 			component = defaultComponent
 
 		case FormModeInputNumber:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-input-number placeholder=\"请输入%s\" v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.Dc, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <n-input-number placeholder=\"%s\" v-model:value=\"params.%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, placeholder, field.TsName)
 
 		case FormModeInputTextarea:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-input type=\"textarea\" placeholder=\"%s\" v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.Dc, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <n-input type=\"textarea\" placeholder=\"%s\" v-model:value=\"params.%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, placeholder, field.TsName)
 
 		case FormModeInputEditor:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <Editor style=\"height: 450px\" id=\"%s\" v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <Editor style=\"height: 450px\" id=\"%s\" v-model:value=\"params.%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName, field.TsName)
 
 		case FormModeInputDynamic:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-dynamic-input\n            v-model:value=\"params.%s\"\n            preset=\"pair\"\n            key-placeholder=\"键名\"\n            value-placeholder=\"键值\"\n          />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <n-dynamic-input\n            v-model:value=\"params.%s\"\n            preset=\"pair\"\n            key-placeholder=\"键名\"\n            value-placeholder=\"键值\"\n          />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName)
 
 		case FormModeDate:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <DatePicker v-model:formValue=\"params.%s\" type=\"date\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <DatePicker v-model:formValue=\"params.%s\" type=\"date\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName)
 
 		// case FormModeDateRange:  // 必须要有两个字段，后面优化下
 
 		case FormModeTime:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <DatePicker v-model:formValue=\"params.%s\" type=\"datetime\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <DatePicker v-model:formValue=\"params.%s\" type=\"datetime\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName)
 
 		// case FormModeTimeRange: // 必须要有两个字段，后面优化下
 
 		case FormModeRadio:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-radio-group v-model:value=\"params.%s\" name=\"%s\">\n            <n-radio-button\n              v-for=\"%s in options.%s\"\n              :key=\"%s.value\"\n              :value=\"%s.value\"\n              :label=\"%s.label\"\n            />\n          </n-radio-group>\n          </n-form-item>", field.Dc, field.TsName, field.TsName, field.TsName, field.TsName, in.options.dictMap[field.TsName], field.TsName, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <n-radio-group v-model:value=\"params.%s\" name=\"%s\">\n            <n-radio-button\n              v-for=\"%s in options.%s\"\n              :key=\"%s.value\"\n              :value=\"%s.value\"\n              :label=\"%s.label\"\n            />\n          </n-radio-group>\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName, field.TsName, field.TsName, in.options.dictMap[field.TsName], field.TsName, field.TsName, field.TsName)
 
 		case FormModeCheckbox:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-checkbox-group v-model:value=\"params.%s\">\n            <n-space>\n              <n-checkbox\n                v-for=\"item in options.%s\"\n                :key=\"item.value\"\n                :value=\"item.value\"\n                :label=\"item.label\"\n              />\n            </n-space>\n          </n-checkbox-group>\n          </n-form-item>", field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName])
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <n-checkbox-group v-model:value=\"params.%s\">\n            <n-space>\n              <n-checkbox\n                v-for=\"item in options.%s\"\n                :key=\"item.value\"\n                :value=\"item.value\"\n                :label=\"item.label\"\n              />\n            </n-space>\n          </n-checkbox-group>\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName])
 
 		case FormModeSelect:
 			if in.options.dictMap[field.TsName] != nil {
-				component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-select v-model:value=\"params.%s\" :options=\"options.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName])
+				component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <n-select v-model:value=\"params.%s\" :options=\"options.%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName])
 			} else {
-				component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-select v-model:value=\"params.%s\" options=\"\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+				component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <n-select v-model:value=\"params.%s\" options=\"\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName)
 			}
 
 		case FormModeSelectMultiple:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-select multiple v-model:value=\"params.%s\" :options=\"options.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName])
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <n-select multiple v-model:value=\"params.%s\" :options=\"options.%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName])
 
 		case FormModeUploadImage:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <UploadImage :maxNumber=\"1\" v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <UploadImage :maxNumber=\"1\" v-model:value=\"params.%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName)
 
 		case FormModeUploadImages:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <UploadImage :maxNumber=\"10\" v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <UploadImage :maxNumber=\"10\" v-model:value=\"params.%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName)
 
 		case FormModeUploadFile:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <UploadFile :maxNumber=\"1\" v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <UploadFile :maxNumber=\"1\" v-model:value=\"params.%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName)
 
 		case FormModeUploadFiles:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <UploadFile :maxNumber=\"10\" v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <UploadFile :maxNumber=\"10\" v-model:value=\"params.%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName)
 
 		case FormModeSwitch:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-switch :unchecked-value=\"2\" :checked-value=\"1\" v-model:value=\"params.%s\"\n        />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <n-switch :unchecked-value=\"2\" :checked-value=\"1\" v-model:value=\"params.%s\"\n        />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName)
 
 		case FormModeRate:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <n-rate allow-half :default-value=\"params.%s\" :on-update:value=\"update%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName, field.GoName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <n-rate allow-half :default-value=\"params.%s\" :on-update:value=\"update%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName, field.GoName)
 
 		case FormModeCitySelector:
-			component = fmt.Sprintf("<n-form-item label=\"%s\" path=\"%s\">\n            <CitySelector v-model:value=\"params.%s\" />\n          </n-form-item>", field.Dc, field.TsName, field.TsName)
+			component = fmt.Sprintf("<n-form-item%s label=\"%s\" path=\"%s\">\n            <CitySelector v-model:value=\"params.%s\" />\n          </n-form-item>", showCondition, field.Dc, field.TsName, field.TsName)
 
 		default:
 			component = defaultComponent

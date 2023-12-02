@@ -3,7 +3,6 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-//
 package consts
 
 // 生成代码类型
@@ -79,3 +78,18 @@ const (
 	GenCodesIndexPK  = "PRI" // 主键索引
 	GenCodesIndexUNI = "UNI" // 唯一索引
 )
+
+// 表格字段显示位置
+const (
+	ListShowHide   = 1 // 不显示
+	ListShowLeft   = 2 // 居左显示
+	ListShowCenter = 3 // 居中显示
+	ListShowRight  = 4 // 居右显示
+)
+
+var ListShowMap = map[int]string{
+	ListShowHide:   "不显示",
+	ListShowLeft:   "居左显示",
+	ListShowCenter: "居中显示",
+	ListShowRight:  "居右显示",
+}
