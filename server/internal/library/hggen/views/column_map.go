@@ -219,6 +219,8 @@ func IsNumberType(goType string) bool {
 	switch goType {
 	case GoTypeInt, GoTypeUint, GoTypeInt64, GoTypeUint64:
 		return true
+	case GoTypeFloat32, GoTypeFloat64:
+		return true
 	}
 	return false
 }
