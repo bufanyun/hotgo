@@ -34,18 +34,41 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent, reactive, toRefs } from 'vue';
-  import BasicSetting from './BasicSetting.vue';
-  import RevealSetting from './RevealSetting.vue';
-  import EmailSetting from './EmailSetting.vue';
-  import ThemeSetting from './ThemeSetting.vue';
-  import CashSetting from './CashSetting.vue';
-  import UploadSetting from './UploadSetting.vue';
-  import GeoSetting from './GeoSetting.vue';
-  import SmsSetting from './SmsSetting.vue';
-  import PaySetting from './PaySetting.vue';
-  import WechatSetting from './WechatSetting.vue';
-  import LoginSetting from './LoginSetting.vue';
+  import { defineAsyncComponent, defineComponent, reactive, toRefs } from "vue";
+/** 异步加载的组件，用到的时候再加载组件 */
+const BasicSetting = defineAsyncComponent(() => {
+    return import("./BasicSetting.vue");
+  }),
+  RevealSetting = defineAsyncComponent(() => {
+    return import("./RevealSetting.vue");
+  }),
+  EmailSetting = defineAsyncComponent(() => {
+    return import("./EmailSetting.vue");
+  }),
+  ThemeSetting = defineAsyncComponent(() => {
+    return import("./ThemeSetting.vue");
+  }),
+  CashSetting = defineAsyncComponent(() => {
+    return import("./CashSetting.vue");
+  }),
+  UploadSetting = defineAsyncComponent(() => {
+    return import("./UploadSetting.vue");
+  }),
+  GeoSetting = defineAsyncComponent(() => {
+    return import("./GeoSetting.vue");
+  }),
+  SmsSetting = defineAsyncComponent(() => {
+    return import("./SmsSetting.vue");
+  }),
+  PaySetting = defineAsyncComponent(() => {
+    return import("./PaySetting.vue");
+  }),
+  WechatSetting = defineAsyncComponent(() => {
+    return import("./WechatSetting.vue");
+  }),
+  LoginSetting = defineAsyncComponent(() => {
+    return import("./LoginSetting.vue");
+  });
   const typeTabList = [
     {
       name: '基本设置',
