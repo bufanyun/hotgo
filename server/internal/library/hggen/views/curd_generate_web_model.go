@@ -9,8 +9,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/text/gstr"
+
+	"hotgo/internal/consts"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/utility/convert"
 )
@@ -52,6 +56,10 @@ func (l *gCurd) generateWebModelDefaultState(ctx context.Context, in *CurdPrevie
 		}
 		if value == "" {
 			value = "''"
+		} else {
+			if field.TsType == consts.ConfigTypeString {
+				value = fmt.Sprintf("'%s'", value)
+			}
 		}
 		if field.Name == "status" {
 			value = 1
@@ -256,15 +264,39 @@ func (l *gCurd) generateWebModelColumnsEach(buffer *bytes.Buffer, in *CurdPrevie
 		if !field.IsList {
 			continue
 		}
+
+		ListShowType := "left"
+		switch field.ListShow {
+		case consts.ListShowHide:
+			continue
+
+		case consts.ListShowLeft:
+			ListShowType = "left"
+
+		case consts.ListShowCenter:
+			ListShowType = "center"
+
+		case consts.ListShowRight:
+			ListShowType = "right"
+
+		}
+
+		sorter := ""
+		if gstr.InArray(field.Attribute, "sort") {
+			sorter = "\n    sorter: true,"
+		}
+
 		var (
-			defaultComponent = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n  },\n", field.Dc, field.TsName)
-			component        string
+			defaultComponent = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    align: '%s',\n    width: %v,%s\n  },\n", field.Dc, field.TsName, ListShowType, field.Width, sorter)
+			// defaultComponent = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n  },\n", field.Dc, field.TsName)
+			component string
 		)
 
 		// 这里根据编辑表单组件来进行推断，如果没有则使用默认input，这可能会导致和查询条件所需参数不符的情况
 		switch field.FormMode {
 		case FormModeDate:
-			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      return formatToDate(row.%s);\n    },\n  },\n", field.Dc, field.TsName, field.TsName)
+			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    align: '%s',\n    width: %v,%s\n    render(row) {\n      return formatToDate(row.%s);\n    },\n  },\n", field.Dc, field.TsName, ListShowType, field.Width, sorter, field.TsName)
+			// component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      return formatToDate(row.%s);\n    },\n  },\n", field.Dc, field.TsName, field.TsName)
 
 		case FormModeRadio:
 			fallthrough
@@ -273,32 +305,40 @@ func (l *gCurd) generateWebModelColumnsEach(buffer *bytes.Buffer, in *CurdPrevie
 				err = gerror.Newf("设置单选下拉框选项时，必须选择字典类型，字段名称:%v", field.Name)
 				return
 			}
-			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (isNullObject(row.%s)) {\n        return ``;\n      }\n      return h(\n        NTag,\n        {\n          style: {\n            marginRight: '6px',\n          },\n          type: getOptionTag(options.value.%s, row.%s),\n          bordered: false,\n        },\n        {\n          default: () => getOptionLabel(options.value.%s, row.%s),\n        }\n      );\n    },\n  },\n", field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName], field.TsName, in.options.dictMap[field.TsName], field.TsName)
+			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    align: '%s',\n    width: %v,%s\n    render(row) {\n      if (isNullObject(row.%s)) {\n        return ``;\n      }\n      return h(\n        NTag,\n        {\n          style: {\n            marginRight: '6px',\n          },\n          type: getOptionTag(options.value.%s, row.%s),\n          bordered: false,\n        },\n        {\n          default: () => getOptionLabel(options.value.%s, row.%s),\n        }\n      );\n    },\n  },\n", field.Dc, field.TsName, ListShowType, field.Width, sorter, field.TsName, in.options.dictMap[field.TsName], field.TsName, in.options.dictMap[field.TsName], field.TsName)
+			// component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (isNullObject(row.%s)) {\n        return ``;\n      }\n      return h(\n        NTag,\n        {\n          style: {\n            marginRight: '6px',\n          },\n          type: getOptionTag(options.value.%s, row.%s),\n          bordered: false,\n        },\n        {\n          default: () => getOptionLabel(options.value.%s, row.%s),\n        }\n      );\n    },\n  },\n", field.Dc, field.TsName, field.TsName, in.options.dictMap[field.TsName], field.TsName, in.options.dictMap[field.TsName], field.TsName)
 
 		case FormModeSelectMultiple:
 			if g.IsEmpty(in.options.dictMap[field.TsName]) {
 				err = gerror.Newf("设置多选下拉框选项时，必须选择字典类型，字段名称:%v", field.Name)
 				return
 			}
-			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (isNullObject(row.%s) || !isArray(row.%s)) {\n        return ``;\n      }\n      return row.%s.map((tagKey) => {\n        return h(\n          NTag,\n          {\n            style: {\n              marginRight: '6px',\n            },\n            type: getOptionTag(options.value.%s, tagKey),\n            bordered: false,\n          },\n          {\n            default: () => getOptionLabel(options.value.%s, tagKey),\n          }\n        );\n      });\n    },\n  },\n", field.Dc, field.TsName, field.TsName, field.TsName, field.TsName, in.options.dictMap[field.TsName], in.options.dictMap[field.TsName])
+			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    align: '%s',\n    width: %v,%s\n    render(row) {\n      if (isNullObject(row.%s) || !isArray(row.%s)) {\n        return ``;\n      }\n      return row.%s.map((tagKey) => {\n        return h(\n          NTag,\n          {\n            style: {\n              marginRight: '6px',\n            },\n            type: getOptionTag(options.value.%s, tagKey),\n            bordered: false,\n          },\n          {\n            default: () => getOptionLabel(options.value.%s, tagKey),\n          }\n        );\n      });\n    },\n  },\n", field.Dc, field.TsName, ListShowType, field.Width, sorter, field.TsName, field.TsName, field.TsName, in.options.dictMap[field.TsName], in.options.dictMap[field.TsName])
+			// component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (isNullObject(row.%s) || !isArray(row.%s)) {\n        return ``;\n      }\n      return row.%s.map((tagKey) => {\n        return h(\n          NTag,\n          {\n            style: {\n              marginRight: '6px',\n            },\n            type: getOptionTag(options.value.%s, tagKey),\n            bordered: false,\n          },\n          {\n            default: () => getOptionLabel(options.value.%s, tagKey),\n          }\n        );\n      });\n    },\n  },\n", field.Dc, field.TsName, field.TsName, field.TsName, field.TsName, in.options.dictMap[field.TsName], in.options.dictMap[field.TsName])
 
 		case FormModeUploadImage:
-			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      return h(%s, {\n        width: 32,\n        height: 32,\n        src: row.%s,\n        onError: errorImg,\n        style: {\n          width: '32px',\n          height: '32px',\n          'max-width': '100%%',\n          'max-height': '100%%',\n        },\n      });\n    },\n  },\n", field.Dc, field.TsName, "NImage", field.TsName)
+			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    align: '%s',\n    width: %v,%s\n    render(row) {\n      return h(%s, {\n        width: 32,\n        height: 32,\n        src: row.%s,\n        onError: errorImg,\n        style: {\n          width: '32px',\n          height: '32px',\n          'max-width': '100%%',\n          'max-height': '100%%',\n        },\n      });\n    },\n  },", field.Dc, field.TsName, ListShowType, field.Width, sorter, "NImage", field.TsName)
+			// component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      return h(%s, {\n        width: 32,\n        height: 32,\n        src: row.%s,\n        onError: errorImg,\n        style: {\n          width: '32px',\n          height: '32px',\n          'max-width': '100%%',\n          'max-height': '100%%',\n        },\n      });\n    },\n  },\n", field.Dc, field.TsName, "NImage", field.TsName)
 
 		case FormModeUploadImages:
-			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (isNullObject(row.%s)) {\n        return ``;\n      }\n      return row.%s.map((image) => {\n        return h(%s, {\n          width: 32,\n          height: 32,\n          src: image,\n        onError: errorImg,\n          style: {\n            width: '32px',\n            height: '32px',\n            'max-width': '100%%',\n            'max-height': '100%%',\n            'margin-left': '2px',\n          },\n        });\n      });\n    },\n  },\n", field.Dc, field.TsName, field.TsName, field.TsName, "NImage")
+			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    align: '%s',\n    width: %v,%s\n    render(row) {\n      if (isNullObject(row.%s)) {\n        return ``;\n      }\n      return row.%s.map((image) => {\n        return h(%s, {\n          width: 32,\n          height: 32,\n          src: image,\n        onError: errorImg,\n          style: {\n            width: '32px',\n            height: '32px',\n            'max-width': '100%%',\n            'max-height': '100%%',\n            'margin-left': '2px',\n          },\n        });\n      });\n    },\n  },\n", field.Dc, field.TsName, ListShowType, field.Width, sorter, field.TsName, field.TsName, "NImage")
+			// component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (isNullObject(row.%s)) {\n        return ``;\n      }\n      return row.%s.map((image) => {\n        return h(%s, {\n          width: 32,\n          height: 32,\n          src: image,\n        onError: errorImg,\n          style: {\n            width: '32px',\n            height: '32px',\n            'max-width': '100%%',\n            'max-height': '100%%',\n            'margin-left': '2px',\n          },\n        });\n      });\n    },\n  },\n", field.Dc, field.TsName, field.TsName, field.TsName, "NImage")
 
 		case FormModeUploadFile:
-			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (row.%s === '') {\n        return ``;\n      }\n      return h(\n        %s,\n        {\n          size: 'small',\n        },\n        {\n          default: () => getFileExt(row.%s),\n        }\n      );\n    },\n  },\n", field.Dc, field.TsName, field.TsName, "NAvatar", field.TsName)
+			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    align: '%s',\n    width: %v,%s\n    render(row) {\n      if (row.%s === '') {\n        return ``;\n      }\n      return h(\n        %s,\n        {\n          size: 'small',\n        },\n        {\n          default: () => getFileExt(row.%s),\n        }\n      );\n    },\n  },\n", field.Dc, field.TsName, ListShowType, field.Width, sorter, field.TsName, "NAvatar", field.TsName)
+			// component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (row.%s === '') {\n        return ``;\n      }\n      return h(\n        %s,\n        {\n          size: 'small',\n        },\n        {\n          default: () => getFileExt(row.%s),\n        }\n      );\n    },\n  },\n", field.Dc, field.TsName, field.TsName, "NAvatar", field.TsName)
 
 		case FormModeUploadFiles:
-			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (isNullObject(row.%s)) {\n        return ``;\n      }\n      return row.%s.map((attachfile) => {\n        return h(\n          %s,\n          {\n            size: 'small',\n            style: {\n              'margin-left': '2px',\n            },\n          },\n          {\n            default: () => getFileExt(attachfile),\n          }\n        );\n      });\n    },\n  },\n", field.Dc, field.TsName, field.TsName, field.TsName, "NAvatar")
+			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    align: '%s',\n    width: %v,%s\n    render(row) {\n      if (isNullObject(row.%s)) {\n        return ``;\n      }\n      return row.%s.map((attachfile) => {\n        return h(\n          %s,\n          {\n            size: 'small',\n            style: {\n              'margin-left': '2px',\n            },\n          },\n          {\n            default: () => getFileExt(attachfile),\n          }\n        );\n      });\n    },\n  },\n", field.Dc, field.TsName, ListShowType, field.Width, sorter, field.TsName, field.TsName, "NAvatar")
+			// component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      if (isNullObject(row.%s)) {\n        return ``;\n      }\n      return row.%s.map((attachfile) => {\n        return h(\n          %s,\n          {\n            size: 'small',\n            style: {\n              'margin-left': '2px',\n            },\n          },\n          {\n            default: () => getFileExt(attachfile),\n          }\n        );\n      });\n    },\n  },\n", field.Dc, field.TsName, field.TsName, field.TsName, "NAvatar")
 
 		case FormModeSwitch:
-			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    width: 100,\n    render(row) {\n      return h(%s, {\n        value: row.%s === 1,\n        checked: '开启',\n        unchecked: '关闭',\n        disabled: !hasPermission(['%s']),\n        onUpdateValue: function (e) {\n          console.log('onUpdateValue e:' + JSON.stringify(e));\n          row.%s = e ? 1 : 2;\n          Switch({ %s: row.%s, key: '%s', value: row.%s }).then((_res) => {\n            $message.success('操作成功');\n          });\n        },\n      });\n    },\n  },\n", field.Dc, field.TsName, "NSwitch", field.TsName, "/"+in.options.ApiPrefix+"/switch", field.TsName, in.pk.TsName, in.pk.TsName, field.TsName, field.TsName)
+			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    align: '%s',\n    width: %v,%s\n    render(row) {\n      return h(%s, {\n        value: row.%s === 1,\n        checked: '开启',\n        unchecked: '关闭',\n        disabled: !hasPermission(['%s']),\n        onUpdateValue: function (e) {\n          console.log('onUpdateValue e:' + JSON.stringify(e));\n          row.%s = e ? 1 : 2;\n          Switch({ %s: row.%s, key: '%s', value: row.%s }).then((_res) => {\n            $message.success('操作成功');\n          });\n        },\n      });\n    },\n  },\n", field.Dc, field.TsName, ListShowType, field.Width, sorter, "NSwitch", field.TsName, "/"+in.options.ApiPrefix+"/switch", field.TsName, in.pk.TsName, in.pk.TsName, field.TsName, field.TsName)
+			// component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    width: 100,\n    render(row) {\n      return h(%s, {\n        value: row.%s === 1,\n        checked: '开启',\n        unchecked: '关闭',\n        disabled: !hasPermission(['%s']),\n        onUpdateValue: function (e) {\n          console.log('onUpdateValue e:' + JSON.stringify(e));\n          row.%s = e ? 1 : 2;\n          Switch({ %s: row.%s, key: '%s', value: row.%s }).then((_res) => {\n            $message.success('操作成功');\n          });\n        },\n      });\n    },\n  },\n", field.Dc, field.TsName, "NSwitch", field.TsName, "/"+in.options.ApiPrefix+"/switch", field.TsName, in.pk.TsName, in.pk.TsName, field.TsName, field.TsName)
 
 		case FormModeRate:
-			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      return h(%s, {\n        allowHalf: true,\n        readonly: true,\n        defaultValue: row.%s,\n      });\n    },\n  },\n", field.Dc, field.TsName, "NRate", field.TsName)
+			component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    align: '%s',\n    width: %v,%s\n    render(row) {\n      return h(%s, {\n        allowHalf: true,\n        readonly: true,\n        defaultValue: row.%s,\n      });\n    },\n  },\n", field.Dc, field.TsName, ListShowType, field.Width, sorter, "NRate", field.TsName)
+			// component = fmt.Sprintf("  {\n    title: '%s',\n    key: '%s',\n    render(row) {\n      return h(%s, {\n        allowHalf: true,\n        readonly: true,\n        defaultValue: row.%s,\n      });\n    },\n  },\n", field.Dc, field.TsName, "NRate", field.TsName)
 
 		default:
 			component = defaultComponent

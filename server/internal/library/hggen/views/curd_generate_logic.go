@@ -9,8 +9,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/text/gstr"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/model/input/sysin"
 )
@@ -114,6 +116,9 @@ func (l *gCurd) generateLogicEdit(ctx context.Context, in *CurdPreviewInput) g.M
 
 func (l *gCurd) generateLogicListOrder(ctx context.Context, in *CurdPreviewInput) string {
 	buffer := bytes.NewBuffer(nil)
+	if in.options.Step.HasSort {
+		buffer.WriteString("Handler(handler.Sorter(in)).")
+	}
 	if in.options.Step.HasMaxSort {
 		buffer.WriteString("OrderAsc(dao." + in.In.DaoName + ".Columns().Sort).")
 	}

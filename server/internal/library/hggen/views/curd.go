@@ -7,12 +7,9 @@ package views
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/gfile"
-	"github.com/gogf/gf/v2/os/gtime"
-	"github.com/gogf/gf/v2/os/gview"
-	"github.com/gogf/gf/v2/text/gstr"
+	"runtime"
+	"strings"
+
 	"hotgo/internal/consts"
 	"hotgo/internal/library/hggen/internal/cmd/gendao"
 	"hotgo/internal/library/hggen/internal/utility/utils"
@@ -20,8 +17,13 @@ import (
 	"hotgo/internal/model/input/sysin"
 	"hotgo/utility/convert"
 	"hotgo/utility/file"
-	"runtime"
-	"strings"
+
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gfile"
+	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/os/gview"
+	"github.com/gogf/gf/v2/text/gstr"
 )
 
 var Curd = gCurd{}
@@ -41,6 +43,7 @@ type CurdStep struct {
 	HasSwitch        bool `json:"hasSwitch"`
 	HasCheck         bool `json:"hasCheck"`
 	HasMenu          bool `json:"hasMenu"`
+	HasSort          bool `json:"hasSort"`
 }
 
 type CurdOptionsJoin struct {
@@ -152,6 +155,7 @@ func initStep(in *CurdPreviewInput) {
 	in.options.Step.HasSwitch = HasSwitch(in.options.ColumnOps, in.masterFields)
 	in.options.Step.HasCheck = gstr.InArray(in.options.ColumnOps, "check")
 	in.options.Step.HasMenu = gstr.InArray(in.options.AutoOps, "genMenuPermissions")
+	in.options.Step.HasSort = HasTableSort(in.masterFields)
 }
 
 func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) (err error) {
