@@ -34,41 +34,41 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineAsyncComponent, defineComponent, reactive, toRefs } from "vue";
-/** 异步加载的组件，用到的时候再加载组件 */
-const BasicSetting = defineAsyncComponent(() => {
-    return import("./BasicSetting.vue");
-  }),
-  RevealSetting = defineAsyncComponent(() => {
-    return import("./RevealSetting.vue");
-  }),
-  EmailSetting = defineAsyncComponent(() => {
-    return import("./EmailSetting.vue");
-  }),
-  ThemeSetting = defineAsyncComponent(() => {
-    return import("./ThemeSetting.vue");
-  }),
-  CashSetting = defineAsyncComponent(() => {
-    return import("./CashSetting.vue");
-  }),
-  UploadSetting = defineAsyncComponent(() => {
-    return import("./UploadSetting.vue");
-  }),
-  GeoSetting = defineAsyncComponent(() => {
-    return import("./GeoSetting.vue");
-  }),
-  SmsSetting = defineAsyncComponent(() => {
-    return import("./SmsSetting.vue");
-  }),
-  PaySetting = defineAsyncComponent(() => {
-    return import("./PaySetting.vue");
-  }),
-  WechatSetting = defineAsyncComponent(() => {
-    return import("./WechatSetting.vue");
-  }),
-  LoginSetting = defineAsyncComponent(() => {
-    return import("./LoginSetting.vue");
-  });
+  import { defineAsyncComponent, defineComponent, reactive, toRefs } from 'vue';
+  /** 异步加载的组件，用到的时候再加载组件 */
+  const BasicSetting = defineAsyncComponent(() => {
+      return import('./BasicSetting.vue');
+    }),
+    RevealSetting = defineAsyncComponent(() => {
+      return import('./RevealSetting.vue');
+    }),
+    EmailSetting = defineAsyncComponent(() => {
+      return import('./EmailSetting.vue');
+    }),
+    ThemeSetting = defineAsyncComponent(() => {
+      return import('./ThemeSetting.vue');
+    }),
+    CashSetting = defineAsyncComponent(() => {
+      return import('./CashSetting.vue');
+    }),
+    UploadSetting = defineAsyncComponent(() => {
+      return import('./UploadSetting.vue');
+    }),
+    GeoSetting = defineAsyncComponent(() => {
+      return import('./GeoSetting.vue');
+    }),
+    SmsSetting = defineAsyncComponent(() => {
+      return import('./SmsSetting.vue');
+    }),
+    PaySetting = defineAsyncComponent(() => {
+      return import('./PaySetting.vue');
+    }),
+    WechatSetting = defineAsyncComponent(() => {
+      return import('./WechatSetting.vue');
+    }),
+    LoginSetting = defineAsyncComponent(() => {
+      return import('./LoginSetting.vue');
+    });
   const typeTabList = [
     {
       name: '基本设置',

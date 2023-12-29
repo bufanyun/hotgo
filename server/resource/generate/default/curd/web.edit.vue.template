@@ -2,24 +2,28 @@
   <div>
     <n-spin :show="loading" description="请稍候...">
       <n-modal
-        v-model:show="isShowModal"
+        v-model:show="showModal"
+        :mask-closable="false"
         :show-icon="false"
         preset="dialog"
-       :title="params?.@{.pk.TsName} > 0 ? '编辑 #' + params?.@{.pk.TsName} : '添加'"
+        transform-origin="center"
+        :title="formValue.@{.pk.TsName} > 0 ? '编辑 #' + formValue.@{.pk.TsName} : '添加'"
         :style="{
           width: dialogWidth,
         }"
       >
-        <n-form
-          :model="params"
-          :rules="rules"
-          ref="formRef"
-          label-placement="left"
-          :label-width="100"
-          class="py-4"
-        >
-@{.formItem}
-        </n-form>
+        <n-scrollbar style="max-height: 87vh" class="pr-5">
+          <n-form
+            :model="formValue"
+            :rules="rules"
+            ref="formRef"
+            :label-placement="settingStore.isMobile ? 'top' : 'left'"
+            :label-width="100"
+            class="py-4"
+          >
+  @{.formItem}
+          </n-form>
+        </n-scrollbar>
         <template #action>
           <n-space>
             <n-button @click="closeForm">取消</n-button>
@@ -33,37 +37,18 @@
 
 <script lang="ts" setup>
 @{.script.import}  import { rules, options, State, newState } from './model';
+  import { useProjectSettingStore } from '@/store/modules/projectSetting';
   import { useMessage } from 'naive-ui';
   import { adaModalWidth } from '@/utils/hotgo';
 
-  const emit = defineEmits(['reloadTable', 'updateShowModal']);
-
-  interface Props {
-    showModal: boolean;
-    formParams?: State;
-  }
-
-  const props = withDefaults(defineProps<Props>(), {
-    showModal: false,
-    formParams: () => {
-      return newState(null);
-    },
-  });
-
-  const isShowModal = computed({
-    get: () => {
-      return props.showModal;
-    },
-    set: (value) => {
-      emit('updateShowModal', value);
-    },
-  });
-
-  const loading = ref(false);
-  const params = ref<State>(props.formParams);
+  const emit = defineEmits(['reloadTable']);
   const message = useMessage();
-  const formRef = ref<any>({});
+  const settingStore = useProjectSettingStore();
   const dialogWidth = ref('75%');
+  const loading = ref(false);
+  const showModal = ref(false);
+  const formValue = ref<State>(newState(null));
+  const formRef = ref<any>({});
   const formBtnLoading = ref(false);
 
   function confirmForm(e) {
@@ -71,10 +56,10 @@
     formBtnLoading.value = true;
     formRef.value.validate((errors) => {
       if (!errors) {
-        Edit(params.value).then((_res) => {
+        Edit(formValue.value).then((_res) => {
           message.success('操作成功');
           setTimeout(() => {
-            isShowModal.value = false;
+            showModal.value = false;
             emit('reloadTable');
           });
         });
@@ -85,15 +70,16 @@
     });
   }
 
-  onMounted(async () => {
-    adaModalWidth(dialogWidth);
-  });
-
   function closeForm() {
-    isShowModal.value = false;
+    showModal.value = false;
+    loading.value = false;
   }
 
 @{.script.setup}
+
+  defineExpose({
+    openModal,
+  });
 </script>
 
 <style lang="less"></style>

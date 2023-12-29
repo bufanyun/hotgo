@@ -2,7 +2,7 @@
   <div>
     <n-spin :show="show" description="请稍候...">
       <n-form
-        :label-width="110"
+        :label-width="150"
         :model="formValue"
         :rules="rules"
         ref="formRef"
@@ -41,7 +41,7 @@
           </n-input-number>
         </n-form-item>
 
-        <n-tabs type="segment" v-model:value="tabName">
+        <n-tabs type="card" size="small" v-model:value="tabName">
           <n-tab-pane name="aliyun">
             <template #tab> 阿里云 </template>
             <n-divider title-placement="left"> 阿里云</n-divider>
@@ -74,7 +74,7 @@
               </template>
             </n-form-item>
 
-            <n-form-item label="短信模板" path="smsAliYunTemplate" label-placement="top">
+            <n-form-item label="短信模板" path="smsAliYunTemplate">
               <n-dynamic-input
                 v-model:value="formValue.smsAliYunTemplate"
                 preset="pair"
@@ -87,14 +87,14 @@
           <n-tab-pane name="tencent">
             <template #tab> 腾讯云 </template>
             <n-divider title-placement="left"> 腾讯云</n-divider>
-            <n-form-item label="SecretId" path="smsTencentSecretId">
+            <n-form-item label="APPID" path="smsTencentSecretId">
               <n-input v-model:value="formValue.smsTencentSecretId" placeholder="" />
               <template #feedback>
-                应用key和密钥你可以通过 https://ram.console.aliyun.com/manage/ak 获取
+                子账号密钥获取地址：https://cloud.tencent.com/document/product/598/37140
               </template>
             </n-form-item>
 
-            <n-form-item label="SecretKey" path="smsTencentSecretKey">
+            <n-form-item label="密钥" path="smsTencentSecretKey">
               <n-input
                 type="password"
                 v-model:value="formValue.smsTencentSecretKey"
@@ -140,7 +140,7 @@
               </template>
             </n-form-item>
 
-            <n-form-item label="短信模板" path="smsTencentTemplate" label-placement="top">
+            <n-form-item label="短信模板" path="smsTencentTemplate">
               <n-dynamic-input
                 v-model:value="formValue.smsTencentTemplate"
                 preset="pair"
@@ -179,10 +179,7 @@
         class="py-4"
       >
         <n-form-item label="事件模板" path="event">
-          <n-select
-            :options="options.config_sms_template"
-            v-model:value="formParams.event"
-          />
+          <n-select :options="options.config_sms_template" v-model:value="formParams.event" />
         </n-form-item>
 
         <n-form-item label="手机号" path="mobile">
@@ -205,9 +202,7 @@
       <template #action>
         <n-space>
           <n-button @click="() => (showModal = false)">关闭</n-button>
-          <n-button type="info" :loading="formBtnLoading" @click="confirmForm">
-            发送
-          </n-button>
+          <n-button type="info" :loading="formBtnLoading" @click="confirmForm"> 发送 </n-button>
         </n-space>
       </template>
     </n-modal>
@@ -215,125 +210,124 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watch } from "vue";
-import { useMessage } from "naive-ui";
-import { getConfig, sendTestSms, updateConfig } from "@/api/sys/config";
-import { Dicts } from "@/api/dict/dict";
-import { Options } from "@/utils/hotgo";
-import { GlassesOutline, Glasses } from "@vicons/ionicons5";
+  import { ref, onMounted, watch } from 'vue';
+  import { useMessage } from 'naive-ui';
+  import { getConfig, sendTestSms, updateConfig } from '@/api/sys/config';
+  import { Dicts } from '@/api/dict/dict';
+  import { Options } from '@/utils/hotgo';
+  import { GlassesOutline, Glasses } from '@vicons/ionicons5';
 
-const group = ref("sms");
-const show = ref(false);
-const showModal = ref(false);
-const formBtnLoading = ref(false);
-const formParams = ref({ mobile: "", event: "", code: "1234" });
+  const group = ref('sms');
+  const show = ref(false);
+  const showModal = ref(false);
+  const formBtnLoading = ref(false);
+  const formParams = ref({ mobile: '', event: '', code: '1234' });
 
-const rules = {
-  smsDrive: {
-    required: true,
-    message: "请输入默认驱动",
-    trigger: "blur",
-  },
-};
+  const rules = {
+    smsDrive: {
+      required: true,
+      message: '请输入默认驱动',
+      trigger: 'blur',
+    },
+  };
 
-const formTestRef = ref<any>();
-const formRef: any = ref(null);
-const message = useMessage();
+  const formTestRef = ref<any>();
+  const formRef: any = ref(null);
+  const message = useMessage();
 
-const options = ref<Options>({
-  config_sms_template: [],
-  config_sms_drive: [],
-});
+  const options = ref<Options>({
+    config_sms_template: [],
+    config_sms_drive: [],
+  });
 
-/** 默认选项卡 */
-const defaultTabName = "aliyun";
-/** 选项卡名称 */
-const tabName = ref<string>(defaultTabName);
+  /** 默认选项卡 */
+  const defaultTabName = 'aliyun';
+  /** 选项卡名称 */
+  const tabName = ref<string>(defaultTabName);
 
-const formValue = ref({
-  smsDrive: defaultTabName,
-  smsMinInterval: 60,
-  smsMaxIpLimit: 10,
-  smsCodeExpire: 600,
-  smsAliYunAccessKeyID: "",
-  smsAliYunAccessKeySecret: "",
-  smsAliYunSign: "",
-  smsAliYunTemplate: null,
-  smsTencentSecretId: "",
-  smsTencentSecretKey: "",
-  smsTencentEndpoint: "sms.tencentcloudapi.com",
-  smsTencentRegion: "ap-guangzhou",
-  smsTencentAppId: "",
-  smsTencentSign: "",
-  smsTencentTemplate: null,
-});
+  const formValue = ref({
+    smsDrive: defaultTabName,
+    smsMinInterval: 60,
+    smsMaxIpLimit: 10,
+    smsCodeExpire: 600,
+    smsAliYunAccessKeyID: '',
+    smsAliYunAccessKeySecret: '',
+    smsAliYunSign: '',
+    smsAliYunTemplate: null,
+    smsTencentSecretId: '',
+    smsTencentSecretKey: '',
+    smsTencentEndpoint: 'sms.tencentcloudapi.com',
+    smsTencentRegion: 'ap-guangzhou',
+    smsTencentAppId: '',
+    smsTencentSign: '',
+    smsTencentTemplate: null,
+  });
 
-/** 监听类型变化,同步到选项卡中 */
-watch(
-  () => formValue.value.smsDrive,
-  (smsDrive: string) => {
-    console.error(smsDrive);
-    tabName.value = smsDrive;
-  }
-);
-
-function sendTest() {
-  showModal.value = true;
-  formBtnLoading.value = false;
-}
-
-function formSubmit() {
-  formRef.value.validate((errors) => {
-    if (!errors) {
-      updateConfig({ group: group.value, list: formValue.value }).then((_res) => {
-        message.success("更新成功");
-        load();
-      });
-    } else {
-      message.error("验证失败，请填写完整信息");
+  /** 监听类型变化,同步到选项卡中 */
+  watch(
+    () => formValue.value.smsDrive,
+    (smsDrive: string) => {
+      tabName.value = smsDrive;
     }
-  });
-}
+  );
 
-onMounted(() => {
-  load();
-});
-
-async function load() {
-  show.value = true;
-  await loadOptions();
-  new Promise((_resolve, _reject) => {
-    getConfig({ group: group.value })
-      .then((res) => {
-        res.list.smsAliYunTemplate = JSON.parse(res.list.smsAliYunTemplate);
-        res.list.smsTencentTemplate = JSON.parse(res.list.smsTencentTemplate);
-        formValue.value = res.list;
-      })
-      .finally(() => {
-        show.value = false;
-      });
-  });
-}
-
-async function loadOptions() {
-  options.value = await Dicts({
-    types: ["config_sms_template", "config_sms_drive"],
-  });
-}
-
-function confirmForm(e) {
-  e.preventDefault();
-  formBtnLoading.value = true;
-  formTestRef.value.validate((errors) => {
-    if (!errors) {
-      sendTestSms(formParams.value).then((_res) => {
-        message.success("发送成功");
-        showModal.value = false;
-      });
-    } else {
-      message.error("请填写完整信息");
-    }
+  function sendTest() {
+    showModal.value = true;
     formBtnLoading.value = false;
+  }
+
+  function formSubmit() {
+    formRef.value.validate((errors) => {
+      if (!errors) {
+        updateConfig({ group: group.value, list: formValue.value }).then((_res) => {
+          message.success('更新成功');
+          load();
+        });
+      } else {
+        message.error('验证失败，请填写完整信息');
+      }
+    });
+  }
+
+  onMounted(() => {
+    load();
   });
-}
+
+  async function load() {
+    show.value = true;
+    await loadOptions();
+    new Promise((_resolve, _reject) => {
+      getConfig({ group: group.value })
+        .then((res) => {
+          res.list.smsAliYunTemplate = JSON.parse(res.list.smsAliYunTemplate);
+          res.list.smsTencentTemplate = JSON.parse(res.list.smsTencentTemplate);
+          formValue.value = res.list;
+        })
+        .finally(() => {
+          show.value = false;
+        });
+    });
+  }
+
+  async function loadOptions() {
+    options.value = await Dicts({
+      types: ['config_sms_template', 'config_sms_drive'],
+    });
+  }
+
+  function confirmForm(e) {
+    e.preventDefault();
+    formBtnLoading.value = true;
+    formTestRef.value.validate((errors) => {
+      if (!errors) {
+        sendTestSms(formParams.value).then((_res) => {
+          message.success('发送成功');
+          showModal.value = false;
+        });
+      } else {
+        message.error('请填写完整信息');
+      }
+      formBtnLoading.value = false;
+    });
+  }
 </script>

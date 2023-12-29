@@ -8,59 +8,46 @@ import { isArray, isNullObject } from '@/utils/is';
 import { getFileExt } from '@/utils/urlUtils';
 import { defRangeShortcuts, defShortcuts, formatToDate } from '@/utils/dateUtil';
 import { validate } from '@/utils/validateUtil';
-import { getOptionLabel, getOptionTag, Options, errorImg } from '@/utils/hotgo';
+import { getOptionLabel, getOptionTag, Option, Options, errorImg } from '@/utils/hotgo';
 
 import { usePermission } from '@/hooks/web/usePermission';
 const { hasPermission } = usePermission();
 const $message = window['$message'];
 
-
-export interface State {
-  id: number;
-  categoryId: number;
-  title: string;
-  description: string;
-  content: string;
-  image: string;
-  attachfile: string;
-  cityId: number;
-  switch: number;
-  sort: number;
-  status: number;
-  createdBy: number;
-  updatedBy: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string;
+export class State {
+  public id = 0; // ID
+  public categoryId = 0; // 分类ID
+  public title = ''; // 标题
+  public description = ''; // 描述
+  public content = ''; // 内容
+  public image = ''; // 单图
+  public attachfile = ''; // 附件
+  public cityId = 0; // 所在城市
+  public switch = 1; // 显示开关
+  public sort = 0; // 排序
+  public status = 1; // 状态
+  public createdBy = 0; // 创建者
+  public updatedBy = 0; // 更新者
+  public createdAt = ''; // 创建时间
+  public updatedAt = ''; // 修改时间
+  public deletedAt = ''; // 删除时间
 }
 
-export const defaultState: State = {
-  id: 0,
-  categoryId: 0,
-  title: '',
-  description: '',
-  content: '',
-  image: '',
-  attachfile: '',
-  cityId: 0,
-  switch: 1,
-  sort: 0,
-  status: 1,
-  createdBy: 0,
-  updatedBy: 0,
-  createdAt: '',
-  updatedAt: '',
-  deletedAt: '',
+export function newState(state: State | Record<string, any> | null): State {
+  if (state !== null) {
+    if (state instanceof State) {
+      return cloneDeep(state);
+    }
+    return new State(state);
+  }
+  return new State();
+}
+
+export interface IOptions extends Options {
+  sys_normal_disable: Option[]; 
 };
 
-export function newState(state: State | null): State {
-  if (state !== null) {
-    return cloneDeep(state);
-  }
-  return cloneDeep(defaultState);
-}
-
-export const options = ref<Options>({
+export const options = ref<IOptions>({
   sys_normal_disable: [],
 });
 

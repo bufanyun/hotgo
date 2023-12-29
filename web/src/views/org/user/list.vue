@@ -69,6 +69,7 @@
 
     <n-modal
       v-model:show="showModal"
+      :mask-closable="false"
       :show-icon="false"
       preset="dialog"
       :title="formParams?.id > 0 ? '编辑用户 #' + formParams?.id : '添加用户'"

@@ -22,7 +22,6 @@ const (
 func (l *gCurd) webModelTplData(ctx context.Context, in *CurdPreviewInput) (data g.Map, err error) {
 	data = make(g.Map)
 	data["state"] = l.generateWebModelState(ctx, in)
-	data["defaultState"] = l.generateWebModelDefaultState(ctx, in)
 	data["rules"] = l.generateWebModelRules(ctx, in)
 	data["formSchema"] = l.generateWebModelFormSchema(ctx, in)
 	if data["columns"], err = l.generateWebModelColumns(ctx, in); err != nil {
@@ -33,18 +32,7 @@ func (l *gCurd) webModelTplData(ctx context.Context, in *CurdPreviewInput) (data
 
 func (l *gCurd) generateWebModelState(ctx context.Context, in *CurdPreviewInput) string {
 	buffer := bytes.NewBuffer(nil)
-	buffer.WriteString("export interface State {\n")
-	for _, field := range in.masterFields {
-		buffer.WriteString(fmt.Sprintf("  %s: %s;\n", field.TsName, field.TsType))
-	}
-	buffer.WriteString("}")
-
-	return buffer.String()
-}
-
-func (l *gCurd) generateWebModelDefaultState(ctx context.Context, in *CurdPreviewInput) string {
-	buffer := bytes.NewBuffer(nil)
-	buffer.WriteString("export const defaultState: State = {\n")
+	buffer.WriteString("export class State {\n")
 	for _, field := range in.masterFields {
 		var value = field.DefaultValue
 		if value == nil {
@@ -56,10 +44,9 @@ func (l *gCurd) generateWebModelDefaultState(ctx context.Context, in *CurdPrevie
 		if field.Name == "status" {
 			value = 1
 		}
-		buffer.WriteString(fmt.Sprintf("  %s: %v,\n", field.TsName, value))
+		buffer.WriteString(fmt.Sprintf("  public %s = %v; // %s\n", field.TsName, value, field.Dc))
 	}
-	buffer.WriteString("};")
-
+	buffer.WriteString("}")
 	return buffer.String()
 }
 
@@ -107,8 +94,10 @@ func (l *gCurd) generateWebModelDictOptions(ctx context.Context, in *CurdPreview
 		switchLoadOptions string
 	)
 
+	interfaceOptionsBuffer := bytes.NewBuffer(nil)
+	interfaceOptionsBuffer.WriteString("export interface IOptions extends Options {\n")
 	constOptionsBuffer := bytes.NewBuffer(nil)
-	constOptionsBuffer.WriteString("export const options = ref<Options>({\n")
+	constOptionsBuffer.WriteString("export const options = ref<IOptions>({\n")
 
 	for _, v := range dictTypeList {
 		// 字段映射字典
@@ -120,14 +109,17 @@ func (l *gCurd) generateWebModelDictOptions(ctx context.Context, in *CurdPreview
 		}
 
 		awaitLoadOptions = fmt.Sprintf("%s    '%s',\n", awaitLoadOptions, v.Type)
+		interfaceOptionsBuffer.WriteString("  " + v.Type + ": Option[]; \n")
 		constOptionsBuffer.WriteString("  " + v.Type + ": [],\n")
 	}
 
+	interfaceOptionsBuffer.WriteString("};\n")
 	constOptionsBuffer.WriteString("});\n")
 
 	loadOptionsBuffer := bytes.NewBuffer(nil)
 	loadOptionsBuffer.WriteString(fmt.Sprintf(ModelLoadOptionsTemplate, awaitLoadOptions, switchLoadOptions))
 
+	options["interface"] = interfaceOptionsBuffer.String()
 	options["const"] = constOptionsBuffer.String()
 	options["load"] = loadOptionsBuffer.String()
 

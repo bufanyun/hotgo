@@ -1,11 +1,14 @@
 <template>
   <div>
-    <div class="n-layout-page-header">
-      <n-card :bordered="false" title="生成演示详情"> <!-- CURD详情页--> </n-card>
-    </div>
-    <n-card :bordered="false" class="proCard mt-4" size="small" :segmented="{ content: true }">
-      <n-descriptions label-placement="left" class="py-2" column="4">
-        <n-descriptions-item>
+    <n-spin :show="loading" description="请稍候...">
+      <n-drawer v-model:show="showModal" :width="dialogWidth">
+        <n-drawer-content>
+          <template #header> 生成演示详情 </template>
+          <template #footer>
+            <n-button @click="showModal = false"> 关闭 </n-button>
+          </template>
+          <n-descriptions label-placement="left" class="py-2" column="1">
+                <n-descriptions-item>
           <template #label>分类ID</template>
           {{ formValue.categoryId }}
         </n-descriptions-item>
@@ -69,23 +72,25 @@
         </n-descriptions-item>
 
 
-      </n-descriptions>
-    </n-card>
+          </n-descriptions>
+        </n-drawer-content>
+      </n-drawer>
+    </n-spin>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref } from 'vue';
-  import { useRouter } from 'vue-router';
+  import { computed, ref } from 'vue';
   import { useMessage } from 'naive-ui';
   import { View } from '@/api/curdDemo';
-  import { newState, options } from './model';
-  import { getOptionLabel, getOptionTag } from '@/utils/hotgo';
+  import { State, newState, options } from './model';
+  import { adaModalWidth, getOptionLabel, getOptionTag } from '@/utils/hotgo';
   import { getFileExt } from '@/utils/urlUtils';
 
   const message = useMessage();
-  const router = useRouter();
-  const id = Number(router.currentRoute.value.params.id);
+  const dialogWidth = ref('75%');
+  const loading = ref(false);
+  const showModal = ref(false);
   const formValue = ref(newState(null));
   const fileAvatarCSS = computed(() => {
     return {
@@ -99,12 +104,21 @@
     window.open(url);
   }
 
-  onMounted(async () => {
-    if (id < 1) {
-      message.error('ID不正确，请检查！');
-      return;
-    }
-    formValue.value = await View({ id: id });
+  function openModal(state: State) {
+    adaModalWidth(dialogWidth, 580);
+    showModal.value = true;
+    loading.value = true;
+    View({ id: state.id })
+      .then((res) => {
+        formValue.value = res;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  }
+
+  defineExpose({
+    openModal,
   });
 </script>
 

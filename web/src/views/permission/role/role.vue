@@ -25,7 +25,13 @@
       </n-space>
     </n-card>
 
-    <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" :title="editRoleTitle">
+    <n-modal
+      v-model:show="showModal"
+      :show-icon="false"
+      :mask-closable="false"
+      preset="dialog"
+      :title="editRoleTitle"
+    >
       <div class="py-3 menu-list" :style="{ maxHeight: '90vh', height: '70vh' }">
         <n-tree
           block-line
@@ -164,10 +170,10 @@
     DataScopeSelect,
     DataScopeEdit,
   } from '@/api/system/role';
-  import { getMenuList } from '@/api/system/menu';
+  import { EditMenu, getMenuList } from '@/api/system/menu';
   import { columns } from './columns';
   import { PlusOutlined } from '@vicons/antd';
-  import { getTreeAll } from '@/utils';
+  import { getAllExpandKeys, getTreeAll } from '@/utils';
   import { statusOptions } from '@/enums/optionsiEnum';
   import { cloneDeep } from 'lodash-es';
   import { getDeptList } from '@/api/org/dept';
@@ -338,9 +344,6 @@
           reloadTable();
         });
       },
-      onNegativeClick: () => {
-        // message.error('取消');
-      },
     });
   }
 
@@ -394,7 +397,7 @@
     if (expandedKeys.value.length) {
       expandedKeys.value = [];
     } else {
-      expandedKeys.value = treeData.value.map((item: any) => item.key) as [];
+      expandedKeys.value = getAllExpandKeys(treeData) as [];
     }
   }
 
@@ -409,45 +412,49 @@
   }
 
   onMounted(async () => {
-    await loadDataList();
-    await loadMenuList();
-    await loadDeptList();
-    await loadDataScopeSelect();
+    loadDataList();
+    loadMenuList();
+    loadDeptList();
+    loadDataScopeSelect();
     await loadDataTable({});
   });
 
-  async function loadDataList() {
-    const data = await getRoleList({ pageSize: 100, page: 1 });
-    optionTreeData.value = [
-      {
-        id: 0,
-        key: 0,
-        label: '顶级角色',
-        pid: 0,
-        name: '顶级角色',
-      },
-    ];
-    optionTreeData.value = optionTreeData.value.concat(data.list);
+  function loadDataList() {
+    getRoleList({ pageSize: 100, page: 1 }).then((res) => {
+      optionTreeData.value = [
+        {
+          id: 0,
+          key: 0,
+          label: '顶级角色',
+          pid: 0,
+          name: '顶级角色',
+        },
+      ];
+      optionTreeData.value = optionTreeData.value.concat(res.list);
+    });
   }
 
-  async function loadMenuList() {
-    const treeMenuList = await getMenuList();
-    expandedKeys.value = treeMenuList.list.map((item) => item.key);
-    treeData.value = treeMenuList.list;
+  function loadMenuList() {
+    getMenuList().then((res) => {
+      expandedKeys.value = getAllExpandKeys(res.list) as [];
+      treeData.value = res.list;
+    });
   }
 
-  async function loadDeptList() {
-    const tmp = await getDeptList({});
-    if (tmp.list) {
-      deptList.value = tmp.list;
-    }
+  function loadDeptList() {
+    getDeptList({}).then((res) => {
+      if (res.list) {
+        deptList.value = res.list;
+      }
+    });
   }
 
-  async function loadDataScopeSelect() {
-    const option = await DataScopeSelect();
-    if (option.list) {
-      dataScopeOption.value = option.list;
-    }
+  function loadDataScopeSelect() {
+    DataScopeSelect().then((res) => {
+      if (res.list) {
+        dataScopeOption.value = res.list;
+      }
+    });
   }
 
   function onUpdateValuePid(value: string | number) {

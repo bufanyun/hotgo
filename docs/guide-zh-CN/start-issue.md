@@ -42,7 +42,21 @@
 - http服务没有启动或正在启动
 - 通过一键启动所有服务运行时属正常情况，多服务启动时存在先后顺序问题，`tcpClient`比`tcpServer`先启动完成导致的，等`tcpServer`启动完成后会自动重连
 
-
-
-
 详细请参考 - [系统安装](start-installation.md)
+
+
+### 四、前端相关
+
+#### 1、Error: connect ECONNREFUSED ::1:8000
+
+```text
+11:44:52 [vite] http proxy error at /member/info:
+Error: connect ECONNREFUSED ::1:8000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1246:16)
+```
+
+- 服务端没有启动
+- `.\wen\.env.development`中的`VITE_PROXY`配置的服务器地址或端口与实际不一致
+
+
+

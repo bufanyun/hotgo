@@ -76,12 +76,8 @@
         </template>
       </BasicTable>
     </n-card>
-    <Edit
-      @reloadTable="reloadTable"
-      @updateShowModal="updateShowModal"
-      :showModal="showModal"
-      :formParams="formParams"
-    />
+    <Edit @reloadTable="reloadTable" ref="editRef" />
+    <View ref="viewRef" />
   </div>
 </template>
 
@@ -92,21 +88,21 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { usePermission } from '@/hooks/web/usePermission';
   import { List, Export, Delete, Status } from '@/api/curdDemo';
-  import { State, columns, schemas, options, newState } from './model';
+  import { columns, schemas, options } from './model';
   import { PlusOutlined, ExportOutlined, DeleteOutlined } from '@vicons/antd';
-  import { useRouter } from 'vue-router';
   import { getOptionLabel } from '@/utils/hotgo';
   import Edit from './edit.vue';
-  const { hasPermission } = usePermission();
-  const router = useRouter();
-  const actionRef = ref();
+  import View from './view.vue';
+
   const dialog = useDialog();
   const message = useMessage();
+  const { hasPermission } = usePermission();
+  const actionRef = ref();
   const searchFormRef = ref<any>({});
+  const viewRef = ref();
+  const editRef = ref();
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
-  const showModal = ref(false);
-  const formParams = ref<State>();
 
   const actionColumn = reactive({
     width: 300,
@@ -170,15 +166,6 @@
     return await List({ ...searchFormRef.value?.formModel, ...res });
   };
 
-  function addTable() {
-    showModal.value = true;
-    formParams.value = newState(null);
-  }
-
-  function updateShowModal(value) {
-    showModal.value = value;
-  }
-
   function onCheckedRow(rowKeys) {
     batchDeleteDisabled.value = rowKeys.length <= 0;
     checkedIds.value = rowKeys;
@@ -188,13 +175,16 @@
     actionRef.value.reload();
   }
 
-  function handleView(record: Recordable) {
-    router.push({ name: 'curdDemoView', params: { id: record.id } });
+  function addTable() {
+    editRef.value.openModal(null);
   }
 
   function handleEdit(record: Recordable) {
-    showModal.value = true;
-    formParams.value = newState(record as State);
+    editRef.value.openModal(record);
+  }
+
+  function handleView(record: Recordable) {
+    viewRef.value.openModal(record);
   }
 
   function handleDelete(record: Recordable) {
@@ -208,9 +198,6 @@
           message.success('删除成功');
           reloadTable();
         });
-      },
-      onNegativeClick: () => {
-        // message.error('取消');
       },
     });
   }
@@ -228,9 +215,6 @@
           message.success('删除成功');
           reloadTable();
         });
-      },
-      onNegativeClick: () => {
-        // message.error('取消');
       },
     });
   }

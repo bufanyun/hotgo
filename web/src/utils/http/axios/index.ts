@@ -9,8 +9,8 @@ import { PageEnum } from '@/enums/pageEnum';
 
 import { useGlobSetting } from '@/hooks/setting';
 
-import { isString } from '@/utils/is/';
-import { deepMerge, isUrl } from '@/utils';
+import { isString, isUrl } from '@/utils/is/';
+import { deepMerge } from '@/utils';
 import { setObjToUrlParams } from '@/utils/urlUtils';
 
 import { CreateAxiosOptions, RequestOptions, Result } from './types';

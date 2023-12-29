@@ -12,15 +12,23 @@
         </n-form-item>
 
         <n-form-item label="提现最低手续费（元）" path="cashMinFee">
-          <n-input placeholder="" v-model:value="formValue.cashMinFee" />
+          <n-input-number placeholder="" v-model:value="formValue.cashMinFee" style="width: 100%" />
         </n-form-item>
 
         <n-form-item label="提现最低手续费比率" path="cashMinFeeRatio">
-          <n-input placeholder="" v-model:value="formValue.cashMinFeeRatio" />
+          <n-input-number
+            placeholder=""
+            v-model:value="formValue.cashMinFeeRatio"
+            style="width: 100%"
+          />
         </n-form-item>
 
         <n-form-item label="提现最低金额" path="cashMinMoney">
-          <n-input placeholder="" v-model:value="formValue.cashMinMoney" />
+          <n-input-number
+            placeholder=""
+            v-model:value="formValue.cashMinMoney"
+            style="width: 100%"
+          />
         </n-form-item>
 
         <n-form-item label="提现提示信息" path="cashTips">
@@ -50,8 +58,8 @@
   const message = useMessage();
   const formValue = ref({
     cashSwitch: '',
-    cashMinFee: '',
-    cashMinFeeRatio: '',
+    cashMinFee: 0,
+    cashMinFeeRatio: 0,
     cashMinMoney: 0,
     cashTips: '',
   });
