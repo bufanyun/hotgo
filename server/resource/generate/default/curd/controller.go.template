@@ -27,6 +27,10 @@ func (c *c@{.varName}) List(ctx context.Context, req *@{.varName | ToLower}.List
 	if err != nil {
 		return
 	}
+	
+	if list == nil {
+		list = []*@{.templateGroup}in.@{.varName}ListModel{}
+    }
 
 	res = new(@{.varName | ToLower}.ListRes)
 	res.List = list
