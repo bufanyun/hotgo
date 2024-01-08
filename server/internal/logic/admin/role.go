@@ -197,7 +197,7 @@ func (s *sAdminRole) Edit(ctx context.Context, in *adminin.RoleEditInp) (err err
 }
 
 func updateRoleChildrenTree(ctx context.Context, _id int64, _level int, _tree string) (err error) {
-	var list []*entity.AdminDept
+	var list []*entity.AdminRole
 	if err = dao.AdminRole.Ctx(ctx).Where("pid", _id).Scan(&list); err != nil {
 		return
 	}

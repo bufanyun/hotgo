@@ -1,7 +1,13 @@
 <template>
   <div>
     <n-spin :show="show" description="请稍候...">
-      <n-form :label-width="100" :model="formValue" :rules="rules" ref="formRef">
+      <n-form
+        :label-width="150"
+        :model="formValue"
+        :rules="rules"
+        ref="formRef"
+        label-placement="left"
+      >
         <n-form-item label="默认驱动" path="smsDrive">
           <n-select
             placeholder="默认发送驱动"
@@ -35,105 +41,117 @@
           </n-input-number>
         </n-form-item>
 
-        <n-divider title-placement="left">阿里云</n-divider>
-        <n-form-item label="AccessKeyID" path="smsAliYunAccessKeyID">
-          <n-input v-model:value="formValue.smsAliYunAccessKeyID" placeholder="" />
-          <template #feedback
-            >应用key和密钥你可以通过 https://ram.console.aliyun.com/manage/ak 获取</template
-          >
-        </n-form-item>
+        <n-tabs type="card" size="small" v-model:value="tabName">
+          <n-tab-pane name="aliyun">
+            <template #tab> 阿里云 </template>
+            <n-divider title-placement="left"> 阿里云</n-divider>
+            <n-form-item label="AccessKeyID" path="smsAliYunAccessKeyID">
+              <n-input v-model:value="formValue.smsAliYunAccessKeyID" placeholder="" />
+              <template #feedback>
+                应用key和密钥你可以通过 https://ram.console.aliyun.com/manage/ak 获取
+              </template>
+            </n-form-item>
 
-        <n-form-item label="AccessKeySecret" path="smsAliYunAccessKeySecret">
-          <n-input
-            type="password"
-            v-model:value="formValue.smsAliYunAccessKeySecret"
-            show-password-on="click"
-          >
-            <template #password-visible-icon>
-              <n-icon :size="16" :component="GlassesOutline" />
-            </template>
-            <template #password-invisible-icon>
-              <n-icon :size="16" :component="Glasses" />
-            </template>
-          </n-input>
-        </n-form-item>
+            <n-form-item label="AccessKeySecret" path="smsAliYunAccessKeySecret">
+              <n-input
+                type="password"
+                v-model:value="formValue.smsAliYunAccessKeySecret"
+                show-password-on="click"
+              >
+                <template #password-visible-icon>
+                  <n-icon :size="16" :component="GlassesOutline" />
+                </template>
+                <template #password-invisible-icon>
+                  <n-icon :size="16" :component="Glasses" />
+                </template>
+              </n-input>
+            </n-form-item>
 
-        <n-form-item label="签名" path="smsAliYunSign">
-          <n-input v-model:value="formValue.smsAliYunSign" placeholder="" />
-          <template #feedback
-            >申请地址：https://dysms.console.aliyun.com/domestic/text/sign</template
-          >
-        </n-form-item>
+            <n-form-item label="签名" path="smsAliYunSign">
+              <n-input v-model:value="formValue.smsAliYunSign" placeholder="" />
+              <template #feedback>
+                申请地址：https://dysms.console.aliyun.com/domestic/text/sign
+              </template>
+            </n-form-item>
 
-        <n-form-item label="短信模板" path="smsAliYunTemplate">
-          <n-dynamic-input
-            v-model:value="formValue.smsAliYunTemplate"
-            preset="pair"
-            key-placeholder="事件KEY"
-            value-placeholder="模板CODE"
-          />
-        </n-form-item>
+            <n-form-item label="短信模板" path="smsAliYunTemplate">
+              <n-dynamic-input
+                v-model:value="formValue.smsAliYunTemplate"
+                preset="pair"
+                key-placeholder="事件KEY"
+                value-placeholder="模板CODE"
+              />
+            </n-form-item>
+          </n-tab-pane>
 
-        <n-divider title-placement="left">腾讯云</n-divider>
-        <n-form-item label="SecretId" path="smsTencentSecretId">
-          <n-input v-model:value="formValue.smsTencentSecretId" placeholder="" />
-          <template #feedback
-            >应用key和密钥你可以通过 https://ram.console.aliyun.com/manage/ak 获取</template
-          >
-        </n-form-item>
+          <n-tab-pane name="tencent">
+            <template #tab> 腾讯云 </template>
+            <n-divider title-placement="left"> 腾讯云</n-divider>
+            <n-form-item label="APPID" path="smsTencentSecretId">
+              <n-input v-model:value="formValue.smsTencentSecretId" placeholder="" />
+              <template #feedback>
+                子账号密钥获取地址：https://cloud.tencent.com/document/product/598/37140
+              </template>
+            </n-form-item>
 
-        <n-form-item label="SecretKey" path="smsTencentSecretKey">
-          <n-input
-            type="password"
-            v-model:value="formValue.smsTencentSecretKey"
-            show-password-on="click"
-          >
-            <template #password-visible-icon>
-              <n-icon :size="16" :component="GlassesOutline" />
-            </template>
-            <template #password-invisible-icon>
-              <n-icon :size="16" :component="Glasses" />
-            </template>
-          </n-input>
-        </n-form-item>
+            <n-form-item label="密钥" path="smsTencentSecretKey">
+              <n-input
+                type="password"
+                v-model:value="formValue.smsTencentSecretKey"
+                show-password-on="click"
+              >
+                <template #password-visible-icon>
+                  <n-icon :size="16" :component="GlassesOutline" />
+                </template>
+                <template #password-invisible-icon>
+                  <n-icon :size="16" :component="Glasses" />
+                </template>
+              </n-input>
+            </n-form-item>
 
-        <n-form-item label="接入地域域名" path="smsTencentEndpoint">
-          <n-input v-model:value="formValue.smsTencentEndpoint" placeholder="" />
-          <template #feedback
-            >默认就近地域接入域名为 sms.tencentcloudapi.com
-            ，也支持指定地域域名访问，例如广州地域的域名为
-            sms.ap-guangzhou.tencentcloudapi.com</template
-          >
-        </n-form-item>
+            <n-form-item label="接入地域域名" path="smsTencentEndpoint">
+              <n-input v-model:value="formValue.smsTencentEndpoint" placeholder="" />
+              <template #feedback>
+                默认就近地域接入域名为 <n-text code>sms.tencentcloudapi.com</n-text>
+                ，也支持指定地域域名访问，例如广州地域的域名为
+                <n-text code>sms.ap-guangzhou.tencentcloudapi.com</n-text>
+              </template>
+            </n-form-item>
 
-        <n-form-item label="地域信息" path="smsTencentRegion">
-          <n-input v-model:value="formValue.smsTencentRegion" placeholder="" />
-          <template #feedback
-            >支持的地域列表参考
-            https://cloud.tencent.com/document/api/382/52071#.E5.9C.B0.E5.9F.9F.E5.88.97.E8.A1.A8</template
-          >
-        </n-form-item>
+            <n-form-item label="地域信息" path="smsTencentRegion">
+              <n-input v-model:value="formValue.smsTencentRegion" placeholder="" />
+              <template #feedback>
+                支持的地域列表参考
+                https://cloud.tencent.com/document/api/382/52071#.E5.9C.B0.E5.9F.9F.E5.88.97.E8.A1.A8
+              </template>
+            </n-form-item>
 
-        <n-form-item label="短信应用ID" path="smsTencentAppId">
-          <n-input v-model:value="formValue.smsTencentAppId" placeholder="" />
-          <template #feedback
-            >查看地址：https://console.cloud.tencent.com/smsv2/app-manage</template
-          >
-        </n-form-item>
+            <n-form-item label="短信应用ID" path="smsTencentAppId">
+              <n-input v-model:value="formValue.smsTencentAppId" placeholder="" />
+              <template #feedback>
+                查看地址：https://console.cloud.tencent.com/smsv2/app-manage
+              </template>
+            </n-form-item>
 
-        <n-form-item label="签名" path="smsTencentSign">
-          <n-input v-model:value="formValue.smsTencentSign" placeholder="" />
-          <template #feedback>查看地址：https://console.cloud.tencent.com/smsv2/csms-sign</template>
-        </n-form-item>
+            <n-form-item label="签名" path="smsTencentSign">
+              <n-input v-model:value="formValue.smsTencentSign" placeholder="" />
+              <template #feedback>
+                查看地址：https://console.cloud.tencent.com/smsv2/csms-sign
+              </template>
+            </n-form-item>
 
-        <n-form-item label="短信模板" path="smsTencentTemplate">
-          <n-dynamic-input
-            v-model:value="formValue.smsTencentTemplate"
-            preset="pair"
-            key-placeholder="事件KEY"
-            value-placeholder="模板ID"
-          />
-        </n-form-item>
+            <n-form-item label="短信模板" path="smsTencentTemplate">
+              <n-dynamic-input
+                v-model:value="formValue.smsTencentTemplate"
+                preset="pair"
+                key-placeholder="事件KEY"
+                value-placeholder="模板ID"
+              />
+            </n-form-item>
+          </n-tab-pane>
+
+          <!-- tencent -->
+        </n-tabs>
 
         <div>
           <n-space>
@@ -184,7 +202,7 @@
       <template #action>
         <n-space>
           <n-button @click="() => (showModal = false)">关闭</n-button>
-          <n-button type="info" :loading="formBtnLoading" @click="confirmForm">发送</n-button>
+          <n-button type="info" :loading="formBtnLoading" @click="confirmForm"> 发送 </n-button>
         </n-space>
       </template>
     </n-modal>
@@ -192,7 +210,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, watch } from 'vue';
   import { useMessage } from 'naive-ui';
   import { getConfig, sendTestSms, updateConfig } from '@/api/sys/config';
   import { Dicts } from '@/api/dict/dict';
@@ -222,8 +240,13 @@
     config_sms_drive: [],
   });
 
+  /** 默认选项卡 */
+  const defaultTabName = 'aliyun';
+  /** 选项卡名称 */
+  const tabName = ref<string>(defaultTabName);
+
   const formValue = ref({
-    smsDrive: 'aliyun',
+    smsDrive: defaultTabName,
     smsMinInterval: 60,
     smsMaxIpLimit: 10,
     smsCodeExpire: 600,
@@ -239,6 +262,14 @@
     smsTencentSign: '',
     smsTencentTemplate: null,
   });
+
+  /** 监听类型变化,同步到选项卡中 */
+  watch(
+    () => formValue.value.smsDrive,
+    (smsDrive: string) => {
+      tabName.value = smsDrive;
+    }
+  );
 
   function sendTest() {
     showModal.value = true;

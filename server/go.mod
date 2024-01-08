@@ -13,15 +13,15 @@ require (
 	github.com/casbin/casbin/v2 v2.55.0
 	github.com/forgoer/openssl v1.4.0
 	github.com/go-pay/gopay v1.5.91
-	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.5.7
-	github.com/gogf/gf/contrib/nosql/redis/v2 v2.5.7
-	github.com/gogf/gf/contrib/trace/jaeger/v2 v2.5.7
-	github.com/gogf/gf/v2 v2.5.7
+	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.6.1
+	github.com/gogf/gf/contrib/nosql/redis/v2 v2.6.1
+	github.com/gogf/gf/contrib/trace/jaeger/v2 v2.6.1
+	github.com/gogf/gf/v2 v2.6.1
+	github.com/gogf/selfupdate v0.0.0-20231215043001-5c48c528462f
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/gorilla/websocket v1.5.1
 	github.com/kayon/iploc v0.0.0-20200312105652-bda3e968a794
 	github.com/minio/minio-go/v7 v7.0.63
-	github.com/minio/selfupdate v0.6.0
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/qiniu/go-sdk/v7 v7.14.0
@@ -63,7 +63,7 @@ require (
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
-	github.com/go-logr/logr v1.3.0 // indirect
+	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
@@ -102,7 +102,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
-	github.com/redis/go-redis/v9 v9.3.0 // indirect
+	github.com/redis/go-redis/v9 v9.3.1 // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect
 	github.com/richardlehane/msoleps v1.0.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
@@ -124,11 +124,11 @@ require (
 	go.opentelemetry.io/otel/sdk v1.21.0 // indirect
 	go.opentelemetry.io/otel/trace v1.21.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
-	golang.org/x/crypto v0.15.0 // indirect
+	golang.org/x/crypto v0.16.0 // indirect
 	golang.org/x/image v0.1.0 // indirect
-	golang.org/x/net v0.18.0 // indirect
+	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.14.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect

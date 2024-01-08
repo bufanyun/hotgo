@@ -106,7 +106,8 @@
   import { statusOptions } from '@/enums/optionsiEnum';
   import { TypeSelect } from '@/api/sys/config';
   import { Option } from '@/utils/hotgo';
-  import {cloneDeep} from "lodash-es";
+  import { findTreeDataById } from '@/utils';
+  import { cloneDeep } from 'lodash-es';
   const options = ref<Option>();
   interface Props {
     checkedId?: number;
@@ -320,11 +321,14 @@
     }
   }
 
-  function handleUpdateTypeIdValue(
-    value: string | number | Array<string | number> | null,
-    _option: TreeSelectOption | null | Array<TreeSelectOption | null>
-  ) {
+  function handleUpdateTypeIdValue(value) {
+    const row = findTreeDataById(typeList.value, value);
+    if (!row) {
+      message.error('未找到该节点数据');
+      return;
+    }
     formParams.value.typeId = value;
+    formParams.value.type = row.type;
   }
 
   async function loadOptions() {

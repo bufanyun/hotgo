@@ -6,19 +6,19 @@
     </p>
     <p align="center">
         <a href="https://goframe.org/pages/viewpage.action?pageId=1114119" target="_blank">
-	        <img src="https://img.shields.io/badge/goframe-2.5-green" alt="goframe">
+	        <img src="https://img.shields.io/badge/goframe-2.6-green" alt="goframe">
 	    </a>
 	    <a href="https://v3.vuejs.org/" target="_blank">
-	        <img src="https://img.shields.io/badge/vue.js-vue3.x-green" alt="vue">
+	        <img src="https://img.shields.io/badge/vue.js-vue3.4-green" alt="vue">
 	    </a>
 	    <a href="https://www.naiveui.com" target="_blank">
-	        <img src="https://img.shields.io/badge/naiveui-%3E2.0.0-blue" alt="naiveui">
+	        <img src="https://img.shields.io/badge/naiveui-%3E2.36.0-blue" alt="naiveui">
 	    </a>
 		<a href="https://www.tslang.cn/" target="_blank">
 	        <img src="https://img.shields.io/badge/typescript-%3E4.0.0-blue" alt="typescript">
 	    </a>
 		<a href="https://vitejs.dev/" target="_blank">
-		    <img src="https://img.shields.io/badge/vite-%3E2.0.0-yellow" alt="vite">
+		    <img src="https://img.shields.io/badge/vite-%3E4.0.0-yellow" alt="vite">
 		</a>
 		<a href="https://github.com/bufanyun/hotgo/blob/v2.0/LICENSE" target="_blank">
 		    <img src="https://img.shields.io/badge/license-MIT-success" alt="license">

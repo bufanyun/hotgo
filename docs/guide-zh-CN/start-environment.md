@@ -10,7 +10,7 @@
 
 1. 前往https://nodejs.org/zh-cn/下载当前版本node
 2. 命令行运行 `node -v` 若控制台输出版本号则node安装成功
-3. node 版本需大于 `16.0`
+3. node 版本需大于等于 `16.0`
 4. 安装yarn：`npm install -g yarn`
 5. 命令行运行 `yarn -v` 若控制台输出版本号则前端环境搭建成功
 

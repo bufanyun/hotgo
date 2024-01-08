@@ -76,12 +76,8 @@
         </template>
       </BasicTable>
     </n-card>
-@{ if eq .options.Step.HasEdit true }    <Edit
-      @reloadTable="reloadTable"
-      @updateShowModal="updateShowModal"
-      :showModal="showModal"
-      :formParams="formParams"
-    />@{end}
+@{ if eq .options.Step.HasEdit true }    <Edit @reloadTable="reloadTable" ref="editRef" />@{end}
+@{ if eq .options.Step.HasView true }    <View ref="viewRef" />@{end}
   </div>
 </template>
 
@@ -92,21 +88,21 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { usePermission } from '@/hooks/web/usePermission';
 @{.apiImport}
-  import { State, columns, schemas, options, newState } from './model';
+  import { columns, schemas, options } from './model';
 @{.iconsImport}
-@{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }  import { useRouter } from 'vue-router';@{end}
   import { getOptionLabel } from '@/utils/hotgo';
 @{ if eq .options.Step.HasEdit true }  import Edit from './edit.vue';@{end}
-  const { hasPermission } = usePermission();
-@{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }  const router = useRouter();@{end}
-  const actionRef = ref();
+@{ if eq .options.Step.HasView true }  import View from './view.vue';@{end}
+
   const dialog = useDialog();
   const message = useMessage();
+  const { hasPermission } = usePermission();
+  const actionRef = ref();
   const searchFormRef = ref<any>({});
+  const viewRef = ref();
+  const editRef = ref();
   const batchDeleteDisabled = ref(true);
   const checkedIds = ref([]);
-  const showModal = ref(false);
-  const formParams = ref<State>();
 
   const actionColumn = reactive({
     width: 300,
@@ -169,15 +165,6 @@
   const loadDataTable = async (res) => {
     return await List({ ...searchFormRef.value?.formModel, ...res });
   };
-@{ if eq .options.Step.HasAdd true }
-  function addTable() {
-    showModal.value = true;
-    formParams.value = newState(null);
-  }@{end}
-@{ if or (eq .options.Step.HasAdd true) (eq .options.Step.HasEdit true) }
-  function updateShowModal(value) {
-    showModal.value = value;
-  }@{end}
 
 @{ if eq .options.Step.HasCheck true }  function onCheckedRow(rowKeys) {
     batchDeleteDisabled.value = rowKeys.length <= 0;
@@ -187,14 +174,17 @@
   function reloadTable() {
     actionRef.value.reload();
   }
-@{ if eq .options.Step.HasView true }
-  function handleView(record: Recordable) {
-    router.push({ name: '@{.varName | LcFirst}View', params: { id: record.@{.pk.TsName} } });
+@{ if eq .options.Step.HasAdd true }
+  function addTable() {
+    editRef.value.openModal(null);
   }@{end}
 @{ if eq .options.Step.HasEdit true }
   function handleEdit(record: Recordable) {
-    showModal.value = true;
-    formParams.value = newState(record as State);
+    editRef.value.openModal(record);
+  }@{end}
+@{ if eq .options.Step.HasView true }
+  function handleView(record: Recordable) {
+    viewRef.value.openModal(record);
   }@{end}
 
 @{ if eq .options.Step.HasDel true }  function handleDelete(record: Recordable) {
@@ -208,9 +198,6 @@
           message.success('删除成功');
           reloadTable();
         });
-      },
-      onNegativeClick: () => {
-        // message.error('取消');
       },
     });
   }@{end}
@@ -228,9 +215,6 @@
           message.success('删除成功');
           reloadTable();
         });
-      },
-      onNegativeClick: () => {
-        // message.error('取消');
       },
     });
   }@{end}

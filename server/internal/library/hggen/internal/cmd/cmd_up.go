@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/minio/selfupdate"
+	"github.com/gogf/selfupdate"
 
 	"github.com/gogf/gf/v2/container/gset"
 	"github.com/gogf/gf/v2/frame/g"

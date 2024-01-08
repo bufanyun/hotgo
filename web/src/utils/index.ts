@@ -250,9 +250,35 @@ export function lighten(color: string, amount: number) {
   )}${addLight(color.substring(4, 6), amount)}`;
 }
 
-/**
- * 判断是否 url
- * */
-export function isUrl(url: string) {
-  return /^(http|https):\/\//g.test(url);
+// 获取树的所有节点key
+export function getAllExpandKeys(treeData: any): any[] {
+  let expandedKeys = [];
+  const expandKeys = (items: any[]) => {
+    items.forEach((item: any) => {
+      expandedKeys.push(item.key);
+      if (item.children && item.children.length > 0) {
+        expandKeys(item.children);
+      }
+    });
+  };
+
+  expandKeys(unref(treeData));
+
+  // 去重并转换为数组
+  expandedKeys = Array.from(new Set(expandedKeys));
+  return expandedKeys;
+}
+
+// 从树中查找指定ID
+export function findTreeDataById(data: any[], id: number | string) {
+  for (const item of data) {
+    if (item.id === id) {
+      return item;
+    }
+    if (item.children) {
+      const found = findTreeDataById(item.children, id);
+      if (found) return found;
+    }
+  }
+  return null;
 }

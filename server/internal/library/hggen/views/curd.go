@@ -14,8 +14,10 @@ import (
 	"github.com/gogf/gf/v2/os/gview"
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
+	"hotgo/internal/dao"
 	"hotgo/internal/library/hggen/internal/cmd/gendao"
 	"hotgo/internal/library/hggen/internal/utility/utils"
+	"hotgo/internal/library/hgorm"
 	"hotgo/internal/model"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/utility/convert"
@@ -667,6 +669,15 @@ func (l *gCurd) generateSqlContent(ctx context.Context, in *CurdPreviewInput) (e
 		}
 		genFile = new(sysin.GenFile)
 	)
+
+	tplData["dirPid"], tplData["dirLevel"], tplData["dirTree"], err = hgorm.AutoUpdateTree(ctx, &dao.AdminMenu, 0, int64(in.options.Menu.Pid))
+	if err != nil {
+		return err
+	}
+
+	tplData["listLevel"] = tplData["dirLevel"].(int) + 1
+	tplData["btnLevel"] = tplData["dirLevel"].(int) + 2
+	tplData["sortLevel"] = tplData["dirLevel"].(int) + 3
 
 	if in.options.Menu.Pid > 0 {
 		tplData["mainComponent"] = "ParentLayout"

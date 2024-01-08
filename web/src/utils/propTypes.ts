@@ -1,33 +1,50 @@
 import { CSSProperties, VNodeChild } from 'vue';
-import { createTypes, VueTypeValidableDef, VueTypesInterface } from 'vue-types';
+import {
+  createTypes,
+  VueTypeExtendCallback,
+  VueTypeValidableDef,
+  VueTypesInterface,
+} from 'vue-types';
 
 export type VueNode = VNodeChild | JSX.Element;
 
-type PropTypes = VueTypesInterface & {
+type ExtendedPropTypes = VueTypesInterface & {
   readonly style: VueTypeValidableDef<CSSProperties>;
   readonly VNodeChild: VueTypeValidableDef<VueNode>;
 };
 
-const propTypes = createTypes({
-  func: undefined,
-  bool: undefined,
-  string: undefined,
-  number: undefined,
-  object: undefined,
-  integer: undefined,
-}) as PropTypes;
+class CustomVueTypes
+  extends (createTypes({
+    func: undefined,
+    bool: undefined,
+    string: undefined,
+    number: undefined,
+    object: undefined,
+    integer: undefined,
+  }) as VueTypesInterface)
+  implements ExtendedPropTypes
+{
+  static extend(types: VueTypeExtendCallback[]): CustomVueTypes {
+    return types.reduce((result, { name, ...callbacks }) => {
+      result[name] = { getter: true, ...callbacks };
+      return result;
+    }, this);
+  }
 
-propTypes.extend([
+  readonly style!: VueTypeValidableDef<CSSProperties>;
+  readonly VNodeChild!: VueTypeValidableDef<VueNode>;
+}
+
+const propTypes = CustomVueTypes.extend([
   {
     name: 'style',
-    getter: true,
     type: [String, Object],
     default: undefined,
   },
   {
     name: 'VNodeChild',
-    getter: true,
     type: undefined,
   },
 ]);
+
 export { propTypes };

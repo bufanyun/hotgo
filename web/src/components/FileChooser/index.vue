@@ -83,7 +83,7 @@
     ref="fileUploadRef"
     :width="dialogWidth"
     :finish-call="handleFinishCall"
-    max-upload="20"
+    :max-upload="20"
   />
 
   <Preview ref="previewRef" />

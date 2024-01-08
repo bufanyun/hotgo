@@ -18,6 +18,7 @@ import (
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
 	"hotgo/internal/library/contexts"
+	"hotgo/internal/library/hgorm/handler"
 	"hotgo/internal/library/hgorm/hook"
 	"hotgo/internal/library/location"
 	"hotgo/internal/library/queue"
@@ -236,7 +237,7 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) entity.SysLog {
 
 // View 获取指定字典类型信息
 func (s *sSysLog) View(ctx context.Context, in *sysin.LogViewInp) (res *sysin.LogViewModel, err error) {
-	if err = dao.SysLog.Ctx(ctx).Hook(hook.CityLabel).Where("id", in.Id).Scan(&res); err != nil {
+	if err = dao.SysLog.Ctx(ctx).Handler(handler.FilterAuth).Hook(hook.CityLabel).Where("id", in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)
 		return
 	}
@@ -253,13 +254,13 @@ func (s *sSysLog) View(ctx context.Context, in *sysin.LogViewInp) (res *sysin.Lo
 
 // Delete 删除
 func (s *sSysLog) Delete(ctx context.Context, in *sysin.LogDeleteInp) (err error) {
-	_, err = dao.SysLog.Ctx(ctx).Where("id", in.Id).Delete()
+	_, err = dao.SysLog.Ctx(ctx).Handler(handler.FilterAuth).Where("id", in.Id).Delete()
 	return
 }
 
 // List 列表
 func (s *sSysLog) List(ctx context.Context, in *sysin.LogListInp) (list []*sysin.LogListModel, totalCount int, err error) {
-	mod := dao.SysLog.Ctx(ctx).FieldsEx("get_data", "header_data", "post_data")
+	mod := dao.SysLog.Ctx(ctx).Handler(handler.FilterAuth).FieldsEx("get_data", "header_data", "post_data")
 
 	// 访问路径
 	if in.Url != "" {
