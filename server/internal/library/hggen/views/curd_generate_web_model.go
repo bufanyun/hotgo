@@ -47,6 +47,9 @@ func (l *gCurd) generateWebModelState(ctx context.Context, in *CurdPreviewInput)
 		if field.FormMode == "Switch" {
 			value = 2
 		}
+		if field.FormMode == "InputDynamic" {
+			value = "[]"
+		}
 		buffer.WriteString(fmt.Sprintf("  public %s = %v; // %s\n", field.TsName, value, field.Dc))
 	}
 	buffer.WriteString("\n  constructor(state?: Partial<State>) {\n    if (state) {\n      Object.assign(this, state);\n    }\n  }")
