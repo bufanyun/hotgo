@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `hg_addon_hgexample_table` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间'
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COMMENT='插件_案例_表格';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COMMENT='插件_案例_表格';
 
 --
 -- 转存表中的数据 `hg_addon_hgexample_table`
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `hg_admin_cash` (
   `msg` varchar(128) NOT NULL COMMENT '处理结果',
   `handle_at` datetime DEFAULT NULL COMMENT '处理时间',
   `created_at` datetime NOT NULL COMMENT '申请时间'
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='管理员_提现记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='管理员_提现记录表';
 
 --
 -- 转存表中的数据 `hg_admin_cash`
@@ -112,20 +112,20 @@ INSERT INTO `hg_admin_cash` (`id`, `member_id`, `money`, `fee`, `last_money`, `i
 CREATE TABLE IF NOT EXISTS `hg_admin_credits_log` (
   `id` bigint NOT NULL COMMENT '变动ID',
   `member_id` bigint DEFAULT '0' COMMENT '管理员ID',
-  `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '应用id',
-  `addons_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '插件名称',
-  `credit_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '变动类型',
-  `credit_group` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '变动组别',
+  `app_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '应用id',
+  `addons_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '插件名称',
+  `credit_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '变动类型',
+  `credit_group` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '变动组别',
   `before_num` decimal(10,2) DEFAULT '0.00' COMMENT '变动前',
   `num` decimal(10,2) DEFAULT '0.00' COMMENT '变动数据',
   `after_num` decimal(10,2) DEFAULT '0.00' COMMENT '变动后',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '备注',
-  `ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '操作人IP',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '备注',
+  `ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '操作人IP',
   `map_id` bigint DEFAULT '0' COMMENT '关联ID',
   `status` tinyint(1) DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COMMENT='管理员_资产变动表';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='管理员_资产变动表';
 
 --
 -- 转存表中的数据 `hg_admin_credits_log`
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS `hg_admin_dept` (
   `status` tinyint(1) DEFAULT '1' COMMENT '部门状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb3 COMMENT='后台_部门';
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COMMENT='后台_部门';
 
 --
 -- 转存表中的数据 `hg_admin_dept`
@@ -209,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `hg_admin_member` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3 COMMENT='管理员_用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COMMENT='管理员_用户表';
 
 --
 -- 转存表中的数据 `hg_admin_member`
@@ -232,7 +232,7 @@ INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `usernam
 CREATE TABLE IF NOT EXISTS `hg_admin_member_post` (
   `member_id` bigint NOT NULL COMMENT '管理员ID',
   `post_id` bigint NOT NULL COMMENT '岗位ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='管理员_用户岗位关联';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理员_用户岗位关联';
 
 --
 -- 转存表中的数据 `hg_admin_member_post`
@@ -255,7 +255,7 @@ INSERT INTO `hg_admin_member_post` (`member_id`, `post_id`) VALUES
 CREATE TABLE IF NOT EXISTS `hg_admin_member_role` (
   `member_id` bigint NOT NULL COMMENT '管理员ID',
   `role_id` bigint NOT NULL COMMENT '角色ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='管理员_用户角色关联';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理员_用户角色关联';
 
 --
 -- 转存表中的数据 `hg_admin_member_role`
@@ -275,30 +275,30 @@ CREATE TABLE IF NOT EXISTS `hg_admin_menu` (
   `id` bigint NOT NULL COMMENT '菜单ID',
   `pid` bigint DEFAULT '0' COMMENT '父菜单ID',
   `level` int NOT NULL DEFAULT '1' COMMENT '关系树等级',
-  `tree` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL COMMENT '关系树',
-  `title` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL COMMENT '菜单名称',
-  `name` varchar(128) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL COMMENT '名称编码',
-  `path` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '路由地址',
-  `icon` varchar(128) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '菜单图标',
+  `tree` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '关系树',
+  `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单名称',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称编码',
+  `path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '路由地址',
+  `icon` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单图标',
   `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '菜单类型（1目录 2菜单 3按钮）',
-  `redirect` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '重定向地址',
-  `permissions` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '菜单包含权限集合',
-  `permission_name` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '权限名称',
-  `component` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL COMMENT '组件路径',
+  `redirect` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '重定向地址',
+  `permissions` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单包含权限集合',
+  `permission_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '权限名称',
+  `component` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '组件路径',
   `always_show` tinyint(1) DEFAULT '0' COMMENT '取消自动计算根路由模式',
   `active_menu` varchar(255) DEFAULT NULL COMMENT '高亮菜单编码',
   `is_root` tinyint(1) DEFAULT '0' COMMENT '是否跟路由',
   `is_frame` tinyint(1) DEFAULT '1' COMMENT '是否内嵌',
-  `frame_src` varchar(512) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '内联外部地址',
+  `frame_src` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '内联外部地址',
   `keep_alive` tinyint(1) DEFAULT '0' COMMENT '缓存该路由',
   `hidden` tinyint(1) DEFAULT '0' COMMENT '是否隐藏',
   `affix` tinyint(1) DEFAULT '0' COMMENT '是否固定',
   `sort` int DEFAULT '0' COMMENT '排序',
-  `remark` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
   `status` tinyint(1) DEFAULT '1' COMMENT '菜单状态',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间'
-) ENGINE=InnoDB AUTO_INCREMENT=2320 DEFAULT CHARSET=utf8mb3 COMMENT='管理员_菜单权限';
+) ENGINE=InnoDB AUTO_INCREMENT=2320 DEFAULT CHARSET=utf8mb4 COMMENT='管理员_菜单权限';
 
 --
 -- 转存表中的数据 `hg_admin_menu`
@@ -478,7 +478,7 @@ CREATE TABLE IF NOT EXISTS `hg_admin_notice` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间'
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb3 COMMENT='管理员_通知公告';
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COMMENT='管理员_通知公告';
 
 --
 -- 转存表中的数据 `hg_admin_notice`
@@ -505,7 +505,7 @@ CREATE TABLE IF NOT EXISTS `hg_admin_notice_read` (
   `clicks` int DEFAULT '1' COMMENT '已读次数',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `created_at` datetime DEFAULT NULL COMMENT '阅读时间'
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COMMENT='管理员_公告已读记录';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COMMENT='管理员_公告已读记录';
 
 --
 -- 转存表中的数据 `hg_admin_notice_read`
@@ -543,7 +543,7 @@ CREATE TABLE IF NOT EXISTS `hg_admin_oauth` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime(1) DEFAULT NULL COMMENT '修改时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='管理员_第三方登录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理员_第三方登录';
 
 -- --------------------------------------------------------
 
@@ -564,7 +564,7 @@ CREATE TABLE IF NOT EXISTS `hg_admin_order` (
   `status` tinyint DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='管理员_充值订单';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='管理员_充值订单';
 
 -- --------------------------------------------------------
 
@@ -581,7 +581,7 @@ CREATE TABLE IF NOT EXISTS `hg_admin_post` (
   `status` tinyint(1) NOT NULL COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COMMENT='管理员_岗位';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COMMENT='管理员_岗位';
 
 --
 -- 转存表中的数据 `hg_admin_post`
@@ -614,7 +614,7 @@ CREATE TABLE IF NOT EXISTS `hg_admin_role` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '角色状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=209 DEFAULT CHARSET=utf8mb3 COMMENT='管理员_角色信息';
+) ENGINE=InnoDB AUTO_INCREMENT=209 DEFAULT CHARSET=utf8mb4 COMMENT='管理员_角色信息';
 
 --
 -- 转存表中的数据 `hg_admin_role`
@@ -645,7 +645,7 @@ CREATE TABLE IF NOT EXISTS `hg_admin_role_casbin` (
   `v3` varchar(256) DEFAULT NULL,
   `v4` varchar(256) DEFAULT NULL,
   `v5` varchar(256) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=96522 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='管理员_casbin权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=96522 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='管理员_casbin权限表';
 
 --
 -- 转存表中的数据 `hg_admin_role_casbin`
@@ -963,7 +963,7 @@ INSERT INTO `hg_admin_role_casbin` (`id`, `p_type`, `v0`, `v1`, `v2`, `v3`, `v4`
 CREATE TABLE IF NOT EXISTS `hg_admin_role_menu` (
   `role_id` bigint NOT NULL COMMENT '角色ID',
   `menu_id` bigint NOT NULL COMMENT '菜单ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='管理员_角色菜单关联';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理员_角色菜单关联';
 
 --
 -- 转存表中的数据 `hg_admin_role_menu`
@@ -1367,7 +1367,7 @@ CREATE TABLE IF NOT EXISTS `hg_pay_log` (
   `status` tinyint DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='支付_支付日志';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='支付_支付日志';
 
 -- --------------------------------------------------------
 
@@ -1389,7 +1389,7 @@ CREATE TABLE IF NOT EXISTS `hg_pay_refund` (
   `status` tinyint DEFAULT '1' COMMENT '退款状态',
   `created_at` datetime DEFAULT NULL COMMENT '申请时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='订单退款账户记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单退款账户记录';
 
 -- --------------------------------------------------------
 
@@ -1412,7 +1412,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_addons_config` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='系统_插件配置';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='系统_插件配置';
 
 --
 -- 转存表中的数据 `hg_sys_addons_config`
@@ -1434,7 +1434,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_addons_install` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='系统_插件安装记录';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='系统_插件安装记录';
 
 --
 -- 转存表中的数据 `hg_sys_addons_install`
@@ -1467,7 +1467,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_attachment` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COMMENT='系统_附件管理';
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='系统_附件管理';
 
 -- --------------------------------------------------------
 
@@ -1482,7 +1482,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_blacklist` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COMMENT='系统_访问黑名单';
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='系统_访问黑名单';
 
 --
 -- 转存表中的数据 `hg_sys_blacklist`
@@ -1516,7 +1516,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_config` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8mb3 COMMENT='系统_配置';
+) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8mb4 COMMENT='系统_配置';
 
 --
 -- 转存表中的数据 `hg_sys_config`
@@ -1643,17 +1643,17 @@ CREATE TABLE IF NOT EXISTS `hg_sys_cron` (
   `id` bigint NOT NULL COMMENT '任务ID',
   `group_id` bigint NOT NULL COMMENT '分组ID',
   `title` varchar(128) NOT NULL COMMENT '任务标题',
-  `name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '任务方法',
-  `params` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '函数参数',
-  `pattern` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL COMMENT '表达式',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '任务方法',
+  `params` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '函数参数',
+  `pattern` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '表达式',
   `policy` bigint NOT NULL DEFAULT '1' COMMENT '策略',
   `count` bigint NOT NULL DEFAULT '0' COMMENT '执行次数',
   `sort` int DEFAULT '0' COMMENT '排序',
-  `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
   `status` tinyint(1) DEFAULT '1' COMMENT '任务状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COMMENT='系统_定时任务';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COMMENT='系统_定时任务';
 
 --
 -- 转存表中的数据 `hg_sys_cron`
@@ -1682,7 +1682,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_cron_group` (
   `status` tinyint(1) DEFAULT '1' COMMENT '分组状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COMMENT='系统_定时任务分组';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='系统_定时任务分组';
 
 --
 -- 转存表中的数据 `hg_sys_cron_group`
@@ -1711,7 +1711,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_dict_data` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=158 DEFAULT CHARSET=utf8mb3 COMMENT='系统_字典数据';
+) ENGINE=InnoDB AUTO_INCREMENT=158 DEFAULT CHARSET=utf8mb4 COMMENT='系统_字典数据';
 
 --
 -- 转存表中的数据 `hg_sys_dict_data`
@@ -1815,7 +1815,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_dict_type` (
   `status` tinyint(1) DEFAULT '1' COMMENT '字典类型状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb3 COMMENT='系统_字典类型';
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COMMENT='系统_字典类型';
 
 --
 -- 转存表中的数据 `hg_sys_dict_type`
@@ -1864,7 +1864,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_ems_log` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态(1未验证,2已验证)',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='系统_邮件发送记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统_邮件发送记录';
 
 --
 -- 转存表中的数据 `hg_sys_ems_log`
@@ -1894,7 +1894,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_gen_codes` (
   `status` tinyint(1) DEFAULT '1' COMMENT '生成状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COMMENT='系统_代码生成记录';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='系统_代码生成记录';
 
 --
 -- 转存表中的数据 `hg_sys_gen_codes`
@@ -1926,7 +1926,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_gen_curd_demo` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间'
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3 COMMENT='系统_生成curd演示';
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COMMENT='系统_生成curd演示';
 
 --
 -- 转存表中的数据 `hg_sys_gen_curd_demo`
@@ -1976,7 +1976,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_log` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
-) ENGINE=InnoDB AUTO_INCREMENT=2036 DEFAULT CHARSET=utf8mb3 COMMENT='系统_全局日志';
+) ENGINE=InnoDB AUTO_INCREMENT=2036 DEFAULT CHARSET=utf8mb4 COMMENT='系统_全局日志';
 
 -- --------------------------------------------------------
 
@@ -1996,7 +1996,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_login_log` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb3 COMMENT='系统_登录日志';
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COMMENT='系统_登录日志';
 
 -- --------------------------------------------------------
 
@@ -2017,7 +2017,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_provinces` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COMMENT='系统_省市区编码';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='系统_省市区编码';
 
 --
 -- 转存表中的数据 `hg_sys_provinces`
@@ -5722,7 +5722,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_serve_license` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COMMENT='系统_服务许可证';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='系统_服务许可证';
 
 --
 -- 转存表中的数据 `hg_sys_serve_license`
@@ -5749,7 +5749,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_serve_log` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
-) ENGINE=InnoDB AUTO_INCREMENT=146 DEFAULT CHARSET=utf8mb3 COMMENT='系统_服务日志';
+) ENGINE=InnoDB AUTO_INCREMENT=146 DEFAULT CHARSET=utf8mb4 COMMENT='系统_服务日志';
 
 -- --------------------------------------------------------
 
@@ -5767,7 +5767,7 @@ CREATE TABLE IF NOT EXISTS `hg_sys_sms_log` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态(1未验证,2已验证)',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COMMENT='系统_短信发送记录';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='系统_短信发送记录';
 
 --
 -- 转存表中的数据 `hg_sys_sms_log`
@@ -5793,7 +5793,7 @@ CREATE TABLE IF NOT EXISTS `hg_test_category` (
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间'
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3 COMMENT='测试分类';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COMMENT='测试分类';
 
 --
 -- 转存表中的数据 `hg_test_category`
