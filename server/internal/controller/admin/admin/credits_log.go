@@ -10,7 +10,6 @@ package admin
 import (
 	"context"
 	"hotgo/api/admin/creditslog"
-	"hotgo/internal/consts"
 	"hotgo/internal/service"
 )
 
@@ -36,14 +35,5 @@ func (c *cCreditsLog) List(ctx context.Context, req *creditslog.ListReq) (res *c
 // Export 导出资产变动列表
 func (c *cCreditsLog) Export(ctx context.Context, req *creditslog.ExportReq) (res *creditslog.ExportRes, err error) {
 	err = service.AdminCreditsLog().Export(ctx, &req.CreditsLogListInp)
-	return
-}
-
-// Option 获取变动状态选项
-func (c *cCreditsLog) Option(_ context.Context, _ *creditslog.OptionReq) (res *creditslog.OptionRes, err error) {
-	res = &creditslog.OptionRes{
-		CreditType:  consts.CreditTypeOptions,
-		CreditGroup: consts.CreditGroupOptions,
-	}
 	return
 }

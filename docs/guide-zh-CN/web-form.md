@@ -21,6 +21,7 @@
 - 单文件上传 UploadFile
 - 多文件上传 UploadFile
 - 文件选择器 FileChooser
+- 大文件上传 MultipartUpload
 - 开关 Switch
 - 评分 Rate
 - 省市区选择器 CitySelector
@@ -793,6 +794,33 @@ type FileType = 'image' | 'doc' | 'audio' | 'video' | 'zip' | 'other' | 'default
 - 多选支持，指定`maxNumber`多选数量
 ```vue
 <FileChooser v-model:value="value" :maxNumber="10" fileType="image" />
+```
+
+### 大文件上传 MultipartUpload
+- 基础用法
+```vue
+<template>
+  <MultipartUpload ref="multipartUploadRef" @onFinish="handleFinishCall" />
+</template>
+
+<script lang="ts" setup>
+import { ref } from 'vue'
+import MultipartUpload from '@/components/Upload/multipartUpload.vue';
+import { Attachment } from '@/components/FileChooser/src/model';
+const multipartUploadRef = ref();
+
+// 打开上传Modal
+function handleMultipartUpload() {
+  multipartUploadRef.value.openModal();
+}
+
+// 上传成功回调附件内容
+function handleFinishCall(result: Attachment, success: boolean) {
+  if (success) {
+    reloadTable();
+  }
+}
+</script>
 ```
 
 ### 开关 Switch

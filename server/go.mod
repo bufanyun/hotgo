@@ -13,10 +13,10 @@ require (
 	github.com/casbin/casbin/v2 v2.55.0
 	github.com/forgoer/openssl v1.4.0
 	github.com/go-pay/gopay v1.5.91
-	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.6.1
-	github.com/gogf/gf/contrib/nosql/redis/v2 v2.6.1
-	github.com/gogf/gf/contrib/trace/jaeger/v2 v2.6.1
-	github.com/gogf/gf/v2 v2.6.1
+	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.6.4
+	github.com/gogf/gf/contrib/nosql/redis/v2 v2.6.4
+	github.com/gogf/gf/contrib/trace/jaeger/v2 v2.6.4
+	github.com/gogf/gf/v2 v2.6.4
 	github.com/gogf/selfupdate v0.0.0-20231215043001-5c48c528462f
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/gorilla/websocket v1.5.1
@@ -32,7 +32,7 @@ require (
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.45
 	github.com/ufilesdk-dev/ufile-gosdk v1.0.3
 	github.com/xuri/excelize/v2 v2.6.0
-	go.opentelemetry.io/otel v1.21.0
+	go.opentelemetry.io/otel v1.24.0
 	golang.org/x/mod v0.9.0
 	golang.org/x/tools v0.7.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -102,10 +102,10 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
-	github.com/redis/go-redis/v9 v9.3.1 // indirect
+	github.com/redis/go-redis/v9 v9.5.1 // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect
 	github.com/richardlehane/msoleps v1.0.1 // indirect
-	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rs/xid v1.5.0 // indirect
 	github.com/shoenig/go-m1cpu v0.1.4 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
@@ -120,15 +120,15 @@ require (
 	github.com/xuri/nfp v0.0.0-20220409054826-5e722a1d9e22 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.17.0 // indirect
-	go.opentelemetry.io/otel/metric v1.21.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.21.0 // indirect
-	go.opentelemetry.io/otel/trace v1.21.0 // indirect
+	go.opentelemetry.io/otel/metric v1.24.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.24.0 // indirect
+	go.opentelemetry.io/otel/trace v1.24.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
-	golang.org/x/crypto v0.16.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
 	golang.org/x/image v0.1.0 // indirect
-	golang.org/x/net v0.19.0 // indirect
+	golang.org/x/net v0.22.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect

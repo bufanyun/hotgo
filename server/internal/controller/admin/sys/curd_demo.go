@@ -1,14 +1,15 @@
 // Package sys
 // @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2023 HotGo CLI
+// @Copyright  Copyright (c) 2024 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-// @AutoGenerate Version 2.11.5
+// @AutoGenerate Version 2.12.10
 package sys
 
 import (
 	"context"
 	"hotgo/api/admin/curddemo"
+	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 )
 
@@ -23,6 +24,10 @@ func (c *cCurdDemo) List(ctx context.Context, req *curddemo.ListReq) (res *curdd
 	list, totalCount, err := service.SysCurdDemo().List(ctx, &req.CurdDemoListInp)
 	if err != nil {
 		return
+	}
+
+	if list == nil {
+		list = []*sysin.CurdDemoListModel{}
 	}
 
 	res = new(curddemo.ListRes)

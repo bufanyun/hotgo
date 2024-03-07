@@ -22,15 +22,6 @@ type ListRes struct {
 	form.PageRes
 }
 
-type SelectsReq struct {
-	g.Meta `path:"/addons/selects" method:"get" tags:"插件管理" summary:"生成入口选项"`
-	sysin.AddonsSelectsInp
-}
-
-type SelectsRes struct {
-	*sysin.AddonsSelectsModel
-}
-
 // BuildReq 提交生成
 type BuildReq struct {
 	g.Meta `path:"/addons/build" method:"post" tags:"插件管理" summary:"提交生成"`

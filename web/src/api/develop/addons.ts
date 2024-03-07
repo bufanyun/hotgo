@@ -23,13 +23,6 @@ export function Status(params) {
     params,
   });
 }
-export function Selects(params) {
-  return http.request({
-    url: '/addons/selects',
-    method: 'get',
-    params,
-  });
-}
 
 export function Build(params) {
   return http.request({

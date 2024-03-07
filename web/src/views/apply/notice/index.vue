@@ -26,7 +26,7 @@
         ref="actionRef"
         :actionColumn="actionColumn"
         @update:checked-row-keys="onCheckedRow"
-        :scroll-x="1800"
+        :scroll-x="1280"
         :resizeHeightOffset="-20000"
       >
         <template #tableTitle>

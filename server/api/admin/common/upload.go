@@ -16,3 +16,23 @@ type UploadFileReq struct {
 }
 
 type UploadFileRes *sysin.AttachmentListModel
+
+// CheckMultipartReq 检查文件分片
+type CheckMultipartReq struct {
+	g.Meta `path:"/upload/checkMultipart" tags:"上传" method:"post" summary:"检查文件分片"`
+	sysin.CheckMultipartInp
+}
+
+type CheckMultipartRes struct {
+	*sysin.CheckMultipartModel
+}
+
+// UploadPartReq 分片上传
+type UploadPartReq struct {
+	g.Meta `path:"/upload/uploadPart" tags:"上传" method:"post" summary:"分片上传"`
+	sysin.UploadPartInp
+}
+
+type UploadPartRes struct {
+	*sysin.UploadPartModel
+}

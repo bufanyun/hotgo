@@ -26,9 +26,6 @@
             <template #suffix> MB</template>
           </n-input-number>
         </n-form-item>
-        <n-form-item label="图片类型限制" path="uploadImageType">
-          <n-input v-model:value="formValue.uploadImageType" placeholder="" />
-        </n-form-item>
 
         <n-form-item label="文件大小限制" path="uploadFileSize">
           <n-input-number
@@ -39,6 +36,11 @@
             <template #suffix> MB</template>
           </n-input-number>
         </n-form-item>
+
+        <n-form-item label="图片类型限制" path="uploadImageType">
+          <n-input v-model:value="formValue.uploadImageType" placeholder="" />
+        </n-form-item>
+
         <n-form-item label="文件类型限制" path="uploadFileType">
           <n-input v-model:value="formValue.uploadFileType" placeholder="" />
         </n-form-item>

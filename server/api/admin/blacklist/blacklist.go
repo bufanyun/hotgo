@@ -13,7 +13,7 @@ import (
 
 // ListReq 查询列表
 type ListReq struct {
-	g.Meta `path:"/blacklist/list" method:"get" tags:"黑名单" summary:"获取黑名单列表"` //  v:"RequestPreFilter"
+	g.Meta `path:"/blacklist/list" method:"get" tags:"黑名单" summary:"获取黑名单列表"`
 	sysin.BlacklistListInp
 }
 

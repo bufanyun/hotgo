@@ -60,7 +60,7 @@
         >
           <n-form-item label="插件标签" path="label">
             <n-input placeholder="请输入" v-model:value="formParams.label" />
-            <template #feedback>显示在插件列表中的标识. 不要超过20个字符</template>
+            <template #feedback>显示在插件列表中的模块名称. 不要超过20个字符</template>
           </n-form-item>
 
           <n-form-item label="插件包名" path="name">
@@ -73,10 +73,23 @@
           <n-form-item label="功能分组" path="group">
             <n-select
               placeholder="请选择"
-              :options="selectList.groupType"
+              :options="options.addonsGroupOptions"
               v-model:value="formParams.group"
               :on-update:value="onUpdateValueGroup"
             />
+          </n-form-item>
+
+          <n-form-item label="扩展功能" path="extend">
+            <n-checkbox-group v-model:value="formParams.extend">
+              <n-space item-style="display: flex;">
+                <n-checkbox
+                  :value="option.value"
+                  :label="option.label"
+                  v-for="option in options.addonsExtend"
+                  :key="option"
+                />
+              </n-space>
+            </n-checkbox-group>
           </n-form-item>
 
           <n-form-item label="版本" path="version">
@@ -114,24 +127,14 @@
 </template>
 
 <script lang="ts" setup>
-  import { h, onBeforeMount, reactive, ref } from 'vue';
-  import {
-    NIcon,
-    NTag,
-    NIconWrapper,
-    useMessage,
-    NImage,
-    useDialog,
-    useNotification,
-  } from 'naive-ui';
+  import { h, reactive, ref } from 'vue';
+  import { NIcon, useMessage, useDialog, useNotification } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
-  import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { List, Selects, Build, UnInstall, Install, Upgrade } from '@/api/develop/addons';
-  import { PlusOutlined } from '@vicons/antd';
-  import { newState } from '@/views/develop/addons/components/model';
-  import { errorImg } from '@/utils/hotgo';
-  import { isUrl } from '@/utils/is';
-  import { getIconComponent } from '@/utils/icons';
+  import { BasicForm, useForm } from '@/components/Form/index';
+  import { List, Build, UnInstall, Install, Upgrade } from '@/api/develop/addons';
+  import { PlusOutlined, QuestionCircleOutlined } from '@vicons/antd';
+  import { newState, schemas, columns, options } from './model';
+  import { adaModalWidth } from '@/utils/hotgo';
 
   const dialog = useDialog();
   const message = useMessage();
@@ -144,158 +147,6 @@
   const dialogWidth = ref('50%');
   const checkedIds = ref([]);
   const searchFormRef = ref<any>();
-
-  const selectList = ref({
-    groupType: [],
-    status: [],
-  });
-
-  const columns = [
-    {
-      title: '图标',
-      key: 'logo',
-      width: 80,
-      render(row) {
-        if (isUrl(row.logo)) {
-          return h(NImage, {
-            width: 48,
-            height: 48,
-            src: row.logo,
-            fallbackSrc: errorImg,
-            style: {
-              width: '48px',
-              height: '48px',
-              'max-width': '100%',
-              'max-height': '100%',
-            },
-          });
-        } else {
-          return h(
-            NIconWrapper,
-            {
-              size: 48,
-              borderRadius: 8,
-            },
-            {
-              default: () =>
-                h(
-                  NIcon,
-                  {
-                    size: 36,
-                    style: {
-                      marginTop: '-8px',
-                    },
-                  },
-                  {
-                    default: () => h(getIconComponent(row.logo)),
-                  }
-                ),
-            }
-          );
-        }
-      },
-    },
-    {
-      title: '模块名称',
-      key: 'name',
-      width: 120,
-      render(row) {
-        return h('div', {
-          innerHTML:
-            '<div >' + row.label + '<br><span style="opacity: 0.8;">' + row.name + '</span></div>',
-        });
-      },
-    },
-    {
-      title: '作者',
-      key: 'author',
-      width: 100,
-    },
-    {
-      title: '分组',
-      key: 'groupName',
-      render(row) {
-        return h(
-          NTag,
-          {
-            style: {
-              marginRight: '6px',
-            },
-            type: 'info',
-            bordered: false,
-          },
-          {
-            default: () => row.groupName,
-          }
-        );
-      },
-      width: 120,
-    },
-    {
-      title: '简介',
-      key: 'brief',
-      render(row) {
-        return row.brief;
-      },
-      width: 180,
-    },
-    {
-      title: '详细描述',
-      key: 'description',
-      width: 300,
-      render(row) {
-        return h('p', { id: 'app' }, [
-          h('div', {
-            innerHTML: '<div style="white-space: pre-wrap">' + row.description + '</div>',
-          }),
-        ]);
-      },
-    },
-    {
-      title: '版本',
-      key: 'version',
-      width: 100,
-    },
-  ];
-
-  const schemas = ref<FormSchema[]>([
-    {
-      field: 'name',
-      component: 'NInput',
-      label: '模块名称',
-      componentProps: {
-        placeholder: '请输入模块名称或标签',
-        onInput: (e: any) => {
-          console.log(e);
-        },
-      },
-      rules: [{ trigger: ['blur'] }],
-    },
-    {
-      field: 'group',
-      component: 'NSelect',
-      label: '分组',
-      componentProps: {
-        placeholder: '请选择分组',
-        options: [],
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'status',
-      component: 'NSelect',
-      label: '安装状态',
-      componentProps: {
-        placeholder: '请选择状态',
-        options: [],
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-  ]);
 
   const actionColumn = reactive({
     width: 220,
@@ -345,7 +196,7 @@
   }
 
   const loadDataTable = async (res) => {
-    mapWidth();
+    adaModalWidth(dialogWidth);
     return await List({ ...res, ...searchFormRef.value?.formModel });
   };
 
@@ -365,9 +216,6 @@
           reloadTable();
         });
       },
-      onNegativeClick: () => {
-        // message.error('取消');
-      },
     });
   }
 
@@ -383,9 +231,6 @@
           reloadTable();
         });
       },
-      onNegativeClick: () => {
-        // message.error('取消');
-      },
     });
   }
 
@@ -400,9 +245,6 @@
           message.success('操作成功');
           reloadTable();
         });
-      },
-      onNegativeClick: () => {
-        // message.error('取消');
       },
     });
   }
@@ -437,9 +279,6 @@
               buildSuccessNotify();
             });
           },
-          onNegativeClick: () => {
-            // message.error('取消');
-          },
         });
       } else {
         message.error('请填写完整信息');
@@ -447,32 +286,6 @@
       formBtnLoading.value = false;
     });
   }
-
-  function mapWidth() {
-    let val = document.body.clientWidth;
-    const def = 840; // 默认宽度
-    if (val < def) {
-      dialogWidth.value = '100%';
-    } else {
-      dialogWidth.value = def + 'px';
-    }
-
-    return dialogWidth.value;
-  }
-
-  const loadSelect = async () => {
-    selectList.value = await Selects({});
-    for (const item of schemas.value) {
-      switch (item.field) {
-        case 'status':
-          item.componentProps.options = selectList.value.status;
-          break;
-        case 'group':
-          item.componentProps.options = selectList.value.groupType;
-          break;
-      }
-    }
-  };
 
   function onUpdateValueGroup(value) {
     formParams.value.group = value;
@@ -500,10 +313,6 @@
       },
     });
   }
-
-  onBeforeMount(async () => {
-    await loadSelect();
-  });
 </script>
 
 <style lang="less" scoped></style>

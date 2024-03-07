@@ -84,3 +84,17 @@ export function timeFix() {
     ? '下午好'
     : '晚上好';
 }
+
+// 随机浅色
+export function rdmLightRgbColor(): string {
+  const letters = '456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    if (i === 0) {
+      color += 'F'; // 确保第一个字符较亮
+    } else {
+      color += letters[Math.floor(Math.random() * letters.length)];
+    }
+  }
+  return color;
+}

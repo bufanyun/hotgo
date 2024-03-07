@@ -58,10 +58,6 @@
             <MainView />
           </div>
         </div>
-        <!--1.15废弃，没啥用，占用操作空间-->
-        <!--        <NLayoutFooter v-if="getShowFooter">-->
-        <!--          <PageFooter />-->
-        <!--        </NLayoutFooter>-->
       </n-layout-content>
       <n-back-top :right="100" />
     </n-layout>

@@ -58,19 +58,6 @@ func GetMapKeys[K comparable](m map[K]any) []K {
 	return keys
 }
 
-// UniqueSlice 切片去重
-func UniqueSlice[K comparable](languages []K) []K {
-	result := make([]K, 0, len(languages))
-	temp := map[K]struct{}{}
-	for _, item := range languages {
-		if _, ok := temp[item]; !ok {
-			temp[item] = struct{}{}
-			result = append(result, item)
-		}
-	}
-	return result
-}
-
 // CamelCaseToUnderline 驼峰单词转下划线单词
 func CamelCaseToUnderline(s string) string {
 	var output []rune

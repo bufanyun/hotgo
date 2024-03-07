@@ -1,6 +1,6 @@
 {
   "name": "hotgo",
-  "version": "2.12.1",
+  "version": "2.13.1",
   "author": {
     "name": "MengShuai",
     "email": "133814250@qq.com",
@@ -30,16 +30,21 @@
   "dependencies": {
     "@vicons/antd": "^0.12.0",
     "@vicons/ionicons5": "^0.12.0",
+    "@vue/runtime-core": "^3.4.19",
     "@vueup/vue-quill": "^1.2.0",
     "@vueuse/core": "^10.7.1",
     "axios": "^0.21.4",
     "date-fns": "^2.28.0",
     "echarts": "^5.3.2",
     "element-resize-detector": "^1.2.4",
+    "fingerprintjs2": "^2.1.4",
     "highlight.js": "^11.8.0",
     "lodash-es": "^4.17.21",
     "naive-ui": "^2.36.0",
+    "mint-filter": "^4.0.3",
     "pinia": "^2.1.7",
+    "pinyin-pro": "^3.16.3",
+    "print-js": "^1.6.0",
     "qrcode.vue": "3.3.3",
     "qs": "^6.10.3",
     "quill-image-uploader": "^1.3.0",
@@ -50,6 +55,8 @@
     "vue-types": "^5.1.1",
     "vue3-json-viewer": "^2.2.2",
     "vuedraggable": "^4.1.0",
+    "vue-waterfall-plugin-next": "^2.2.3",
+    "spark-md5": "^3.0.2",
     "weixin-js-sdk": "^1.6.0"
   },
   "devDependencies": {

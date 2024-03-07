@@ -158,10 +158,19 @@ func (manager *ClientManager) GetUsersLen() (userLen int) {
 
 // EventRegister 用户建立连接事件
 func (manager *ClientManager) EventRegister(client *Client) {
+	if client == nil {
+		g.Log().Warningf(mctx, "EventRegister client == nil.")
+		return
+	}
 	manager.AddClients(client)
+
+	var userId int64
+	if client.User != nil {
+		userId = client.User.Id
+	}
 	// 用户登录
 	manager.EventLogin(&login{
-		UserId: client.User.Id,
+		UserId: userId,
 		Client: client,
 	})
 	// 发送当前客户端标识

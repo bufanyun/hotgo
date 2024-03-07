@@ -55,7 +55,7 @@ func main()  {
 
 
 ### 注册支付回调
-- 在文件`server/internal/global/pay.go` 加入你的业务订单分组回调方法，当订单支付成功验签通过后会自动进行回调，参考以下：
+- 在文件`server/internal/logic/pay/notify.go` 加入你的业务订单分组回调方法，当订单支付成功验签通过后会自动进行回调，参考以下：
 
 ```go
 package global
@@ -66,12 +66,13 @@ import (
 	"hotgo/internal/service"
 )
 
-// 注册支付成功回调方法
-func payNotifyCall() {
-	payment.RegisterNotifyCall(consts.OrderGroupAdminOrder, service.AdminOrder().PayNotify) // 后台充值订单
-	// ...
+// RegisterNotifyCall 注册支付成功回调方法
+func (s *sPay) RegisterNotifyCall() {
+	payment.RegisterNotifyCallMap(map[string]payment.NotifyCallFunc{
+		consts.OrderGroupAdminOrder: service.AdminOrder().PayNotify, // 后台充值订单
+		// ...
+	})
 }
-
 ```
 
 ### 订单退款

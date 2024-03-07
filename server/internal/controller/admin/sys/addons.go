@@ -30,18 +30,6 @@ func (c *cAddons) List(ctx context.Context, req *addons.ListReq) (res *addons.Li
 	return
 }
 
-// Selects 获取指定信息
-func (c *cAddons) Selects(ctx context.Context, req *addons.SelectsReq) (res *addons.SelectsRes, err error) {
-	data, err := service.SysAddons().Selects(ctx, &req.AddonsSelectsInp)
-	if err != nil {
-		return
-	}
-
-	res = new(addons.SelectsRes)
-	res.AddonsSelectsModel = data
-	return
-}
-
 // Build 生成预览
 func (c *cAddons) Build(ctx context.Context, req *addons.BuildReq) (res *addons.BuildRes, err error) {
 	err = service.SysAddons().Build(ctx, &req.AddonsBuildInp)

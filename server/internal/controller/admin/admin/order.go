@@ -8,7 +8,6 @@ package admin
 import (
 	"context"
 	"hotgo/api/admin/order"
-	"hotgo/internal/consts"
 	"hotgo/internal/service"
 )
 
@@ -27,16 +26,6 @@ func (c *cOrder) AcceptRefund(ctx context.Context, req *order.AcceptRefundReq) (
 // ApplyRefund 申请退款
 func (c *cOrder) ApplyRefund(ctx context.Context, req *order.ApplyRefundReq) (res *order.ApplyRefundRes, err error) {
 	err = service.AdminOrder().ApplyRefund(ctx, &req.OrderApplyRefundInp)
-	return
-}
-
-// Option 获取订单状态选项
-func (c *cOrder) Option(ctx context.Context, req *order.OptionReq) (res *order.OptionRes, err error) {
-	res = &order.OptionRes{
-		Status:             consts.OrderStatusOptions,
-		AcceptRefundStatus: consts.OrderAcceptRefundOptions,
-		PayType:            consts.PayTypeOptions,
-	}
 	return
 }
 

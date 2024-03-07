@@ -174,12 +174,6 @@ func (s *sSysConfig) GetLoadTCP(ctx context.Context) (conf *model.TCPConfig, err
 	return
 }
 
-// GetLoadCache 获取本地缓存配置
-func (s *sSysConfig) GetLoadCache(ctx context.Context) (conf *model.CacheConfig, err error) {
-	err = g.Cfg().MustGet(ctx, "cache").Scan(&conf)
-	return
-}
-
 // GetLoadGenerate 获取本地生成配置
 func (s *sSysConfig) GetLoadGenerate(ctx context.Context) (conf *model.GenerateConfig, err error) {
 	err = g.Cfg().MustGet(ctx, "hggen").Scan(&conf)

@@ -1,3 +1,8 @@
+// Package hook
+// @Link  https://github.com/bufanyun/hotgo
+// @Copyright  Copyright (c) 2023 HotGo CLI
+// @Author  Ms <133814250@qq.com>
+// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package hook
 
 import (
@@ -65,7 +70,7 @@ func (s *sHook) lastAdminActive(r *ghttp.Request) {
 	}
 
 	var (
-		ctx    = contexts.Detach(r.Context())
+		ctx    = r.Context()
 		member = contexts.GetUser(ctx)
 	)
 

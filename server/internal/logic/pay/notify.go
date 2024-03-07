@@ -1,3 +1,8 @@
+// Package pay
+// @Link  https://github.com/bufanyun/hotgo
+// @Copyright  Copyright (c) 2023 HotGo CLI
+// @Author  Ms <133814250@qq.com>
+// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package pay
 
 // 异步通知
@@ -15,7 +20,15 @@ import (
 	"hotgo/internal/library/payment"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/payin"
+	"hotgo/internal/service"
 )
+
+// RegisterNotifyCall 注册支付成功回调方法
+func (s *sPay) RegisterNotifyCall() {
+	payment.RegisterNotifyCallMap(map[string]payment.NotifyCallFunc{
+		consts.OrderGroupAdminOrder: service.AdminOrder().PayNotify, // 后台充值订单
+	})
+}
 
 // Notify 异步通知
 func (s *sPay) Notify(ctx context.Context, in *payin.PayNotifyInp) (res *payin.PayNotifyModel, err error) {

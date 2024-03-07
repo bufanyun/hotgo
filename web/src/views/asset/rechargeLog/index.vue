@@ -14,7 +14,7 @@
         <n-tab-pane
           :name="item.key.toString()"
           :tab="item.label"
-          v-for="item in options.status"
+          v-for="item in options.orderStatus"
           :key="item.key"
         >
           <List :type="defaultTab" />

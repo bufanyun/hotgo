@@ -25,7 +25,7 @@ import (
 
 const (
 	whoisApi = "https://whois.pconline.com.cn/ipJson.jsp?json=true&ip="
-	dyndns   = "http://members.3322.org/dyndns/getip"
+	dyndns   = "http://members.3322.org/dyndns/getip" // 备用："https://ifconfig.co/ip"
 )
 
 type IpLocationData struct {

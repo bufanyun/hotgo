@@ -19,7 +19,7 @@
         :row-key="(row) => row.id"
         ref="actionRef"
         :actionColumn="actionColumn"
-        :scroll-x="1800"
+        :scroll-x="1280"
       >
         <template #tableTitle>
           <n-button type="info" @click="openGroupModal">

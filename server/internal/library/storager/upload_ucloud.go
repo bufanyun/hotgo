@@ -48,3 +48,15 @@ func (d *UCloudDrive) Upload(ctx context.Context, file *ghttp.UploadFile) (fullP
 	err = client.IOPut(f2, fullPath, "")
 	return
 }
+
+// CreateMultipart 创建分片事件
+func (d *UCloudDrive) CreateMultipart(ctx context.Context, in *CheckMultipartParams) (res *MultipartProgress, err error) {
+	err = gerror.New("当前驱动暂不支持分片上传！")
+	return
+}
+
+// UploadPart 上传分片
+func (d *UCloudDrive) UploadPart(ctx context.Context, in *UploadPartParams) (res *UploadPartModel, err error) {
+	err = gerror.New("当前驱动暂不支持分片上传！")
+	return
+}

@@ -15,7 +15,15 @@ import (
 	"hotgo/internal/model/input/form"
 	"sort"
 	"sync"
+	"time"
 )
+
+// Option 模块启动选项
+type Option struct {
+	Server *ghttp.Server // http服务器
+	// 更多选项参数
+	// ..
+}
 
 // Skeleton 模块骨架
 type Skeleton struct {
@@ -37,32 +45,42 @@ func (s *Skeleton) GetModule() Module {
 
 // Module 插件模块
 type Module interface {
-	Init(ctx context.Context)                                 // 初始化
-	InitRouter(ctx context.Context, group *ghttp.RouterGroup) // 初始化并注册路由
-	Ctx() context.Context                                     // 上下文
-	GetSkeleton() *Skeleton                                   // 架子
-	Install(ctx context.Context) error                        // 安装模块
-	Upgrade(ctx context.Context) error                        // 更新模块
-	UnInstall(ctx context.Context) error                      // 卸载模块
+	Start(option *Option) (err error)          // 启动模块
+	Stop() (err error)                         // 停止模块
+	Ctx() context.Context                      // 上下文
+	GetSkeleton() *Skeleton                    // 获取模块
+	Install(ctx context.Context) (err error)   // 安装模块
+	Upgrade(ctx context.Context) (err error)   // 更新模块
+	UnInstall(ctx context.Context) (err error) // 卸载模块
 }
 
 var (
-	modules = make(map[string]Module, 0)
+	modules = make(map[string]Module)
 	mLock   sync.Mutex
 )
 
-// InitModules 初始化所有已注册模块
-func InitModules(ctx context.Context) {
-	for _, module := range modules {
-		module.Init(ctx)
+// StartModules 启动所有已安装模块
+func StartModules(ctx context.Context, option *Option) (err error) {
+	for _, module := range filterInstalled() {
+		if err = module.Start(option); err != nil {
+			return
+		}
 	}
+
+	// 为所有已安装模块设置静态资源路径
+	AddStaticPath(ctx, option.Server)
+	return
 }
 
-// RegisterModulesRouter 注册所有已安装模块路由
-func RegisterModulesRouter(ctx context.Context, group *ghttp.RouterGroup) {
+// StopModules 停止所有已安装模块
+func StopModules(ctx context.Context) {
 	for _, module := range filterInstalled() {
-		module.InitRouter(ctx, group)
+		if err := module.Stop(); err != nil {
+			g.Log().Warningf(ctx, "StopModules err:%v, module:%v", err.Error(), module.GetSkeleton().Name)
+			time.Sleep(time.Second)
+		}
 	}
+	return
 }
 
 // RegisterModule 注册模块
@@ -123,9 +141,20 @@ func GetModuleRealPath(name string) string {
 
 // NewView 初始化一个插件的模板引擎
 func NewView(ctx context.Context, name string) *gview.View {
-	view := gview.New()
+	basePath := GetResourcePath(ctx)
+	if basePath == "" {
+		return nil
+	}
 
-	if err := view.SetPath(ViewPath(name)); err != nil {
+	view := gview.New()
+	path := ViewPath(name, basePath)
+
+	if !gfile.IsDir(gfile.RealPath(path)) {
+		g.Log().Warningf(ctx, "NewView template path does not exist:%v,default use of main module template.", path)
+		return nil
+	}
+
+	if err := view.SetPath(path); err != nil {
 		g.Log().Warningf(ctx, "NewView SetPath err:%+v", err)
 		return nil
 	}
@@ -145,12 +174,8 @@ func NewView(ctx context.Context, name string) *gview.View {
 }
 
 // AddStaticPath 设置插件静态目录映射
-func AddStaticPath(ctx context.Context, server *ghttp.Server, p ...string) {
-	basePath := g.Cfg().MustGet(ctx, "server.serverRoot").String()
-	if len(p) > 0 {
-		basePath = p[0]
-	}
-
+func AddStaticPath(ctx context.Context, server *ghttp.Server) {
+	basePath := GetResourcePath(ctx)
 	if basePath == "" {
 		return
 	}
@@ -160,7 +185,7 @@ func AddStaticPath(ctx context.Context, server *ghttp.Server, p ...string) {
 		prefix, path := StaticPath(name, basePath)
 		if !gres.Contains(path) {
 			if _, err := gfile.Search(path); err != nil {
-				g.Log().Warningf(ctx, `AddStaticPath failed: %v`, err)
+				g.Log().Warningf(ctx, `addons AddStaticPath failed: %v`, err)
 				continue
 			}
 		}

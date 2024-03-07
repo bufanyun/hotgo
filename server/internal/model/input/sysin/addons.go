@@ -29,18 +29,10 @@ type AddonsListModel struct {
 	CanSave        bool   `json:"canSave"          dc:"是否可以更新"`
 }
 
-// AddonsSelectsInp 选项
-type AddonsSelectsInp struct {
-}
-
-type AddonsSelectsModel struct {
-	GroupType form.Selects `json:"groupType" dc:"分组类型"`
-	Status    form.Selects `json:"status"    dc:"安装状态"`
-}
-
 // AddonsBuildInp 提交生成
 type AddonsBuildInp struct {
 	addons.Skeleton
+	Extend []string `json:"extend" dc:"扩展功能"`
 }
 
 func (in *AddonsBuildInp) Filter(ctx context.Context) (err error) {

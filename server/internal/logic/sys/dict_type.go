@@ -11,6 +11,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/dict"
 	"hotgo/internal/library/hgorm"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/sysin"
@@ -114,18 +115,70 @@ func (s *sSysDictType) TreeSelect(ctx context.Context, in *sysin.DictTreeSelectI
 	}
 
 	list = s.treeList(0, models)
+	list = append(list, s.BuiltinSelect()...)
+	return
+}
 
-	for _, v := range list {
-		// 父类一律禁止选中
-		if len(v.Children) > 0 {
-			v.Disabled = true
-			for _, v2 := range v.Children {
-				if len(v2.Children) > 0 {
-					v2.Disabled = true
-				}
-			}
-		}
+// BuiltinSelect 内置字典选项
+func (s *sSysDictType) BuiltinSelect() (list []*sysin.DictTypeTree) {
+	top := &sysin.DictTypeTree{
+		SysDictType: entity.SysDictType{
+			Id:  dict.BuiltinId,
+			Pid: 0,
+		},
+		Label: "内置字典",
+		Value: dict.BuiltinId,
+		Key:   dict.BuiltinId,
 	}
+
+	enums := &sysin.DictTypeTree{
+		SysDictType: entity.SysDictType{
+			Id:  dict.EnumsId,
+			Pid: dict.BuiltinId,
+		},
+		Label: "枚举字典",
+		Value: dict.EnumsId,
+		Key:   dict.EnumsId,
+	}
+
+	for _, v := range dict.GetAllEnums() {
+		children := &sysin.DictTypeTree{
+			SysDictType: entity.SysDictType{
+				Id:  v.Id,
+				Pid: dict.EnumsId,
+			},
+			Label: v.Label,
+			Value: v.Id,
+			Key:   v.Id,
+		}
+		enums.Children = append(enums.Children, children)
+	}
+
+	fun := &sysin.DictTypeTree{
+		SysDictType: entity.SysDictType{
+			Id:  dict.FuncId,
+			Pid: dict.BuiltinId,
+		},
+		Label: "方法字典",
+		Value: dict.FuncId,
+		Key:   dict.FuncId,
+	}
+
+	for _, v := range dict.GetAllFunc() {
+		children := &sysin.DictTypeTree{
+			SysDictType: entity.SysDictType{
+				Id:  v.Id,
+				Pid: dict.FuncId,
+			},
+			Label: v.Label,
+			Value: v.Id,
+			Key:   v.Id,
+		}
+		fun.Children = append(fun.Children, children)
+	}
+
+	top.Children = append(top.Children, enums, fun)
+	list = append(list, top)
 	return
 }
 

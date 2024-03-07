@@ -7,11 +7,13 @@ package views
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/text/gregex"
 	"github.com/gogf/gf/v2/text/gstr"
+	"github.com/gogf/gf/v2/util/gconv"
 	"hotgo/internal/consts"
 	"hotgo/internal/model"
 	"hotgo/internal/model/input/sysin"
@@ -174,4 +176,47 @@ func IsIndexPK(index string) bool {
 // IsIndexUNI 是否是唯一索引
 func IsIndexUNI(index string) bool {
 	return gstr.ToUpper(index) == gstr.ToUpper(consts.GenCodesIndexUNI)
+}
+
+// ParseDBConfigNodeLink 解析数据库连接配置
+func ParseDBConfigNodeLink(node *gdb.ConfigNode) *gdb.ConfigNode {
+	const linkPattern = `(\w+):([\w\-\$]*):(.*?)@(\w+?)\((.+?)\)/{0,1}([^\?]*)\?{0,1}(.*)`
+	const defaultCharset = `utf8`
+	const defaultProtocol = `tcp`
+
+	var match []string
+	if node.Link != "" {
+		match, _ = gregex.MatchString(linkPattern, node.Link)
+		if len(match) > 5 {
+			node.Type = match[1]
+			node.User = match[2]
+			node.Pass = match[3]
+			node.Protocol = match[4]
+			array := gstr.Split(match[5], ":")
+			if len(array) == 2 && node.Protocol != "file" {
+				node.Host = array[0]
+				node.Port = array[1]
+				node.Name = match[6]
+			} else {
+				node.Name = match[5]
+			}
+			if len(match) > 6 && match[7] != "" {
+				node.Extra = match[7]
+			}
+			node.Link = ""
+		}
+	}
+	if node.Extra != "" {
+		if m, _ := gstr.Parse(node.Extra); len(m) > 0 {
+			_ = gconv.Struct(m, &node)
+		}
+	}
+	// Default value checks.
+	if node.Charset == "" {
+		node.Charset = defaultCharset
+	}
+	if node.Protocol == "" {
+		node.Protocol = defaultProtocol
+	}
+	return node
 }

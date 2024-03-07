@@ -59,6 +59,7 @@ type ProvincesUpdateFields struct {
 
 // ProvincesInsertFields 新增数据字段过滤
 type ProvincesInsertFields struct {
+	Id     int64  `json:"id"        description:"省市区ID"`
 	Title  string `json:"title"     description:"栏目名称"`
 	Pinyin string `json:"pinyin"    description:"拼音"`
 	Lng    string `json:"lng"       description:"经度"`

@@ -6,6 +6,7 @@ import { getPostOption } from '@/api/org/post';
 import { FormSchema, useForm } from '@/components/Form';
 import { statusOptions } from '@/enums/optionsiEnum';
 import { defRangeShortcuts } from '@/utils/dateUtil';
+import {Dicts} from "@/api/dict/dict";
 
 // 增加余额/积分.
 
@@ -213,14 +214,10 @@ export async function loadOptions() {
     treeDataToCompressed(role.list);
   }
 
-  const post = await getPostOption();
-  if (post.list && post.list.length > 0) {
-    for (let i = 0; i < post.list.length; i++) {
-      post.list[i].label = post.list[i].name;
-      post.list[i].value = post.list[i].id;
-    }
-    options.value.post = post.list;
-  }
+  const tmpOptions = await Dicts({
+    types: ['adminPostOption'],
+  });
+  options.value.post =tmpOptions?.adminPostOption;
 }
 
 function treeDataToCompressed(source) {

@@ -29,17 +29,6 @@ type ApplyRefundReq struct {
 type ApplyRefundRes struct {
 }
 
-// OptionReq 获取订单状态选项
-type OptionReq struct {
-	g.Meta `path:"/order/option" method:"get" summary:"充值订单" tags:"获取订单状态选项"`
-}
-
-type OptionRes struct {
-	Status             []g.Map `json:"status"   dc:"订单状态"`
-	AcceptRefundStatus []g.Map `json:"acceptRefundStatus"   dc:"订单退款受理状态"`
-	PayType            []g.Map `json:"payType"   dc:"支付方式"`
-}
-
 // CreateReq 创建充值订单
 type CreateReq struct {
 	g.Meta `path:"/order/create" method:"post" tags:"充值订单" summary:"创建充值订单"`

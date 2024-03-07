@@ -9,6 +9,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"hotgo/addons/hgexample/controller/websocket"
+	"hotgo/addons/hgexample/controller/websocket/handler"
 	"hotgo/addons/hgexample/global"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/addons"
@@ -34,6 +35,6 @@ func WebSocket(ctx context.Context, group *ghttp.RouterGroup) {
 
 	// 注册消息路由
 	ws.RegisterMsg(ws.EventHandlers{
-		// ...
+		"admin/addons/hgexample/testMessage": handler.Index.TestMessage, // 测试消息
 	})
 }

@@ -43,6 +43,14 @@
     loading.value = true;
     init();
   });
+
+  function open(src: string) {
+    frameSrc.value = src;
+  }
+
+  defineExpose({
+    open,
+  });
 </script>
 
 <style lang="less" scoped>

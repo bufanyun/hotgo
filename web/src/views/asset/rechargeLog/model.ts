@@ -6,6 +6,7 @@ import { Option } from '@/api/order';
 import { isNullObject } from '@/utils/is';
 import { defRangeShortcuts } from '@/utils/dateUtil';
 import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
+import { Dicts } from '@/api/dict/dict';
 
 export interface State {
   id: number;
@@ -49,7 +50,7 @@ export function newState(state: State | null): State {
 }
 
 export const options = ref<Options>({
-  status: [],
+  orderStatus: [],
   acceptRefundStatus: [],
   payType: [],
 });
@@ -170,12 +171,12 @@ export const columns = [
           style: {
             marginRight: '6px',
           },
-          type: getOptionTag(options.value.status, row.status),
+          type: getOptionTag(options.value.orderStatus, row.status),
           bordered: false,
         },
         {
           default: () =>
-            getOptionLabel(options.value.status, row.status) +
+            getOptionLabel(options.value.orderStatus, row.status) +
             (row.status === 9 ? '，' + row.rejectRefundReason : ''),
         }
       );
@@ -190,11 +191,13 @@ export const columns = [
 ];
 
 async function loadOptions() {
-  options.value = await Option();
+  options.value = await Dicts({
+    types: ['payType', 'orderStatus', 'acceptRefundStatus'],
+  });
   for (const item of schemas.value) {
     switch (item.field) {
       case 'status':
-        item.componentProps.options = options.value.status;
+        item.componentProps.options = options.value.orderStatus;
         break;
       case 'acceptRefundStatus':
         item.componentProps.options = options.value.acceptRefundStatus;

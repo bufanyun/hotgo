@@ -5,7 +5,15 @@
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package consts
 
-import "github.com/gogf/gf/v2/frame/g"
+import (
+	"hotgo/internal/library/dict"
+	"hotgo/internal/model"
+)
+
+func init() {
+	dict.RegisterEnums("orderStatus", "订单状态", OrderStatusOptions)
+	dict.RegisterEnums("acceptRefundStatus", "订单退款受理状态", OrderAcceptRefundOptions)
+}
 
 // 订单分组
 // 为不同的业务订单设置不同的分组，分组可以设置不同的业务回调方法
@@ -36,94 +44,23 @@ const (
 	OrderStatusReturnReject  = 9  // 拒绝退款
 )
 
-var OrderStatusSlice = []int64{
-	OrderStatusALL,
-	OrderStatusNotPay, OrderStatusPay, OrderStatusShipments, OrderStatusDone, OrderStatusClose,
-	OrderStatusReturnRequest, OrderStatusReturning, OrderStatusReturned, OrderStatusReturnReject,
-}
-
 // OrderStatusOptions 订单状态选项
-var OrderStatusOptions = []g.Map{
-	{
-		"key":       OrderStatusALL,
-		"value":     OrderStatusALL,
-		"label":     "全部",
-		"listClass": "info",
-	},
-	{
-		"key":       OrderStatusNotPay,
-		"value":     OrderStatusNotPay,
-		"label":     "待付款",
-		"listClass": "info",
-	},
-	{
-		"key":       OrderStatusPay,
-		"value":     OrderStatusPay,
-		"label":     "已付款",
-		"listClass": "info",
-	},
-	{
-		"key":       OrderStatusShipments,
-		"value":     OrderStatusShipments,
-		"label":     "已发货",
-		"listClass": "info",
-	},
-	{
-		"key":       OrderStatusDone,
-		"value":     OrderStatusDone,
-		"label":     "已完成",
-		"listClass": "success",
-	},
-	{
-		"key":       OrderStatusClose,
-		"value":     OrderStatusClose,
-		"label":     "已关闭",
-		"listClass": "default",
-	},
-	{
-		"key":       OrderStatusReturnRequest,
-		"value":     OrderStatusReturnRequest,
-		"label":     "申请退款",
-		"listClass": "warning",
-	},
-	{
-		"key":       OrderStatusReturning,
-		"value":     OrderStatusReturning,
-		"label":     "退款中",
-		"listClass": "default",
-	},
-	{
-		"key":       OrderStatusReturned,
-		"value":     OrderStatusReturned,
-		"label":     "已退款",
-		"listClass": "success",
-	},
-	{
-		"key":       OrderStatusReturnReject,
-		"value":     OrderStatusReturnReject,
-		"label":     "拒绝退款",
-		"listClass": "error",
-	},
+var OrderStatusOptions = []*model.Option{
+	dict.GenInfoOption(OrderStatusALL, "全部"),
+	dict.GenInfoOption(OrderStatusNotPay, "待付款"),
+	dict.GenInfoOption(OrderStatusPay, "已付款"),
+	dict.GenInfoOption(OrderStatusShipments, "已发货"),
+	dict.GenSuccessOption(OrderStatusDone, "已完成"),
+	dict.GenDefaultOption(OrderStatusClose, "已关闭"),
+	dict.GenWarningOption(OrderStatusReturnRequest, "申请退款"),
+	dict.GenDefaultOption(OrderStatusReturning, "退款中"),
+	dict.GenErrorOption(OrderStatusReturned, "已退款"),
+	dict.GenWarningOption(OrderStatusReturnReject, "拒绝退款"),
 }
 
 // OrderAcceptRefundOptions 订单退款受理状态
-var OrderAcceptRefundOptions = []g.Map{
-	{
-		"key":       OrderStatusReturnRequest,
-		"value":     OrderStatusReturnRequest,
-		"label":     "申请退款",
-		"listClass": "warning",
-	},
-	{
-		"key":       OrderStatusReturned,
-		"value":     OrderStatusReturned,
-		"label":     "已退款",
-		"listClass": "success",
-	},
-	{
-		"key":       OrderStatusReturnReject,
-		"value":     OrderStatusReturnReject,
-		"label":     "拒绝退款",
-		"listClass": "error",
-	},
+var OrderAcceptRefundOptions = []*model.Option{
+	dict.GenWarningOption(OrderStatusReturnRequest, "申请退款"),
+	dict.GenSuccessOption(OrderStatusReturned, "已退款"),
+	dict.GenErrorOption(OrderStatusReturnReject, "拒绝退款"),
 }

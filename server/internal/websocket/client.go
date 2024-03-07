@@ -65,7 +65,7 @@ func NewClient(r *ghttp.Request, socket *websocket.Conn, firstTime uint64) (clie
 		closeSignal:   make(chan struct{}, 1),
 		FirstTime:     firstTime,
 		HeartbeatTime: firstTime,
-		User:          contexts.Get(r.Context()).User,
+		User:          contexts.GetUser(r.Context()),
 		IP:            location.GetClientIp(r),
 		UserAgent:     r.UserAgent(),
 	}

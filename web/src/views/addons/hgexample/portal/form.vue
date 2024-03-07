@@ -7,7 +7,7 @@
       </n-input-group>
     </n-form-item>
 
-    <n-form-item label="二维码" path="index">
+    <n-form-item label="二维码" path="index" v-if="showQrcode">
       <div class="text-center">
         <qrcode-vue :value="url" :size="220" class="canvas" style="margin: 0 auto" />
       </div>
@@ -24,10 +24,12 @@
 
   interface Props {
     path: string;
+    showQrcode?: boolean;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     path: '',
+    showQrcode: true,
   });
 
   const copy = () => {

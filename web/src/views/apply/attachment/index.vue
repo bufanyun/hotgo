@@ -21,11 +21,11 @@
         ref="actionRef"
         :actionColumn="actionColumn"
         @update:checked-row-keys="onCheckedRow"
-        :scroll-x="1800"
+        :scroll-x="1280"
         :resizeHeightOffset="-20000"
       >
         <template #tableTitle>
-          <n-button type="primary" @click="handleUpload">
+          <n-button type="primary" @click="handleUpload" class="ml-2">
             <template #icon>
               <n-icon>
                 <UploadOutlined />
@@ -33,26 +33,31 @@
             </template>
             上传文件
           </n-button>
-          &nbsp;
-          <n-button type="primary" @click="handleUploadImage">
+          <n-button type="success" @click="handleMultipartUpload" class="ml-2">
             <template #icon>
               <n-icon>
-                <UploadOutlined />
+                <FileAddOutlined />
+              </n-icon>
+            </template>
+            上传大文件
+          </n-button>
+          <n-button type="primary" @click="handleUploadImage" class="ml-2">
+            <template #icon>
+              <n-icon>
+                <FileImageOutlined />
               </n-icon>
             </template>
             上传图片
           </n-button>
-          &nbsp;
-          <n-button type="primary" @click="handleUploadDoc">
+          <n-button type="primary" @click="handleUploadDoc" class="ml-2">
             <template #icon>
               <n-icon>
-                <UploadOutlined />
+                <FileWordOutlined />
               </n-icon>
             </template>
             上传文档
           </n-button>
-          &nbsp;
-          <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled">
+          <n-button type="error" @click="batchDelete" :disabled="batchDeleteDisabled" class="ml-2">
             <template #icon>
               <n-icon>
                 <DeleteOutlined />
@@ -67,6 +72,7 @@
     <FileUpload ref="fileUploadRef" :finish-call="handleFinishCall" />
     <FileUpload ref="imageUploadRef" :finish-call="handleFinishCall" upload-type="image" />
     <FileUpload ref="docUploadRef" :finish-call="handleFinishCall" upload-type="doc" />
+    <MultipartUpload ref="multipartUploadRef" @onFinish="handleFinishCall" />
   </div>
 </template>
 
@@ -77,8 +83,15 @@
   import { BasicForm, useForm } from '@/components/Form/index';
   import { Delete, List } from '@/api/apply/attachment';
   import { columns, schemas } from './columns';
-  import { DeleteOutlined, UploadOutlined } from '@vicons/antd';
+  import {
+    DeleteOutlined,
+    UploadOutlined,
+    FileWordOutlined,
+    FileImageOutlined,
+    FileAddOutlined,
+  } from '@vicons/antd';
   import FileUpload from '@/components/FileChooser/src/Upload.vue';
+  import MultipartUpload from '@/components/Upload/multipartUpload.vue';
   import { Attachment } from '@/components/FileChooser/src/model';
 
   const message = useMessage();
@@ -90,9 +103,10 @@
   const fileUploadRef = ref();
   const imageUploadRef = ref();
   const docUploadRef = ref();
+  const multipartUploadRef = ref();
 
   const actionColumn = reactive({
-    width: 150,
+    width: 120,
     title: '操作',
     key: 'action',
     fixed: 'right',
@@ -130,6 +144,10 @@
 
   function handleUploadDoc() {
     docUploadRef.value.openModal();
+  }
+
+  function handleMultipartUpload() {
+    multipartUploadRef.value.openModal();
   }
 
   const loadDataTable = async (res) => {

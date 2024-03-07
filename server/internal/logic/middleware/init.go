@@ -30,10 +30,11 @@ import (
 )
 
 type sMiddleware struct {
-	LoginUrl      string                      // 登录路由地址
-	DemoWhiteList g.Map                       // 演示模式放行的路由白名单
-	FilterRoutes  map[string]ghttp.RouterItem // 支持预处理的web路由
-	routeMutex    sync.Mutex
+	LoginUrl         string                      // 登录路由地址
+	DemoWhiteList    g.Map                       // 演示模式放行的路由白名单
+	NotRecordRequest g.Map                       // 不记录请求数据的路由（当前请求数据过大时会影响响应效率，可以将路径放到该选项中改善）
+	FilterRoutes     map[string]ghttp.RouterItem // 支持预处理的web路由
+	routeMutex       sync.Mutex
 }
 
 func init() {
@@ -47,6 +48,10 @@ func NewMiddleware() *sMiddleware {
 			"/admin/site/accountLogin": struct{}{}, // 账号登录
 			"/admin/site/mobileLogin":  struct{}{}, // 手机号登录
 			"/admin/genCodes/preview":  struct{}{}, // 预览代码
+		},
+		NotRecordRequest: g.Map{
+			"/admin/upload/file":       struct{}{}, // 上传文件
+			"/admin/upload/uploadPart": struct{}{}, // 上传分片
 		},
 	}
 }
@@ -63,8 +68,11 @@ func (s *sMiddleware) Ctx(r *ghttp.Request) {
 		r.SetCtx(ctx)
 	}
 
-	data := g.Map{
-		"request.body": gjson.New(r.GetBodyString()),
+	data := make(g.Map)
+	if _, ok := s.NotRecordRequest[r.URL.Path]; ok {
+		data["request.body"] = gjson.New(nil)
+	} else {
+		data["request.body"] = gjson.New(r.GetBodyString())
 	}
 
 	contexts.Init(r, &model.Context{
@@ -75,6 +83,8 @@ func (s *sMiddleware) Ctx(r *ghttp.Request) {
 	if len(r.Cookie.GetSessionId()) == 0 {
 		r.Cookie.SetSessionId(gctx.CtxId(r.Context()))
 	}
+
+	r.SetCtx(r.GetNeverDoneCtx())
 	r.Middleware.Next()
 }
 
@@ -98,7 +108,7 @@ func (s *sMiddleware) CORS(r *ghttp.Request) {
 	r.Middleware.Next()
 }
 
-// DemoLimit 演示系統操作限制
+// DemoLimit 演示系统操作限制
 func (s *sMiddleware) DemoLimit(r *ghttp.Request) {
 	isDemo := g.Cfg().MustGet(r.Context(), "hotgo.isDemo", false)
 	if !isDemo.Bool() {

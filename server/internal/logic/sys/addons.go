@@ -11,10 +11,10 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/addons"
+	"hotgo/internal/library/dict"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
-	"sort"
 )
 
 type sSysAddons struct{}
@@ -83,8 +83,7 @@ func (s *sSysAddons) List(ctx context.Context, in *sysin.AddonsListInp) (list []
 			row.Skeleton.Logo = consts.AddonsGroupIconMap[row.Skeleton.Group]
 		}
 
-		row.GroupName = consts.AddonsGroupNameMap[row.Skeleton.Group]
-
+		row.GroupName = dict.GetOptionLabel(consts.AddonsGroupOptions, row.Skeleton.Group)
 		list = append(list, row)
 		i++
 	}
@@ -93,42 +92,23 @@ func (s *sSysAddons) List(ctx context.Context, in *sysin.AddonsListInp) (list []
 	return
 }
 
-// Selects 选项
-func (s *sSysAddons) Selects(ctx context.Context, in *sysin.AddonsSelectsInp) (res *sysin.AddonsSelectsModel, err error) {
-	res = new(sysin.AddonsSelectsModel)
-	for k, v := range consts.AddonsGroupNameMap {
-		res.GroupType = append(res.GroupType, &form.Select{
-			Value: k,
-			Name:  v,
-			Label: v,
-		})
-	}
-	sort.Sort(res.GroupType)
-
-	for k, v := range consts.AddonsInstallStatusNameMap {
-		res.Status = append(res.Status, &form.Select{
-			Value: k,
-			Name:  v,
-			Label: v,
-		})
-	}
-
-	sort.Sort(res.Status)
-	return
-}
-
 // Build 提交生成
 func (s *sSysAddons) Build(ctx context.Context, in *sysin.AddonsBuildInp) (err error) {
-	genConfig, err := service.SysConfig().GetLoadGenerate(ctx)
+	config, err := service.SysConfig().GetLoadGenerate(ctx)
 	if err != nil {
 		return
 	}
 
-	if genConfig == nil || genConfig.Addon == nil {
+	if config == nil || config.Addon == nil {
 		err = gerror.New("没有找到有效的生成或插件配置，请检查配置文件是否正常")
 		return
 	}
-	return addons.Build(ctx, in.Skeleton, genConfig.Addon)
+
+	option := new(addons.BuildOption)
+	option.Config = config.Addon
+	option.Skeleton = in.Skeleton
+	option.Extend = in.Extend
+	return addons.Build(ctx, option)
 }
 
 // Install 安装模块

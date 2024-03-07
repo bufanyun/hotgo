@@ -45,3 +45,15 @@ func (d *OssDrive) Upload(ctx context.Context, file *ghttp.UploadFile) (fullPath
 	err = bucket.PutObject(fullPath, f2)
 	return
 }
+
+// CreateMultipart 创建分片事件
+func (d *OssDrive) CreateMultipart(ctx context.Context, in *CheckMultipartParams) (res *MultipartProgress, err error) {
+	err = gerror.New("当前驱动暂不支持分片上传！")
+	return
+}
+
+// UploadPart 上传分片
+func (d *OssDrive) UploadPart(ctx context.Context, in *UploadPartParams) (res *UploadPartModel, err error) {
+	err = gerror.New("当前驱动暂不支持分片上传！")
+	return
+}

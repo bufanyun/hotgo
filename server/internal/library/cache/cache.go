@@ -11,8 +11,6 @@ import (
 	"github.com/gogf/gf/v2/os/gcache"
 	"github.com/gogf/gf/v2/os/gfile"
 	"hotgo/internal/library/cache/file"
-	"hotgo/internal/model"
-	"hotgo/internal/service"
 )
 
 // cache 缓存驱动
@@ -29,33 +27,24 @@ func Instance() *gcache.Cache {
 // SetAdapter 设置缓存适配器
 func SetAdapter(ctx context.Context) {
 	var adapter gcache.Adapter
-	conf, err := service.SysConfig().GetLoadCache(ctx)
-	if err != nil {
-		g.Log().Fatalf(ctx, "cache init err:%+v", err)
-		return
-	}
 
-	if conf == nil {
-		conf = new(model.CacheConfig)
-		g.Log().Info(ctx, "no cache driver is configured. default memory cache is used.")
-	}
-
-	switch conf.Adapter {
+	switch g.Cfg().MustGet(ctx, "cache.adapter").String() {
 	case "redis":
 		adapter = gcache.NewAdapterRedis(g.Redis())
 	case "file":
-		if conf.FileDir == "" {
+		fileDir := g.Cfg().MustGet(ctx, "cache.fileDir").String()
+		if fileDir == "" {
 			g.Log().Fatal(ctx, "file path must be configured for file caching.")
 			return
 		}
 
-		if !gfile.Exists(conf.FileDir) {
-			if err := gfile.Mkdir(conf.FileDir); err != nil {
+		if !gfile.Exists(fileDir) {
+			if err := gfile.Mkdir(fileDir); err != nil {
 				g.Log().Fatalf(ctx, "failed to create the cache directory. procedure, err:%+v", err)
 				return
 			}
 		}
-		adapter = file.NewAdapterFile(conf.FileDir)
+		adapter = file.NewAdapterFile(fileDir)
 	default:
 		adapter = gcache.NewAdapterMemory()
 	}

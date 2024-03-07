@@ -35,3 +35,25 @@ func (c *cUpload) UploadFile(ctx context.Context, _ *common.UploadFileReq) (res 
 	}
 	return service.CommonUpload().UploadFile(ctx, uploadType, file)
 }
+
+// CheckMultipart 检查文件分片
+func (c *cUpload) CheckMultipart(ctx context.Context, req *common.CheckMultipartReq) (res *common.CheckMultipartRes, err error) {
+	data, err := service.CommonUpload().CheckMultipart(ctx, &req.CheckMultipartInp)
+	if err != nil {
+		return nil, err
+	}
+	res = new(common.CheckMultipartRes)
+	res.CheckMultipartModel = data
+	return
+}
+
+// UploadPart 上传分片
+func (c *cUpload) UploadPart(ctx context.Context, req *common.UploadPartReq) (res *common.UploadPartRes, err error) {
+	data, err := service.CommonUpload().UploadPart(ctx, &req.UploadPartInp)
+	if err != nil {
+		return nil, err
+	}
+	res = new(common.UploadPartRes)
+	res.UploadPartModel = data
+	return
+}

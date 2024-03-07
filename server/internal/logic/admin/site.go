@@ -1,3 +1,8 @@
+// Package admin
+// @Link  https://github.com/bufanyun/hotgo
+// @Copyright  Copyright (c) 2023 HotGo CLI
+// @Author  Ms <133814250@qq.com>
+// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package admin
 
 import (
@@ -237,7 +242,7 @@ func (s *sAdminSite) handleLogin(ctx context.Context, mb *entity.AdminMember) (r
 	}
 
 	var dept *entity.AdminDept
-	if err = g.Model("admin_dept").Ctx(ctx).Fields("id,status").Where("id", mb.DeptId).Scan(&dept); err != nil || dept == nil {
+	if err = dao.AdminDept.Ctx(ctx).Fields("id,status").Where("id", mb.DeptId).Scan(&dept); err != nil || dept == nil {
 		err = gerror.Wrap(err, "获取部门信息失败，请稍后重试！")
 		return
 	}
@@ -279,7 +284,7 @@ func (s *sAdminSite) handleLogin(ctx context.Context, mb *entity.AdminMember) (r
 // BindUserContext 绑定用户上下文
 func (s *sAdminSite) BindUserContext(ctx context.Context, claims *model.Identity) (err error) {
 	var mb *entity.AdminMember
-	if err = g.Model("admin_member").Ctx(ctx).Where("id", claims.Id).Scan(&mb); err != nil {
+	if err = dao.AdminMember.Ctx(ctx).Where("id", claims.Id).Scan(&mb); err != nil {
 		err = gerror.Wrap(err, "获取用户信息失败，请稍后重试！")
 		return
 	}
@@ -295,7 +300,7 @@ func (s *sAdminSite) BindUserContext(ctx context.Context, claims *model.Identity
 	}
 
 	var role *entity.AdminRole
-	if err = g.Model("admin_role").Ctx(ctx).Fields("id,key,status").Where("id", mb.RoleId).Scan(&role); err != nil || role == nil {
+	if err = dao.AdminRole.Ctx(ctx).Fields("id,key,status").Where("id", mb.RoleId).Scan(&role); err != nil || role == nil {
 		err = gerror.Wrap(err, "获取角色信息失败，请稍后重试！")
 		return
 	}
@@ -306,7 +311,7 @@ func (s *sAdminSite) BindUserContext(ctx context.Context, claims *model.Identity
 	}
 
 	var dept *entity.AdminDept
-	if err = g.Model("admin_dept").Ctx(ctx).Fields("id,status").Where("id", mb.DeptId).Scan(&dept); err != nil || dept == nil {
+	if err = dao.AdminDept.Ctx(ctx).Fields("id,status").Where("id", mb.DeptId).Scan(&dept); err != nil || dept == nil {
 		err = gerror.Wrap(err, "获取部门信息失败，请稍后重试！")
 		return
 	}

@@ -4,7 +4,7 @@
       <n-button>
         <template #icon>
           <n-icon size="20">
-            <component :is="formValue !== '' ? formValue : 'AntDesignOutlined'" />
+            <component :is="formValue !== '' ? formValue : AntDesignOutlined" />
           </n-icon>
         </template>
       </n-button>
@@ -38,6 +38,8 @@
 <script lang="ts">
   import { computed, defineComponent, ref, shallowReactive } from 'vue';
   import * as AntdIcons from '@vicons/antd';
+  import { AntDesignOutlined } from '@vicons/antd';
+
   export default defineComponent({
     name: 'AntdSelector',
     components: AntdIcons,
@@ -80,6 +82,7 @@
         onUpdatePage,
         onIconClick,
         formValue,
+        AntDesignOutlined,
       };
     },
   });

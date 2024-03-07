@@ -5,7 +5,15 @@
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package consts
 
-import "github.com/gogf/gf/v2/frame/g"
+import (
+	"hotgo/internal/library/dict"
+	"hotgo/internal/model"
+)
+
+func init() {
+	dict.RegisterEnums("creditType", "资金变动类型", CreditTypeOptions)
+	dict.RegisterEnums("creditGroup", "资金变动分组", CreditGroupOptions)
+}
 
 const (
 	CreditTypeBalance  = "balance"  // 余额
@@ -23,63 +31,18 @@ const (
 )
 
 // CreditTypeOptions 变动类型
-var CreditTypeOptions = []g.Map{
-	{
-		"key":       CreditTypeBalance,
-		"value":     CreditTypeBalance,
-		"label":     "余额",
-		"listClass": "success",
-	},
-	{
-		"key":       CreditTypeIntegral,
-		"value":     CreditTypeIntegral,
-		"label":     "积分",
-		"listClass": "info",
-	},
+var CreditTypeOptions = []*model.Option{
+	dict.GenSuccessOption(CreditTypeBalance, "余额"),
+	dict.GenInfoOption(CreditTypeIntegral, "积分"),
 }
 
 // CreditGroupOptions 变动分组
-var CreditGroupOptions = []g.Map{
-	{
-		"key":       CreditGroupDecr,
-		"value":     CreditGroupDecr,
-		"label":     "扣款",
-		"listClass": "warning",
-	},
-	{
-		"key":       CreditGroupIncr,
-		"value":     CreditGroupIncr,
-		"label":     "加款",
-		"listClass": "success",
-	},
-	{
-		"key":       CreditGroupOpDecr,
-		"value":     CreditGroupOpDecr,
-		"label":     "操作扣款",
-		"listClass": "warning",
-	},
-	{
-		"key":       CreditGroupOpIncr,
-		"value":     CreditGroupOpIncr,
-		"label":     "操作加款",
-		"listClass": "success",
-	},
-	{
-		"key":       CreditGroupBalanceRefund,
-		"value":     CreditGroupBalanceRefund,
-		"label":     "余额退款",
-		"listClass": "warning",
-	},
-	{
-		"key":       CreditGroupBalanceRecharge,
-		"value":     CreditGroupBalanceRecharge,
-		"label":     "余额充值",
-		"listClass": "success",
-	},
-	{
-		"key":       CreditGroupApplyCash,
-		"value":     CreditGroupApplyCash,
-		"label":     "申请提现",
-		"listClass": "info",
-	},
+var CreditGroupOptions = []*model.Option{
+	dict.GenWarningOption(CreditGroupDecr, "扣款"),
+	dict.GenSuccessOption(CreditGroupIncr, "加款"),
+	dict.GenWarningOption(CreditGroupOpDecr, "操作扣款"),
+	dict.GenSuccessOption(CreditGroupOpIncr, "操作加款"),
+	dict.GenWarningOption(CreditGroupBalanceRefund, "余额退款"),
+	dict.GenSuccessOption(CreditGroupBalanceRecharge, "余额充值"),
+	dict.GenInfoOption(CreditGroupApplyCash, "申请提现"),
 }

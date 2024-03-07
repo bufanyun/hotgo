@@ -210,7 +210,7 @@
       width: 140,
     },
     {
-      title: '菜单名称',
+      title: '生成名称',
       key: 'tableComment',
       width: 140,
     },

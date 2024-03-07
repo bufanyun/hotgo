@@ -8,6 +8,7 @@ package article
 
 import (
 	"context"
+
 	"hotgo/internal/library/hggen/internal/cmd/testdata/genservice/service"
 )
 

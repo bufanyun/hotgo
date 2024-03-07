@@ -42,7 +42,7 @@
   import { BasicTable } from '@/components/Table';
   import { genInfoObj, selectListObj } from '@/views/develop/code/components/model';
   import { ColumnList } from '@/api/develop/code';
-  import { NButton, NCheckbox, NInput, NSelect, NTooltip, NTreeSelect } from 'naive-ui';
+  import { NButton, NCheckbox, NInput, NSelect, NTooltip, NTreeSelect,NCascader } from 'naive-ui';
   import { HelpCircleOutline, Reload } from '@vicons/ionicons5';
   import { renderIcon } from '@/utils';
   import { cloneDeep } from 'lodash-es';
@@ -278,10 +278,15 @@
             key: 'dictType',
             width: 300,
             render(row) {
-              return h(NTreeSelect, {
-                value: row.dictType,
-                disabled: row.name === 'id',
+              if (row.dictType == 0){
+                row.dictType = null;
+              }
+              return h(NCascader, {
+                placeholder: '请选择字典类型',
+                filterable: true,
                 clearable: true,
+                disabled: row.name === 'id',
+                value: row.dictType,
                 options: props.selectList?.dictMode ?? [],
                 onUpdateValue: function (e) {
                   row.dictType = e;

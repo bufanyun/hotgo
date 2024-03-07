@@ -77,3 +77,21 @@ type AttachmentChooserListModel struct {
 type AttachmentClearInp struct {
 	Kind string `json:"kind"       dc:"上传类型"`
 }
+
+// CheckMultipartInp 检查文件分片
+type CheckMultipartInp struct {
+	*storager.CheckMultipartParams
+}
+
+type CheckMultipartModel struct {
+	*storager.CheckMultipartModel
+}
+
+// UploadPartInp 上传分片
+type UploadPartInp struct {
+	*storager.UploadPartParams
+}
+
+type UploadPartModel struct {
+	*storager.UploadPartModel
+}

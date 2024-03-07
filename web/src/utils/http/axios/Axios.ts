@@ -1,10 +1,11 @@
 import type { AxiosRequestConfig, AxiosInstance, AxiosResponse } from 'axios';
 import axios from 'axios';
 import { AxiosCanceler } from './axiosCancel';
-import { isFunction } from '@/utils/is';
+import { isFunction, isString, isUrl } from '@/utils/is';
 import { cloneDeep } from 'lodash-es';
 import type { RequestOptions, CreateAxiosOptions, Result, UploadFileParams } from './types';
 import { ContentTypeEnum } from '@/enums/httpEnum';
+import { useGlobSetting } from '@/hooks/setting';
 
 export * from './axiosTransform';
 
@@ -107,19 +108,29 @@ export class VAxios {
   /**
    * @description:  文件上传
    */
-  uploadFile<T = any>(config: AxiosRequestConfig, params: UploadFileParams) {
-    const formData = new window.FormData();
-    const customFilename = params.name || 'file';
+  uploadFile<T = any>(config: AxiosRequestConfig, params: UploadFileParams, options?: RequestOptions) {
+    const transform = this.getTransform();
+    const { requestCatch, transformRequestData } = transform || {};
+    const { requestOptions } = this.options;
+    const opt: RequestOptions = Object.assign({}, requestOptions, options);
 
-    if (params.filename) {
-      formData.append(customFilename, params.file, params.filename);
-    } else {
-      formData.append(customFilename, params.file);
+    const globSetting = useGlobSetting();
+    const urlPrefix = globSetting.urlPrefix || '';
+    const apiUrl = globSetting.apiUrl || '';
+    const isUrlStr = isUrl(config.url as string);
+
+    if (!isUrlStr) {
+      config.url = `${urlPrefix}${config.url}`;
     }
 
-    if (params.data) {
-      Object.keys(params.data).forEach((key) => {
-        const value = params.data![key];
+    if (!isUrlStr && apiUrl && isString(apiUrl)) {
+      config.url = `${apiUrl}${config.url}`;
+    }
+
+    const formData = new window.FormData();
+    if (params) {
+      Object.keys(params).forEach((key) => {
+        const value = params![key];
         if (Array.isArray(value)) {
           value.forEach((item) => {
             formData.append(`${key}[]`, item);
@@ -127,18 +138,42 @@ export class VAxios {
           return;
         }
 
-        formData.append(key, params.data![key]);
+        formData.append(key, params![key]);
       });
     }
 
-    return this.axiosInstance.request<T>({
-      method: 'POST',
-      data: formData,
-      headers: {
-        'Content-type': ContentTypeEnum.FORM_DATA,
-        ignoreCancelToken: true,
-      },
-      ...config,
+    return new Promise((resolve, reject) => {
+      this.axiosInstance
+        .request<T>({
+          method: 'POST',
+          data: formData,
+          headers: {
+            'Content-type': ContentTypeEnum.FORM_DATA,
+            ignoreCancelToken: true,
+          },
+          ...config,
+        })
+        .then((res: AxiosResponse<Result>) => {
+          // 请求是否被取消
+          const isCancel = axios.isCancel(res);
+          if (transformRequestData && isFunction(transformRequestData) && !isCancel) {
+            try {
+              const ret = transformRequestData(res, opt);
+              resolve(ret);
+            } catch (err) {
+              reject(err || new Error('request error!'));
+            }
+            return;
+          }
+          resolve(res as unknown as Promise<T>);
+        })
+        .catch((e: Error) => {
+          if (requestCatch && isFunction(requestCatch)) {
+            reject(requestCatch(e));
+            return;
+          }
+          reject(e);
+        });
     });
   }
 

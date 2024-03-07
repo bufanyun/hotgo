@@ -93,9 +93,9 @@
   import DataItem from './components/DataItem.vue';
   import LoadChart from './components/chart/LoadChart.vue';
   import FullYearSalesChart from './components/chart/FullYearSalesChart.vue';
-  import { defineComponent, inject, onMounted, ref, onUnmounted } from 'vue';
+  import { defineComponent, onMounted, ref, onUnmounted } from 'vue';
   import { SocketEnum } from '@/enums/socketEnum';
-  import { addOnMessage, sendMsg } from '@/utils/websocket';
+  import { addOnMessage, removeOnMessage, sendMsg, WebSocketMessage } from '@/utils/websocket';
   import { formatBefore } from '@/utils/dateUtil';
   import { useDialog, useMessage } from 'naive-ui';
 
@@ -179,35 +179,32 @@
       const loading = ref(true);
       const loadChartRef = ref<InstanceType<typeof LoadChart>>();
       const fullYearSalesChartRef = ref<InstanceType<typeof FullYearSalesChart>>();
-      const onMessageList = inject('onMessageList');
 
-      const onAdminMonitor = (res: { data: string }) => {
-        const data = JSON.parse(res.data);
-        if (data.event === SocketEnum.EventAdminMonitorRunInfo) {
-          loading.value = false;
-          if (data.code == SocketEnum.CodeErr) {
-            message.error('查询出错:' + data.event);
-            return;
-          }
-
-          dataRunInfo.value = data.data;
+      // 运行信息
+      const onMessageAdminMonitorRunInfo = (res: WebSocketMessage) => {
+        loading.value = false;
+        if (res.code == SocketEnum.CodeErr) {
+          message.error('查询出错:' + res.event);
           return;
         }
 
-        if (data.event === SocketEnum.EventAdminMonitorTrends) {
-          loading.value = false;
-          if (data.code == SocketEnum.CodeErr) {
-            message.error('查询出错:' + data.event);
-            return;
-          }
-          dataSource.value = data.data;
-          return;
-        }
+        dataRunInfo.value = res.data;
       };
 
-      addOnMessage(onMessageList, onAdminMonitor);
+      // 服务器信息
+      const onMessageAdminMonitorTrends = (res: WebSocketMessage) => {
+        loading.value = false;
+        if (res.code == SocketEnum.CodeErr) {
+          message.error('查询出错:' + res.event);
+          return;
+        }
+        dataSource.value = res.data;
+      };
 
       onMounted(() => {
+        addOnMessage(SocketEnum.EventAdminMonitorRunInfo, onMessageAdminMonitorRunInfo);
+        addOnMessage(SocketEnum.EventAdminMonitorTrends, onMessageAdminMonitorTrends);
+
         loading.value = true;
         sendMsg(SocketEnum.EventAdminMonitorTrends);
         sendMsg(SocketEnum.EventAdminMonitorRunInfo);
@@ -231,6 +228,8 @@
 
       onUnmounted(() => {
         window.clearInterval(timer.value);
+        removeOnMessage(SocketEnum.EventAdminMonitorTrends);
+        removeOnMessage(SocketEnum.EventAdminMonitorRunInfo);
       });
 
       return {

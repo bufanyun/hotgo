@@ -19,8 +19,9 @@
 
 1. /server/addons/hgexample/                   # 插件模块目录
 2. /server/addons/modules/hgexample.go         # 隐式注册插件文件
-3. /web/src/api/addons/hgexample               # webApi目录
-4. /web/src/views/addons/hgexample             # web页面目录
+3. /server/resource/addons/hgexample           # 静态资源和页面模板目录，属于扩展功能选项，勾选对应选项后才会生成
+4. /web/src/api/addons/hgexample               # webApi目录
+5. /web/src/views/addons/hgexample             # web页面目录
 
 # 默认情况下没有为web页面生成菜单权限，因为在实际场景中插件不一定需要用到web页面，所以如有需要请手动到后台 权限管理 -> 菜单权限->自行添加菜单和配置权限
 ```

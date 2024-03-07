@@ -23,7 +23,7 @@ export class State {
   public image = ''; // 单图
   public attachfile = ''; // 附件
   public cityId = 0; // 所在城市
-  public switch = 1; // 显示开关
+  public switch = 2; // 显示开关
   public sort = 0; // 排序
   public status = 1; // 状态
   public createdBy = 0; // 创建者
@@ -31,7 +31,12 @@ export class State {
   public createdAt = ''; // 创建时间
   public updatedAt = ''; // 修改时间
   public deletedAt = ''; // 删除时间
-}
+
+  constructor(state?: Partial<State>) {
+    if (state) {
+      Object.assign(this, state);
+    }
+  }}
 
 export function newState(state: State | Record<string, any> | null): State {
   if (state !== null) {

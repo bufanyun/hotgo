@@ -30,13 +30,13 @@ func (s *Skeleton) GetModule() Module {
 
 // Module 插件模块
 type Module interface {
-	Init(ctx context.Context)                                 // 初始化
-	InitRouter(ctx context.Context, group *ghttp.RouterGroup) // 初始化并注册路由
-	Ctx() context.Context                                     // 上下文
-	GetSkeleton() *Skeleton                                   // 架子
-	Install(ctx context.Context) error                        // 安装模块
-	Upgrade(ctx context.Context) error                        // 更新模块
-	UnInstall(ctx context.Context) error                      // 卸载模块
+    Start(option *Option) (err error)          // 启动模块
+    Stop() (err error)                         // 停止模块
+    Ctx() context.Context                      // 上下文
+    GetSkeleton() *Skeleton                    // 获取模块
+    Install(ctx context.Context) (err error)   // 安装模块
+    Upgrade(ctx context.Context) (err error)   // 更新模块
+    UnInstall(ctx context.Context) (err error) // 卸载模块
 }
 ```
 

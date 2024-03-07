@@ -7,40 +7,54 @@ package addons
 
 import (
 	"context"
+	"fmt"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
 	"hotgo/internal/model"
+	"hotgo/utility/validate"
 	"strconv"
 	"strings"
 )
 
+type BuildOption struct {
+	Skeleton Skeleton
+	Config   *model.BuildAddonConfig
+	Extend   []string `json:"extend" dc:"扩展功能"`
+}
+
 // Build 构建新插件
-func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err error) {
+func Build(ctx context.Context, option *BuildOption) (err error) {
 	var (
-		buildPath    = "./" + consts.AddonsDir + "/" + sk.Name
-		modulesPath  = "./" + consts.AddonsDir + "/modules/" + sk.Name + ".go"
-		webApiPath   = gstr.Replace(conf.WebApiPath, "{$name}", sk.Name)
-		webViewsPath = gstr.Replace(conf.WebViewsPath, "{$name}", sk.Name)
+		resourcePath = GetResourcePath(ctx)
+		buildPath    = "./" + consts.AddonsDir + "/" + option.Skeleton.Name
+		modulesPath  = "./" + consts.AddonsDir + "/modules/" + option.Skeleton.Name + ".go"
+		webApiPath   = gstr.Replace(option.Config.WebApiPath, "{$name}", option.Skeleton.Name)
+		webViewsPath = gstr.Replace(option.Config.WebViewsPath, "{$name}", option.Skeleton.Name)
 		replaces     = map[string]string{
-			"@{.label}":       sk.Label,
-			"@{.name}":        sk.Name,
-			"@{.group}":       strconv.Itoa(sk.Group),
-			"@{.brief}":       sk.Brief,
-			"@{.description}": sk.Description,
-			"@{.author}":      sk.Author,
-			"@{.version}":     sk.Version,
+			"@{.label}":       option.Skeleton.Label,
+			"@{.name}":        option.Skeleton.Name,
+			"@{.group}":       strconv.Itoa(option.Skeleton.Group),
+			"@{.brief}":       option.Skeleton.Brief,
+			"@{.description}": option.Skeleton.Description,
+			"@{.author}":      option.Skeleton.Author,
+			"@{.version}":     option.Skeleton.Version,
 			"@{.hgVersion}":   consts.VersionApp, // HG 版本
 		}
 	)
+
+	if resourcePath == "" {
+		err = gerror.New("请先设置一个有效的插件资源路径，配置名称:'hotgo.addonsResourcePath'")
+		return
+	}
 
 	if err = checkBuildDir(buildPath, modulesPath, webApiPath, webViewsPath); err != nil {
 		return
 	}
 
 	// scans directory recursively
-	list, err := gfile.ScanDirFunc(conf.SrcPath, "*", true, func(path string) string {
+	list, err := gfile.ScanDirFunc(option.Config.SrcPath, "*", true, func(path string) string {
 		return path
 	})
 
@@ -59,8 +73,8 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 		}
 
 		flowFile := gstr.ReplaceByMap(path, map[string]string{
-			gfile.RealPath(conf.SrcPath): "",
-			".template":                  "",
+			gfile.RealPath(option.Config.SrcPath): "",
+			".template":                           "",
 		})
 		flowFile = buildPath + "/" + flowFile
 
@@ -89,6 +103,23 @@ func Build(ctx context.Context, sk Skeleton, conf *model.BuildAddonConfig) (err 
 	// web插件基础配置页面
 	if err = gfile.PutContents(webViewsPath+"/config/system.vue", gstr.ReplaceByMap(webConfigSystem, replaces)); err != nil {
 		return
+	}
+
+	// 创建静态目录
+	if validate.InSlice(option.Extend, consts.AddonsExtendResourcePublic) {
+		_, staticPath := StaticPath(option.Skeleton.Name, resourcePath)
+		content := fmt.Sprintf(resourcePublicDefaultFile, option.Skeleton.Label)
+		if err = gfile.PutContents(staticPath+"/default", content); err != nil {
+			return
+		}
+	}
+
+	// 创建模板目录
+	if validate.InSlice(option.Extend, consts.AddonsExtendResourceTemplate) {
+		viewPath := ViewPath(option.Skeleton.Name, resourcePath)
+		if err = gfile.PutContents(viewPath+"/home/index.html", resourceTemplateHomeFile); err != nil {
+			return
+		}
 	}
 	return
 }

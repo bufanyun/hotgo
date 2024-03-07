@@ -7,6 +7,7 @@ package views
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gfile"
@@ -232,6 +233,18 @@ func (l *gCurd) loadView(ctx context.Context, in *CurdPreviewInput) (err error) 
 func (l *gCurd) DoBuild(ctx context.Context, in *CurdBuildInput) (err error) {
 	preview, err := l.DoPreview(ctx, in.PreviewIn)
 	if err != nil {
+		return
+	}
+
+	db, err := g.DB().Open(ParseDBConfigNodeLink(&gdb.ConfigNode{Link: in.PreviewIn.DaoConfig.Link}))
+	if err != nil {
+		err = gerror.Newf("连接数据库失败，请检查配置文件[server/hack/config.yaml]数据库配置是否正确！err:%v", err.Error())
+		return err
+	}
+
+	defer db.Close()
+	if err = db.Ping(); err != nil {
+		err = gerror.Newf("数据库访问异常，请检查配置文件[server/hack/config.yaml]数据库配置是否正确！err:%v", err.Error())
 		return
 	}
 

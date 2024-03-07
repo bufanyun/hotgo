@@ -17,6 +17,10 @@ type (
 	ICommonUpload interface {
 		// UploadFile 上传文件
 		UploadFile(ctx context.Context, uploadType string, file *ghttp.UploadFile) (res *sysin.AttachmentListModel, err error)
+		// CheckMultipart 检查文件分片
+		CheckMultipart(ctx context.Context, in *sysin.CheckMultipartInp) (res *sysin.CheckMultipartModel, err error)
+		// UploadPart 上传分片
+		UploadPart(ctx context.Context, in *sysin.UploadPartInp) (res *sysin.UploadPartModel, err error)
 	}
 	ICommonWechat interface {
 		// Authorize 微信用户授权

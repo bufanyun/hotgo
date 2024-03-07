@@ -26,7 +26,7 @@
 - [消息队列](sys-queue.md)
 - [功能扩展库](sys-library.md)
 - [工具方法](sys-utility.md)
-- Websocket服务器
+- [WebSocket服务器](sys-websocket-server.md)
 - [TCP服务器](sys-tcp-server.md)
 - [单元测试](sys-test.md)
 
@@ -40,8 +40,7 @@
 
 ### 前端开发
 - [表单组件](web-form.md)
-- Websocket客户端
-- 工具库
+- [WebSocket客户端](sys-websocket-client.md)
 - [独立部署](web-deploy.md)
 
 

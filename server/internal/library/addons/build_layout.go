@@ -194,4 +194,39 @@ export function updateConfig(params) {
   }
 </style>
 `
+
+	resourcePublicDefaultFile = "Hello！这是创建插件 [%v] 时默认生成的一个静态目录文件，用于测试，当你看到这个提示时，说明已经联调成功啦！"
+
+	resourceTemplateHomeFile = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta name="keywords" content="@{.Keywords}"/>
+    <meta name="description" content="@{.Description}"/>
+    <title>@{.Title}</title>
+    <script type="text/javascript" src="/resource/home/js/jquery-3.6.0.min.js"></script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #f6f6f6;
+        }
+    </style>
+</head>
+<body>
+<div style="padding-top: 100px;text-align:center;">
+    <h1><p>Hello，@{.Data.name}!!</p></h1>
+    <h2><p>@{.Data.module}</p></h2>
+    <h2><p>服务器时间：@{.Data.time}</p></h2>
+</div>
+
+</body>
+<script>
+
+</script>
+</html>`
 )

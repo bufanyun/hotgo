@@ -5,6 +5,7 @@
 - 缓存驱动
 - 请求上下文
 - JWT
+- 数据字典
 - 地理定位（待写）
 - 通知（待写）
 
@@ -150,6 +151,159 @@ func test(ctx context.Context) {
 }
 
 ```
+
+### 数据字典
+
+- hotgo增加了对枚举字典和自定义方法字典的内置支持，从而在系统中经常使用的一些特定数据维护基础上做出了增强。
+
+#### 字典数据选项
+- 文件路径：server/internal/model/dict.go
+```go
+package model
+
+// Option 字典数据选项
+type Option struct {
+	Key       interface{} `json:"key"`
+	Label     string      `json:"label"     description:"字典标签"`
+	Value     interface{} `json:"value"     description:"字典键值"`
+	ValueType string      `json:"valueType" description:"键值数据类型"`
+	Type      string      `json:"type"      description:"字典类型"`
+	ListClass string      `json:"listClass" description:"表格回显样式"`
+}
+```
+
+#### 枚举字典
+- 适用于系统开发期间内置的枚举数据，这样即维护了枚举值，又关联了数据字典
+
+##### 一个例子
+- 定义枚举值和字典数据选项，并注册字典类型
+- 文件路径：server/internal/consts/credit_log.go
+
+```go
+package consts
+
+import (
+	"hotgo/internal/library/dict"
+	"hotgo/internal/model"
+)
+
+func init() {
+	dict.RegisterEnums("creditType", "资金变动类型", CreditTypeOptions)
+	dict.RegisterEnums("creditGroup", "资金变动分组", CreditGroupOptions)
+}
+
+const (
+	CreditTypeBalance  = "balance"  // 余额
+	CreditTypeIntegral = "integral" // 积分
+)
+
+const (
+	CreditGroupDecr            = "decr"             // 扣款
+	CreditGroupIncr            = "incr"             // 加款
+	CreditGroupOpDecr          = "op_decr"          // 操作扣款
+	CreditGroupOpIncr          = "op_incr"          // 操作加款
+	CreditGroupBalanceRecharge = "balance_recharge" // 余额充值
+	CreditGroupBalanceRefund   = "balance_refund"   // 余额退款
+	CreditGroupApplyCash       = "apply_cash"       // 申请提现
+)
+
+// CreditTypeOptions 变动类型
+var CreditTypeOptions = []*model.Option{
+	dict.GenSuccessOption(CreditTypeBalance, "余额"),
+	dict.GenInfoOption(CreditTypeIntegral, "积分"),
+}
+
+// CreditGroupOptions 变动分组
+var CreditGroupOptions = []*model.Option{
+	dict.GenWarningOption(CreditGroupDecr, "扣款"),
+	dict.GenSuccessOption(CreditGroupIncr, "加款"),
+	dict.GenWarningOption(CreditGroupOpDecr, "操作扣款"),
+	dict.GenSuccessOption(CreditGroupOpIncr, "操作加款"),
+	dict.GenWarningOption(CreditGroupBalanceRefund, "余额退款"),
+	dict.GenSuccessOption(CreditGroupBalanceRecharge, "余额充值"),
+	dict.GenInfoOption(CreditGroupApplyCash, "申请提现"),
+}
+
+```
+
+
+#### 自定义方法字典
+- 适用于非固定选项，如数据是从某个表/文件读取或从第三方读取，数据需要进行转换时使用
+
+##### 方法字典接口
+- 文件路径：server/internal/consts/credit_log.go
+```go
+package dict
+
+// FuncDict 方法字典，实现本接口即可使用内置方法字典
+type FuncDict func(ctx context.Context) (res []*model.Option, err error)
+```
+
+##### 一个例子
+- 定义获取字典数据方法，并注册字典类型
+- 文件路径：server/internal/logic/admin/post.go
+
+```go
+package admin
+
+import (
+	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+	"hotgo/internal/consts"
+	"hotgo/internal/dao"
+	"hotgo/internal/library/dict"
+	"hotgo/internal/model"
+	"hotgo/internal/model/entity"
+	"hotgo/internal/service"
+)
+
+type sAdminPost struct{}
+
+func NewAdminPost() *sAdminPost {
+    return &sAdminPost{}
+}
+
+func init() {
+    service.RegisterAdminPost(NewAdminPost())
+    dict.RegisterFunc("adminPostOption", "岗位选项", service.AdminPost().Option)
+}
+
+// Option 岗位选项
+func (s *sAdminPost) Option(ctx context.Context) (opts []*model.Option, err error) {
+	var list []*entity.AdminPost
+	if err = dao.AdminPost.Ctx(ctx).OrderAsc(dao.AdminPost.Columns().Sort).Scan(&list); err != nil {
+		return nil, err
+	}
+
+	if len(list) == 0 {
+		opts = make([]*model.Option, 0)
+		return
+	}
+
+	for _, v := range list {
+		opts = append(opts, dict.GenHashOption(v.Id, v.Name))
+	}
+	return
+}
+```
+
+#### 代码生成支持
+- 内置的枚举字典和自定义方法字典在生成代码时可以直接进行选择，生成代码格式和系统字典管理写法一致
+
+![最终编辑表单效果](images/sys-library-dict.png)
+
+
+#### 内置字典和系统字典的区分
+
+##### 主要区别
+- 系统字典由表：`hg_sys_dict_type`和`hg_sys_dict_data`共同进行维护，使用时需通过后台到字典管理中进行添加
+- 内置字典是系统开发期间在代码层面事先定义和注册好的数据选项
+
+
+##### 数据格式区别
+- 系统字典所有ID都是大于0的int64类型
+- 内置字典ID都是小于0的int64类型。枚举字典以20000开头，如：-200001381053496；方法字典以30000开头，如：-30000892528327；开头以外数字是根据数据选项的`key`值进行哈希算法得出
 
 ### 地理定位
 ```go

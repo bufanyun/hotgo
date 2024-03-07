@@ -6,6 +6,7 @@ import { Option } from '@/api/creditsLog';
 import { isNullObject } from '@/utils/is';
 import { defRangeShortcuts } from '@/utils/dateUtil';
 import { getOptionLabel, getOptionTag, Options } from '@/utils/hotgo';
+import {Dicts} from "@/api/dict/dict";
 
 export interface State {
   id: number;
@@ -240,7 +241,9 @@ export const columns = [
 ];
 
 async function loadOptions() {
-  options.value = await Option();
+  options.value = await Dicts({
+    types: ['creditType', 'creditGroup'],
+  });
   for (const item of schemas.value) {
     switch (item.field) {
       case 'creditType':

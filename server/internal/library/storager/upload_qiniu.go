@@ -55,3 +55,15 @@ func (d *QiNiuDrive) Upload(ctx context.Context, file *ghttp.UploadFile) (fullPa
 	err = storage.NewFormUploader(&cfg).Put(ctx, &storage.PutRet{}, token, fullPath, f2, file.Size, &storage.PutExtra{})
 	return
 }
+
+// CreateMultipart 创建分片事件
+func (d *QiNiuDrive) CreateMultipart(ctx context.Context, in *CheckMultipartParams) (res *MultipartProgress, err error) {
+	err = gerror.New("当前驱动暂不支持分片上传！")
+	return
+}
+
+// UploadPart 上传分片
+func (d *QiNiuDrive) UploadPart(ctx context.Context, in *UploadPartParams) (res *UploadPartModel, err error) {
+	err = gerror.New("当前驱动暂不支持分片上传！")
+	return
+}

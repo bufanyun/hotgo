@@ -11,7 +11,10 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/dict"
 	"hotgo/internal/library/hgorm"
+	"hotgo/internal/model"
+	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/adminin"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/service"
@@ -25,6 +28,7 @@ func NewAdminPost() *sAdminPost {
 
 func init() {
 	service.RegisterAdminPost(NewAdminPost())
+	dict.RegisterFunc("adminPostOption", "岗位选项", service.AdminPost().Option)
 }
 
 // Delete 删除
@@ -153,6 +157,24 @@ func (s *sAdminPost) List(ctx context.Context, in *adminin.PostListInp) (list []
 	}
 
 	err = mod.Page(in.Page, in.PerPage).OrderAsc(cols.Sort).Scan(&list)
+	return
+}
+
+// Option 岗位选项
+func (s *sAdminPost) Option(ctx context.Context) (opts []*model.Option, err error) {
+	var list []*entity.AdminPost
+	if err = dao.AdminPost.Ctx(ctx).OrderAsc(dao.AdminPost.Columns().Sort).Scan(&list); err != nil {
+		return nil, err
+	}
+
+	if len(list) == 0 {
+		opts = make([]*model.Option, 0)
+		return
+	}
+
+	for _, v := range list {
+		opts = append(opts, dict.GenHashOption(v.Id, v.Name))
+	}
 	return
 }
 

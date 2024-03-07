@@ -78,12 +78,6 @@ type BuildAddonConfig struct {
 	WebViewsPath string `json:"webViewsPath"`
 }
 
-// CacheConfig 缓存配置
-type CacheConfig struct {
-	Adapter string `json:"adapter"`
-	FileDir string `json:"fileDir"`
-}
-
 // TCPServerConfig tcp服务器配置
 type TCPServerConfig struct {
 	Address string `json:"address"`

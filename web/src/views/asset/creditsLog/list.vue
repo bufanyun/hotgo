@@ -19,7 +19,7 @@
         :request="loadDataTable"
         :row-key="(row) => row.id"
         ref="actionRef"
-        :scroll-x="1800"
+        :scroll-x="1280"
         :resizeHeightOffset="-10000"
         size="small"
       >

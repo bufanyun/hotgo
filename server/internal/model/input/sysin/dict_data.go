@@ -8,6 +8,7 @@ package sysin
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"hotgo/internal/model"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 )
@@ -88,13 +89,4 @@ type DataSelectInp struct {
 	Type string `in:"path" v:"required#字典类型不能为空" dc:"字典类型"`
 }
 
-type DataSelectModel []*SelectData
-
-type SelectData struct {
-	Key       interface{} `json:"key"`
-	Label     string      `json:"label"     description:"字典标签"`
-	Value     interface{} `json:"value"     description:"字典键值"`
-	ValueType string      `json:"valueType" description:"键值数据类型：string,int,uint,bool,datetime,date"`
-	Type      string      `json:"type"      description:"字典类型"`
-	ListClass string      `json:"listClass" description:"表格回显样式"`
-}
+type DataSelectModel []*model.Option

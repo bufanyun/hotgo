@@ -20,7 +20,7 @@
       ref="actionRef"
       :actionColumn="actionColumn"
       @update:checked-row-keys="onCheckedRow"
-      :scroll-x="1800"
+      :scroll-x="1280"
     >
       <template #tableTitle>
         <n-button
@@ -288,7 +288,7 @@
   });
 
   const actionColumn = reactive({
-    width: 220,
+    width: 240,
     title: '操作',
     key: 'action',
     fixed: 'right',

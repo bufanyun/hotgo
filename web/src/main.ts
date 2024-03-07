@@ -5,7 +5,7 @@ import router, { setupRouter } from './router';
 import { setupStore } from '@/store';
 import { setupNaive, setupDirectives } from '@/plugins';
 import { AppProvider } from '@/components/Application';
-import Websocket from '@/utils/websocket';
+import setupWebsocket from '@/utils/websocket/index';
 
 async function bootstrap() {
   const appProvider = createApp(AppProvider);
@@ -36,15 +36,7 @@ async function bootstrap() {
   // 路由准备就绪后挂载APP实例
   await router.isReady();
 
-  // 全局websocket
-  const onMessageList: Array<Function> = [];
-  app.provide('onMessageList', onMessageList);
-  const onMessage = (event: any) => {
-    onMessageList.forEach((f) => {
-      f.call(null, event);
-    });
-  };
-  Websocket(onMessage);
+  setupWebsocket();
 
   app.mount('#app', true);
 }

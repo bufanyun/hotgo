@@ -22,6 +22,16 @@ import (
 func (s *sMiddleware) ResponseHandler(r *ghttp.Request) {
 	r.Middleware.Next()
 
+	// 错误状态码接管
+	switch r.Response.Status {
+	case 403:
+		r.Response.Writeln("403 - 网站拒绝显示此网页")
+		return
+	case 404:
+		r.Response.Writeln("404 - 你似乎来到了没有知识存在的荒原…")
+		return
+	}
+
 	contentType := getContentType(r)
 	// 已存在响应
 	if contentType != consts.HTTPContentTypeStream && r.Response.BufferLength() > 0 && contexts.Get(r.Context()).Response != nil {

@@ -162,11 +162,11 @@ export const columns = [
     key: 'content',
     width: 320,
   },
-  {
-    title: '调用行',
-    key: 'line',
-    width: 150,
-  },
+  // {
+  //   title: '调用行',
+  //   key: 'line',
+  //   width: 150,
+  // },
   {
     title: '触发时间',
     key: 'triggerNs',

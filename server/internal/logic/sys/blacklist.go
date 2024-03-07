@@ -64,7 +64,7 @@ func (s *sSysBlacklist) Edit(ctx context.Context, in *sysin.BlacklistEditInp) (e
 	return
 }
 
-// Status 更新部门状态
+// Status 更新状态
 func (s *sSysBlacklist) Status(ctx context.Context, in *sysin.BlacklistStatusInp) (err error) {
 	defer s.VariableLoad(ctx, err)
 	// 修改
@@ -72,7 +72,7 @@ func (s *sSysBlacklist) Status(ctx context.Context, in *sysin.BlacklistStatusInp
 	return
 }
 
-// View 获取指定字典类型信息
+// View 获取指定信息
 func (s *sSysBlacklist) View(ctx context.Context, in *sysin.BlacklistViewInp) (res *sysin.BlacklistViewModel, err error) {
 	err = dao.SysBlacklist.Ctx(ctx).Where("id", in.Id).Scan(&res)
 	return

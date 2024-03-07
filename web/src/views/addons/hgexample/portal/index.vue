@@ -15,7 +15,8 @@
           <Form path="/addons/hgexample/default" />
         </n-tab-pane>
         <n-tab-pane name="websocket" tab="Websocket">
-          <Form path="/socket/hgexample/index/test?name=HotGo" />
+          <Form path="/socket/hgexample/index/test?name=HotGo" :showQrcode="false" />
+          <WebsocketTest />
         </n-tab-pane>
       </n-tabs>
     </n-card>
@@ -24,6 +25,7 @@
 
 <script lang="ts" setup>
   import Form from './form.vue';
+  import WebsocketTest from './websocketTest.vue';
 </script>
 
 <style scoped>

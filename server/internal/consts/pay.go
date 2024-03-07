@@ -5,9 +5,16 @@
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package consts
 
-import "github.com/gogf/gf/v2/frame/g"
+import (
+	"hotgo/internal/library/dict"
+	"hotgo/internal/model"
+)
 
 // 支付方式
+
+func init() {
+	dict.RegisterEnums("payType", "支付方式", PayTypeOptions)
+}
 
 const (
 	PayTypeALL    = ""       // 全部
@@ -75,23 +82,8 @@ const (
 )
 
 // PayTypeOptions 支付方式选项
-var PayTypeOptions = []g.Map{
-	{
-		"key":       PayTypeWxPay,
-		"value":     PayTypeWxPay,
-		"label":     "微信支付",
-		"listClass": "success",
-	},
-	{
-		"key":       PayTypeAliPay,
-		"value":     PayTypeAliPay,
-		"label":     "支付宝",
-		"listClass": "info",
-	},
-	{
-		"key":       PayTypeQQPay,
-		"value":     PayTypeQQPay,
-		"label":     "QQ支付",
-		"listClass": "default",
-	},
+var PayTypeOptions = []*model.Option{
+	dict.GenSuccessOption(PayTypeWxPay, "微信支付"),
+	dict.GenInfoOption(PayTypeAliPay, "支付宝"),
+	dict.GenDefaultOption(PayTypeQQPay, "QQ支付"),
 }

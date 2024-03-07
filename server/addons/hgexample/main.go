@@ -47,20 +47,25 @@ func newModule() {
 	addons.RegisterModule(m)
 }
 
-// Init 初始化
-func (m *module) Init(ctx context.Context) {
-	global.Init(ctx, m.skeleton)
-	// ...
+// Start 启动模块
+func (m *module) Start(option *addons.Option) (err error) {
+	// 初始化模块
+	global.Init(m.ctx, m.skeleton)
+
+	// 注册插件路由
+	option.Server.Group("/", func(group *ghttp.RouterGroup) {
+		group.Middleware(service.Middleware().Addon)
+		router.Admin(m.ctx, group)
+		router.Api(m.ctx, group)
+		router.Home(m.ctx, group)
+		router.WebSocket(m.ctx, group)
+	})
+	return
 }
 
-// InitRouter 初始化WEB路由
-func (m *module) InitRouter(ctx context.Context, group *ghttp.RouterGroup) {
-	m.Init(ctx)
-	group.Middleware(service.Middleware().Addon)
-	router.Admin(ctx, group)
-	router.Api(ctx, group)
-	router.Home(ctx, group)
-	router.WebSocket(ctx, group)
+// Stop 停止模块
+func (m *module) Stop() (err error) {
+	return
 }
 
 // Ctx 上下文
@@ -68,7 +73,7 @@ func (m *module) Ctx() context.Context {
 	return m.ctx
 }
 
-// GetSkeleton 架子
+// GetSkeleton 获取模块
 func (m *module) GetSkeleton() *addons.Skeleton {
 	return m.skeleton
 }

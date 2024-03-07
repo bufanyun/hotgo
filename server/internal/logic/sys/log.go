@@ -242,6 +242,10 @@ func (s *sSysLog) View(ctx context.Context, in *sysin.LogViewInp) (res *sysin.Lo
 		return
 	}
 
+	if res == nil {
+		return
+	}
+
 	if g.Cfg().MustGet(ctx, "hotgo.isDemo", false).Bool() {
 		res.HeaderData = gjson.New(`{
 		   "none": [

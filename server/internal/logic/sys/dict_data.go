@@ -7,10 +7,12 @@ package sys
 
 import (
 	"context"
+	"errors"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/dict"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 )
@@ -146,6 +148,15 @@ func (s *sSysDictData) GetTypes(ctx context.Context, id int64) (types []string, 
 
 // Select 获取列表
 func (s *sSysDictData) Select(ctx context.Context, in *sysin.DataSelectInp) (list sysin.DataSelectModel, err error) {
+	// 优先从内置字典中获取
+	options, err := dict.GetOptions(ctx, in.Type)
+	if err == nil {
+		return options, nil
+	}
+	if !errors.Is(err, dict.NotExistKeyError) {
+		return nil, err
+	}
+
 	mod := dao.SysDictData.Ctx(ctx).Where("type", in.Type)
 	if err = mod.Order("sort asc,id desc").Scan(&list); err != nil {
 		err = gerror.Wrap(err, consts.ErrorORM)

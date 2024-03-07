@@ -10,10 +10,10 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
+	"hotgo/internal/library/dict"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/payin"
-	"hotgo/utility/validate"
 )
 
 // OrderAcceptRefundInp 受理申请退款
@@ -25,7 +25,7 @@ type OrderAcceptRefundInp struct {
 }
 
 func (in *OrderAcceptRefundInp) Filter(ctx context.Context) (err error) {
-	if !validate.InSlice(consts.OrderStatusSlice, in.Status) {
+	if !dict.HasOptionKey(consts.OrderStatusOptions, in.Status) {
 		err = gerror.Newf("订单状态不正确")
 		return
 	}
