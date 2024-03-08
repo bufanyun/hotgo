@@ -36,3 +36,4 @@ main.exe~
 !hotgo/
 *.lock
 /bin/package.sh
+internal/packed/packed.go

@@ -106,6 +106,9 @@
       const message = useMessage();
       const dialog = useDialog();
       const uploadTitle = ref(props.fileType === 'image' ? '上传图片' : '上传附件');
+      const maxNumber = computed(() => {
+        return props.maxNumber;
+      });
       const fileAvatarCSS = computed(() => {
         return {
           '--n-merged-size': `var(--n-avatar-size-override, ${props.width * 0.8}px)`,
@@ -245,7 +248,7 @@
 
       //上传结束
       function finish({ event: Event }) {
-        const res = eval('(' + Event.target.response + ')');
+        const res = JSON.parse(Event.target.response);
         const infoField = componentSetting.upload.apiSetting.infoField;
         const imgField = componentSetting.upload.apiSetting.imgField;
         const { code } = res;
@@ -289,6 +292,7 @@
         getFileExt,
         Preview,
         previewRef,
+        maxNumber,
       };
     },
   });

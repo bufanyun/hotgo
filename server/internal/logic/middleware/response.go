@@ -12,7 +12,6 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/util/gmeta"
 	"hotgo/internal/consts"
-	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/response"
 	"hotgo/utility/charset"
 	"hotgo/utility/simple"
@@ -34,7 +33,7 @@ func (s *sMiddleware) ResponseHandler(r *ghttp.Request) {
 
 	contentType := getContentType(r)
 	// 已存在响应
-	if contentType != consts.HTTPContentTypeStream && r.Response.BufferLength() > 0 && contexts.Get(r.Context()).Response != nil {
+	if contentType != consts.HTTPContentTypeStream && r.Response.BufferLength() > 0 { // && contexts.Get(r.Context()).Response != nil
 		return
 	}
 

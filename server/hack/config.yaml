@@ -3,8 +3,8 @@
 gfcli:
   build:
     name: "hotgo"                          # 编译后的可执行文件名称
-#    arch: "all"                           #不填默认当前系统架构，可选：386,amd64,arm,all
-#    system: "all"                         #不填默认当前系统平台，可选：linux,darwin,windows,all
+    arch: "amd64"                          # 不填默认当前系统架构，可选：386,amd64,arm,all
+    system: "linux"                        # 不填默认当前系统平台，可选：linux,darwin,windows,all
     mod: "none"
     cgo: 0
     packSrc: "resource"                    # 将resource目录打包进可执行文件，静态资源无需单独部署

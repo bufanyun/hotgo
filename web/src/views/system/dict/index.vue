@@ -200,10 +200,8 @@
       positiveText: '确定',
       negativeText: '取消',
       onPositiveClick: () => {
-        console.log('DeleteMenu formParams:' + JSON.stringify(formParams));
         DeleteDict({ ...formParams })
           .then(async (_res) => {
-            console.log('_res:' + JSON.stringify(_res));
             message.success('操作成功');
             // handleReset();
             await loadData();

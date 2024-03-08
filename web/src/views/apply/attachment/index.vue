@@ -175,7 +175,6 @@
       negativeText: '取消',
       onPositiveClick: () => {
         Delete(record).then((_res) => {
-          console.log('_res:' + JSON.stringify(_res));
           message.success('操作成功');
           reloadTable();
         });

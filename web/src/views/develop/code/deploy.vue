@@ -29,7 +29,7 @@
             v-for="panel in slavePanels"
             :key="panel"
             :name="panel"
-            v-show="slavePanels.length > 0 && slavePanels !== []"
+            v-show="slavePanels.length > 0"
           >
             <EditSlaveCell
               v-model:value="genInfo"

@@ -228,7 +228,6 @@
       onPositiveClick: () => {
         Delete(record)
           .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
             message.success('操作成功');
             reloadTable();
           })
@@ -251,7 +250,6 @@
       onPositiveClick: () => {
         Delete({ id: checkedIds.value })
           .then((_res) => {
-            console.log('_res:' + JSON.stringify(_res));
             message.success('操作成功');
             reloadTable();
           })
