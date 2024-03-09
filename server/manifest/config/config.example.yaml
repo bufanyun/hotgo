@@ -27,7 +27,7 @@ hotgo:
     levelFormat: [ "WARN", "ERRO", "FATA", "PANI" ]   # 需要记录的等级
   # 插件资源目录，用于静态文件和模版文件的路径，默认为resource
   addonsResourcePath: "resource"
-  
+
 
 # 统一默认日志配置
 defaultLogger: &defaultLogger
