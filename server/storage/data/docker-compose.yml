@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  mariadb:
+    image: mariadb:11.2.2-jammy
+    container_name: mariadb
+    restart: always
+    environment:
+      # MYSQL_USER: adminer
+      # MYSQL_PASSWORD: adminer
+      # MYSQL_DATABASE: test
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_USER: adminer
+      MARIADB_PASSWORD: adminer
+      MARIADB_DATABASE: test
+    ports:
+      - 3306:3306
+    volumes:
+      - db_data:/var/lib/mysql
+  adminer:
+    image: adminer:4.8.1-standalone
+    container_name: adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+    restart: always
+    ports:
+      - 47201:8080
+  redis:
+    image: redis:7.2.4-alpine
+    ports:
+      - 6379:6379
+volumes:
+  db_data:
