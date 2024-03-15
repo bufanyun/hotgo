@@ -11,8 +11,8 @@ BEGIN TRANSACTION;
 DROP TABLE IF EXISTS `hg_addon_hgexample_table`;
 
 CREATE TABLE `hg_addon_hgexample_table` (
-`id` bigINTEGER NOT NULL  ,
-`category_id` bigINTEGER NOT NULL ,
+`id` INTEGER NOT NULL  ,
+`category_id` INTEGER NOT NULL ,
 `flag` TEXT   DEFAULT NULL )),
 `title` TEXT NOT NULL ,
 `description` TEXT NOT NULL ,
@@ -24,27 +24,27 @@ CREATE TABLE `hg_addon_hgexample_table` (
 `map` TEXT   DEFAULT NULL )),
 `star` decimal(5,1) DEFAULT 0.0 ,
 `price` decimal(10,2) NOT NULL DEFAULT 0.00 ,
-`views` bigINTEGER DEFAULT NULL ,
+`views` INTEGER DEFAULT NULL ,
 `activity_at` date DEFAULT NULL ,
 `start_at` datetime DEFAULT NULL ,
 `end_at` datetime DEFAULT NULL ,
-`switch` tinyINTEGER DEFAULT NULL ,
+`switch` INTEGER DEFAULT NULL ,
 `sort` INTEGER NOT NULL ,
 `avatar` TEXT DEFAULT '' ,
-`sex` tinyINTEGER DEFAULT NULL ,
+`sex` INTEGER DEFAULT NULL ,
 `qq` TEXT DEFAULT '' ,
 `email` TEXT DEFAULT '' ,
 `mobile` TEXT DEFAULT '' ,
 `hobby` TEXT   DEFAULT NULL )),
 `channel` INTEGER NOT NULL DEFAULT 1 ,
-`city_id` bigINTEGER DEFAULT 0 ,
-`pid` bigINTEGER NOT NULL ,
+`city_id` INTEGER DEFAULT 0 ,
+`pid` INTEGER NOT NULL ,
 `level` INTEGER DEFAULT 1 ,
 `tree` TEXT NOT NULL ,
 `remark` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
-`created_by` bigINTEGER DEFAULT 0 ,
-`updated_by` bigINTEGER DEFAULT 0 ,
+`status` INTEGER DEFAULT 1 ,
+`created_by` INTEGER DEFAULT 0 ,
+`updated_by` INTEGER DEFAULT 0 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 `deleted_at` datetime DEFAULT NULL ,
@@ -59,13 +59,13 @@ INSERT INTO `hg_addon_hgexample_table` (`id`, `category_id`, `flag`, `title`, `d
 DROP TABLE IF EXISTS `hg_admin_cash`;
 
 CREATE TABLE `hg_admin_cash` (
-`id` bigINTEGER NOT NULL  ,
-`member_id` bigINTEGER NOT NULL ,
+`id` INTEGER NOT NULL  ,
+`member_id` INTEGER NOT NULL ,
 `money` decimal(10,2) NOT NULL ,
 `fee` decimal(10,2) NOT NULL ,
 `last_money` decimal(10,2) NOT NULL ,
 `ip` TEXT NOT NULL ,
-`status` bigINTEGER NOT NULL ,
+`status` INTEGER NOT NULL ,
 `msg` TEXT NOT NULL ,
 `handle_at` datetime DEFAULT NULL ,
 `created_at` datetime NOT NULL ,
@@ -76,8 +76,8 @@ INSERT INTO `hg_admin_cash` (`id`, `member_id`, `money`, `fee`, `last_money`, `i
 DROP TABLE IF EXISTS `hg_admin_credits_log`;
 
 CREATE TABLE `hg_admin_credits_log` (
-`id` bigINTEGER NOT NULL  ,
-`member_id` bigINTEGER DEFAULT 0 ,
+`id` INTEGER NOT NULL  ,
+`member_id` INTEGER DEFAULT 0 ,
 `app_id` TEXT DEFAULT NULL ,
 `addons_name` TEXT NOT NULL DEFAULT '' ,
 `credit_type` TEXT NOT NULL DEFAULT '' ,
@@ -87,8 +87,8 @@ CREATE TABLE `hg_admin_credits_log` (
 `after_num` decimal(10,2) DEFAULT 0.00 ,
 `remark` TEXT DEFAULT NULL ,
 `ip` TEXT DEFAULT NULL ,
-`map_id` bigINTEGER DEFAULT 0 ,
-`status` tinyINTEGER DEFAULT 1 ,
+`map_id` INTEGER DEFAULT 0 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -100,8 +100,8 @@ INSERT INTO `hg_admin_credits_log` (`id`, `member_id`, `app_id`, `addons_name`, 
 DROP TABLE IF EXISTS `hg_admin_dept`;
 
 CREATE TABLE `hg_admin_dept` (
-`id` bigINTEGER NOT NULL  ,
-`pid` bigINTEGER DEFAULT 0 ,
+`id` INTEGER NOT NULL  ,
+`pid` INTEGER DEFAULT 0 ,
 `name` TEXT DEFAULT NULL ,
 `code` TEXT DEFAULT NULL ,
 `type` TEXT DEFAULT NULL ,
@@ -111,7 +111,7 @@ CREATE TABLE `hg_admin_dept` (
 `level` INTEGER NOT NULL ,
 `tree` TEXT DEFAULT NULL ,
 `sort` INTEGER DEFAULT 0 ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -129,9 +129,9 @@ INSERT INTO `hg_admin_dept` (`id`, `pid`, `name`, `code`, `type`, `leader`, `pho
 DROP TABLE IF EXISTS `hg_admin_member`;
 
 CREATE TABLE `hg_admin_member` (
-`id` bigINTEGER NOT NULL  ,
-`dept_id` bigINTEGER DEFAULT 0 ,
-`role_id` bigINTEGER DEFAULT 10 ,
+`id` INTEGER NOT NULL  ,
+`dept_id` INTEGER DEFAULT 0 ,
+`role_id` INTEGER DEFAULT 10 ,
 `real_name` TEXT DEFAULT '' ,
 `username` TEXT NOT NULL DEFAULT '' ,
 `password_hash` char(32) NOT NULL DEFAULT '' ,
@@ -140,21 +140,21 @@ CREATE TABLE `hg_admin_member` (
 `integral` decimal(10,2)  DEFAULT 0.00 ,
 `balance` decimal(10,2)  DEFAULT 0.00 ,
 `avatar` char(150) DEFAULT '' ,
-`sex` tinyINTEGER DEFAULT 1 ,
+`sex` INTEGER DEFAULT 1 ,
 `qq` TEXT DEFAULT '' ,
 `email` TEXT DEFAULT '' ,
 `mobile` TEXT DEFAULT '' ,
 `birthday` date DEFAULT NULL ,
-`city_id` bigINTEGER DEFAULT 0 ,
+`city_id` INTEGER DEFAULT 0 ,
 `address` TEXT DEFAULT '' ,
-`pid` bigINTEGER NOT NULL ,
+`pid` INTEGER NOT NULL ,
 `level` INTEGER DEFAULT 1 ,
 `tree` TEXT NOT NULL ,
 `invite_code` TEXT DEFAULT NULL ,
 `cash` TEXT   DEFAULT NULL )),
 `last_active_at` datetime DEFAULT NULL ,
 `remark` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -169,8 +169,8 @@ INSERT INTO `hg_admin_member` (`id`, `dept_id`, `role_id`, `real_name`, `usernam
 DROP TABLE IF EXISTS `hg_admin_member_post`;
 
 CREATE TABLE `hg_admin_member_post` (
-`member_id` bigINTEGER NOT NULL ,
-`post_id` bigINTEGER NOT NULL ,
+`member_id` INTEGER NOT NULL ,
+`post_id` INTEGER NOT NULL ,
 PRIMARY KEY (`member_id`,`post_id`)
 );
 INSERT INTO `hg_admin_member_post` (`member_id`, `post_id`) VALUES
@@ -183,8 +183,8 @@ INSERT INTO `hg_admin_member_post` (`member_id`, `post_id`) VALUES
 DROP TABLE IF EXISTS `hg_admin_member_role`;
 
 CREATE TABLE `hg_admin_member_role` (
-`member_id` bigINTEGER NOT NULL ,
-`role_id` bigINTEGER NOT NULL ,
+`member_id` INTEGER NOT NULL ,
+`role_id` INTEGER NOT NULL ,
 PRIMARY KEY (`member_id`,`role_id`)
 );
 INSERT INTO `hg_admin_member_role` (`member_id`, `role_id`) VALUES
@@ -193,30 +193,30 @@ INSERT INTO `hg_admin_member_role` (`member_id`, `role_id`) VALUES
 DROP TABLE IF EXISTS `hg_admin_menu`;
 
 CREATE TABLE `hg_admin_menu` (
-`id` bigINTEGER NOT NULL  ,
-`pid` bigINTEGER DEFAULT 0 ,
+`id` INTEGER NOT NULL  ,
+`pid` INTEGER DEFAULT 0 ,
 `level` INTEGER NOT NULL DEFAULT 1 ,
 `tree` TEXT NOT NULL ,
 `title` TEXT NOT NULL ,
 `name` TEXT NOT NULL ,
 `path` TEXT DEFAULT NULL ,
 `icon` TEXT DEFAULT NULL ,
-`type` tinyINTEGER NOT NULL DEFAULT 1 ,
+`type` INTEGER NOT NULL DEFAULT 1 ,
 `redirect` TEXT DEFAULT NULL ,
 `permissions` TEXT DEFAULT NULL ,
 `permission_name` TEXT DEFAULT NULL ,
 `component` TEXT NOT NULL ,
-`always_show` tinyINTEGER DEFAULT 0 ,
+`always_show` INTEGER DEFAULT 0 ,
 `active_menu` TEXT DEFAULT NULL ,
-`is_root` tinyINTEGER DEFAULT 0 ,
-`is_frame` tinyINTEGER DEFAULT 1 ,
+`is_root` INTEGER DEFAULT 0 ,
+`is_frame` INTEGER DEFAULT 1 ,
 `frame_src` TEXT DEFAULT NULL ,
-`keep_alive` tinyINTEGER DEFAULT 0 ,
-`hidden` tinyINTEGER DEFAULT 0 ,
-`affix` tinyINTEGER DEFAULT 0 ,
+`keep_alive` INTEGER DEFAULT 0 ,
+`hidden` INTEGER DEFAULT 0 ,
+`affix` INTEGER DEFAULT 0 ,
 `sort` INTEGER DEFAULT 0 ,
 `remark` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `updated_at` datetime DEFAULT NULL ,
 `created_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -377,17 +377,17 @@ INSERT INTO `hg_admin_menu` (`id`, `pid`, `level`, `tree`, `title`, `name`, `pat
 DROP TABLE IF EXISTS `hg_admin_notice`;
 
 CREATE TABLE `hg_admin_notice` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `title` TEXT NOT NULL ,
-`type` bigINTEGER NOT NULL ,
+`type` INTEGER NOT NULL ,
 `tag` INTEGER DEFAULT NULL ,
 `content` TEXT NOT NULL ,
 `receiver` TEXT   DEFAULT NULL )),
 `remark` TEXT DEFAULT NULL ,
 `sort` INTEGER NOT NULL DEFAULT 0 ,
-`status` tinyINTEGER DEFAULT 1 ,
-`created_by` bigINTEGER DEFAULT NULL ,
-`updated_by` bigINTEGER DEFAULT 0 ,
+`status` INTEGER DEFAULT 1 ,
+`created_by` INTEGER DEFAULT NULL ,
+`updated_by` INTEGER DEFAULT 0 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 `deleted_at` datetime DEFAULT NULL ,
@@ -403,9 +403,9 @@ INSERT INTO `hg_admin_notice` (`id`, `title`, `type`, `tag`, `content`, `receive
 DROP TABLE IF EXISTS `hg_admin_notice_read`;
 
 CREATE TABLE `hg_admin_notice_read` (
-`id` bigINTEGER NOT NULL  ,
-`notice_id` bigINTEGER NOT NULL ,
-`member_id` bigINTEGER NOT NULL ,
+`id` INTEGER NOT NULL  ,
+`notice_id` INTEGER NOT NULL ,
+`member_id` INTEGER NOT NULL ,
 `clicks` INTEGER DEFAULT 1 ,
 `updated_at` datetime DEFAULT NULL ,
 `created_at` datetime DEFAULT NULL ,
@@ -423,19 +423,19 @@ INSERT INTO `hg_admin_notice_read` (`id`, `notice_id`, `member_id`, `clicks`, `u
 DROP TABLE IF EXISTS `hg_admin_oauth`;
 
 CREATE TABLE `hg_admin_oauth` (
-`id` bigINTEGER NOT NULL  ,
-`member_id` bigINTEGER DEFAULT 0 ,
+`id` INTEGER NOT NULL  ,
+`member_id` INTEGER DEFAULT 0 ,
 `unionid` TEXT DEFAULT '' ,
 `oauth_client` TEXT DEFAULT NULL ,
 `oauth_openid` TEXT DEFAULT NULL ,
-`sex` tinyINTEGER DEFAULT 1 ,
+`sex` INTEGER DEFAULT 1 ,
 `nickname` TEXT   DEFAULT NULL ,
 `head_portrait` TEXT DEFAULT NULL ,
 `birthday` date DEFAULT NULL ,
 `country` TEXT DEFAULT '' ,
 `province` TEXT DEFAULT '' ,
 `city` TEXT DEFAULT '' ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime(1) DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -443,16 +443,16 @@ PRIMARY KEY (`id`)
 DROP TABLE IF EXISTS `hg_admin_order`;
 
 CREATE TABLE `hg_admin_order` (
-`id` bigINTEGER NOT NULL  ,
-`member_id` bigINTEGER DEFAULT 0 ,
+`id` INTEGER NOT NULL  ,
+`member_id` INTEGER DEFAULT 0 ,
 `order_type` TEXT NOT NULL ,
-`product_id` bigINTEGER DEFAULT NULL ,
+`product_id` INTEGER DEFAULT NULL ,
 `order_sn` TEXT DEFAULT '' ,
 `money` decimal(10,2) NOT NULL ,
 `remark` TEXT DEFAULT NULL ,
 `refund_reason` TEXT DEFAULT NULL ,
 `reject_refund_reason` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -460,12 +460,12 @@ PRIMARY KEY (`id`)
 DROP TABLE IF EXISTS `hg_admin_post`;
 
 CREATE TABLE `hg_admin_post` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `code` TEXT NOT NULL ,
 `name` TEXT NOT NULL ,
 `remark` TEXT DEFAULT NULL ,
 `sort` INTEGER NOT NULL ,
-`status` tinyINTEGER NOT NULL ,
+`status` INTEGER NOT NULL ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -479,17 +479,17 @@ INSERT INTO `hg_admin_post` (`id`, `code`, `name`, `remark`, `sort`, `status`, `
 DROP TABLE IF EXISTS `hg_admin_role`;
 
 CREATE TABLE `hg_admin_role` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `name` TEXT NOT NULL ,
 `key` TEXT NOT NULL ,
-`data_scope` tinyINTEGER DEFAULT 1 ,
+`data_scope` INTEGER DEFAULT 1 ,
 `custom_dept` TEXT   DEFAULT NULL )),
-`pid` bigINTEGER DEFAULT 0 ,
+`pid` INTEGER DEFAULT 0 ,
 `level` INTEGER NOT NULL DEFAULT 1 ,
 `tree` TEXT DEFAULT NULL ,
 `remark` TEXT DEFAULT NULL ,
 `sort` INTEGER NOT NULL DEFAULT 0 ,
-`status` tinyINTEGER NOT NULL DEFAULT 1 ,
+`status` INTEGER NOT NULL DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -506,7 +506,7 @@ INSERT INTO `hg_admin_role` (`id`, `name`, `key`, `data_scope`, `custom_dept`, `
 DROP TABLE IF EXISTS `hg_admin_role_casbin`;
 
 CREATE TABLE `hg_admin_role_casbin` (
-`id` bigINTEGER NOT NULL ,
+`id` INTEGER NOT NULL ,
 `p_type` TEXT DEFAULT NULL,
 `v0` TEXT DEFAULT NULL,
 `v1` TEXT DEFAULT NULL,
@@ -828,8 +828,8 @@ INSERT INTO `hg_admin_role_casbin` (`id`, `p_type`, `v0`, `v1`, `v2`, `v3`, `v4`
 DROP TABLE IF EXISTS `hg_admin_role_menu`;
 
 CREATE TABLE `hg_admin_role_menu` (
-`role_id` bigINTEGER NOT NULL ,
-`menu_id` bigINTEGER NOT NULL ,
+`role_id` INTEGER NOT NULL ,
+`menu_id` INTEGER NOT NULL ,
 PRIMARY KEY (`role_id`,`menu_id`)
 );
 INSERT INTO `hg_admin_role_menu` (`role_id`, `menu_id`) VALUES
@@ -1201,8 +1201,8 @@ INSERT INTO `hg_admin_role_menu` (`role_id`, `menu_id`) VALUES
 DROP TABLE IF EXISTS `hg_pay_log`;
 
 CREATE TABLE `hg_pay_log` (
-`id` bigINTEGER NOT NULL  ,
-`member_id` bigINTEGER DEFAULT 0 ,
+`id` INTEGER NOT NULL  ,
+`member_id` INTEGER DEFAULT 0 ,
 `app_id` TEXT DEFAULT NULL ,
 `addons_name` TEXT DEFAULT '' ,
 `order_sn` TEXT DEFAULT '' ,
@@ -1217,18 +1217,18 @@ CREATE TABLE `hg_pay_log` (
 `pay_type` TEXT NOT NULL ,
 `pay_amount` decimal(10,2) NOT NULL DEFAULT 0.00 ,
 `actual_amount` decimal(10,2) DEFAULT NULL ,
-`pay_status` tinyINTEGER DEFAULT 0 ,
+`pay_status` INTEGER DEFAULT 0 ,
 `pay_at` datetime DEFAULT NULL ,
 `trade_type` TEXT DEFAULT '' ,
 `refund_sn` TEXT DEFAULT NULL ,
-`is_refund` tinyINTEGER DEFAULT 0 ,
+`is_refund` INTEGER DEFAULT 0 ,
 `custom` text DEFAULT NULL ,
 `create_ip` TEXT DEFAULT NULL ,
 `pay_ip` TEXT DEFAULT NULL ,
 `notify_url` TEXT DEFAULT NULL ,
 `return_url` TEXT DEFAULT NULL ,
 `trace_ids` TEXT   DEFAULT NULL )),
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -1236,17 +1236,17 @@ PRIMARY KEY (`id`)
 DROP TABLE IF EXISTS `hg_pay_refund`;
 
 CREATE TABLE `hg_pay_refund` (
-`id` bigINTEGER  NOT NULL  ,
-`member_id` bigINTEGER DEFAULT 0 ,
+`id` INTEGER  NOT NULL  ,
+`member_id` INTEGER DEFAULT 0 ,
 `app_id` TEXT   DEFAULT NULL ,
 `order_sn` TEXT   DEFAULT NULL ,
 `refund_trade_no` TEXT   DEFAULT NULL ,
 `refund_money` decimal(10,2) DEFAULT NULL ,
-`refund_way` tinyINTEGER DEFAULT 1 ,
+`refund_way` INTEGER DEFAULT 1 ,
 `ip` TEXT   DEFAULT NULL ,
 `reason` TEXT DEFAULT NULL ,
 `remark` TEXT   DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -1254,7 +1254,7 @@ PRIMARY KEY (`id`)
 DROP TABLE IF EXISTS `hg_sys_addons_config`;
 
 CREATE TABLE `hg_sys_addons_config` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `addon_name` TEXT NOT NULL ,
 `group` TEXT NOT NULL ,
 `name` TEXT DEFAULT '' ,
@@ -1264,8 +1264,8 @@ CREATE TABLE `hg_sys_addons_config` (
 `default_value` TEXT NOT NULL ,
 `sort` INTEGER NOT NULL DEFAULT 0 ,
 `tip` TEXT DEFAULT NULL ,
-`is_default` tinyINTEGER DEFAULT 0 ,
-`status` tinyINTEGER DEFAULT 1 ,
+`is_default` INTEGER DEFAULT 0 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -1275,10 +1275,10 @@ INSERT INTO `hg_sys_addons_config` (`id`, `addon_name`, `group`, `name`, `type`,
 DROP TABLE IF EXISTS `hg_sys_addons_install`;
 
 CREATE TABLE `hg_sys_addons_install` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `name` TEXT NOT NULL ,
 `version` TEXT NOT NULL DEFAULT '' ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`) USING BTREE
@@ -1288,10 +1288,10 @@ INSERT INTO `hg_sys_addons_install` (`id`, `name`, `version`, `status`, `created
 DROP TABLE IF EXISTS `hg_sys_attachment`;
 
 CREATE TABLE `hg_sys_attachment` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `app_id` TEXT NOT NULL ,
-`member_id` bigINTEGER DEFAULT 0 ,
-`cate_id` bigINTEGER  DEFAULT 0 ,
+`member_id` INTEGER DEFAULT 0 ,
+`cate_id` INTEGER  DEFAULT 0 ,
 `drive` TEXT DEFAULT NULL ,
 `name` TEXT DEFAULT NULL ,
 `kind` TEXT DEFAULT NULL ,
@@ -1299,10 +1299,10 @@ CREATE TABLE `hg_sys_attachment` (
 `naive_type` TEXT NOT NULL ,
 `path` TEXT DEFAULT NULL ,
 `file_url` TEXT DEFAULT NULL ,
-`size` bigINTEGER DEFAULT 0 ,
+`size` INTEGER DEFAULT 0 ,
 `ext` TEXT DEFAULT NULL ,
 `md5` TEXT DEFAULT NULL ,
-`status` tinyINTEGER NOT NULL DEFAULT 1 ,
+`status` INTEGER NOT NULL DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -1310,10 +1310,10 @@ PRIMARY KEY (`id`)
 DROP TABLE IF EXISTS `hg_sys_blacklist`;
 
 CREATE TABLE `hg_sys_blacklist` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `ip` TEXT DEFAULT '' ,
 `remark` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`) USING BTREE
@@ -1328,7 +1328,7 @@ INSERT INTO `hg_sys_blacklist` (`id`, `ip`, `remark`, `status`, `created_at`, `u
 DROP TABLE IF EXISTS `hg_sys_config`;
 
 CREATE TABLE `hg_sys_config` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `group` TEXT NOT NULL ,
 `name` TEXT DEFAULT '' ,
 `type` TEXT NOT NULL ,
@@ -1337,8 +1337,8 @@ CREATE TABLE `hg_sys_config` (
 `default_value` TEXT NOT NULL ,
 `sort` INTEGER NOT NULL DEFAULT 0 ,
 `tip` TEXT DEFAULT NULL ,
-`is_default` tinyINTEGER DEFAULT 0 ,
-`status` tinyINTEGER DEFAULT 1 ,
+`is_default` INTEGER DEFAULT 0 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -1456,17 +1456,17 @@ INSERT INTO `hg_sys_config` (`id`, `group`, `name`, `type`, `key`, `value`, `def
 DROP TABLE IF EXISTS `hg_sys_cron`;
 
 CREATE TABLE `hg_sys_cron` (
-`id` bigINTEGER NOT NULL  ,
-`group_id` bigINTEGER NOT NULL ,
+`id` INTEGER NOT NULL  ,
+`group_id` INTEGER NOT NULL ,
 `title` TEXT NOT NULL ,
 `name` TEXT DEFAULT NULL ,
 `params` TEXT DEFAULT NULL ,
 `pattern` TEXT NOT NULL ,
-`policy` bigINTEGER NOT NULL DEFAULT 1 ,
-`count` bigINTEGER NOT NULL DEFAULT 0 ,
+`policy` INTEGER NOT NULL DEFAULT 1 ,
+`count` INTEGER NOT NULL DEFAULT 0 ,
 `sort` INTEGER DEFAULT 0 ,
 `remark` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`) USING BTREE
@@ -1480,13 +1480,13 @@ INSERT INTO `hg_sys_cron` (`id`, `group_id`, `title`, `name`, `params`, `pattern
 DROP TABLE IF EXISTS `hg_sys_cron_group`;
 
 CREATE TABLE `hg_sys_cron_group` (
-`id` bigINTEGER NOT NULL  ,
-`pid` bigINTEGER NOT NULL ,
+`id` INTEGER NOT NULL  ,
+`pid` INTEGER NOT NULL ,
 `name` TEXT DEFAULT '' ,
-`is_default` tinyINTEGER DEFAULT 0 ,
+`is_default` INTEGER DEFAULT 0 ,
 `sort` INTEGER DEFAULT 0 ,
 `remark` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`) USING BTREE
@@ -1497,16 +1497,16 @@ INSERT INTO `hg_sys_cron_group` (`id`, `pid`, `name`, `is_default`, `sort`, `rem
 DROP TABLE IF EXISTS `hg_sys_dict_data`;
 
 CREATE TABLE `hg_sys_dict_data` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `label` TEXT DEFAULT NULL ,
 `value` TEXT DEFAULT NULL ,
 `value_type` TEXT NOT NULL DEFAULT 'string' ,
 `type` TEXT DEFAULT NULL ,
 `list_class` TEXT DEFAULT NULL ,
-`is_default` tinyINTEGER DEFAULT 2 ,
+`is_default` INTEGER DEFAULT 2 ,
 `sort` INTEGER DEFAULT 0 ,
 `remark` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -1595,13 +1595,13 @@ INSERT INTO `hg_sys_dict_data` (`id`, `label`, `value`, `value_type`, `type`, `l
 DROP TABLE IF EXISTS `hg_sys_dict_type`;
 
 CREATE TABLE `hg_sys_dict_type` (
-`id` bigINTEGER NOT NULL  ,
-`pid` bigINTEGER NOT NULL ,
+`id` INTEGER NOT NULL  ,
+`pid` INTEGER NOT NULL ,
 `name` TEXT DEFAULT '' ,
 `type` TEXT DEFAULT '' ,
 `sort` INTEGER DEFAULT 0 ,
 `remark` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`) USING BTREE
@@ -1634,14 +1634,14 @@ INSERT INTO `hg_sys_dict_type` (`id`, `pid`, `name`, `type`, `sort`, `remark`, `
 DROP TABLE IF EXISTS `hg_sys_ems_log`;
 
 CREATE TABLE `hg_sys_ems_log` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `event` TEXT NOT NULL ,
 `email` TEXT NOT NULL ,
 `code` TEXT DEFAULT '' ,
-`times` bigINTEGER NOT NULL ,
+`times` INTEGER NOT NULL ,
 `content` TEXT DEFAULT NULL ,
 `ip` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`) USING BTREE
@@ -1651,7 +1651,7 @@ INSERT INTO `hg_sys_ems_log` (`id`, `event`, `email`, `code`, `times`, `content`
 DROP TABLE IF EXISTS `hg_sys_gen_codes`;
 
 CREATE TABLE `hg_sys_gen_codes` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `gen_type` INTEGER  NOT NULL ,
 `gen_template` INTEGER DEFAULT 0 ,
 `var_name` TEXT NOT NULL ,
@@ -1662,7 +1662,7 @@ CREATE TABLE `hg_sys_gen_codes` (
 `dao_name` TEXT DEFAULT NULL ,
 `master_columns` TEXT   DEFAULT NULL )),
 `addon_name` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`) USING BTREE
@@ -1672,19 +1672,19 @@ INSERT INTO `hg_sys_gen_codes` (`id`, `gen_type`, `gen_template`, `var_name`, `o
 DROP TABLE IF EXISTS `hg_sys_gen_curd_demo`;
 
 CREATE TABLE `hg_sys_gen_curd_demo` (
-`id` bigINTEGER NOT NULL  ,
-`category_id` bigINTEGER NOT NULL ,
+`id` INTEGER NOT NULL  ,
+`category_id` INTEGER NOT NULL ,
 `title` TEXT NOT NULL ,
 `description` TEXT NOT NULL ,
 `content` text NOT NULL ,
 `image` TEXT DEFAULT NULL ,
 `attachfile` TEXT DEFAULT NULL ,
-`city_id` bigINTEGER DEFAULT 0 ,
+`city_id` INTEGER DEFAULT 0 ,
 `switch` INTEGER DEFAULT 1 ,
 `sort` INTEGER NOT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
-`created_by` bigINTEGER DEFAULT 0 ,
-`updated_by` bigINTEGER DEFAULT 0 ,
+`status` INTEGER DEFAULT 1 ,
+`created_by` INTEGER DEFAULT 0 ,
+`updated_by` INTEGER DEFAULT 0 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 `deleted_at` datetime DEFAULT NULL ,
@@ -1707,11 +1707,11 @@ INSERT INTO `hg_sys_gen_curd_demo` (`id`, `category_id`, `title`, `description`,
 DROP TABLE IF EXISTS `hg_sys_log`;
 
 CREATE TABLE `hg_sys_log` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `req_id` TEXT DEFAULT NULL ,
 `app_id` TEXT DEFAULT '' ,
-`merchant_id` bigINTEGER  DEFAULT 0 ,
-`member_id` bigINTEGER DEFAULT 0 ,
+`merchant_id` INTEGER  DEFAULT 0 ,
+`member_id` INTEGER DEFAULT 0 ,
 `method` TEXT DEFAULT NULL ,
 `module` TEXT DEFAULT NULL ,
 `url` TEXT DEFAULT NULL ,
@@ -1719,15 +1719,15 @@ CREATE TABLE `hg_sys_log` (
 `post_data` TEXT   DEFAULT NULL )),
 `header_data` TEXT   DEFAULT NULL )),
 `ip` TEXT DEFAULT NULL ,
-`province_id` bigINTEGER NOT NULL DEFAULT 0 ,
-`city_id` bigINTEGER NOT NULL DEFAULT 0 ,
+`province_id` INTEGER NOT NULL DEFAULT 0 ,
+`city_id` INTEGER NOT NULL DEFAULT 0 ,
 `error_code` INTEGER DEFAULT 0 ,
 `error_msg` TEXT DEFAULT NULL ,
 `error_data` TEXT   DEFAULT NULL )),
 `user_agent` TEXT DEFAULT NULL ,
-`take_up_time` bigINTEGER DEFAULT 0 ,
-`timestamp` bigINTEGER DEFAULT 0 ,
-`status` tinyINTEGER NOT NULL DEFAULT 1 ,
+`take_up_time` INTEGER DEFAULT 0 ,
+`timestamp` INTEGER DEFAULT 0 ,
+`status` INTEGER NOT NULL DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -1735,15 +1735,15 @@ PRIMARY KEY (`id`)
 DROP TABLE IF EXISTS `hg_sys_login_log`;
 
 CREATE TABLE `hg_sys_login_log` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `req_id` TEXT DEFAULT NULL ,
-`member_id` bigINTEGER DEFAULT 0 ,
+`member_id` INTEGER DEFAULT 0 ,
 `username` TEXT DEFAULT NULL ,
 `response` TEXT   DEFAULT NULL )),
 `login_at` datetime DEFAULT NULL ,
 `login_ip` TEXT DEFAULT NULL ,
 `err_msg` TEXT DEFAULT NULL ,
-`status` tinyINTEGER NOT NULL DEFAULT 1 ,
+`status` INTEGER NOT NULL DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -1751,16 +1751,16 @@ PRIMARY KEY (`id`)
 DROP TABLE IF EXISTS `hg_sys_provinces`;
 
 CREATE TABLE `hg_sys_provinces` (
-`id` bigINTEGER NOT NULL ,
+`id` INTEGER NOT NULL ,
 `title` TEXT NOT NULL DEFAULT '' ,
 `pinyin` TEXT DEFAULT '' ,
 `lng` TEXT DEFAULT '' ,
 `lat` TEXT DEFAULT '' ,
-`pid` bigINTEGER NOT NULL DEFAULT 0 ,
+`pid` INTEGER NOT NULL DEFAULT 0 ,
 `level` INTEGER NOT NULL DEFAULT 1 ,
 `tree` TEXT NOT NULL ,
 `sort` INTEGER DEFAULT 0 ,
-`status` tinyINTEGER NOT NULL DEFAULT 1 ,
+`status` INTEGER NOT NULL DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -5432,21 +5432,21 @@ INSERT INTO `hg_sys_provinces` (`id`, `title`, `pinyin`, `lng`, `lat`, `pid`, `l
 DROP TABLE IF EXISTS `hg_sys_serve_license`;
 
 CREATE TABLE `hg_sys_serve_license` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `group` TEXT NOT NULL ,
 `name` TEXT NOT NULL ,
 `appid` TEXT NOT NULL ,
 `secret_key` TEXT DEFAULT NULL ,
 `remote_addr` TEXT DEFAULT NULL ,
 `online_limit` INTEGER DEFAULT 1 ,
-`login_times` bigINTEGER DEFAULT NULL ,
+`login_times` INTEGER DEFAULT NULL ,
 `last_login_at` datetime DEFAULT NULL ,
 `last_active_at` datetime DEFAULT NULL ,
 `routes` TEXT   DEFAULT NULL )),
 `allowed_ips` TEXT DEFAULT NULL ,
 `end_at` datetime NOT NULL ,
 `remark` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -5457,14 +5457,14 @@ INSERT INTO `hg_sys_serve_license` (`id`, `group`, `name`, `appid`, `secret_key`
 DROP TABLE IF EXISTS `hg_sys_serve_log`;
 
 CREATE TABLE `hg_sys_serve_log` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `trace_id` TEXT DEFAULT NULL ,
 `level_format` TEXT DEFAULT NULL ,
 `content` text DEFAULT NULL ,
 `stack` TEXT   DEFAULT NULL )),
 `line` TEXT NOT NULL ,
-`trigger_ns` bigINTEGER DEFAULT NULL ,
-`status` tinyINTEGER NOT NULL DEFAULT 1 ,
+`trigger_ns` INTEGER DEFAULT NULL ,
+`status` INTEGER NOT NULL DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`)
@@ -5472,13 +5472,13 @@ PRIMARY KEY (`id`)
 DROP TABLE IF EXISTS `hg_sys_sms_log`;
 
 CREATE TABLE `hg_sys_sms_log` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `event` TEXT NOT NULL ,
 `mobile` TEXT NOT NULL DEFAULT '' ,
 `code` TEXT DEFAULT '' ,
-`times` bigINTEGER NOT NULL ,
+`times` INTEGER NOT NULL ,
 `ip` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 PRIMARY KEY (`id`) USING BTREE
@@ -5488,12 +5488,12 @@ INSERT INTO `hg_sys_sms_log` (`id`, `event`, `mobile`, `code`, `times`, `ip`, `s
 DROP TABLE IF EXISTS `hg_test_category`;
 
 CREATE TABLE `hg_test_category` (
-`id` bigINTEGER NOT NULL  ,
+`id` INTEGER NOT NULL  ,
 `name` TEXT NOT NULL ,
 `description` TEXT DEFAULT NULL ,
 `sort` INTEGER NOT NULL ,
 `remark` TEXT DEFAULT NULL ,
-`status` tinyINTEGER DEFAULT 1 ,
+`status` INTEGER DEFAULT 1 ,
 `created_at` datetime DEFAULT NULL ,
 `updated_at` datetime DEFAULT NULL ,
 `deleted_at` datetime DEFAULT NULL ,
