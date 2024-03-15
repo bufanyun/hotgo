@@ -227,7 +227,8 @@ database:
     <<: *defaultLogger
     stdout: true
   default:
-    link: "mysql:root:root@tcp(127.0.0.1:3306)/test?loc=Local&parseTime=true"
+    # link: "mysql:root:root@tcp(127.0.0.1:3306)/test?loc=Local&parseTime=true"
+    link: "sqlite::@file(./resource/db.sqlite3)"
     debug: true
     Prefix: "hg_"
 

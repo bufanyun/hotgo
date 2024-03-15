@@ -9,11 +9,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
+	"strings"
+
 	"github.com/casbin/casbin/v2/model"
 	"github.com/casbin/casbin/v2/persist"
 	"github.com/gogf/gf/v2/database/gdb"
-	"math"
-	"strings"
 )
 
 const (
@@ -31,6 +32,19 @@ CREATE TABLE IF NOT EXISTS %s (
   v5 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (id) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '管理员_casbin权限表' ROW_FORMAT = Dynamic;
+`
+	createPolicyTableSql_sqlite = `
+CREATE TABLE IF NOT EXISTS %s (
+id INTEGER NOT NULL ,
+p_type TEXT DEFAULT NULL,
+v0 TEXT DEFAULT NULL,
+v1 TEXT DEFAULT NULL,
+v2 TEXT DEFAULT NULL,
+v3 TEXT DEFAULT NULL,
+v4 TEXT DEFAULT NULL,
+v5 TEXT DEFAULT NULL,
+PRIMARY KEY (id)
+);
 `
 )
 
@@ -87,8 +101,11 @@ func NewAdapter(link string) (adp *adapter, err error) {
 		err = errInvalidDatabaseLink
 		return
 	}
-
-	if adp.db, err = gdb.New(gdb.ConfigNode{Type: config[0], Link: config[1]}); err != nil {
+	cNode := gdb.ConfigNode{Type: config[0], Link: config[1]}
+	if config[0] == "sqlite" {
+		cNode = gdb.ConfigNode{Type: "sqlite", Link: link}
+	}
+	if adp.db, err = gdb.New(cNode); err != nil {
 		return
 	}
 
@@ -103,7 +120,11 @@ func (a *adapter) model() *gdb.Model {
 
 // create a policy table when it's not exists.
 func (a *adapter) createPolicyTable() (err error) {
-	_, err = a.db.Exec(context.TODO(), fmt.Sprintf(createPolicyTableSql, a.table))
+	createSql := fmt.Sprintf(createPolicyTableSql, a.table)
+	if a.db.GetConfig().Type == "sqlite" {
+		createSql = fmt.Sprintf(createPolicyTableSql_sqlite, a.table)
+	}
+	_, err = a.db.Exec(context.TODO(), createSql)
 	return
 }
 
