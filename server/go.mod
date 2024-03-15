@@ -14,6 +14,7 @@ require (
 	github.com/forgoer/openssl v1.4.0
 	github.com/go-pay/gopay v1.5.91
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.6.4
+	github.com/gogf/gf/contrib/drivers/sqlite/v2 v2.6.4
 	github.com/gogf/gf/contrib/nosql/redis/v2 v2.6.4
 	github.com/gogf/gf/contrib/trace/jaeger/v2 v2.6.4
 	github.com/gogf/gf/v2 v2.6.4
@@ -63,6 +64,7 @@ require (
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
+	github.com/glebarez/go-sqlite v1.21.2 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
@@ -103,6 +105,7 @@ require (
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/redis/go-redis/v9 v9.5.1 // indirect
+	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect
 	github.com/richardlehane/msoleps v1.0.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
@@ -132,5 +135,9 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
+	modernc.org/libc v1.22.5 // indirect
+	modernc.org/mathutil v1.5.0 // indirect
+	modernc.org/memory v1.5.0 // indirect
+	modernc.org/sqlite v1.23.1 // indirect
 	stathat.com/c/consistent v1.0.0 // indirect
 )

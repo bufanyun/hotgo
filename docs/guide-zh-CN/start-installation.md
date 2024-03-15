@@ -10,7 +10,7 @@
 - node版本 >= v16.0.0
 - golang版本 >= v1.19
 - goframe版本 >=v2.6.4
-- mysql版本 >=5.7
+- mysql版本 >=5.7 / sqlite版本 >=3.15
 
 > 必须先看[环境搭建文档](start-environment.md)，如果安装遇到问题务必先查看[常见问题文档](start-issue.md)
 
@@ -39,6 +39,8 @@ database:
     debug: true
     Prefix: "hg_"
 ```
+
+> sqlite 数据库配置示例 `link: "sqlite::@file(./storage/data/test.db)"` 。sqlite 数据库文件 `storage/data/test.db` 经由 `storage/data/sqlite.sql` 创建。存放路径可以自由选择。
 
 2、web前端：
 - 配置服务端地址，包含在以下文件中：
