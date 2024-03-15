@@ -38,3 +38,5 @@ main.exe~
 /bin/package.sh
 internal/packed/packed.go
 storage/data/test.db
+storage/data/test.db-shm
+storage/data/test.db-wal
