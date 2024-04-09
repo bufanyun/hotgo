@@ -59,7 +59,7 @@ func (s *sMiddleware) GenRouteKey(method, path string) string {
 // PreFilter 请求输入预处理
 // api使用gf规范路由并且XxxReq结构体实现了validate.Filter接口即可
 func (s *sMiddleware) PreFilter(r *ghttp.Request) {
-	router, ok := s.GetFilterRoutes(r)[s.GenFilterRouteKey(r.Router)]
+	router, ok := s.GetFilterRoutes(r)[s.GenFilterRequestKey(r)]
 	if !ok {
 		r.Middleware.Next()
 		return
