@@ -215,19 +215,12 @@ func (s *sAdminDept) List(ctx context.Context, in *adminin.DeptListInp) (res *ad
 		mod    = dao.AdminDept.Ctx(ctx)
 		cols   = dao.AdminDept.Columns()
 		models []*entity.AdminDept
-		ids    []int64
-		pids   []int64
+		ids    []gdb.Value
 	)
-
-	appends := func(columns []gdb.Value) {
-		ds := g.NewVar(columns).Int64s()
-		ids = append(ids, ds...)
-		pids = append(pids, ds...)
-	}
 
 	// 部门名称
 	if in.Name != "" {
-		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Pid).WhereLike(cols.Name, "%"+in.Name+"%").Array()
+		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Id).WhereLike(cols.Name, "%"+in.Name+"%").Array()
 		if err != nil {
 			err = gerror.Wrap(err, "查询部门名称失败！")
 			return nil, err
@@ -236,11 +229,11 @@ func (s *sAdminDept) List(ctx context.Context, in *adminin.DeptListInp) (res *ad
 		if len(columns) == 0 {
 			return nil, nil
 		}
-		appends(columns)
+		ids = append(ids, columns...)
 	}
 
 	if in.Code != "" {
-		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Pid).WhereLike(cols.Code, "%"+in.Code+"%").Array()
+		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Id).WhereLike(cols.Code, "%"+in.Code+"%").Array()
 		if err != nil {
 			err = gerror.Wrap(err, "查询部门编码失败！")
 			return nil, err
@@ -249,11 +242,11 @@ func (s *sAdminDept) List(ctx context.Context, in *adminin.DeptListInp) (res *ad
 		if len(columns) == 0 {
 			return nil, nil
 		}
-		appends(columns)
+		ids = append(ids, columns...)
 	}
 
 	if in.Leader != "" {
-		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Pid).Where(cols.Leader, in.Leader).Array()
+		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Id).Where(cols.Leader, in.Leader).Array()
 		if err != nil {
 			err = gerror.Wrap(err, "查询负责人失败！")
 			return nil, err
@@ -262,11 +255,11 @@ func (s *sAdminDept) List(ctx context.Context, in *adminin.DeptListInp) (res *ad
 		if len(columns) == 0 {
 			return nil, nil
 		}
-		appends(columns)
+		ids = append(ids, columns...)
 	}
 
 	if len(in.CreatedAt) == 2 {
-		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Pid).WhereBetween(cols.CreatedAt, in.CreatedAt[0], in.CreatedAt[1]).Array()
+		columns, err := dao.AdminDept.Ctx(ctx).Fields(cols.Id).WhereBetween(cols.CreatedAt, in.CreatedAt[0], in.CreatedAt[1]).Array()
 		if err != nil {
 			err = gerror.Wrap(err, "查询创建时间失败！")
 			return nil, err
@@ -275,11 +268,20 @@ func (s *sAdminDept) List(ctx context.Context, in *adminin.DeptListInp) (res *ad
 		if len(columns) == 0 {
 			return nil, nil
 		}
-		appends(columns)
+		ids = append(ids, columns...)
 	}
 
+	// 如果有结果，查找对应的pid
 	if len(ids) > 0 {
-		mod = mod.Wheref(`id in (?) or pid in (?)`, convert.UniqueSlice(ids), convert.UniqueSlice(pids))
+		var pids []gdb.Value
+		err = findPids(&pids, ctx, cols.Pid, convert.UniqueSlice(ids))
+		if err != nil {
+			err = gerror.Wrap(err, "查询部门列表失败！")
+			return
+		}
+
+		ids = append(ids, pids...)
+		mod = mod.Where(`id IN (?)`, ids)
 	}
 
 	if err = mod.Order("pid asc,sort asc").Scan(&models); err != nil {
@@ -290,6 +292,20 @@ func (s *sAdminDept) List(ctx context.Context, in *adminin.DeptListInp) (res *ad
 	res = new(adminin.DeptListModel)
 	res.List = s.treeList(0, models)
 	return
+}
+
+// findPids 递归查询父级ids
+func findPids(pids *[]gdb.Value, ctx context.Context, pid string, ids []gdb.Value) error {
+	tempPids, err := dao.AdminDept.Ctx(ctx).Fields(pid).Where(`id IN (?)`, convert.UniqueSlice(ids)).Array()
+	if err != nil {
+		return err
+	}
+	*pids = append(*pids, tempPids...)
+	// 检查是否还有待查询的父部门
+	if len(tempPids) > 0 {
+		return findPids(pids, ctx, pid, tempPids)
+	}
+	return nil
 }
 
 // GetName 获取部门名称
