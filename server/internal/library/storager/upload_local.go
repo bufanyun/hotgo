@@ -15,6 +15,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -139,7 +140,9 @@ func MergePartFile(srcPath, dstPath string) (err error) {
 	if err != nil {
 		return err
 	}
-
+	sort.Slice(dir, func(i, j int) bool {
+		return strings.Compare(dir[i].Name(), dir[j].Name()) < 0
+	})
 	for _, file := range dir {
 		filePath := filepath.Join(srcPath, file.Name())
 		if err = gfile.PutBytesAppend(dstPath, gfile.GetBytes(filePath)); err != nil {
