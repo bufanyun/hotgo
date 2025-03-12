@@ -31,7 +31,7 @@ import (
 	@{ if eq .options.Step.IsAddon true }isc "hotgo/internal/service"@{end}
 	@{ if eq .options.Step.IsTreeTable true }"hotgo/utility/tree"@{end}
 	@{ if eq .options.Step.HasFuncDict true }"hotgo/internal/library/dict"@{end}
-	@{ if eq .options.Step.HasFuncDict true }"hotgo/internal/model"@{end}
+	@{ if eq .options.Step.HasFuncDict true }hgModel "hotgo/internal/model"@{end}
 )
 
 type s@{.servFunName} struct{}
@@ -238,7 +238,7 @@ func (s *s@{.servFunName}) TreeOption(ctx context.Context) (nodes []tree.Node, e
 
 @{ if eq .options.Step.HasFuncDict true }
 // Option 获取@{.tableComment}选项
-func (s *s@{.servFunName}) Option(ctx context.Context) (opts []*model.Option, err error) {
+func (s *s@{.servFunName}) Option(ctx context.Context) (opts []*hgModel.Option, err error) {
 	var models []*entity.@{.daoName}
 	if err = s.Model(ctx@{ if eq .options.Step.HasNotFilterAuth true } ,&handler.Option{FilterAuth: false}@{end}).Fields(dao.@{.daoName}.Columns().@{.options.FuncDict.Value.GoName},dao.@{.daoName}.Columns().@{.options.FuncDict.Label.GoName}).
 	@{.listOrder}.Scan(&models); err != nil {
@@ -246,7 +246,7 @@ func (s *s@{.servFunName}) Option(ctx context.Context) (opts []*model.Option, er
 		return
 	}
 
-	opts = make([]*model.Option, len(models))
+	opts = make([]*hgModel.Option, len(models))
 	for k, v := range models {
 		opts[k] = dict.GenHashOption(v.@{.options.FuncDict.Value.GoName}, gconv.String(v.@{.options.FuncDict.Label.GoName}))
 	}
