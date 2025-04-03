@@ -5,4 +5,8 @@
 pull.bat
 push.sh
 /dist
+tmp/
+test/
+vendor/
+prompt/
 
