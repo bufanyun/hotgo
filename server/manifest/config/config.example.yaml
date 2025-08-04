@@ -230,7 +230,7 @@ database:
     <<: *defaultLogger
     stdout: true
   default:
-    link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true&charset=utf8mb4"
+    link: "pgsql:hg:hg123456.@tcp(127.0.0.1:5432)/hg"
     debug: true
     Prefix: "hg_"
 

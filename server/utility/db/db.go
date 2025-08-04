@@ -12,9 +12,11 @@ import (
 // usage:
 //
 // fields, err := db.GetFieldsWithComment(ctx, in.Table, in.Name)
-// if err != nil {
-// 	return
-// }
+//
+//	if err != nil {
+//		return
+//	}
+//
 // for _, v := range fields {}
 func GetFieldsWithComment(ctx context.Context, tableName, dbTag string) (fields map[string]*gdb.TableField, err error) {
 	db := g.DB(dbTag)
@@ -39,6 +41,17 @@ func GetTablesWithComment(ctx context.Context, dbTag string) (tables []*TableCom
 	switch dbConf.Type {
 	case "mysql":
 		sql := "SELECT TABLE_NAME as name, TABLE_COMMENT as comment FROM information_schema.`TABLES` WHERE TABLE_SCHEMA = '%s'"
+		if err = db.Ctx(ctx).Raw(sql).Scan(&tables); err != nil {
+			return
+		}
+	case "pgsql":
+		sql := `SELECT c.relnamespace, c.table_name, c.oid, obj_description(c.oid) AS comment 
+			FROM
+			(SELECT a.table_name, p.oid, p.relnamespace 
+			FROM information_schema.tables  a 
+			left join pg_class p on p.relname = a."table_name"
+			WHERE a.table_catalog = '%s') c
+			JOIN pg_namespace n ON n.oid = c.relnamespace`
 		if err = db.Ctx(ctx).Raw(fmt.Sprintf(sql, dbConf.Name)).Scan(&tables); err != nil {
 			return
 		}

@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS hg_admin_member (
                                                real_name VARCHAR(32) DEFAULT '',
                                                username VARCHAR(20) NOT NULL DEFAULT '',
                                                password_hash CHAR(32) NOT NULL DEFAULT '',
-                                               salt CHAR(16) NOT NULL,
+                                               salt VARCHAR(16) NOT NULL,
                                                password_reset_token VARCHAR(150) DEFAULT '',
                                                integral NUMERIC(10,2) DEFAULT 0.00,
                                                balance NUMERIC(10,2) DEFAULT 0.00,

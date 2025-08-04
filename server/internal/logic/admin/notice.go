@@ -324,15 +324,37 @@ func (s *sAdminNotice) UnreadCount(ctx context.Context, in *adminin.NoticeUnread
 
 // messageIds 获取我的消息所有的消息ID
 func (s *sAdminNotice) messageIds(ctx context.Context, memberId int64) (ids []int64, err error) {
-	columns, err := s.Model(ctx, &handler.Option{FilterAuth: false}).
+	var columns []interface{}
+	config := g.DB().GetConfig()
+
+	mod := s.Model(ctx, &handler.Option{FilterAuth: false}).
 		Fields(dao.AdminNotice.Columns().Id).
-		Where(dao.AdminNotice.Columns().Status, consts.StatusEnabled).
-		Where("(`type` IN(?) OR (`type` = ? and JSON_CONTAINS(`receiver`,'"+gconv.String(memberId)+"')))",
-			[]int{consts.NoticeTypeNotify, consts.NoticeTypeNotice}, consts.NoticeTypeLetter,
-		).Array()
+		Where(dao.AdminNotice.Columns().Status, consts.StatusEnabled)
+
+	switch config.Type {
+	case "pgsql":
+		// PostgreSQL JSON 查询语法
+		mod = mod.Where(`(type IN(?) OR (type = ? AND receiver @> ?::jsonb))`,
+			[]int{consts.NoticeTypeNotify, consts.NoticeTypeNotice},
+			consts.NoticeTypeLetter,
+			fmt.Sprintf("[%s]", gconv.String(memberId)),
+		)
+	default:
+		// MySQL JSON 查询语法
+		mod = mod.Where("(type IN(?) OR (type = ? and JSON_CONTAINS(receiver,?)))",
+			[]int{consts.NoticeTypeNotify, consts.NoticeTypeNotice},
+			consts.NoticeTypeLetter,
+			gconv.String(memberId),
+		)
+	}
+
+	values, err := mod.Array()
 	if err != nil {
-		err = gerror.Wrap(err, "获取我的消息失败！")
-		return
+		return nil, err
+	}
+	columns = make([]interface{}, len(values))
+	for i, v := range values {
+		columns[i] = v
 	}
 
 	ids = g.NewVar(columns).Int64s()

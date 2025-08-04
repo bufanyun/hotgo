@@ -21,19 +21,33 @@ import (
 var defaultTableName = dao.AdminRoleCasbin.Table()
 
 const (
-	dropPolicyTableSql   = `DROP TABLE IF EXISTS %s`
+	dropPolicyTableSql = `DROP TABLE IF EXISTS %s`
+	// 	createPolicyTableSql = `
+	// CREATE TABLE IF NOT EXISTS %s (
+	//   id bigint(20) NOT NULL AUTO_INCREMENT,
+	//   p_type varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	//   v0 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	//   v1 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	//   v2 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	//   v3 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	//   v4 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	//   v5 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	//   PRIMARY KEY (id) USING BTREE
+	// ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '管理员_casbin权限表' ROW_FORMAT = Dynamic;
+	// `
 	createPolicyTableSql = `
-CREATE TABLE IF NOT EXISTS %s (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  p_type varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  v0 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  v1 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  v2 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  v3 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  v4 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  v5 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  PRIMARY KEY (id) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '管理员_casbin权限表' ROW_FORMAT = Dynamic;
+CREATE TABLE IF NOT exists %s (
+                                                    id BIGSERIAL PRIMARY KEY,
+                                                    p_type VARCHAR(64),
+                                                    v0 VARCHAR(256),
+                                                    v1 VARCHAR(256),
+                                                    v2 VARCHAR(256),
+                                                    v3 VARCHAR(256),
+                                                    v4 VARCHAR(256),
+                                                    v5 VARCHAR(256)
+);
+
+COMMENT ON TABLE %s IS '管理员_casbin权限表';
 `
 )
 
@@ -57,6 +71,16 @@ type (
 	// policy rule entity
 	policyRule struct {
 		ID    int64  `orm:"id" json:"id"`
+		PType string `orm:"p_type" json:"p_type"`
+		V0    string `orm:"v0" json:"v0"`
+		V1    string `orm:"v1" json:"v1"`
+		V2    string `orm:"v2" json:"v2"`
+		V3    string `orm:"v3" json:"v3"`
+		V4    string `orm:"v4" json:"v4"`
+		V5    string `orm:"v5" json:"v5"`
+	}
+
+	policyRuleNoId struct {
 		PType string `orm:"p_type" json:"p_type"`
 		V0    string `orm:"v0" json:"v0"`
 		V1    string `orm:"v1" json:"v1"`
@@ -106,7 +130,7 @@ func (a *adapter) model() *gdb.Model {
 
 // create a policy table when it's not exists.
 func (a *adapter) createPolicyTable() (err error) {
-	_, err = a.db.Exec(context.TODO(), fmt.Sprintf(createPolicyTableSql, a.table))
+	_, err = a.db.Exec(context.TODO(), fmt.Sprintf(createPolicyTableSql, a.table, a.table))
 	return
 }
 
@@ -139,17 +163,17 @@ func (a *adapter) SavePolicy(model model.Model) (err error) {
 		return
 	}
 
-	policyRules := make([]policyRule, 0)
+	policyRules := make([]policyRuleNoId, 0)
 
 	for ptype, ast := range model["p"] {
 		for _, rule := range ast.Policy {
-			policyRules = append(policyRules, a.buildPolicyRule(ptype, rule))
+			policyRules = append(policyRules, a.buildPolicyRuleNoId(ptype, rule))
 		}
 	}
 
 	for ptype, ast := range model["g"] {
 		for _, rule := range ast.Policy {
-			policyRules = append(policyRules, a.buildPolicyRule(ptype, rule))
+			policyRules = append(policyRules, a.buildPolicyRuleNoId(ptype, rule))
 		}
 	}
 
@@ -163,7 +187,7 @@ func (a *adapter) SavePolicy(model model.Model) (err error) {
 
 // AddPolicy adds a policy rule to the storage.
 func (a *adapter) AddPolicy(sec string, ptype string, rule []string) (err error) {
-	_, err = a.model().OmitEmptyData().Insert(a.buildPolicyRule(ptype, rule))
+	_, err = a.model().OmitEmptyData().Insert(a.buildPolicyRuleNoId(ptype, rule))
 	return
 }
 
@@ -173,10 +197,10 @@ func (a *adapter) AddPolicies(sec string, ptype string, rules [][]string) (err e
 		return
 	}
 
-	policyRules := make([]policyRule, 0, len(rules))
+	policyRules := make([]policyRuleNoId, 0, len(rules))
 
 	for _, rule := range rules {
-		policyRules = append(policyRules, a.buildPolicyRule(ptype, rule))
+		policyRules = append(policyRules, a.buildPolicyRuleNoId(ptype, rule))
 	}
 
 	_, err = a.model().OmitEmptyData().Insert(policyRules)
@@ -283,6 +307,35 @@ func (a *adapter) loadPolicyRule(rule policyRule, model model.Model) {
 // 构建策略规则
 func (a *adapter) buildPolicyRule(ptype string, data []string) policyRule {
 	rule := policyRule{PType: ptype}
+
+	if len(data) > 0 {
+		rule.V0 = data[0]
+	}
+
+	if len(data) > 1 {
+		rule.V1 = data[1]
+	}
+
+	if len(data) > 2 {
+		rule.V2 = data[2]
+	}
+
+	if len(data) > 3 {
+		rule.V3 = data[3]
+	}
+
+	if len(data) > 4 {
+		rule.V4 = data[4]
+	}
+
+	if len(data) > 5 {
+		rule.V5 = data[5]
+	}
+	return rule
+}
+
+func (a *adapter) buildPolicyRuleNoId(ptype string, data []string) policyRuleNoId {
+	rule := policyRuleNoId{PType: ptype}
 
 	if len(data) > 0 {
 		rule.V0 = data[0]

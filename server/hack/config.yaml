@@ -4,13 +4,13 @@ gfcli:
   build:
     name: "hotgo"                          # 编译后的可执行文件名称
     arch: "amd64"                          # 不填默认当前系统架构，可选：386,amd64,arm,all
-    system: "linux"                        # 不填默认当前系统平台，可选：linux,darwin,windows,all
+    system: "windows"                        # 不填默认当前系统平台，可选：linux,darwin,windows,all
     mod: "none"
     cgo: 0
     packSrc: "resource"                    # 将resource目录打包进可执行文件，静态资源无需单独部署
     packDst: "internal/packed/packed.go"   # 打包后生成的Go文件路径，一般使用相对路径指定到本项目目录中
     version: ""
-    output: "./temp/hotgo"                 # 可执行文件生成路径
+    output: "./temp/hotgo.exe"                 # 可执行文件生成路径
     extra: ""
 
 
@@ -22,7 +22,8 @@ gfcli:
 
   gen:
     dao:
-      - link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true&charset=utf8mb4"
+      # - link: "./"
+      - link: "pgsql:hg:hg123456.@tcp(127.0.0.1:5432)/hg"
         group: "default"                                                # 分组 使用hotgo代码生成功能时必须填
         #        tables:          ""                                    # 指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
         tablesEx:        "hg_sys_addons_install"                        # 指定当前数据库中需要排除代码生成的数据表。
