@@ -21,21 +21,21 @@ import (
 var defaultTableName = dao.AdminRoleCasbin.Table()
 
 const (
-	dropPolicyTableSql = `DROP TABLE IF EXISTS %s`
-	// 	createPolicyTableSql = `
-	// CREATE TABLE IF NOT EXISTS %s (
-	//   id bigint(20) NOT NULL AUTO_INCREMENT,
-	//   p_type varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-	//   v0 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-	//   v1 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-	//   v2 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-	//   v3 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-	//   v4 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-	//   v5 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-	//   PRIMARY KEY (id) USING BTREE
-	// ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '管理员_casbin权限表' ROW_FORMAT = Dynamic;
-	// `
+	dropPolicyTableSql   = `DROP TABLE IF EXISTS %s`
 	createPolicyTableSql = `
+	CREATE TABLE IF NOT EXISTS %s (
+	  id bigint(20) NOT NULL AUTO_INCREMENT,
+	  p_type varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	  v0 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	  v1 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	  v2 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	  v3 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	  v4 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	  v5 varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+	  PRIMARY KEY (id) USING BTREE
+	) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '管理员_casbin权限表' ROW_FORMAT = Dynamic;
+	`
+	createPolicyTableSqlPG = `
 CREATE TABLE IF NOT exists %s (
                                                     id BIGSERIAL PRIMARY KEY,
                                                     p_type VARCHAR(64),
@@ -130,6 +130,10 @@ func (a *adapter) model() *gdb.Model {
 
 // create a policy table when it's not exists.
 func (a *adapter) createPolicyTable() (err error) {
+	if a.db.GetConfig().Type == "pgsql" {
+		_, err = a.db.Exec(context.TODO(), fmt.Sprintf(createPolicyTableSqlPG, a.table, a.table))
+		return
+	}
 	_, err = a.db.Exec(context.TODO(), fmt.Sprintf(createPolicyTableSql, a.table, a.table))
 	return
 }
