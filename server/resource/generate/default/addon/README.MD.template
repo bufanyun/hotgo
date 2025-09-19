@@ -37,3 +37,14 @@ import _ "hotgo/addons/@{.name}"
 gf gen service -s=addons/@{.name}/logic -d=addons/@{.name}/service
 
 ```
+
+```shell
+# 插件迁移
+cp .\internal\dao\internal\@{.name}* .\addons\@{.name}\dao\internal\
+cp .\internal\model\entity\@{.name}* .\addons\@{.name}\model\entity\
+```
+
+### 插件开发
+ - 直接在后台新建插件
+ - 创建迁移脚本
+ - 开发工具->代码生成：自动生成前后端模块

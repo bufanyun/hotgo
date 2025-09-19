@@ -8,14 +8,15 @@ package addons
 import (
 	"context"
 	"fmt"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/os/gfile"
-	"github.com/gogf/gf/v2/text/gstr"
 	"hotgo/internal/consts"
 	"hotgo/internal/model"
 	"hotgo/utility/validate"
 	"strconv"
 	"strings"
+
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/os/gfile"
+	"github.com/gogf/gf/v2/text/gstr"
 )
 
 type BuildOption struct {
@@ -27,12 +28,14 @@ type BuildOption struct {
 // Build 构建新插件
 func Build(ctx context.Context, option *BuildOption) (err error) {
 	var (
-		resourcePath = GetResourcePath(ctx)
-		buildPath    = "./" + consts.AddonsDir + "/" + option.Skeleton.Name
-		modulesPath  = "./" + consts.AddonsDir + "/modules/" + option.Skeleton.Name + ".go"
-		webApiPath   = gstr.Replace(option.Config.WebApiPath, "{$name}", option.Skeleton.Name)
-		webViewsPath = gstr.Replace(option.Config.WebViewsPath, "{$name}", option.Skeleton.Name)
-		replaces     = map[string]string{
+		resourcePath     = GetResourcePath(ctx)
+		buildPath        = "./" + consts.AddonsDir + "/" + option.Skeleton.Name
+		modulesPath      = "./" + consts.AddonsDir + "/modules/" + option.Skeleton.Name + ".go"
+		webApiPath       = "./" + consts.AddonsDir + "/" + option.Skeleton.Name + "/web/src/api/addons/" + option.Skeleton.Name
+		webViewsPath     = "./" + consts.AddonsDir + "/" + option.Skeleton.Name + "/web/src/views/addons/" + option.Skeleton.Name
+		webApiPathBase   = gstr.Replace(option.Config.WebApiPath, "{$name}", option.Skeleton.Name)
+		webViewsPathBase = gstr.Replace(option.Config.WebViewsPath, "{$name}", option.Skeleton.Name)
+		replaces         = map[string]string{
 			"@{.label}":       option.Skeleton.Label,
 			"@{.name}":        option.Skeleton.Name,
 			"@{.group}":       strconv.Itoa(option.Skeleton.Group),
@@ -94,14 +97,34 @@ func Build(ctx context.Context, option *BuildOption) (err error) {
 	if err = gfile.PutContents(webApiPath+"/config/index.ts", gstr.ReplaceByMap(webApiLayout, replaces)); err != nil {
 		return
 	}
-
-	// web插件配置主页面
-	if err = gfile.PutContents(webViewsPath+"/config/BasicSetting.vue", gstr.ReplaceByMap(webConfigBasicSetting, replaces)); err != nil {
+	if err = gfile.PutContents(webApiPathBase+"/config/index.ts", gstr.ReplaceByMap(webApiLayout, replaces)); err != nil {
 		return
 	}
 
-	// web插件基础配置页面
+	// web插件配置主页面 - 插件
+	if err = gfile.PutContents(webViewsPath+"/config/BasicSetting.vue", gstr.ReplaceByMap(webConfigBasicSetting, replaces)); err != nil {
+		return
+	}
+	// web插件基础配置页面 - 插件
 	if err = gfile.PutContents(webViewsPath+"/config/system.vue", gstr.ReplaceByMap(webConfigSystem, replaces)); err != nil {
+		return
+	}
+	// web插件配置主页面
+	if err = gfile.PutContents(webViewsPathBase+"/config/BasicSetting.vue", gstr.ReplaceByMap(webConfigBasicSetting, replaces)); err != nil {
+		return
+	}
+	// web插件基础配置页面
+	if err = gfile.PutContents(webViewsPathBase+"/config/system.vue", gstr.ReplaceByMap(webConfigSystem, replaces)); err != nil {
+		return
+	}
+
+	// 创建迁移文件
+	sqlPath := gfile.Pwd() + gfile.Separator + "addons/migrations/" + option.Skeleton.Name + "/install.sql"
+	sqlPathUn := gfile.Pwd() + gfile.Separator + "addons/migrations/" + option.Skeleton.Name + "/uninstall.sql"
+	if err = gfile.PutContents(sqlPath, ""); err != nil {
+		return
+	}
+	if err = gfile.PutContents(sqlPathUn, ""); err != nil {
 		return
 	}
 

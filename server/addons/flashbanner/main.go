@@ -1,19 +1,19 @@
-// Package @{.name}
+// Package flashbanner
 // @Link  https://github.com/bufanyun/hotgo
 // @Copyright  Copyright (c) 2024 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
-package @{.name}
+package flashbanner
 
 import (
 	"context"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gctx"
-	_ "hotgo/addons/@{.name}/crons"
-	"hotgo/addons/@{.name}/global"
-	_ "hotgo/addons/@{.name}/logic"
-	_ "hotgo/addons/@{.name}/queues"
-	"hotgo/addons/@{.name}/router"
+	_ "hotgo/addons/flashbanner/crons"
+	"hotgo/addons/flashbanner/global"
+	_ "hotgo/addons/flashbanner/logic"
+	_ "hotgo/addons/flashbanner/queues"
+	"hotgo/addons/flashbanner/router"
 	"hotgo/addons/migrations"
 	"hotgo/internal/library/addons"
 	"hotgo/internal/service"
@@ -38,14 +38,14 @@ func init() {
 func newModule() {
 	m := &module{
 		skeleton: &addons.Skeleton{
-			Label:       `@{.label}`,
-			Name:        `@{.name}`,
-			Group:       @{.group},
+			Label:       `轮播图管理`,
+			Name:        `flashbanner`,
+			Group:       6,
 			Logo:        "",
-			Brief:       `@{.brief}`,
-			Description: `@{.description}`,
-			Author:      `@{.author}`,
-			Version:     `@{.version}`, // 当该版本号高于已安装的版本号时，会提示可以更新
+			Brief:       ``,
+			Description: ``,
+			Author:      ``,
+			Version:     `v1.0.0`, // 当该版本号高于已安装的版本号时，会提示可以更新
 		},
 		ctx: gctx.New(),
 	}
@@ -83,26 +83,22 @@ func (m *module) GetSkeleton() *addons.Skeleton {
 	return m.skeleton
 }
 
-
 // Install 安装模块
 func (m *module) Install(ctx context.Context) (err error) {
-	sqlExt := ".sql"
-	if migrations.GetDbType(ctx) == "pgsql" {
-		sqlExt = ".pg.sql"
-	}
 	// 执行数据库安装文件
-	sqlPath := gfile.Pwd() + gfile.Separator + "addons/migrations/@{.name}/uninstall"+sqlExt
+	// 获取当前目录
+	sqlPath := gfile.Pwd() + gfile.Separator + "addons/migrations/flashbanner/install.sql"
+	g.Log().Debug(ctx, "安装模块", m.skeleton.Label, "路径", sqlPath)
 	result, err := migrations.DoSqlContent(ctx, sqlPath)
 	if err != nil {
 		g.Log().Error(ctx, "安装模块", m.skeleton.Label, "失败", err)
 		return
 	}
 	g.Log().Debug(ctx, "安装模块", m.skeleton.Label, "成功", result)
-
 	// 复制web目录下的文件到管理后台对应位置
 	// 插件的前端配置文件位于插件目录下的web子目录
-	sourceWebPath := gfile.Pwd() + gfile.Separator + "addons/@{.name}/web/src/views/addons/@{.name}"
-	targetWebPath := "../web/src/views/addons/@{.name}"
+	sourceWebPath := gfile.Pwd() + gfile.Separator + "addons/" + m.skeleton.Name + "/web/src/views/addons/" + m.skeleton.Name
+	targetWebPath := "../web/src/views/addons/" + m.skeleton.Name
 	g.Log().Debug(ctx, "复制前端配置文件", "源路径:", sourceWebPath, "目标路径:", targetWebPath)
 
 	// 检查源路径是否存在
@@ -118,8 +114,8 @@ func (m *module) Install(ctx context.Context) (err error) {
 	}
 
 	// 复制API文件
-	sourceApiPath := gfile.Pwd() + gfile.Separator + "addons/@{.name}/web/src/api/addons/@{.name}"
-	targetApiPath := "../web/src/api/addons/@{.name}"
+	sourceApiPath := gfile.Pwd() + gfile.Separator + "addons/" + m.skeleton.Name + "/web/src/api/addons/" + m.skeleton.Name
+	targetApiPath := "../web/src/api/addons/" + m.skeleton.Name
 	g.Log().Debug(ctx, "复制API文件", "源路径:", sourceApiPath, "目标路径:", targetApiPath)
 	if gfile.Exists(sourceApiPath) {
 		err = gfile.CopyDir(sourceApiPath, targetApiPath)
@@ -142,17 +138,39 @@ func (m *module) Upgrade(ctx context.Context) (err error) {
 
 // UnInstall 卸载模块
 func (m *module) UnInstall(ctx context.Context) (err error) {
-	sqlExt := ".sql"
-	if migrations.GetDbType(ctx) == "pgsql" {
-		sqlExt = ".pg.sql"
-	}
+	// ...
 	// 移除数据库安装文件
-	sqlPath := gfile.Pwd() + gfile.Separator + "addons/migrations/@{.name}/uninstall" + sqlExt
+	sqlPath := gfile.Pwd() + gfile.Separator + "addons/migrations/flashbanner/uninstall.sql"
+	g.Log().Debug(ctx, "卸载模块", m.skeleton.Label, "路径", sqlPath)
 	result, err := migrations.DoSqlContent(ctx, sqlPath)
-	if err != nil {
+	if err != nil {	
 		g.Log().Error(ctx, "卸载模块", m.skeleton.Label, "失败", err)
 		return
 	}
 	g.Log().Debug(ctx, "卸载模块", m.skeleton.Label, "成功", result)
+	// 删除前端文件
+	targetWebPath := "../web/src/views/addons/" + m.skeleton.Name
+	targetApiPath := "../web/src/api/addons/" + m.skeleton.Name
+
+	// 删除配置页面文件
+	if gfile.Exists(targetWebPath) {
+		err = gfile.Remove(targetWebPath)
+		if err != nil {
+			g.Log().Warning(ctx, "删除前端配置文件失败:", err)
+		} else {
+			g.Log().Debug(ctx, "删除前端配置文件成功")
+		}
+	}
+
+	// 删除API文件
+	if gfile.Exists(targetApiPath) {
+		err = gfile.Remove(targetApiPath)
+		if err != nil {
+			g.Log().Warning(ctx, "删除API文件失败:", err)
+		} else {
+			g.Log().Debug(ctx, "删除API文件成功")
+		}
+	}
+
 	return
 }
