@@ -91,7 +91,7 @@ func (m *module) Install(ctx context.Context) (err error) {
 		sqlExt = ".pg.sql"
 	}
 	// 执行数据库安装文件
-	sqlPath := gfile.Pwd() + gfile.Separator + "addons/migrations/@{.name}/uninstall"+sqlExt
+	sqlPath := gfile.Pwd() + gfile.Separator + "addons/migrations/@{.name}/install"+sqlExt
 	result, err := migrations.DoSqlContent(ctx, sqlPath)
 	if err != nil {
 		g.Log().Error(ctx, "安装模块", m.skeleton.Label, "失败", err)
