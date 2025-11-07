@@ -111,6 +111,16 @@ func (s *sAdminMenu) Edit(ctx context.Context, in *adminin.MenuEditInp) (err err
 				return err
 			}
 		} else {
+			//goframe 2.9 新增
+			converter := gconv.NewConverter()
+			insertData, err := converter.Map(in)
+			if err != nil {
+				err = gerror.Wrap(err, "新增菜单数据转换失败")
+				return err
+			}
+			//删除ID，新增时pgsql报错 
+			delete(insertData, "id")
+
 			if _, err = dao.AdminMenu.Ctx(ctx).Data(in).OmitNilData().Insert(); err != nil {
 				err = gerror.Wrap(err, "新增菜单失败！")
 				return err
