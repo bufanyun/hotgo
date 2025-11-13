@@ -71,7 +71,7 @@ func (s *sSysLoginLog) List(ctx context.Context, in *sysin.LoginLogListInp) (lis
 		mod = mod.Where(dao.SysLoginLog.Columns().Username, in.Username)
 	}
 
-	totalCount, err = mod.Clone().Count(1)
+	totalCount, err = mod.Clone().Count()
 	if err != nil || totalCount == 0 {
 		return
 	}
