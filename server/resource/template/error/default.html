@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+    <title>错误页面</title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 85%;
+            margin: 50px auto;
+            padding: 40px;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #888;
+        }
+
+        a {
+            color: #fff;
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 3px;
+            text-decoration: none;
+        }
+
+        a:hover {
+            background-color: #0069d9;
+        }
+
+        pre {
+            background-color: #f6f8fa;
+            border-radius: 3px;
+            font-size: 14px;
+            line-height: 1.45;
+            overflow: auto;
+            padding: 16px;
+            white-space: pre;
+            word-wrap: normal;
+        }
+
+        pre code {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+@{ if eq .code 404 }
+<div class="container">
+    <h1>@{.code} 页面未找到</h1>
+    <p>抱歉，我们无法找到要求的页面。</p>
+    <a href="#" onclick="history.back()">返回</a>
+</div>
+@{ else if eq .code 403 }
+<div class="container">
+    <h1>@{.code} 禁止访问</h1>
+    <p>抱歉，您无权访问此页面。</p>
+    <a href="#" onclick="history.back()">返回</a>
+</div>
+@{ else if eq .code 500 }
+<div class="container">
+    <h1>@{.code} 内部服务器错误</h1>
+    <p>哎呀，服务器出了点问题。</p>
+    <a href="#" onclick="history.back()">返回</a>
+</div>
+@{else}
+<div class="container">
+    <h1>错误码 [ @{.code} ]</h1>
+    <p>@{.message}</p>
+    @{ if ne .stack "" }
+    <pre><code>@{.stack}</code></pre>
+    @{end}
+    <a href="#" onclick="history.back()">返回</a>
+</div>
+@{end}
+</body>
+</html>

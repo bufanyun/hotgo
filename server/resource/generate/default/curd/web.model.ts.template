@@ -1,0 +1,52 @@
+@{.import}
+
+@{.const}
+
+export class State {
+@{range .stateItems}  public @{.Name} = @{if and .DataType (or (eq .DataType "varchar") (eq .DataType "char") (eq .DataType "bpchar") (eq .DataType "text") (eq .DataType "json") (eq .DataType "jsonb") (eq .DataType "date") (eq .DataType "time") (eq .DataType "timetz") (eq .DataType "datetime") (eq .DataType "timestamp") (eq .DataType "timestamptz") (eq .DataType "TIMESTAMP") (eq .DataType "interval") (eq .DataType "uuid") (eq .DataType "bytea") (eq .DataType "inet") (eq .DataType "cidr") (eq .DataType "macaddr") (eq .DataType "macaddr8") (eq .DataType "bit") (eq .DataType "varbit") (eq .DataType "point") (eq .DataType "line") (eq .DataType "lseg") (eq .DataType "box") (eq .DataType "path") (eq .DataType "polygon") (eq .DataType "circle") (eq .DataType "money")) (ne .DefaultValue "null")}'@{.DefaultValue}'@{else}@{.DefaultValue}@{end}; // @{.Dc}
+@{end}
+  constructor(state?: Partial<State>) {
+    if (state) {
+      Object.assign(this, state);
+    }
+  }
+}
+
+export function newState(state: State | Record<string, any> | null): State {
+  if (state !== null) {
+    if (state instanceof State) {
+      return cloneDeep(state);
+    }
+    return new State(state);
+  }
+  return new State();
+}
+
+// 表单验证规则
+@{ if eq .options.Step.HasRules true }@{.rules}@{end}
+
+// 表格搜索表单
+@{ if eq .options.Step.HasSearchForm true }@{.formSchema}@{end}
+
+// 表格列
+@{.columns}
+
+@{ if eq .dictOptions.Has true }
+// 加载字典数据选项
+export function loadOptions() {
+  dict.loadOptions(@{ToTSArray .options.DictOps.Types});
+}
+@{end}
+
+@{ if eq .options.Step.IsTreeTable true }
+// 关系树选项
+export const treeOption = ref([]);
+
+// 加载关系树选项
+export function loadTreeOption() {
+  TreeOption().then((res) => {
+    treeOption.value = res;
+  });
+}
+@{end}
+

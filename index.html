@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
+
+  <!-- Replace with your own title and description. -->
+  <title>HotGo-V2</title>
+  <meta name="description" content="基于全新GoFrame2+Vue3+NaiveUI+uniapp开发的全栖框架，为二次开发而生，适合中小型完整应用开发。">
+
+  <!-- Default Theme (see //docsify.js.org/#/themes) -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+
+</head>
+
+<body>
+<div id="app"></div>
+
+<script>
+  // Docsify Configuration (see //docsify.js.org/#/configuration)
+  window.$docsify = {
+    name: "HotGo-V2",
+    nameLink: {
+      '/': '/hotgo/',
+    },
+    relativePath: true,
+    // alias: {
+    //   "/.*/_navbar.md": "/_navbar.md",
+    // },
+    // themeColor: "#42b983",
+    // logo: "//bufanyun.cn-bj.ufileos.com/hotgo/logo.sig.png",
+    // coverpage: true,
+    // homepage: "README.md",
+
+    // Sidebar Configuration
+    auto2top: true,
+    loadSidebar: "sidebar.md",
+    // maxLevel: 2,
+    // Set subMaxLevel to 0 to remove automatic display of page table of contents (TOC) in Sidebar
+    // subMaxLevel: 3,
+
+    // Navbar Configuration
+    // loadNavbar: true,
+
+    // Search Plugin Configuration
+    search: {
+      placeholder: {
+        "/": "搜索",
+        // "/": "Type to search"
+      },
+      noData: {
+        "/": "找不到结果",
+        // "/": "No Results"
+      },
+      // Headline depth, 1 - 6
+      // depth: 2,
+    },
+
+    // Flexible-alerts Plugin Configuration
+    "flexible-alerts": {
+      important: {
+        label: "Important",
+
+        // localization
+        label: {
+          // "/zh-cn": "重要",
+          "/": "Important"
+        },
+
+        // Assuming that we use Font Awesome
+        icon: "far fa-message",
+        className: "important"
+      },
+      warning: {
+        label: "Warning",
+
+        // localization
+        label: {
+          // "/zh-cn": "警告",
+          "/": "Warning"
+        },
+
+        // Assuming that we use Font Awesome
+        icon: "fas fa-triangle-exclamation",
+        className: "warning"
+      },
+      caution: {
+        label: "Caution",
+
+        // localization
+        label: {
+          // "/zh-cn": "注意",
+          "/": "Caution"
+        },
+
+        // Assuming that we use Font Awesome
+        icon: "fas fa-circle-exclamation",
+        className: "attention"
+      },
+    },
+
+    // Hide-code Plugin Configuration
+    hideCode: {
+      // scroll: false, // Enable scrolling
+      height: 300 // Max height
+    },
+
+    // Versioned Plugin Configuration
+    // versions: [
+    //   { folder: "/", label: "v2", default: true },
+    // ],
+    // versionSelectorLabel: "Version",
+
+    // Progress Plugin Configuration
+    progress: {
+      position: "top",
+      // color: "var(--theme-color,#42b983)",
+      height: "3px",
+    },
+  };
+</script>
+
+<!-- Required -->
+<script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+
+<!-- Recommended -->
+<script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify-hide-code/dist/docsify-hide-code.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify-progress@latest/dist/progress.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify-example-panels"></script>
+
+<!-- Prism code highlight -->
+<script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-matlab.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-go.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-yaml.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-vue.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-json.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-sql.min.js"></script>
+
+<!--mermaid插件-->
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true });
+  window.mermaid = mermaid;
+</script>
+<script src="//unpkg.com/docsify-mermaid@2.0.1/dist/docsify-mermaid.js"></script>
+
+<!-- docsify-dark-switcher -->
+<script src="//cdn.jsdelivr.net/gh/LIGMATV/docsify-dark-switcher@latest/docsify-dark-switcher.js"></script>
+<style>
+  :root {
+    --dark-base-background: #222;
+    --dark-base-color: #bbc0c4;
+    --dark-theme-color: var(--theme-color, #42b983);
+    --dark-code-color: var(--dark-color);
+    --dark-heading-color: var(--dark-theme-color);
+    --dark-cover-background: #000000a8;
+    --dark-code-background: #303030;
+    --dark-tip-background: #2c0000;
+    --dark-warn-background: #005842;
+    --dark-icon-size: 25px;
+    --dark-icon-transition: .1s ease-in-out .1s;
+    --dark-moon-color: #000000;
+    --dark-sun-color: #ffffff;
+  }
+</style>
+
+<!-- docsify-plugin-flexible-alerts -->
+<script src="//cdn.jsdelivr.net/npm/docsify-plugin-flexible-alerts/dist/docsify-plugin-flexible-alerts.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/js/all.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/fontawesome.min.css">
+
+<!-- docsify-versioned-plugin -->
+<!-- <script src="//cdn.jsdelivr.net/npm/docsify-versioned-plugin@0.0.1/index.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-versioned-plugin@0.0.1/styles.css"> -->
+
+
+
+</body>
+
+</html>

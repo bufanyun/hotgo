@@ -1,0 +1,84 @@
+-- hotgo自动生成菜单权限SQL 通常情况下只在首次生成代码时自动执行一次
+-- 如需再次执行请先手动删除生成的菜单权限和SQL文件：@{.generatePath}
+-- Version: @{.hgVersion}
+-- Date: @{.nowTime}
+-- Link https://github.com/bufanyun/hotgo
+
+--
+-- 数据库： "@{.dbName}"
+--
+
+-- --------------------------------------------------------
+
+--
+-- 插入表中的数据 "@{.menuTable}"
+--
+
+DO $$
+DECLARE
+    dir_id bigint;
+    list_id bigint;
+    edit_id bigint;
+BEGIN
+    -- 菜单目录
+    INSERT INTO "@{.menuTable}" ("pid", "title", "name", "path", "icon", "type", "redirect", "permissions", "permission_name", "component", "always_show", "active_menu", "is_root", "is_frame", "frame_src", "keep_alive", "hidden", "affix", "level", "tree", "sort", "remark", "status", "created_at", "updated_at") 
+    VALUES ('@{.options.Menu.Pid}', '@{.tableComment}', '@{.varName | LcFirst}', '/@{.varName | LcFirst}', '@{.options.Menu.Icon}', '1', '@{.pageRedirect}', '', '', '@{.mainComponent}', '1', '', '0', '0', '', '0', '0', '0', '@{.dirLevel}', '@{.dirTree}', '@{.options.Menu.Sort}', '', '1', now(), now()) 
+    RETURNING id INTO dir_id;
+
+    -- 菜单页面
+    -- 列表
+    INSERT INTO "@{.menuTable}" ("pid", "title", "name", "path", "icon", "type", "redirect", "permissions", "permission_name", "component", "always_show", "active_menu", "is_root", "is_frame", "frame_src", "keep_alive", "hidden", "affix", "level", "tree", "sort", "remark", "status", "created_at", "updated_at") 
+    VALUES (dir_id, '@{.tableComment}列表', '@{.varName | LcFirst}Index', 'index', '', '2', '', '/@{.apiPrefix}/list', '', '/@{.componentPrefix}/index', '1', '@{.varName | LcFirst}', '0', '0', '', '0', '1', '0', '@{.listLevel}', '@{.dirTree}tr_' || dir_id || ' ', '10', '', '1', now(), now()) 
+    RETURNING id INTO list_id;
+@{ if or (eq .options.Step.HasView true) (eq .options.Step.HasEdit true) }
+
+    -- 详情
+    INSERT INTO "@{.menuTable}" ("pid", "title", "name", "path", "icon", "type", "redirect", "permissions", "permission_name", "component", "always_show", "active_menu", "is_root", "is_frame", "frame_src", "keep_alive", "hidden", "affix", "level", "tree", "sort", "remark", "status", "created_at", "updated_at") 
+    VALUES (list_id, '@{.tableComment}详情', '@{.varName | LcFirst}View', '', '', '3', '', '/@{.apiPrefix}/view', '', '', '1', '', '0', '0', '', '0', '1', '0', '@{.btnLevel}', '@{.dirTree}tr_' || dir_id || ' tr_' || list_id || ' ', '10', '', '1', now(), now());
+@{end}
+
+    -- 菜单按钮
+@{ if eq .options.Step.HasEdit true }
+    -- 编辑
+    INSERT INTO "@{.menuTable}" ("pid", "title", "name", "path", "icon", "type", "redirect", "permissions", "permission_name", "component", "always_show", "active_menu", "is_root", "is_frame", "frame_src", "keep_alive", "hidden", "affix", "level", "tree", "sort", "remark", "status", "created_at", "updated_at") 
+    VALUES (list_id, '编辑/新增@{.tableComment}', '@{.varName | LcFirst}Edit', '', '', '3', '', '/@{.apiPrefix}/edit', '', '', '1', '', '0', '0', '', '0', '1', '0', '@{.btnLevel}', '@{.dirTree}tr_' || dir_id || ' tr_' || list_id || ' ', '20', '', '1', now(), now()) 
+    RETURNING id INTO edit_id;
+@{end}
+@{ if and (eq .options.Step.HasEdit true) (eq .options.Step.HasMaxSort true) }
+
+    -- 获取最大排序
+    INSERT INTO "@{.menuTable}" ("pid", "title", "name", "path", "icon", "type", "redirect", "permissions", "permission_name", "component", "always_show", "active_menu", "is_root", "is_frame", "frame_src", "keep_alive", "hidden", "affix", "level", "tree", "sort", "remark", "status", "created_at", "updated_at") 
+    VALUES (edit_id, '获取@{.tableComment}最大排序', '@{.varName | LcFirst}MaxSort', '', '', '3', '', '/@{.apiPrefix}/maxSort', '', '', '1', '', '0', '0', '', '0', '0', '0', '@{.sortLevel}', '@{.dirTree}tr_' || dir_id || ' tr_' || list_id || ' tr_' || edit_id || ' ', '30', '', '1', now(), now());
+@{end}
+@{ if eq .options.Step.HasDel true }
+
+    -- 删除
+    INSERT INTO "@{.menuTable}" ("pid", "title", "name", "path", "icon", "type", "redirect", "permissions", "permission_name", "component", "always_show", "active_menu", "is_root", "is_frame", "frame_src", "keep_alive", "hidden", "affix", "level", "tree", "sort", "remark", "status", "created_at", "updated_at") 
+    VALUES (list_id, '删除@{.tableComment}', '@{.varName | LcFirst}Delete', '', '', '3', '', '/@{.apiPrefix}/delete', '', '', '1', '', '0', '0', '', '0', '0', '0', '@{.btnLevel}', '@{.dirTree}tr_' || dir_id || ' tr_' || list_id || ' ', '40', '', '1', now(), now());
+@{end}
+@{ if eq .options.Step.HasStatus true }
+
+    -- 更新状态
+    INSERT INTO "@{.menuTable}" ("pid", "title", "name", "path", "icon", "type", "redirect", "permissions", "permission_name", "component", "always_show", "active_menu", "is_root", "is_frame", "frame_src", "keep_alive", "hidden", "affix", "level", "tree", "sort", "remark", "status", "created_at", "updated_at") 
+    VALUES (list_id, '修改@{.tableComment}状态', '@{.varName | LcFirst}Status', '', '', '3', '', '/@{.apiPrefix}/status', '', '', '1', '', '0', '0', '', '0', '0', '0', '@{.btnLevel}', '@{.dirTree}tr_' || dir_id || ' tr_' || list_id || ' ', '50', '', '1', now(), now());
+@{end}
+@{ if eq .options.Step.HasSwitch true }
+
+    -- 操作开关
+    INSERT INTO "@{.menuTable}" ("pid", "title", "name", "path", "icon", "type", "redirect", "permissions", "permission_name", "component", "always_show", "active_menu", "is_root", "is_frame", "frame_src", "keep_alive", "hidden", "affix", "level", "tree", "sort", "remark", "status", "created_at", "updated_at") 
+    VALUES (list_id, '操作@{.tableComment}开关', '@{.varName | LcFirst}Switch', '', '', '3', '', '/@{.apiPrefix}/switch', '', '', '1', '', '0', '0', '', '0', '0', '0', '@{.btnLevel}', '@{.dirTree}tr_' || dir_id || ' tr_' || list_id || ' ', '60', '', '1', now(), now());
+@{end}
+@{ if eq .options.Step.HasExport true }
+
+    -- 导出
+    INSERT INTO "@{.menuTable}" ("pid", "title", "name", "path", "icon", "type", "redirect", "permissions", "permission_name", "component", "always_show", "active_menu", "is_root", "is_frame", "frame_src", "keep_alive", "hidden", "affix", "level", "tree", "sort", "remark", "status", "created_at", "updated_at") 
+    VALUES (list_id, '导出@{.tableComment}', '@{.varName | LcFirst}Export', '', '', '3', '', '/@{.apiPrefix}/export', '', '', '1', '', '0', '0', '', '0', '0', '0', '@{.btnLevel}', '@{.dirTree}tr_' || dir_id || ' tr_' || list_id || ' ', '70', '', '1', now(), now());
+@{end}
+@{ if eq .options.Step.IsTreeTable true }
+
+    -- 关系树选项
+    INSERT INTO "@{.menuTable}" ("pid", "title", "name", "path", "icon", "type", "redirect", "permissions", "permission_name", "component", "always_show", "active_menu", "is_root", "is_frame", "frame_src", "keep_alive", "hidden", "affix", "level", "tree", "sort", "remark", "status", "created_at", "updated_at") 
+    VALUES (list_id, '获取@{.tableComment}关系树选项', '@{.varName | LcFirst}TreeOption', '', '', '3', '', '/@{.apiPrefix}/treeOption', '', '', '1', '', '0', '0', '', '0', '0', '0', '@{.btnLevel}', '@{.dirTree}tr_' || dir_id || ' tr_' || list_id || ' ', '70', '', '1', now(), now());
+@{end}
+END $$;
+

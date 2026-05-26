@@ -1,0 +1,528 @@
+<template>
+  <div>
+    <div class="n-layout-page-header">
+      <n-card :bordered="false" title="@{.tableComment}">
+        <!--  这是由系统生成的CURD表格，你可以将此行注释改为表格的描述 -->
+      </n-card>
+    </div>
+
+    @{ if eq .options.Step.IsOptionTreeTable false }<n-card :bordered="false" class="proCard">@{end}
+    @{ if eq .options.Step.IsOptionTreeTable true }
+        <n-grid cols="1 s:1 m:1 l:4 xl:4 2xl:4" responsive="screen" :x-gap="12">
+          <n-gi span="1">
+            <n-card :segmented="{ content: true }" :bordered="false" size="small" class="proCard">
+              <template #header>
+                <n-space>
+                  @{ if eq .options.Step.HasAdd true }
+                  <n-button type="info" icon-placement="left" @click="addTable" v-if="hasPermission(['/@{.apiPrefix}/edit'])">
+                    <template #icon>
+                      <div class="flex items-center">
+                        <n-icon size="14">
+                          <PlusOutlined />
+                        </n-icon>
+                      </div>
+                    </template>
+                    添加
+                  </n-button>
+                  @{end}
+
+                  @{ if eq .options.Step.HasEdit true }
+                  <n-button
+                    v-if="hasPermission(['/@{.apiPrefix}/edit'])"
+                    type="info"
+                    icon-placement="left"
+                    @click="handleEdit(selectedState)"
+                    :disabled="selectedState.@{.pk.TsName} < 1"
+                  >
+                    <template #icon>
+                      <div class="flex items-center">
+                        <n-icon size="14">
+                          <EditOutlined />
+                        </n-icon>
+                      </div>
+                    </template>
+                    编辑
+                  </n-button>
+                  @{end}
+
+                  @{ if eq .options.Step.HasBatchDel true }
+                  <n-button
+                    v-if="hasPermission(['/@{.apiPrefix}/delete'])"
+                    type="error"
+                    icon-placement="left"
+                    @click="handleDelete(selectedState)"
+                    :disabled="selectedState.@{.pk.TsName} < 1"
+                  >
+                    <template #icon>
+                      <div class="flex items-center">
+                        <n-icon size="14">
+                          <DeleteOutlined />
+                        </n-icon>
+                      </div>
+                    </template>
+                    删除
+                  </n-button>
+                  @{end}
+
+                  <n-button type="info" icon-placement="left" @click="handleAllExpanded">
+                    {{ expandedKeys.length ? '收起' : '展开' }}
+                    <template #icon>
+                      <div class="flex items-center">
+                        <n-icon size="14">
+                          <AlignLeftOutlined />
+                        </n-icon>
+                      </div>
+                    </template>
+                  </n-button>
+                </n-space>
+              </template>
+              <div class="w-full menu">
+                <n-input v-model:value="pattern" placeholder="输入名称搜索">
+                  <template #suffix>
+                    <n-icon size="18" class="cursor-pointer">
+                      <SearchOutlined />
+                    </n-icon>
+                  </template>
+                </n-input>
+                <div class="py-3 menu-list">
+                  <template v-if="loading">
+                    <div class="flex items-center justify-center py-4">
+                      <n-spin size="medium" />
+                    </div>
+                  </template>
+                  <n-tree
+                    v-else
+                    show-line
+                    block-line
+                    cascade
+                    virtual-scroll
+                    :pattern="pattern"
+                    :data="treeOption"
+                    :expandedKeys="expandedKeys"
+                    style="height: 75vh"
+                    key-field="@{.pk.TsName}"
+                    label-field="@{.options.Tree.TitleField.TsName}"
+                    @update:selected-keys="handleSelected"
+                    @update:expanded-keys="handleOnExpandedKeys"
+                  />
+                </div>
+              </div>
+            </n-card>
+          </n-gi>
+          <n-gi span="3">
+    <n-card :bordered="false" class="proCard">
+              <template #header v-if="selectedState.@{.pk.TsName} > 0">
+                <n-space>
+                  <n-icon size="18">
+                    <FormOutlined />
+                  </n-icon>
+                  <span>正在编辑 {{ selectedState.title }}</span>
+                </n-space>
+              </template>
+              <n-result v-show="selectedState.@{.pk.TsName} < 1" status="info" title="提示" description="请先从列表选择一项后，进行编辑">
+                <template #footer>
+                  <n-button
+                    type="info"
+                    icon-placement="left"
+                    @{ if eq .options.Step.IsOptionTreeTable true }@click="handleAdd(selectedState)"
+                    @{end}@{ if eq .options.Step.IsOptionTreeTable false }@click="addTable"
+                    @{end}v-if="hasPermission(['/@{.apiPrefix}/edit'])"
+                  >
+                    <template #icon>
+                      <div class="flex items-center">
+                        <n-icon size="14">
+                          <PlusOutlined />
+                        </n-icon>
+                      </div>
+                    </template>
+                    添加
+                  </n-button>
+                </template>
+              </n-result>
+@{end}
+
+@{ if eq .isSearchForm true }
+      <BasicForm
+        @{ if eq .options.Step.IsOptionTreeTable true }v-if="selectedState.@{.pk.TsName} > 0"
+        @{end}ref="searchFormRef"
+        @register="register"
+        @submit="reloadTable"
+        @reset="reloadTable"
+        @keyup.enter="reloadTable"
+      >
+        <template #statusSlot="{ model, field }">
+          <n-input v-model:value="model[field]" />
+        </template>
+      </BasicForm>
+@{end}
+
+      <BasicTable
+        @{ if eq .options.Step.IsOptionTreeTable true }v-if="selectedState.@{.pk.TsName} > 0"
+        @{end}ref="actionRef"
+        @{ if eq .options.Step.HasCheck true }openChecked
+        @{end}:columns="columns"
+        :request="loadDataTable"
+        :row-key="(row) => row.@{.pk.TsName}"
+        :actionColumn="actionColumn"
+        :scroll-x="scrollX"
+        :resizeHeightOffset="-10000"
+        @{ if and (eq .options.Step.IsTreeTable true) (eq .options.Step.IsOptionTreeTable false) }:cascade="false"
+        :expanded-row-keys="expandedKeys"
+        @update:expanded-row-keys="updateExpandedKeys"
+        @{end}@{ if eq .options.Step.HasCheck true }:checked-row-keys="checkedIds"
+        @{end}@{ if eq .options.Step.HasCheck true }@update:checked-row-keys="handleOnCheckedRow"
+        @{end}
+      >
+        <template #tableTitle>
+
+@{ if eq .options.Step.HasAdd true }
+          <n-button
+            type="primary"
+            @{ if eq .options.Step.IsOptionTreeTable true }@click="handleAdd(selectedState)"
+            @{end}@{ if eq .options.Step.IsOptionTreeTable false }@click="addTable"
+            @{end}class="min-left-space"
+            v-if="hasPermission(['/@{.apiPrefix}/edit'])"
+          >
+            <template #icon>
+              <n-icon>
+                <PlusOutlined />
+              </n-icon>
+            </template>
+            添加
+          </n-button>
+@{end}
+
+@{ if eq .options.Step.HasBatchDel true }
+          <n-button
+            type="error"
+            @click="handleBatchDelete"
+            class="min-left-space"
+            v-if="hasPermission(['/@{.apiPrefix}/delete'])"
+          >
+            <template #icon>
+              <n-icon>
+                <DeleteOutlined />
+              </n-icon>
+            </template>
+            批量删除
+          </n-button>
+@{end}
+
+@{ if eq .options.Step.HasExport true }
+          <n-button
+            type="primary"
+            @click="handleExport"
+            class="min-left-space"
+            v-if="hasPermission(['/@{.apiPrefix}/export'])"
+          >
+            <template #icon>
+              <n-icon>
+                <ExportOutlined />
+              </n-icon>
+            </template>
+            导出
+          </n-button>
+@{end}
+
+@{ if and (eq .options.Step.IsTreeTable true) (eq .options.Step.IsOptionTreeTable false) }
+            <n-button type="primary" icon-placement="left" @click="handleAllExpanded" class="min-left-space">
+            全部{{ expandedKeys.length ? '收起' : '展开' }}
+            <template #icon>
+              <div class="flex items-center">
+                <n-icon size="14">
+                  <AlignLeftOutlined />
+                </n-icon>
+              </div>
+            </template>
+          </n-button>
+@{end}
+
+        </template>
+      </BasicTable>
+    </n-card>
+
+@{ if eq .options.Step.IsOptionTreeTable true }
+      </n-gi>
+    </n-grid>
+@{end}
+
+@{ if eq .options.Step.HasEdit true }    <Edit ref="editRef" @reloadTable="reloadTable" />@{end}
+@{ if eq .options.Step.HasView true }    <View ref="viewRef" />@{end}
+
+  </div>
+</template>
+
+<script lang="ts" setup>
+@{.import}
+  @{ if eq .options.DictOps.Has true }const dict = useDictStore();@{end}
+  const dialog = useDialog();
+  const message = useMessage();
+  const { hasPermission } = usePermission();
+  const actionRef = ref();
+  const searchFormRef = ref<any>({});
+  const editRef = ref();
+  @{ if eq .options.Step.HasView true }const viewRef = ref();@{end}
+  @{ if eq .options.Step.HasCheck true }const checkedIds = ref([]);@{end}
+  @{ if and (eq .options.Step.IsTreeTable true) (eq .options.Step.IsOptionTreeTable false) }const expandedKeys = ref([]);
+  const allTreeKeys = ref([]);@{end}
+  @{ if eq .options.Step.IsOptionTreeTable true }const expandedKeys = ref([]);
+  const pattern = ref('');
+  const selectedState = ref<State>(newState(null));
+  const loading = ref(false);@{end}
+
+  const actionColumn = reactive({
+    width: @{.options.Step.ActionColumnWidth},
+    title: '操作',
+    key: 'action',
+    fixed: 'right',
+    render(record: State) {
+      return h(TableAction as any, {
+        style: 'button',
+        actions: [
+@{ if eq .options.Step.HasEdit true }          {
+            label: '编辑',
+            onClick: handleEdit.bind(null, record),
+            auth: ['/@{.apiPrefix}/edit'],
+          },@{end}
+@{ if and (eq .options.Step.HasEdit true) (eq .options.Step.IsTreeTable true) (eq .options.Step.IsOptionTreeTable false) }          {
+            label: '添加',
+            onClick: handleAdd.bind(null, record),
+            auth: ['/@{.apiPrefix}/edit'],
+          },@{end}
+@{ if eq .options.Step.HasStatus true }          {
+            label: '禁用',
+            onClick: handleStatus.bind(null, record, 2),
+            ifShow: () => {
+              return record.status === 1;
+            },
+            auth: ['/@{.apiPrefix}/status'],
+          },
+          {
+            label: '启用',
+            onClick: handleStatus.bind(null, record, 1),
+            ifShow: () => {
+              return record.status === 2;
+            },
+            auth: ['/@{.apiPrefix}/status'],
+          },@{end}
+@{ if eq .options.Step.HasDel true }          {
+            label: '删除',
+            onClick: handleDelete.bind(null, record),
+            auth: ['/@{.apiPrefix}/delete'],
+          },@{end}
+        ],
+@{ if eq .options.Step.HasView true }        dropDownActions: [
+          {
+            label: '查看详情',
+            key: 'view',
+            auth: ['/@{.apiPrefix}/view'],
+          },
+        ],
+        select: (key) => {
+          if (key === 'view') {
+            return handleView(record);
+          }
+        },@{end}
+      });
+    },
+  });
+
+  const scrollX = computed(() => {
+    return adaTableScrollX(columns, actionColumn.width);
+  });
+
+  const [register, {}] = useForm({
+    gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
+    labelWidth: 80,
+    schemas,
+  });
+
+  @{ if eq .options.Step.IsTreeTable false }
+  // 加载表格数据
+  const loadDataTable = async (res) => {
+    return await List({ ...searchFormRef.value?.formModel, ...res });
+  };@{end}
+
+  @{ if and (eq .options.Step.IsTreeTable true) (eq .options.Step.IsOptionTreeTable false) }
+  // 加载普通数表数据
+  const loadDataTable = async (res = {}) => {
+    const params = { ...(searchFormRef.value?.formModel ?? {}), ...res, pagination: false };
+    const dataSource = await List(params);
+    allTreeKeys.value = expandedKeys.value = dataSource.list.map((item) => item.@{.pk.TsName});
+    dataSource.list = convertListToTree(dataSource.list, '@{.pk.TsName}');
+    return dataSource;
+  };@{end}
+
+  @{ if and (eq .options.Step.IsTreeTable true) (eq .options.Step.IsOptionTreeTable true) }
+  // 加载选项式树表数据
+  const loadDataTable = async (res = {}) => {
+    if (selectedState.value.@{.pk.TsName} < 1) {
+      return;
+    }
+
+    // 刷新树选项
+    loadTreeOption();
+
+    // 获取选中的下级列表
+    const params = {
+      ...(searchFormRef.value?.formModel ?? {}),
+      ...res,
+      pid: selectedState.value.@{.pk.TsName},
+    };
+    return await List(params);
+  };
+  @{end}
+
+@{ if eq .options.Step.HasCheck true }
+  // 更新选中的行
+  function handleOnCheckedRow(rowKeys) {
+    checkedIds.value = rowKeys;
+  }@{end}
+
+  // 重新加载表格数据
+  function reloadTable() {
+    actionRef.value?.reload();
+  }
+
+@{ if eq .options.Step.HasAdd true }
+  // 添加数据
+  function addTable() {
+    editRef.value.openModal(null);
+  }@{end}
+
+@{ if and (eq .options.Step.HasEdit true) (eq .options.Step.IsTreeTable true) }
+  // 添加树节点下级数据
+  function handleAdd(record: Recordable) {
+    const state = newState(null);
+    state.pid = record.@{.pk.TsName};
+    editRef.value.openModal(state);
+  }@{end}
+
+@{ if eq .options.Step.HasEdit true }
+  // 编辑数据
+  function handleEdit(record: Recordable) {
+    editRef.value.openModal(record);
+  }@{end}
+
+@{ if eq .options.Step.HasView true }
+  // 查看详情
+  function handleView(record: Recordable) {
+    viewRef.value.openModal(record);
+  }@{end}
+
+@{ if eq .options.Step.HasDel true }
+  // 单个删除
+  function handleDelete(record: Recordable) {
+    dialog.warning({
+      title: '警告',
+      content: '你确定要删除？',
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: () => {
+        Delete(record).then((_res) => {
+          message.success('删除成功');
+          reloadTable();
+        });
+      },
+    });
+  }@{end}
+
+@{ if eq .options.Step.HasBatchDel true }
+  // 批量删除
+  function handleBatchDelete() {
+    if (checkedIds.value.length < 1){
+      message.error('请至少选择一项要删除的数据');
+      return;
+    }
+
+    dialog.warning({
+      title: '警告',
+      content: '你确定要批量删除？',
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: () => {
+        Delete({ @{.pk.TsName}: checkedIds.value }).then((_res) => {
+          checkedIds.value = [];
+          message.success('删除成功');
+          reloadTable();
+        });
+      },
+    });
+  }@{end}
+
+@{ if eq .options.Step.HasExport true }
+  // 导出
+  function handleExport() {
+    message.loading('正在导出列表...', { duration: 1200 });
+    Export(searchFormRef.value?.formModel);
+  }@{end}
+
+@{ if eq .options.Step.HasStatus true }
+  // 修改状态
+  function handleStatus(record: Recordable, status: number) {
+    Status({ @{.pk.TsName}: record.@{.pk.TsName}, status: status }).then((_res) => {
+      message.success('设为' + dict.getLabel('sys_normal_disable', status) + '成功');
+      setTimeout(() => {
+        reloadTable();
+      });
+    });
+  }@{end}
+
+  @{ if and (eq .options.Step.IsTreeTable true) (eq .options.Step.IsOptionTreeTable false) }
+  // 收起/展开全部树节点
+  function handleAllExpanded() {
+    if (expandedKeys.value.length) {
+      expandedKeys.value = [];
+    } else {
+      expandedKeys.value = allTreeKeys.value;
+    }
+  }
+
+  // 更新展开的树节点
+  function updateExpandedKeys(openKeys: never[]) {
+    expandedKeys.value = openKeys;
+  }@{end}
+
+  @{ if eq .options.Step.IsOptionTreeTable true }
+  // 选中树节点
+  function handleSelected(keys, option) {
+    if (keys.length) {
+      selectedState.value = newState(option[0]);
+      reloadTable();
+    } else {
+      selectedState.value = newState(null);
+    }
+  }
+
+  // 展开指定节点
+  function handleOnExpandedKeys(keys) {
+    expandedKeys.value = keys;
+  }
+
+  // 展开全部节点
+  function handleAllExpanded() {
+    if (expandedKeys.value.length) {
+      expandedKeys.value = [];
+    } else {
+      expandedKeys.value = getTreeKeys(unref(treeOption), '@{.pk.TsName}');
+    }
+  }
+
+  // 首次加载树选项，默认展开全部
+  function firstLoadTreeOption() {
+    loading.value = true;
+    TreeOption().then((res) => {
+      treeOption.value = res;
+      expandedKeys.value = getTreeKeys(unref(treeOption), '@{.pk.TsName}');
+      loading.value = false;
+    });
+  }@{end}
+
+@{ if or (eq .dictOptions.Has true) (eq .options.Step.IsOptionTreeTable true) }
+  onMounted(() => {
+    @{ if eq .dictOptions.Has true }loadOptions();@{end}
+    @{ if eq .options.Step.IsOptionTreeTable true }firstLoadTreeOption();@{end}
+  });@{end}
+</script>
+
+<style lang="less" scoped></style>

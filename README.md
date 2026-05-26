@@ -1,83 +1,167 @@
-# hotgo
+# HotGo-V2
+<div align="center">
+	<img width="140px" src="https://gmycos.facms.cn/hotgo/logo.sig.png">
+    <p>
+        <h1>HotGo V2</h1>
+    </p>
+    <p align="center">
+        <a href="https://goframe.org/pages/viewpage.action?pageId=1114119" target="_blank">
+	        <img src="https://img.shields.io/badge/goframe-2.10.0-green" alt="goframe">
+	    </a>
+	    <a href="https://v3.vuejs.org/" target="_blank">
+	        <img src="https://img.shields.io/badge/vue.js-vue3.4-green" alt="vue">
+	    </a>
+	    <a href="https://www.naiveui.com" target="_blank">
+	        <img src="https://img.shields.io/badge/naiveui-%3E2.44.1-blue" alt="naiveui">
+	    </a>
+		<a href="https://www.tslang.cn/" target="_blank">
+	        <img src="https://img.shields.io/badge/typescript-%3E4.0.0-blue" alt="typescript">
+	    </a>
+		<a href="https://vitejs.dev/" target="_blank">
+		    <img src="https://img.shields.io/badge/vite-%3E5.4.2-yellow" alt="vite">
+		</a>
+		<a href="https://github.com/bufanyun/hotgo/blob/v2.0/LICENSE" target="_blank">
+		    <img src="https://img.shields.io/badge/license-MIT-success" alt="license">
+		</a>
+	</p>
+</div>
 
 
-#### HotGo 是一个基于 vue 和 goframe2.0 开发的全栈前后端分离的开发基础平台和移动应用平台，集成jwt鉴权，动态路由，动态菜单，casbin鉴权，消息队列，定时任务等功能，提供多种常用场景文件，让您把更多时间专注在业务开发上。
+## 平台简介
+* 基于 GoFrame2 + Vue3 + NaiveUI + uniapp 的企业级全栈框架，为二次开发而生。
+* 前端采用 Naive-Ui-Admin、Vue、Naive UI、uniapp。
+* 企业级 AI 赋能基础开发平台，内置 AI 开发规范，适配主流 AI 开发工具，实现人机协同开发，大幅提升开发效率。
 
-## 技术选型
+## 演示地址
+-  [https://hotgo.facms.cn/admin](https://hotgo.facms.cn/admin)
+>  账号：admin  密码：123456
 
-* 后端：用 goframe2.0 快速搭建基础API，goframe2.0 是一个go语言编写的Web框架。
-* 前端：用基于 JeeSite Mobile Uni-App+aidex-sharp 构建基础页面。
-* 数据库：采用MySql(8.0)版本，使用 gorm 实现对数据库的基本操作。
-* 缓存：使用Redis实现记录当前活跃用户的jwt令牌并实现多点登录限制。
-* API文档：使用Swagger构建自动化文档。
-* 消息队列：同时兼容 kafka、redis、rocketmq，一键配置切换到自己想用的MQ。
+### 使用文档
 
-## 系统截图
-#### * web端
-
-![image](https://user-images.githubusercontent.com/26652343/155689571-e6a0a5a3-011b-44cc-b84b-a1c82301b207.png)
-
-![image](https://user-images.githubusercontent.com/26652343/155689646-d3395261-6061-469f-8256-3cd0ff9f5d05.png)
-
-![image](https://user-images.githubusercontent.com/26652343/155689709-5ddac1d3-1c01-4fab-9d3a-9ece72ca5ba0.png)
-
-#### * 移动端
-![image](https://user-images.githubusercontent.com/26652343/155689481-2fc019eb-18e4-4a94-b417-50524e945089.png)
-![image](https://user-images.githubusercontent.com/26652343/155689738-ac97f9c0-47ae-499b-b3fe-0cb4ce97f3bc.png)
-
-## 环境要求
-- node版本 >= v14.0.0 
-- golang版本 >= v1.16
-- IDE推荐：Goland
-- mysql版本 >=8.0
-- redis版本 >=5.0
-
-## 快速开始
- 一、拉取代码到你已经安装好以上环境的服务器中
- ```shell script
-git clone https://github.com/bufanyun/hotgo.git
- ```
-
-二、配置你的站点信息
-
-服务端：
- - 创建mysql数据库，将数据库文件导入你的mysql，目录地址：/hotgo-server/storage/hotgo.sql
- - 将/hotgo-server/config/config.example.yaml 改为：config.yaml，并根据你实际环境情况进行配置
-
-web+uinapp端：
- - 配置服务端地址，包含在一下文件中：
- * hotgo-uniapp/common/config.js 
- * /hotgo-uniapp/manifest.json 
- * hotgo-uniapp/common/config.js 
-
-三、 启动服务
-服务端：
-   ```shell script
-  cd hotgo-server
-  go mod tidy  #更新包
-  go run main.go  #启动服务
-```
-
-web端：
-   ```shell script
-cd hotgo-web
-npm install #安装依赖
-npm run dev #启动web项目
-```
-uinapp端：
-- 1、下载并安装：集成开发环境 HBuilderX （推荐，也可以使用 VSCode 或 WebStorm）
-- 2、菜单：文件 -> 导入 -> 从本地目录导入，选择 “jeesite4-uniapp” 文件夹。
-- 3、菜单：运行 -> 运行到内置浏览器（或运行到浏览器 -> Chrome 浏览器）。
-- 4、等待 HBuliderX 控制台编译完成后，会自动弹出手机登录页面。
+[安装文档](docs/guide-zh-CN/start-installation.md) · [本地文档](docs/guide-zh-CN/README.md) · [更新历史](docs/guide-zh-CN/start-update-log.md) · [常见问题](docs/guide-zh-CN/start-issue.md)
 
 
-## 特别感谢(以下排名不分先后)
+## 特征
+* 高生产率：极强的可扩展性，应用化、模块化、插件化机制敏捷开发，几分钟即可搭建一个应用开发骨架。
+* 多应用入口：多入口分为 Admin (后台)、Home (前台页面)、Api (对外通用接口)、WebSocket (即时通讯接口)，不同的业务，进入不同的应用入口。
+* 极致的插件化： 微核架构，功能隔离，高可定制性，可以渐进式开发，亦可以多人协同开发。支持一键创建插件模板、一键安装、更新、卸载插件、可以非常方便的将插件迁移到新项目中。
+* 快速生成代码：无需编写代码，只需创建表进行简单配置就能生成一个完善的 CURD、树表等常用的开发代码，其中所需表单控件也是勾选即可直接生成。
+* 认证机制：采用 JWT 的用户状态认证及 casbin 的权限认证
+* 路由模式：得益于 GoFrame 提供了规范化的路由注册方式，无需注解自动生成api文档
+* 模块化设计，面向接口开发
 
-* goframe2.0 https://goframe.org
-* JeeSite Mobile Uni-App https://gitee.com/thinkgem/jeesite4-uniapp
-* aidex-sharp https://gitee.com/big-hedgehog/aidex-sharp
 
-## 开源声明
-* 目前项目还在持续更新中，仅供参考学习，如遇到问题请联系作者下方微信！
+## 内置功能
+1. 用户管理：用户是系统操作者，该功能主要完成系统用户配置。
+2. 部门管理：配置系统组织机构（公司、部门、岗位），树结构展现支持数据权限。
+3. 岗位管理：配置系统用户所属担任职务。
+4. 菜单管理：配置系统菜单，操作权限，按钮权限标识等。
+5. 角色管理：角色菜单权限分配、设置角色按机构或按上下级关系进行数据范围权限划分。
+6. 字典管理：对系统中经常使用的一些特定数据进行维护，支持枚举字典和自定义方法字典。
+7. 配置管理：对系统动态配置常用参数。
+8. 操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
+9. 登录日志：系统登录日志记录查询包含登录异常。
+10. 服务日志：服务端运行所产生的警告、异常、崩溃日志的详细数据和堆栈信息。
+11. 支付网关：集成支付宝、微信支付、QQ支付等多种支付方式，只需简单配置即可使用。
+12. 资金管理：支持在线充值、订单申请/原路退款、资金提现、资金/积分变动明细等通用模块。
+13. 在线用户：当前系统中活跃用户状态监控。
+14. 定时任务：在线（添加、修改、删除)任务调度包含执行结果日志。
+15. 代码生成：支持自动化生成前后端代码。CURD关联表、树表、消息队列、定时任务一键生成等。
+16. 插件应用：支持一键生成插件模板，每个插件之间开发隔离，拥有独立多应用入口、独立配置。完美支持多人协同开发、插件插拔不会对原系统产生影响等。
+17. 服务监控：监视当前系统CPU、内存、磁盘、网络、堆栈等相关信息。
+18. 附件管理：文件图片上传，大文件分片上传、断点续传，支持本地、阿里云oss、腾讯云cos、ucloud对象存储、七牛云对象存储、minio等多种上传驱动，后台一键切换配置，并集成了文件选择器。
+19. TCP服务：基于gtcp的服务应用，支持长连接、断线重连、服务认证、路由分发、RPC消息、拦截器和数据绑定等。简化和规范了服务器开发流程。
+20. 消息队列：同时兼容 kafka、redis、rocketmq、磁盘队列，一键配置切换到场景适用的MQ。
+21. 通知公告：采用WebSocket实时推送在线用户最新通知、公告、私信消息。
+22. 地区编码：整合国内通用省市区编码，运用于项目于一身，支持动态省市区选项。
+23. 常用工具：集成常用的工具包和命令行工具，可以快速开发自定义命令行，多种启动入口。
 
-![image](https://user-images.githubusercontent.com/26652343/155691271-1ded98d8-f0f1-4467-9079-26cec1195af5.png)
+
+> HotGo开源以来得到了大家的很多支持，本项目初衷只为互相学习交流，没有任何盈利性目的！欢迎为HotGo贡献代码或提供建议！
+
+
+## 演示图
+
+<table>
+    <tr>
+        <td><img src="./docs/guide-zh-CN/images/demo/1.png"/></td>
+        <td><img src="./docs/guide-zh-CN/images/demo/2.png"/></td>
+    </tr>
+    <tr>
+        <td><img src="./docs/guide-zh-CN/images/demo/3.png"/></td>
+        <td><img src="./docs/guide-zh-CN/images/demo/4.png"/></td>
+    </tr>
+    <tr>
+        <td><img src="./docs/guide-zh-CN/images/demo/5.png"/></td>
+        <td><img src="./docs/guide-zh-CN/images/demo/6.png"/></td>
+    </tr>
+    <tr>
+        <td><img src="./docs/guide-zh-CN/images/demo/7.png"/></td>
+        <td><img src="./docs/guide-zh-CN/images/demo/8.png"/></td>
+    </tr>
+    <tr>
+        <td><img src="./docs/guide-zh-CN/images/demo/9.png"/></td>
+        <td><img src="./docs/guide-zh-CN/images/demo/10.png"/></td>
+    </tr>
+    <tr>
+        <td><img src="./docs/guide-zh-CN/images/demo/11.png"/></td>
+        <td><img src="./docs/guide-zh-CN/images/demo/12.png"/></td>
+    </tr>
+</table>
+
+
+## 感谢(排名不分先后)
+> gf框架 [https://github.com/gogf/gf](https://github.com/gogf/gf)
+>
+> naive-ui [https://www.naiveui.com](https://www.naiveui.com)
+>
+> naive-ui-admin [https://github.com/jekip/naive-ui-admin](https://github.com/jekip/naive-ui-admin)
+>
+> websocket [https://github.com/gorilla/websocket](github.com/gorilla/websocket)
+> 
+> casbin [https://github.com/casbin/casbin](https://github.com/casbin/casbin)
+>
+> gopay [https://github.com/go-pay/gopay](https://github.com/go-pay/gopay)
+
+
+## 交流QQ群
+交流群①：190966648  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=mJafkvme3VNyiQlCFIFNRtY8Xlr7pj9U&jump_from=webapi&authKey=jL10vIESr+vO8wpxwyd6DlChzkrbHpzN9uhAsIHgAinL/Vvd+nvuRyilf2UqUlCy"><img border="0" src="https://gmycos.facms.cn/hotgo/group.png" alt="HotGo框架交流1群" title="HotGo框架交流1群"></a>
+> <img src="https://gmycos.facms.cn/hotgo/hotgo1qun.png" width="400px"/>
+
+
+## 商用说明
+
+> HotGo 是开源免费的，遵循 MIT 开源协议，意味着您无需支付任何费用，也无需授权，即可将它应用到您的产品中。
+
+* 使用本项目必须保留所有版权信息。
+
+* 本项目包含的第三方源码和二进制文件之版权信息另行标注。
+
+* 版权所有Copyright © 2020-2026 by Ms (https://github.com/bufanyun/hotgo)
+
+* All rights reserved。
+
+
+## 免责声明：
+* HotGo为开源学习项目，一切商业行为与HotGo无关。
+
+* 用户不得利用HotGo从事非法行为，用户应当合法合规的使用，发现用户在使用产品时有任何的非法行为，HotGo有权配合有关机关进行调查或向政府部门举报，HotGo不承担用户因非法行为造成的任何法律责任，一切法律责任由用户自行承担，如因用户使用造成第三方损害的，用户应当依法予以赔偿。
+
+* 所有与使用HotGo相关的资源直接风险均由用户承担。
+
+
+#### 如果对您有帮助，您可以点右上角 💘Star💘支持
+
+
+
+## [感谢JetBrains提供的免费GoLand](https://jb.gg/OpenSource)
+[![avatar](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://jb.gg/OpenSource)
+
+
+## License
+[MIT © HotGo-2026](./LICENSE)
+  
+
+
+  
+

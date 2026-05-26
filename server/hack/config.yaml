@@ -1,0 +1,48 @@
+# CLI tool, only in development environment.
+# https://goframe.org/pages/viewpage.action?pageId=3673173
+gfcli:
+  build:
+    name: "hotgo"                          # 编译后的可执行文件名称
+    arch: "amd64"                          # 不填默认当前系统架构，可选：386,amd64,arm,all
+    system: "linux"                        # 不填默认当前系统平台，可选：linux,darwin,windows,all
+    mod: "none"
+    cgo: 0
+    packSrc: "resource"                    # 将resource目录打包进可执行文件，静态资源无需单独部署
+    packDst: "internal/packed/packed.go"   # 打包后生成的Go文件路径，一般使用相对路径指定到本项目目录中
+    version: ""
+    output: "./temp/hotgo"                 # 可执行文件生成路径
+    extra: ""
+
+
+  docker:
+    build: "-a amd64 -s linux -p temp -ew"   # 构建参数
+    tagPrefixes:                             # 该docker的标记前缀，用于docker推送，请替换成你自己的
+      - ccr.ccs.tencentyun.com/bufanyun
+
+
+  gen:
+    dao:
+      - link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true&charset=utf8mb4"
+#      - link: "pgsql:postgres:hg123456@tcp(127.0.0.1:5432)/hotgo"
+        group: "default"                                                # 分组 使用hotgo代码生成功能时必须填
+        #        tables:          ""                                    # 指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
+        tablesEx:        "hg_sys_addons_install"                        # 指定当前数据库中需要排除代码生成的数据表。
+        removePrefix: "hg_"
+        descriptionTag: true
+        noModelComment: true
+        jsonCase: "CamelLower"
+        gJsonSupport: true
+        clear: false
+
+
+#    service: # 生成业务配置
+#      srcFolder: "internal/logic"
+#      dstFolder: "internal/service"
+#      dstFileNameCase: "CamelLower"
+#      clear: true
+    ctrl:
+      # api/api下的接口可以使用gf gen ctrl自动生成控制器相关代码
+      srcFolder: "api/api"
+      dstFolder: "internal/controller/api"
+      clear: true
+      merge: false

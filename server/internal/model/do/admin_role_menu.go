@@ -1,0 +1,16 @@
+// =================================================================================
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT.
+// =================================================================================
+
+package do
+
+import (
+	"github.com/gogf/gf/v2/frame/g"
+)
+
+// AdminRoleMenu is the golang structure of table hg_admin_role_menu for DAO operations like Where/Data.
+type AdminRoleMenu struct {
+	g.Meta `orm:"table:hg_admin_role_menu, do:true"`
+	RoleId any // 角色ID
+	MenuId any // 菜单ID
+}
