@@ -22,7 +22,7 @@ type MqProducer interface {
 }
 
 type MqConsumer interface {
-	ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) (err error)
+	ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg) error) (err error)
 }
 
 const (
@@ -39,6 +39,13 @@ type Config struct {
 	Rocketmq  RocketmqConf
 	Kafka     KafkaConf
 	Disk      *disk.Config
+	Pgsql     *PgsqlConf `json:"pgsql"`
+}
+
+// PgsqlConf PostgreSQL 队列。单进程消费，语义与磁盘队列一致。
+type PgsqlConf struct {
+	Retry         int `json:"retry"`
+	RetryInterval int `json:"retryInterval"`
 }
 
 type RedisConf struct {
@@ -69,6 +76,8 @@ type MqMsg struct {
 	Partition int32     `json:"partition"`
 	Timestamp time.Time `json:"timestamp"`
 	Body      []byte    `json:"body"`
+	Retry     int       `json:"retry,omitempty"`
+	ExecuteAt time.Time `json:"execute_at,omitempty"`
 }
 
 var (
@@ -135,6 +144,8 @@ func NewProducer(groupName string) (mqClient MqProducer, err error) {
 	case "disk":
 		config.Disk.GroupName = groupName
 		mqClient, err = RegisterDiskMqProducer(config.Disk)
+	case "pgsql":
+		mqClient, err = RegisterPgsqlMqProducer(config.Pgsql)
 	default:
 		err = gerror.New("queue driver is not support")
 	}
@@ -199,6 +210,8 @@ func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 	case "disk":
 		config.Disk.GroupName = groupName
 		mqClient, err = RegisterDiskMqConsumer(config.Disk)
+	case "pgsql":
+		mqClient, err = RegisterPgsqlMqConsumer(config.Pgsql)
 	default:
 		err = gerror.New("queue driver is not support")
 	}

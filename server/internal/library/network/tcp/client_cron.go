@@ -14,6 +14,9 @@ import (
 
 // getCronKey 生成客户端定时任务名称
 func (client *Client) getCronKey(s string) string {
+	if client.conn == nil {
+		return fmt.Sprintf("tcp.client_%s:0", s)
+	}
 	return fmt.Sprintf("tcp.client_%s:%d", s, client.conn.CID)
 }
 

@@ -8,6 +8,7 @@ package router
 import (
 	"context"
 	"hotgo/internal/consts"
+	apicommon "hotgo/internal/controller/api/common"
 	"hotgo/internal/controller/api/member"
 	"hotgo/internal/controller/api/pay"
 	"hotgo/internal/service"
@@ -18,6 +19,9 @@ import (
 
 // Api 前台路由
 func Api(ctx context.Context, group *ghttp.RouterGroup) {
+	group.Bind(
+		apicommon.Site, // 健康检查，路径 /health
+	)
 	group.Group(simple.RouterPrefix(ctx, consts.AppApi), func(group *ghttp.RouterGroup) {
 		group.Bind(
 			pay.NewV1(), // 支付异步通知

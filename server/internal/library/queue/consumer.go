@@ -59,16 +59,11 @@ func consumerListen(ctx context.Context, job Consumer) {
 		return
 	}
 
-	if listenErr := c.ListenReceiveMsgDo(topic, func(mqMsg MqMsg) {
+	if listenErr := c.ListenReceiveMsgDo(topic, func(mqMsg MqMsg) error {
 		err = job.Handle(ctx, mqMsg)
-
-		// if err != nil {
-		//	// 遇到错误，重新加入到队列
-		//	//queue.Push(topic, mqMsg.Body)
-		// }
-
-		// 记录消费队列日志
+		// 记录消费队列日志。是否提交由具体驱动决定：成功才结束，失败进入退避或死信。
 		ConsumerLog(ctx, topic, mqMsg, err)
+		return err
 	}); listenErr != nil {
 		Logger().Fatalf(ctx, "消费队列：%s 监听失败, err:%+v", topic, listenErr)
 	}

@@ -20,12 +20,14 @@ const (
 )
 
 type Config struct {
-	GroupName    string        // 组群名称
-	Path         string        // 数据存放路径
-	BatchSize    int64         // 每N条消息同步一次，batchSize和batchTime满足其一就会同步一次
-	BatchTime    time.Duration // 每N秒消息同步一次
-	SegmentSize  int64         // 每个topic分片数据文件最大字节
-	SegmentLimit int64         // 每个topic最大分片数据文件数量
+	GroupName     string        // 组群名称
+	Path          string        // 数据存放路径
+	BatchSize     int64         // 每N条消息同步一次，batchSize和batchTime满足其一就会同步一次
+	BatchTime     time.Duration // 每N秒消息同步一次
+	SegmentSize   int64         // 每个topic分片数据文件最大字节
+	SegmentLimit  int64         // 每个topic最大分片数据文件数量
+	Retry         int           // 处理失败后最多再试次数，默认 5
+	RetryInterval int           // 首次退避秒数，默认 1，之后按次数指数增加
 }
 
 type Queue struct {

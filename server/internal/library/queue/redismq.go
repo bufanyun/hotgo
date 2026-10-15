@@ -122,7 +122,7 @@ func (r *RedisMq) SendDelayMsg(topic string, body string, delaySecond int64) (mq
 }
 
 // ListenReceiveMsgDo 消费数据
-func (r *RedisMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) (err error) {
+func (r *RedisMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg) error) (err error) {
 	if r.poolName == "" {
 		return gerror.New("RedisMq producer not register")
 	}
@@ -139,7 +139,7 @@ func (r *RedisMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) 
 		for range time.Tick(300 * time.Millisecond) {
 			mqMsgList := r.loopReadQueue(key)
 			for _, mqMsg := range mqMsgList {
-				receiveDo(mqMsg)
+				_ = receiveDo(mqMsg)
 			}
 		}
 	}()
@@ -147,7 +147,7 @@ func (r *RedisMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) 
 	go func() {
 		mqMsgCh, errCh := r.loopReadDelayQueue(key2)
 		for mqMsg := range mqMsgCh {
-			receiveDo(mqMsg)
+			_ = receiveDo(mqMsg)
 		}
 		for err = range errCh {
 			if err != nil && err != context.Canceled && err != context.DeadlineExceeded {
@@ -156,7 +156,10 @@ func (r *RedisMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) 
 		}
 	}()
 
-	select {}
+	ctx, release := beginConsumer()
+	defer release()
+	<-ctx.Done()
+	return nil
 }
 
 // 生成队列key

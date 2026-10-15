@@ -18,6 +18,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/hgrds/lock"
 	"hotgo/internal/model/entity"
 	"hotgo/utility/simple"
 	"os"
@@ -121,7 +122,19 @@ func StartALL(sysCron []*entity.SysCron) (err error) {
 				t, err = gcron.Add(ctx, cron.Pattern, f.Fun, sn)
 
 			case consts.CronPolicySingle:
-				t, err = gcron.AddSingleton(ctx, cron.Pattern, f.Fun, sn)
+				// 多进程先抢命名锁，抢不到就跳过本次；进程内仍用 AddSingleton 防重叠
+				job := f.Fun
+				name := cron.Name
+				wrapped := func(ctx context.Context) {
+					release, ok := lock.Try(ctx, "cron:singleton:"+name)
+					if !ok {
+						Logger().Infof(ctx, "单例任务 %s 未抢到锁，跳过本次执行", name)
+						return
+					}
+					defer release()
+					job(ctx)
+				}
+				t, err = gcron.AddSingleton(ctx, cron.Pattern, wrapped, sn)
 
 			case consts.CronPolicyOnce:
 				t, err = gcron.AddOnce(ctx, cron.Pattern, f.Fun, sn)

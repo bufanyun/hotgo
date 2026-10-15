@@ -222,6 +222,8 @@ func (client *Client) Close() {
 
 	client.isLogin.Set(false)
 	client.closeFlag.Set(true)
+	// 连接号还在时先停心跳，避免重连后旧任务继续跑
+	client.stopCron()
 	if client.conn != nil {
 		client.conn.Close()
 		client.conn = nil
@@ -235,6 +237,9 @@ func (client *Client) Close() {
 
 // Destroy 销毁当前连接
 func (client *Client) Destroy() {
+	client.mutex.Lock()
+	defer client.mutex.Unlock()
+
 	client.stopCron()
 	if client.conn != nil {
 		client.conn.Close()

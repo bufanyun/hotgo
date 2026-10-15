@@ -57,12 +57,18 @@ export const useProjectSettingStore = defineStore({
       return this.isMobile;
     },
     getHeaderSetting(): object {
+      if (this.navMode === 'double-column') {
+        return { ...this.headerSetting, fixed: false };
+      }
       return this.headerSetting;
     },
     getShowFooter(): boolean {
       return this.showFooter;
     },
     getMenuSetting(): object {
+      if (this.navMode === 'double-column') {
+        return { ...this.menuSetting, mixMenu: false };
+      }
       return this.menuSetting;
     },
     getMultiTabsSetting(): object {
@@ -87,6 +93,32 @@ export const useProjectSettingStore = defineStore({
     },
     setIsMobile(value: boolean): void {
       this.isMobile = value;
+    },
+    // 切换导航模式；双栏同时关掉分割菜单和固定顶栏
+    setNavMode(mode: string): void {
+      this.navMode = mode;
+      this.menuSetting.mixMenu = false;
+      if (mode === 'double-column') {
+        this.headerSetting.fixed = false;
+      }
+    },
+    // 回填已保存的项目配置，双栏不保留分割菜单和固定顶栏
+    setAllSettings(ps: ProjectSettingState): void {
+      this.navMode = ps.navMode;
+      this.navTheme = ps.navTheme;
+      this.isMobile = ps.isMobile;
+      this.headerSetting = ps.headerSetting;
+      this.showFooter = ps.showFooter;
+      this.menuSetting = ps.menuSetting;
+      if (this.navMode === 'double-column') {
+        this.menuSetting.mixMenu = false;
+        this.headerSetting.fixed = false;
+      }
+      this.multiTabsSetting = ps.multiTabsSetting;
+      this.crumbsSetting = ps.crumbsSetting;
+      this.permissionMode = ps.permissionMode;
+      this.isPageAnimate = ps.isPageAnimate;
+      this.pageAnimateType = ps.pageAnimateType;
     },
   },
 });

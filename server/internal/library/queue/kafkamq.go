@@ -7,7 +7,6 @@ package queue
 
 import (
 	"context"
-	"fmt"
 	"github.com/IBM/sarama"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -80,7 +79,7 @@ func (r *KafkaMq) SendDelayMsg(topic string, body string, delaySecond int64) (mq
 }
 
 // ListenReceiveMsgDo 消费数据
-func (r *KafkaMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) (err error) {
+func (r *KafkaMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg) error) (err error) {
 	if r.consumerIns == nil {
 		return gerror.New("queue kafka consumer not register")
 	}
@@ -98,7 +97,7 @@ func (r *KafkaMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) 
 			}
 
 			if consumerCtx.Err() != nil {
-				Logger().Debugf(ctx, fmt.Sprintf("kafka consoumer stop : %v", consumerCtx.Err()))
+				Logger().Debugf(ctx, "kafka consoumer stop : %v", consumerCtx.Err())
 				return
 			}
 			consumer.ready = make(chan bool)
@@ -221,7 +220,7 @@ func validateVersion(version sarama.KafkaVersion) bool {
 
 type KaConsumer struct {
 	ready        chan bool
-	receiveDoFun func(mqMsg MqMsg)
+	receiveDoFun func(mqMsg MqMsg) error
 }
 
 // Setup is run at the beginning of a new session, before ConsumeClaim
@@ -244,7 +243,7 @@ func (consumer *KaConsumer) ConsumeClaim(session sarama.ConsumerGroupSession, cl
 	// https://github.com/Shopify/sarama/blob/master/consumer_group.go#L27-L29
 	// `ConsumeClaim` 方法已经是 goroutine 调用 不要在该方法内进行 goroutine
 	for message := range claim.Messages() {
-		consumer.receiveDoFun(MqMsg{
+		_ = consumer.receiveDoFun(MqMsg{
 			RunType:   ReceiveMsg,
 			Topic:     message.Topic,
 			Body:      message.Value,

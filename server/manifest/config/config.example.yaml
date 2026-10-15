@@ -81,14 +81,14 @@ tcp:
       name: "cron1"                                                 # 客户端名称
       address: "127.0.0.1:8099"                                     # 服务器地址
       appId: "1002"                                                 # 应用名称
-      secretKey: "hotgo"                                            # 密钥
+      secretKey: "hotgo"                                            # 示例默认值，部署前请改成只有自己知道的新密钥
     # 系统授权
     auth:
       group: "auth"                                                 # 分组名称
       name: "auth1"                                                 # 客户端名称
       address: "127.0.0.1:8099"                                     # 服务器地址
       appId: "mengshuai"                                            # 应用名称
-      secretKey: "123456"                                           # 密钥
+      secretKey: "123456"                                           # 示例默认值，部署前请改成只有自己知道的新密钥
 
 
 # 日志配置
@@ -175,13 +175,13 @@ router:
 
 # 缓存驱动
 cache:
-  adapter: "file"                    # 缓存驱动方式，支持：memory|redis|file，不填默认memory
+  adapter: "file"                    # 缓存驱动方式，支持：memory|redis|file|pgsql，不填默认memory
   fileDir: "./storage/cache"         # 文件缓存路径，adapter=file时必填
 
 
 # 登录令牌
 token:
-  secretKey: "hotgo123"                  # 令牌加密秘钥，考虑安全问题生产环境中请修改默认值
+  secretKey: "hotgo123"                  # 示例默认值。这是登录令牌的签名密钥，部署前请改成只有自己知道的新密钥
   expires: 604800                        # 令牌有效期，单位：秒。默认7天
   autoRefresh: true                      # 是否开启自动刷新过期时间， false|true 默认为true
   refreshInterval: 86400                 # 刷新间隔，单位：秒。必须小于expires，否则无法触发。默认1天内只允许刷新一次
@@ -192,7 +192,7 @@ token:
 # 消息队列
 queue:
   switch: true                                        # 队列开关，可选：true|false，默认为true
-  driver: "disk"                                      # 队列驱动，可选：disk|redis|rocketmq|kafka，默认为disk
+  driver: "disk"                                      # 队列驱动，可选：disk|redis|rocketmq|kafka|pgsql，默认为disk
   groupName: "hotgo"                                  # mq群组名称
   # 磁盘队列
   disk:
@@ -216,6 +216,12 @@ queue:
     version: "2.0.0.0"                                # kafka专属配置，默认2.0.0.0
     randClient: true                                  # 开启随机生成clientID，可以实现启动多实例同时一起消费相同topic，加速消费能力的特性，默认为true
     multiConsumer: true                               # 是否支持创建多个消费者
+  # pgsql:
+  #   retry: 5
+  #   retryInterval: 1
+
+lock:
+  driver: ""                                          # 可选：memory|mysql|pgsql|redis，空则按数据库类型自动选择
 
 
 # Redis. 配置参考：https://goframe.org/pages/viewpage.action?pageId=1114217
@@ -235,6 +241,8 @@ database:
     stdout: true
   default:
     link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true&charset=utf8mb4"
+    # PostgreSQL 示例（默认仍使用上面的 MySQL，需要时再替换 link）：
+    # link: "pgsql:postgres:hg123456@tcp(127.0.0.1:5432)/hotgo"
     debug: true
     Prefix: "hg_"
 

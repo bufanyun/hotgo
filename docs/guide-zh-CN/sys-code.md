@@ -111,7 +111,7 @@ gfcli:
 #      - link: "pgsql:postgres:hg123456@tcp(127.0.0.1:5432)/hotgo"
         group: "default"                                                # 分组 使用hotgo代码生成功能时必须填
         #        tables:          ""                                    # 指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
-        tablesEx:        "hg_sys_addons_install"                        # 指定当前数据库中需要排除代码生成的数据表。
+        tablesEx:        "hg_sys_addons_install,hg_sys_cache,hg_sys_queue_message"                        # 指定当前数据库中需要排除代码生成的数据表。
         removePrefix: "hg_"
         descriptionTag: true
         noModelComment: true
@@ -270,7 +270,7 @@ INSERT INTO `hg_test_table` (`id`, `category_id`, `title`, `description`, `conte
       - link: "mysql:hotgo:hg123456.@tcp(127.0.0.1:3306)/hotgo?loc=Local&parseTime=true"
 #      - link: "pgsql:postgres:hg123456@tcp(127.0.0.1:5432)/hotgo"
         group: "default"                                                # 分组 使用hotgo代码生成功能时必须填
-        tablesEx:        "hg_sys_addons_install"                        # 指定当前数据库中需要排除代码生成的数据表。
+        tablesEx:        "hg_sys_addons_install,hg_sys_cache,hg_sys_queue_message"                        # 指定当前数据库中需要排除代码生成的数据表。
         removePrefix: "hg_"
         descriptionTag: true
         noModelComment: true
@@ -279,7 +279,7 @@ INSERT INTO `hg_test_table` (`id`, `category_id`, `title`, `description`, `conte
         clear: false
       - link: "mysql:hotgo2:hg123456.@tcp(127.0.0.1:3306)/hotgo2?loc=Local&parseTime=true"
         group: "default2"                                                # 分组 使用hotgo代码生成功能时必须填
-        tablesEx:        "hg_sys_addons_install"                         # 指定当前数据库中需要排除代码生成的数据表。
+        tablesEx:        "hg_sys_addons_install,hg_sys_cache,hg_sys_queue_message"                         # 指定当前数据库中需要排除代码生成的数据表。
         removePrefix: ""
         descriptionTag: true
         noModelComment: true

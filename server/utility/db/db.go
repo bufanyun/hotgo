@@ -12,9 +12,11 @@ import (
 // usage:
 //
 // fields, err := db.GetFieldsWithComment(ctx, in.Table, in.Name)
-// if err != nil {
-// 	return
-// }
+//
+//	if err != nil {
+//		return
+//	}
+//
 // for _, v := range fields {}
 func GetFieldsWithComment(ctx context.Context, tableName, dbTag string) (fields map[string]*gdb.TableField, err error) {
 	db := g.DB(dbTag)
@@ -49,6 +51,14 @@ func GetTablesWithComment(ctx context.Context, dbTag string) (tables []*TableCom
 			return
 		}
 		tables, err = transSqliteTablesComment(ctx, tableNames, db)
+	case "pgsql":
+		// 当前 schema 下的表名和表注释
+		sql := `SELECT c.relname AS name, COALESCE(obj_description(c.oid, 'pg_class'), '') AS comment
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relkind = 'r' AND n.nspname = current_schema()
+ORDER BY c.relname`
+		err = db.Ctx(ctx).Raw(sql).Scan(&tables)
 	}
 	return
 }

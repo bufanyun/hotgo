@@ -50,7 +50,10 @@ func (s *sSysServeLog) List(ctx context.Context, in *sysin.ServeLogListInp) (lis
 	// 非生产环境，允许关键词查询日志
 	// 生成环境使用需谨慎，日志量大易产生慢日志
 	if !gmode.IsProduct() && in.Content != "" {
-		mod = mod.WhereLike(dao.SysServeLog.Columns().Content, "%"+in.Content+"%")
+		like := "%" + in.Content + "%"
+		contentCol := dao.SysServeLog.Columns().Content
+		stackCol := dao.SysServeLog.Columns().Stack
+		mod = mod.Where(fmt.Sprintf("(%s LIKE ? OR %s LIKE ?)", contentCol, stackCol), like, like)
 	}
 
 	// 查询日志级别

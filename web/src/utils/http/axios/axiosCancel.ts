@@ -1,13 +1,22 @@
 import axios, { AxiosRequestConfig, Canceler } from 'axios';
-import qs from 'qs';
 
 import { isFunction } from '@/utils/is/index';
 
 // 声明一个 Map 用于存储每个请求的标识 和 取消函数
 let pendingMap = new Map<string, Canceler>();
 
+function pendingPart(value: unknown) {
+  if (value == null || value === '') return '';
+  if (typeof value === 'string') return value;
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return '';
+  }
+}
+
 export const getPendingUrl = (config: AxiosRequestConfig) =>
-  [config.method, config.url, qs.stringify(config.data), qs.stringify(config.params)].join('&');
+  [config.method, config.url, pendingPart(config.data), pendingPart(config.params)].join('&');
 
 export class AxiosCanceler {
   /**

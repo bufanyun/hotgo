@@ -84,6 +84,20 @@
             </n-tooltip>
             <n-badge dot color="#19be6b" v-show="settingStore.navMode === 'horizontal-mix'" />
           </div>
+
+          <div class="drawer-setting-item-style">
+            <n-tooltip placement="top">
+              <template #trigger>
+                <img
+                  src="~@/assets/images/nav-double-column.svg"
+                  @click="togNavMode('double-column')"
+                  alt="双栏菜单模式"
+                />
+              </template>
+              <span>双栏菜单模式</span>
+            </n-tooltip>
+            <n-badge dot color="#19be6b" v-show="settingStore.navMode === 'double-column'" />
+          </div>
         </div>
 
         <n-divider title-placement="center">导航栏风格</n-divider>
@@ -133,17 +147,14 @@
         </div>
         <n-divider title-placement="center">界面功能</n-divider>
 
-        <div class="drawer-setting-item">
+        <div class="drawer-setting-item" v-if="settingStore.navMode === 'horizontal-mix'">
           <div class="drawer-setting-item-title"> 分割菜单 </div>
           <div class="drawer-setting-item-action">
-            <n-switch
-              :disabled="settingStore.navMode !== 'horizontal-mix'"
-              v-model:value="settingStore.menuSetting.mixMenu"
-            />
+            <n-switch v-model:value="settingStore.menuSetting.mixMenu" />
           </div>
         </div>
 
-        <div class="drawer-setting-item">
+        <div class="drawer-setting-item" v-if="settingStore.navMode !== 'double-column'">
           <div class="drawer-setting-item-title"> 固定顶栏 </div>
           <div class="drawer-setting-item-action">
             <n-switch v-model:value="settingStore.headerSetting.fixed" />
@@ -295,8 +306,7 @@
       }
 
       function togNavMode(mode) {
-        settingStore.navMode = mode;
-        settingStore.menuSetting.mixMenu = false;
+        settingStore.setNavMode(mode);
       }
 
       return {

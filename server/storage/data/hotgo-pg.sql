@@ -3,12 +3,43 @@
 -- ==========================================
 
 
--- 设置时区
-SET TIMEZONE = 'UTC';
-
 -- 创建扩展
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE EXTENSION IF NOT EXISTS btree_gin;
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+
+
+-- jsonb 支持 LIKE / NOT LIKE。函数体会被规划器展开成 列::text LIKE，因此 (列::text) 上的 trigram 索引仍然有效
+CREATE OR REPLACE FUNCTION hotgo_jsonb_like(jsonb, text)
+RETURNS boolean
+LANGUAGE sql
+IMMUTABLE
+STRICT
+PARALLEL SAFE
+AS $$ SELECT $1::text LIKE $2 $$;
+
+CREATE OR REPLACE FUNCTION hotgo_jsonb_not_like(jsonb, text)
+RETURNS boolean
+LANGUAGE sql
+IMMUTABLE
+STRICT
+PARALLEL SAFE
+AS $$ SELECT $1::text NOT LIKE $2 $$;
+
+DROP OPERATOR IF EXISTS ~~ (jsonb, text);
+CREATE OPERATOR ~~ (
+    LEFTARG = jsonb,
+    RIGHTARG = text,
+    FUNCTION = hotgo_jsonb_like
+);
+
+DROP OPERATOR IF EXISTS !~~ (jsonb, text);
+CREATE OPERATOR !~~ (
+    LEFTARG = jsonb,
+    RIGHTARG = text,
+    FUNCTION = hotgo_jsonb_not_like
+);
 
 -- hg_addon_hgexample_table
 
@@ -31,8 +62,8 @@ CREATE TABLE IF NOT EXISTS hg_addon_hgexample_table (
     price NUMERIC(10,2) NOT NULL DEFAULT 0.00,
     views BIGINT,
     activity_at DATE,
-    start_at TIMESTAMP,
-    end_at TIMESTAMP,
+    start_at timestamptz,
+    end_at timestamptz,
     switch SMALLINT,
     sort INTEGER,
     avatar VARCHAR(255) DEFAULT '',
@@ -47,9 +78,9 @@ CREATE TABLE IF NOT EXISTS hg_addon_hgexample_table (
     status SMALLINT DEFAULT 1,
     created_by BIGINT DEFAULT 0,
     updated_by BIGINT DEFAULT 0,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
-    deleted_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz,
+    deleted_at timestamptz
 );
 
 COMMENT ON TABLE hg_addon_hgexample_table IS '插件_案例_表格';
@@ -103,8 +134,8 @@ CREATE TABLE IF NOT EXISTS hg_addon_hgexample_tenant_order (
     money NUMERIC(10,2) NOT NULL,
     remark VARCHAR(255),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_addon_hgexample_tenant_order IS '多租户_充值订单';
@@ -131,8 +162,8 @@ CREATE TABLE IF NOT EXISTS hg_admin_cash (
     ip VARCHAR(128) NOT NULL,
     status BIGINT NOT NULL,
     msg VARCHAR(128) NOT NULL,
-    handle_at TIMESTAMP,
-    created_at TIMESTAMP NOT NULL
+    handle_at timestamptz,
+    created_at timestamptz NOT NULL
 );
 
 COMMENT ON TABLE hg_admin_cash IS '管理员_提现记录表';
@@ -163,8 +194,8 @@ CREATE TABLE IF NOT EXISTS hg_admin_credits_log (
     ip VARCHAR(20),
     map_id BIGINT DEFAULT 0,
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_admin_credits_log IS '管理员_资产变动表';
@@ -199,8 +230,8 @@ CREATE TABLE IF NOT EXISTS hg_admin_dept (
     tree TEXT,
     sort INTEGER DEFAULT 0,
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_admin_dept IS '管理员_部门';
@@ -245,11 +276,11 @@ CREATE TABLE IF NOT EXISTS hg_admin_member (
     tree TEXT,
     invite_code VARCHAR(12),
     cash JSONB,
-    last_active_at TIMESTAMP,
+    last_active_at timestamptz,
     remark VARCHAR(255),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_admin_member IS '管理员_用户表';
@@ -281,6 +312,13 @@ COMMENT ON COLUMN hg_admin_member.remark IS '备注';
 COMMENT ON COLUMN hg_admin_member.status IS '状态';
 COMMENT ON COLUMN hg_admin_member.created_at IS '创建时间';
 COMMENT ON COLUMN hg_admin_member.updated_at IS '修改时间';
+
+-- 用户列表：状态精确匹配 + 姓名模糊搜索。status 用 btree_gin，real_name 用 pg_trgm
+CREATE INDEX IF NOT EXISTS idx_hg_admin_member_status_real_name
+    ON hg_admin_member USING gin (status int2_ops, real_name gin_trgm_ops);
+-- 用户列表：账号模糊搜索
+CREATE INDEX IF NOT EXISTS idx_hg_admin_member_username_trgm
+    ON hg_admin_member USING gin (username gin_trgm_ops);
 
 -- hg_admin_member_post
 
@@ -333,8 +371,8 @@ CREATE TABLE IF NOT EXISTS hg_admin_menu (
     sort INTEGER DEFAULT 0,
     remark VARCHAR(255),
     status SMALLINT DEFAULT 1,
-    updated_at TIMESTAMP,
-    created_at TIMESTAMP
+    updated_at timestamptz,
+    created_at timestamptz
 );
 
 COMMENT ON TABLE hg_admin_menu IS '管理员_菜单权限';
@@ -379,9 +417,9 @@ CREATE TABLE IF NOT EXISTS hg_admin_notice (
     status SMALLINT DEFAULT 1,
     created_by BIGINT,
     updated_by BIGINT DEFAULT 0,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
-    deleted_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz,
+    deleted_at timestamptz
 );
 
 COMMENT ON TABLE hg_admin_notice IS '管理员_通知公告';
@@ -400,6 +438,10 @@ COMMENT ON COLUMN hg_admin_notice.created_at IS '创建时间';
 COMMENT ON COLUMN hg_admin_notice.updated_at IS '更新时间';
 COMMENT ON COLUMN hg_admin_notice.deleted_at IS '删除时间';
 
+-- 公告列表：状态精确匹配 + 标题模糊搜索
+CREATE INDEX IF NOT EXISTS idx_hg_admin_notice_status_title
+    ON hg_admin_notice USING gin (status int2_ops, title gin_trgm_ops);
+
 -- hg_admin_notice_read
 
 CREATE TABLE IF NOT EXISTS hg_admin_notice_read (
@@ -407,8 +449,8 @@ CREATE TABLE IF NOT EXISTS hg_admin_notice_read (
     notice_id BIGINT NOT NULL,
     member_id BIGINT NOT NULL,
     clicks INTEGER DEFAULT 1,
-    updated_at TIMESTAMP,
-    created_at TIMESTAMP
+    updated_at timestamptz,
+    created_at timestamptz
 );
 
 COMMENT ON TABLE hg_admin_notice_read IS '管理员_公告已读记录';
@@ -435,8 +477,8 @@ CREATE TABLE IF NOT EXISTS hg_admin_oauth (
     province VARCHAR(100) DEFAULT '',
     city VARCHAR(100) DEFAULT '',
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_admin_oauth IS '管理员_第三方登录';
@@ -469,8 +511,8 @@ CREATE TABLE IF NOT EXISTS hg_admin_order (
     refund_reason VARCHAR(255),
     reject_refund_reason VARCHAR(255),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_admin_order IS '管理员_充值订单';
@@ -496,8 +538,8 @@ CREATE TABLE IF NOT EXISTS hg_admin_post (
     remark VARCHAR(500),
     sort INTEGER NOT NULL,
     status SMALLINT NOT NULL,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_admin_post IS '管理员_岗位';
@@ -524,8 +566,8 @@ CREATE TABLE IF NOT EXISTS hg_admin_role (
     remark VARCHAR(255),
     sort INTEGER NOT NULL DEFAULT 0,
     status SMALLINT NOT NULL DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_admin_role IS '管理员_角色信息';
@@ -590,7 +632,7 @@ CREATE TABLE IF NOT EXISTS hg_pay_log (
     pay_amount NUMERIC(10,2) NOT NULL DEFAULT 0.00,
     actual_amount NUMERIC(10,2),
     pay_status SMALLINT DEFAULT 0,
-    pay_at TIMESTAMP,
+    pay_at timestamptz,
     trade_type VARCHAR(16) DEFAULT '',
     refund_sn VARCHAR(128),
     is_refund SMALLINT DEFAULT 0,
@@ -601,8 +643,8 @@ CREATE TABLE IF NOT EXISTS hg_pay_log (
     return_url VARCHAR(255),
     trace_ids JSONB,
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_pay_log IS '支付_支付日志';
@@ -651,8 +693,8 @@ CREATE TABLE IF NOT EXISTS hg_pay_refund (
     reason VARCHAR(255),
     remark VARCHAR(255),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_pay_refund IS '支付_退款记录';
@@ -685,8 +727,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_addons_config (
     tip VARCHAR(500),
     is_default SMALLINT DEFAULT 0,
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_addons_config IS '系统_插件配置';
@@ -712,8 +754,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_addons_install (
     name VARCHAR(255) NOT NULL,
     version VARCHAR(128) NOT NULL DEFAULT '',
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_addons_install IS '系统_插件安装记录';
@@ -742,8 +784,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_attachment (
     ext VARCHAR(50),
     md5 VARCHAR(32),
     status SMALLINT NOT NULL DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_attachment IS '系统_附件管理';
@@ -765,6 +807,10 @@ COMMENT ON COLUMN hg_sys_attachment.status IS '状态';
 COMMENT ON COLUMN hg_sys_attachment.created_at IS '创建时间';
 COMMENT ON COLUMN hg_sys_attachment.updated_at IS '修改时间';
 
+-- 附件列表：先按上传人过滤，再按文件名模糊搜索
+CREATE INDEX IF NOT EXISTS idx_hg_sys_attachment_member_name
+    ON hg_sys_attachment USING gin (member_id int8_ops, name gin_trgm_ops);
+
 -- hg_sys_blacklist
 
 CREATE TABLE IF NOT EXISTS hg_sys_blacklist (
@@ -772,8 +818,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_blacklist (
     ip VARCHAR(100) DEFAULT '',
     remark VARCHAR(500),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_blacklist IS '系统_访问黑名单';
@@ -798,8 +844,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_config (
     tip VARCHAR(500),
     is_default SMALLINT DEFAULT 0,
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_config IS '系统_配置';
@@ -831,8 +877,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_cron (
     sort INTEGER DEFAULT 0,
     remark VARCHAR(500),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_cron IS '系统_定时任务';
@@ -860,8 +906,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_cron_group (
     sort INTEGER DEFAULT 0,
     remark VARCHAR(500),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_cron_group IS '系统_定时任务分组';
@@ -888,8 +934,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_dict_data (
     sort INTEGER DEFAULT 0,
     remark VARCHAR(500),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_dict_data IS '系统_字典数据';
@@ -916,8 +962,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_dict_type (
     sort INTEGER DEFAULT 0,
     remark VARCHAR(500),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_dict_type IS '系统_字典类型';
@@ -942,8 +988,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_ems_log (
     content TEXT,
     ip VARCHAR(128),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_ems_log IS '系统_邮件发送记录';
@@ -973,8 +1019,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_gen_codes (
     master_columns JSONB,
     addon_name VARCHAR(128),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_gen_codes IS '系统_代码生成记录';
@@ -1010,9 +1056,9 @@ CREATE TABLE IF NOT EXISTS hg_sys_gen_curd_demo (
     created_by BIGINT DEFAULT 0,
     updated_by BIGINT DEFAULT 0,
     deleted_by BIGINT DEFAULT 0,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
-    deleted_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz,
+    deleted_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_gen_curd_demo IS '系统_生成curd演示';
@@ -1048,9 +1094,9 @@ CREATE TABLE IF NOT EXISTS hg_sys_gen_tree_demo (
     status SMALLINT DEFAULT 1,
     created_by BIGINT DEFAULT 0,
     updated_by BIGINT DEFAULT 0,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
-    deleted_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz,
+    deleted_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_gen_tree_demo IS '系统_生成树表演示';
@@ -1093,8 +1139,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_log (
     take_up_time BIGINT DEFAULT 0,
     timestamp BIGINT DEFAULT 0,
     status SMALLINT NOT NULL DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_log IS '系统_全局日志';
@@ -1122,6 +1168,21 @@ COMMENT ON COLUMN hg_sys_log.status IS '状态';
 COMMENT ON COLUMN hg_sys_log.created_at IS '创建时间';
 COMMENT ON COLUMN hg_sys_log.updated_at IS '修改时间';
 
+-- 请求日志：时间范围 + 访问路径模糊搜索。created_at 用 btree_gist，url 用 pg_trgm
+CREATE INDEX IF NOT EXISTS idx_hg_sys_log_created_url
+    ON hg_sys_log USING gist (created_at gist_timestamptz_ops, url gist_trgm_ops);
+-- 请求日志：JSON 文本模糊搜索。查询写 列 LIKE，运算符会展开成 列::text LIKE
+CREATE INDEX IF NOT EXISTS idx_hg_sys_log_get_data_trgm
+    ON hg_sys_log USING gin ((get_data::text) gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_hg_sys_log_post_data_trgm
+    ON hg_sys_log USING gin ((post_data::text) gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_hg_sys_log_header_data_trgm
+    ON hg_sys_log USING gin ((header_data::text) gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_hg_sys_log_error_data_trgm
+    ON hg_sys_log USING gin ((error_data::text) gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_hg_sys_log_error_msg_trgm
+    ON hg_sys_log USING gin (error_msg gin_trgm_ops);
+
 -- hg_sys_login_log
 
 CREATE TABLE IF NOT EXISTS hg_sys_login_log (
@@ -1130,15 +1191,15 @@ CREATE TABLE IF NOT EXISTS hg_sys_login_log (
     member_id BIGINT DEFAULT 0,
     username VARCHAR(64),
     response JSONB,
-    login_at TIMESTAMP,
+    login_at timestamptz,
     login_ip VARCHAR(128),
     province_id BIGINT,
     city_id BIGINT,
     user_agent VARCHAR(512),
     err_msg VARCHAR(1000),
     status SMALLINT NOT NULL DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_login_log IS '系统_登录日志';
@@ -1170,8 +1231,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_provinces (
     tree TEXT,
     sort INTEGER DEFAULT 0,
     status SMALLINT NOT NULL DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_provinces IS '系统_省市区编码';
@@ -1188,6 +1249,10 @@ COMMENT ON COLUMN hg_sys_provinces.status IS '状态';
 COMMENT ON COLUMN hg_sys_provinces.created_at IS '创建时间';
 COMMENT ON COLUMN hg_sys_provinces.updated_at IS '更新时间';
 
+-- 省市区：按名称模糊搜索
+CREATE INDEX IF NOT EXISTS idx_hg_sys_provinces_title_trgm
+    ON hg_sys_provinces USING gin (title gin_trgm_ops);
+
 CREATE TABLE IF NOT EXISTS hg_sys_serve_license (
     id BIGSERIAL PRIMARY KEY,
     "group" VARCHAR(50) NOT NULL,
@@ -1197,15 +1262,15 @@ CREATE TABLE IF NOT EXISTS hg_sys_serve_license (
     remote_addr VARCHAR(64),
     online_limit INTEGER DEFAULT 1,
     login_times BIGINT,
-    last_login_at TIMESTAMP,
-    last_active_at TIMESTAMP,
+    last_login_at timestamptz,
+    last_active_at timestamptz,
     routes JSONB,
     allowed_ips VARCHAR(512),
-    end_at TIMESTAMP NOT NULL,
+    end_at timestamptz NOT NULL,
     remark VARCHAR(512),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_serve_license IS '系统_服务许可证';
@@ -1236,8 +1301,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_serve_log (
     line VARCHAR(255) NOT NULL,
     trigger_ns BIGINT,
     status SMALLINT NOT NULL DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_serve_log IS '系统_服务日志';
@@ -1252,6 +1317,13 @@ COMMENT ON COLUMN hg_sys_serve_log.status IS '状态';
 COMMENT ON COLUMN hg_sys_serve_log.created_at IS '创建时间';
 COMMENT ON COLUMN hg_sys_serve_log.updated_at IS '修改时间';
 
+-- 服务日志：创建时间范围 + 内容模糊搜索。created_at 用 btree_gist，content 用 pg_trgm
+CREATE INDEX IF NOT EXISTS idx_hg_sys_serve_log_created_content
+    ON hg_sys_serve_log USING gist (created_at gist_timestamptz_ops, content gist_trgm_ops);
+-- 服务日志：堆栈文本模糊搜索。查询写 stack LIKE，运算符会展开成 stack::text LIKE
+CREATE INDEX IF NOT EXISTS idx_hg_sys_serve_log_stack_trgm
+    ON hg_sys_serve_log USING gin ((stack::text) gin_trgm_ops);
+
 CREATE TABLE IF NOT EXISTS hg_sys_sms_log (
     id BIGSERIAL PRIMARY KEY,
     event VARCHAR(64) NOT NULL,
@@ -1260,8 +1332,8 @@ CREATE TABLE IF NOT EXISTS hg_sys_sms_log (
     times BIGINT NOT NULL,
     ip VARCHAR(128),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz
 );
 
 COMMENT ON TABLE hg_sys_sms_log IS '系统_短信发送记录';
@@ -1286,9 +1358,9 @@ CREATE TABLE IF NOT EXISTS hg_test_category (
     sort INTEGER NOT NULL,
     remark VARCHAR(255),
     status SMALLINT DEFAULT 1,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
-    deleted_at TIMESTAMP
+    created_at timestamptz,
+    updated_at timestamptz,
+    deleted_at timestamptz
 );
 
 COMMENT ON TABLE hg_test_category IS '测试分类';
@@ -7064,3 +7136,30 @@ ALTER SEQUENCE hg_sys_sms_log_id_seq RESTART WITH 2;
 
 -- hg_test_category
 ALTER SEQUENCE hg_test_category_id_seq RESTART WITH 5;
+
+-- hg_sys_cache
+CREATE TABLE IF NOT EXISTS hg_sys_cache (
+    cache_key VARCHAR(512) PRIMARY KEY,
+    cache_value TEXT NOT NULL,
+    expire_at BIGINT NOT NULL DEFAULT 0
+);
+ALTER TABLE hg_sys_cache ALTER COLUMN cache_key TYPE VARCHAR(512);
+COMMENT ON TABLE hg_sys_cache IS '缓存（pgsql适配器）';
+COMMENT ON COLUMN hg_sys_cache.expire_at IS '过期时间，Unix秒，0表示不过期';
+
+-- hg_sys_queue_message
+CREATE TABLE IF NOT EXISTS hg_sys_queue_message (
+    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    topic VARCHAR(128) NOT NULL,
+    msg_id VARCHAR(64) NOT NULL DEFAULT '',
+    body TEXT NOT NULL,
+    status SMALLINT NOT NULL DEFAULT 0,
+    execute_at BIGINT NOT NULL,
+    retry INTEGER NOT NULL DEFAULT 0,
+    created_at BIGINT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_hg_sys_queue_message_due ON hg_sys_queue_message (topic, status, execute_at);
+COMMENT ON TABLE hg_sys_queue_message IS '数据库队列消息';
+COMMENT ON COLUMN hg_sys_queue_message.status IS '0待执行 1死信，成功后删除';
+COMMENT ON COLUMN hg_sys_queue_message.execute_at IS '可执行时间，Unix秒';
+COMMENT ON COLUMN hg_sys_queue_message.retry IS '已重试次数';

@@ -10,11 +10,11 @@ export function useProjectSetting() {
 
   const getIsMobile = computed(() => projectStore.isMobile);
 
-  const getHeaderSetting = computed(() => projectStore.headerSetting);
+  const getHeaderSetting = computed(() => projectStore.getHeaderSetting);
 
   const getMultiTabsSetting = computed(() => projectStore.multiTabsSetting);
 
-  const getMenuSetting = computed(() => projectStore.menuSetting);
+  const getMenuSetting = computed(() => projectStore.getMenuSetting);
 
   const getCrumbsSetting = computed(() => projectStore.crumbsSetting);
 

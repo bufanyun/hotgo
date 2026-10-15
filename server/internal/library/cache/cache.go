@@ -11,6 +11,7 @@ import (
 	"github.com/gogf/gf/v2/os/gcache"
 	"github.com/gogf/gf/v2/os/gfile"
 	"hotgo/internal/library/cache/file"
+	"hotgo/internal/library/cache/pgsql"
 )
 
 // cache 缓存驱动
@@ -31,6 +32,8 @@ func SetAdapter(ctx context.Context) {
 	switch g.Cfg().MustGet(ctx, "cache.adapter").String() {
 	case "redis":
 		adapter = gcache.NewAdapterRedis(g.Redis())
+	case "pgsql":
+		adapter = pgsql.New(g.DB())
 	case "file":
 		fileDir := g.Cfg().MustGet(ctx, "cache.fileDir").String()
 		if fileDir == "" {

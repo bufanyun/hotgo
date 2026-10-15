@@ -27,5 +27,5 @@ func IsDemo(ctx context.Context) bool {
 
 // IsCluster 是否为集群部署
 func IsCluster(ctx context.Context) bool {
-	return g.Cfg().MustGet(ctx, "system.isCluster", true).Bool()
+	return g.Cfg().MustGet(ctx, "system.isCluster", false).Bool()
 }

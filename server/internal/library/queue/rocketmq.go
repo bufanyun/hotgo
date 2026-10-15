@@ -178,7 +178,7 @@ func (r *RocketMq) SendDelayMsg(topic string, body string, delayTimeLevel int64)
 }
 
 // ListenReceiveMsgDo 消费数据
-func (r *RocketMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) (err error) {
+func (r *RocketMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg) error) (err error) {
 	if r.consumerIns == nil {
 		return gerror.New("rocketMq consumer not register")
 	}
@@ -193,7 +193,7 @@ func (r *RocketMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg))
 	err = r.consumerIns.Subscribe(topic, consumer.MessageSelector{}, func(ctx context.Context, msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 		for _, item := range msgs {
 			_ = rocketManager.goPool.Add(ctx, func(ctx context.Context) {
-				receiveDo(MqMsg{
+				_ = receiveDo(MqMsg{
 					RunType: ReceiveMsg,
 					Topic:   item.Topic,
 					MsgId:   item.MsgId,

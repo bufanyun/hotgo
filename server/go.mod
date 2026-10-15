@@ -15,11 +15,11 @@ require (
 	github.com/go-pay/crypto v0.0.1
 	github.com/go-pay/gopay v1.5.114
 	github.com/go-pay/smap v0.0.2
-	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.10.0
-	github.com/gogf/gf/contrib/drivers/pgsql/v2 v2.10.0
-	github.com/gogf/gf/contrib/nosql/redis/v2 v2.10.0
+	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.10.3
+	github.com/gogf/gf/contrib/drivers/pgsql/v2 v2.10.3
+	github.com/gogf/gf/contrib/nosql/redis/v2 v2.10.3
 	github.com/gogf/gf/contrib/trace/jaeger/v2 v2.7.4
-	github.com/gogf/gf/v2 v2.10.0
+	github.com/gogf/gf/v2 v2.10.3
 	github.com/gogf/selfupdate v0.0.0-20231215043001-5c48c528462f
 	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/gorilla/websocket v1.5.3

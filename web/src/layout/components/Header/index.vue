@@ -21,9 +21,9 @@
       <!-- 菜单收起 -->
       <div
         class="ml-1 layout-header-trigger layout-header-trigger-min"
-        @click="() => $emit('update:collapsed', !collapsed)"
+        @click="handleMenuToggle"
       >
-        <n-icon size="18" v-if="collapsed">
+        <n-icon size="18" v-if="getToggleIcon">
           <MenuUnfoldOutlined />
         </n-icon>
         <n-icon size="18" v-else>
@@ -244,7 +244,12 @@
       inverted: {
         type: Boolean,
       },
+      secondMenuCollapsed: {
+        type: Boolean,
+        default: false,
+      },
     },
+    emits: ['update:collapsed', 'update:secondMenuCollapsed'],
     setup(props, { emit }) {
       const i18nStore = useI18nStore();
       const userStore = useUserStore();
@@ -281,8 +286,26 @@
       });
 
       const mixMenu = computed(() => {
+        if (unref(getNavMode) === 'double-column') return false;
         return unref(getMenuSetting).mixMenu;
       });
+
+      const isDoubleColumn = computed(() => unref(getNavMode) === 'double-column');
+
+      const getToggleIcon = computed(() => {
+        if (isDoubleColumn.value) {
+          return props.secondMenuCollapsed;
+        }
+        return props.collapsed;
+      });
+
+      const handleMenuToggle = () => {
+        if (isDoubleColumn.value && !unref(getIsMobile)) {
+          emit('update:secondMenuCollapsed', !props.secondMenuCollapsed);
+        } else {
+          emit('update:collapsed', !props.collapsed);
+        }
+      };
 
       const getChangeStyle = computed(() => {
         const { collapsed } = props;
@@ -570,6 +593,8 @@
         getInverted,
         getMenuLocation,
         mixMenu,
+        getToggleIcon,
+        handleMenuToggle,
         NotificationsIcon,
         SystemMessage,
         notificationStore,

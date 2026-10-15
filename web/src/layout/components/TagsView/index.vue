@@ -110,7 +110,6 @@
   import { renderIcon } from '@/utils';
   import elementResizeDetectorMaker from 'element-resize-detector';
   import { useDesignSetting } from '@/hooks/setting/useDesignSetting';
-  import { useProjectSettingStore } from '@/store/modules/projectSetting';
   import { useThemeVars } from 'naive-ui';
   import { useGo } from '@/hooks/web/usePage';
 
@@ -127,12 +126,15 @@
       collapsed: {
         type: Boolean,
       },
+      secondMenuCollapsed: {
+        type: Boolean,
+        default: false,
+      },
     },
     setup(props) {
       const { getDarkTheme, getAppTheme } = useDesignSetting();
       const { getNavMode, getHeaderSetting, getMenuSetting, getMultiTabsSetting, getIsMobile } =
         useProjectSetting();
-      const settingStore = useProjectSettingStore();
 
       const message = useMessage();
       const route = useRoute();
@@ -171,7 +173,7 @@
       };
 
       const isMixMenuNoneSub = computed(() => {
-        const mixMenu = settingStore.menuSetting.mixMenu;
+        const mixMenu = unref(getMenuSetting).mixMenu;
         const navMode = unref(getNavMode);
         if (unref(navMode) != 'horizontal-mix') return true;
         return !(unref(navMode) === 'horizontal-mix' && mixMenu && route.meta.isRoot);
@@ -179,16 +181,18 @@
 
       //动态组装样式 菜单缩进
       const getChangeStyle = computed(() => {
-        const { collapsed } = props;
+        const { collapsed, secondMenuCollapsed } = props;
         const navMode = unref(getNavMode);
         const { minMenuWidth, menuWidth }: any = unref(getMenuSetting);
         const { fixed }: any = unref(getMultiTabsSetting);
-        let lenNum =
-          navMode === 'horizontal' || !isMixMenuNoneSub.value
-            ? '0px'
-            : collapsed
-            ? `${minMenuWidth}px`
-            : `${menuWidth}px`;
+        let lenNum = '0px';
+        if (navMode === 'double-column') {
+          lenNum = secondMenuCollapsed ? '130px' : '240px';
+        } else if (navMode === 'horizontal' || !isMixMenuNoneSub.value) {
+          lenNum = '0px';
+        } else {
+          lenNum = collapsed ? `${minMenuWidth}px` : `${menuWidth}px`;
+        }
 
         if (getIsMobile.value) {
           return {
@@ -261,8 +265,10 @@
           document.documentElement.scrollTop ||
           window.pageYOffset ||
           document.body.scrollTop; // 滚动条偏移量
+        const headerFixed =
+          unref(getNavMode) === 'double-column' ? false : getHeaderSetting.value.fixed;
         state.isMultiHeaderFixed = !!(
-          !getHeaderSetting.value.fixed &&
+          !headerFixed &&
           getMultiTabsSetting.value.fixed &&
           scrollTop >= 64
         );

@@ -78,7 +78,7 @@
 
       // 监听分割菜单
       watch(
-        () => settingStore.menuSetting.mixMenu,
+        () => unref(getNavMode) !== 'double-column' && settingStore.menuSetting.mixMenu,
         () => {
           updateMenu();
           if (props.collapsed) {
@@ -107,7 +107,8 @@
       );
 
       function updateMenu() {
-        if (!settingStore.menuSetting.mixMenu) {
+        const mixMenu = unref(navMode) !== 'double-column' && settingStore.menuSetting.mixMenu;
+        if (!mixMenu) {
           menus.value = generatorMenu(asyncRouteStore.getMenus);
         } else {
           //混合菜单

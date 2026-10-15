@@ -1,6 +1,5 @@
 ## SaaS多租户
 
-
 目录
 
 - 介绍
@@ -15,28 +14,26 @@ SaaS系统多租户多应用设计，已成为互联网企业的重要发展建�
 
 > 目前HotGo的部分基础功能并不完全支持多租户设计，但这并不妨碍开发者基于HotGo构建自己的多租户产品
 
-
 ### 职责划分
 
 在SaaS系统多租户中，不同身份用户的职责功能划分假设可以是这样：
 
 > 这只是一个粗略的概念，实际开发时应根据业务来进行调整，每个身份也都不是必须的。
 
-| 身份        | 标识       | 职责和功能划分                                               |
-|-----------------|----------|-------------------------------------------------------|
-| 公司| company  | 管理整个平台，包括商户和用户账户、系统设置以及其他全局性业务流程。                     |
-| 租户          | tenant   | 多租户系统中顶层实体客户、组织或实体。有自己的多个商户、用户、产品、订单等。拥有独立的数据隔离和安全边界。 |
-| 商户          | merchant | 受租户的监管和管理，可独立经营的实体。提供产品或服务，管理自己的业务，包括库存管理、订单处理、结算等。          |
-| 用户          | user     | 真正购买产品或享受服务的人，与商户互动，管理个人信息等个性化功能。                     |
-
+| 身份 | 标识     | 职责和功能划分                                                                                             |
+| ---- | -------- | ---------------------------------------------------------------------------------------------------------- |
+| 公司 | company  | 管理整个平台，包括商户和用户账户、系统设置以及其他全局性业务流程。                                         |
+| 租户 | tenant   | 多租户系统中顶层实体客户、组织或实体。有自己的多个商户、用户、产品、订单等。拥有独立的数据隔离和安全边界。 |
+| 商户 | merchant | 受租户的监管和管理，可独立经营的实体。提供产品或服务，管理自己的业务，包括库存管理、订单处理、结算等。     |
+| 用户 | user     | 真正购买产品或享受服务的人，与商户互动，管理个人信息等个性化功能。                                         |
 
 ### 如何在HotGo开发多租户业务
+
 #### 一、应用功能
 
 根据角色来划分用户的后台功能，在创建用户时为其绑定角色，然后为不同角色分配不同的功能菜单
 
 请参考： [权限控制](sys-auth.md)
-
 
 #### 二、 数据隔离
 
@@ -91,24 +88,21 @@ func IsUserDept(ctx context.Context) bool {
 
 ```vue
 <script lang="ts" setup>
-import { useUserStore } from '@/store/modules/user';
+import { useUserStore } from "@/store/modules/user";
 
 const userStore = useUserStore();
 
-console.log('用户部门类型:' + userStore.info?.deptType);
-console.log('是否为公司:' + userStore.isCompanyDept);
-console.log('是否为租户:' + userStore.isTenantDept);
-console.log('是否为商户:' + userStore.isMerchantDept);
-console.log('是否为用户:' + userStore.isUserDept);
+console.log("用户部门类型:" + userStore.info?.deptType);
+console.log("是否为公司:" + userStore.isCompanyDept);
+console.log("是否为租户:" + userStore.isTenantDept);
+console.log("是否为商户:" + userStore.isMerchantDept);
+console.log("是否为用户:" + userStore.isUserDept);
 </script>
 ```
 
 ### 多租户数据库设计
 
 HotGo定位是中小型应用开发，推荐采用一套数据库不同Schema。就是在多租户业务表中加入用户标识字段，来区分不同用户的数据，如：`tenant_id`
-
-- 参考文章：https://blog.csdn.net/haponchang/article/details/104246317
-
 
 ### 多租户功能演示
 
@@ -118,11 +112,11 @@ HotGo定位是中小型应用开发，推荐采用一套数据库不同Schema。
 
 - 只需在表设计时包含以下字段，即可使用handler和hook实现租户权限过滤和租户关系维护
 
-| 字段名称 | 数据类型    | 字段注释 | 必选                                                  |
-|------|----------|------|-----------------------------------------------------|
-| tenant_id   | bigint(20)  | 租户ID | 否                                                   |
-| merchant_id   | bigint(20)   | 商户ID | 否 |
-| user_id   | bigint(20) | 用户ID | 否   |
+| 字段名称    | 数据类型   | 字段注释 | 必选 |
+| ----------- | ---------- | -------- | ---- |
+| tenant_id   | bigint(20) | 租户ID   | 否   |
+| merchant_id | bigint(20) | 商户ID   | 否   |
+| user_id     | bigint(20) | 用户ID   | 否   |
 
 下面是多租户功能演示例子代码中的使用片段
 
@@ -143,6 +137,7 @@ func (s *sSysTenantOrder) Model(ctx context.Context, option ...*handler.Option) 
 ```
 
 - 增改数据自动维护租户关系
+
 ```go
 // Edit 修改/新增多租户功能演示
 func (s *sSysTenantOrder) Edit(ctx context.Context, in *sysin.TenantOrderEditInp) (err error) {
@@ -172,4 +167,3 @@ func (s *sSysTenantOrder) Edit(ctx context.Context, in *sysin.TenantOrderEditInp
 ```
 
 相关代码文件：/server/addons/hgexample/logic/sys/tenant_order.go
-

@@ -7,24 +7,33 @@ package cmd
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/os/gctx"
-	"github.com/gogf/gf/v2/os/gproc"
 	"hotgo/internal/consts"
+	"hotgo/internal/library/cron"
+	"hotgo/internal/library/queue"
 	"hotgo/utility/simple"
 	"os"
 	"sync"
+
+	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/os/gproc"
 )
 
 var (
 	serverCloseSignal = make(chan struct{}, 1)
 	serverWg          = sync.WaitGroup{}
 	once              sync.Once
+	shutdownOnce      sync.Once
 )
 
 // signalHandlerForOverall 关闭信号处理
 func signalHandlerForOverall(sig os.Signal) {
-	serverCloseEvent(gctx.GetInitCtx())
-	serverCloseSignal <- struct{}{}
+	shutdownOnce.Do(func() {
+		ctx := gctx.GetInitCtx()
+		serverCloseEvent(ctx)
+		queue.StopConsumers()
+		cron.StopALL()
+		close(serverCloseSignal)
+	})
 }
 
 // signalListen 信号监听

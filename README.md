@@ -1,4 +1,5 @@
 # HotGo-V2
+
 <div align="center">
 	<img width="140px" src="https://gmycos.facms.cn/hotgo/logo.sig.png">
     <p>
@@ -6,19 +7,19 @@
     </p>
     <p align="center">
         <a href="https://goframe.org/pages/viewpage.action?pageId=1114119" target="_blank">
-	        <img src="https://img.shields.io/badge/goframe-2.10.0-green" alt="goframe">
+	        <img src="https://img.shields.io/badge/goframe-2.10.3-green" alt="goframe">
 	    </a>
 	    <a href="https://v3.vuejs.org/" target="_blank">
-	        <img src="https://img.shields.io/badge/vue.js-vue3.4-green" alt="vue">
+	        <img src="https://img.shields.io/badge/vue.js-vue3.5-green" alt="vue">
 	    </a>
 	    <a href="https://www.naiveui.com" target="_blank">
-	        <img src="https://img.shields.io/badge/naiveui-%3E2.44.1-blue" alt="naiveui">
+	        <img src="https://img.shields.io/badge/naiveui-%3E2.45.3-blue" alt="naiveui">
 	    </a>
 		<a href="https://www.tslang.cn/" target="_blank">
 	        <img src="https://img.shields.io/badge/typescript-%3E4.0.0-blue" alt="typescript">
 	    </a>
 		<a href="https://vitejs.dev/" target="_blank">
-		    <img src="https://img.shields.io/badge/vite-%3E5.4.2-yellow" alt="vite">
+		    <img src="https://img.shields.io/badge/vite-%3E6.4.4-yellow" alt="vite">
 		</a>
 		<a href="https://github.com/bufanyun/hotgo/blob/v2.0/LICENSE" target="_blank">
 		    <img src="https://img.shields.io/badge/license-MIT-success" alt="license">
@@ -26,32 +27,33 @@
 	</p>
 </div>
 
-
 ## 平台简介
-* 基于 GoFrame2 + Vue3 + NaiveUI + uniapp 的企业级全栈框架，为二次开发而生。
-* 前端采用 Naive-Ui-Admin、Vue、Naive UI、uniapp。
-* 企业级 AI 赋能基础开发平台，内置 AI 开发规范，适配主流 AI 开发工具，实现人机协同开发，大幅提升开发效率。
+
+- 基于 GoFrame2 + Vue3 + NaiveUI + uniapp 的企业级全栈框架，为二次开发而生。
+- 前端采用 Naive-Ui-Admin、Vue、Naive UI、uniapp。
+- 企业级 AI 赋能基础开发平台，内置 AI 开发规范，适配主流 AI 开发工具，实现人机协同开发，大幅提升开发效率。
 
 ## 演示地址
--  [https://hotgo.facms.cn/admin](https://hotgo.facms.cn/admin)
->  账号：admin  密码：123456
+
+- [https://hotgo.facms.cn/admin](https://hotgo.facms.cn/admin)
+  > 账号：admin 密码：123456
 
 ### 使用文档
 
 [安装文档](docs/guide-zh-CN/start-installation.md) · [本地文档](docs/guide-zh-CN/README.md) · [更新历史](docs/guide-zh-CN/start-update-log.md) · [常见问题](docs/guide-zh-CN/start-issue.md)
 
-
 ## 特征
-* 高生产率：极强的可扩展性，应用化、模块化、插件化机制敏捷开发，几分钟即可搭建一个应用开发骨架。
-* 多应用入口：多入口分为 Admin (后台)、Home (前台页面)、Api (对外通用接口)、WebSocket (即时通讯接口)，不同的业务，进入不同的应用入口。
-* 极致的插件化： 微核架构，功能隔离，高可定制性，可以渐进式开发，亦可以多人协同开发。支持一键创建插件模板、一键安装、更新、卸载插件、可以非常方便的将插件迁移到新项目中。
-* 快速生成代码：无需编写代码，只需创建表进行简单配置就能生成一个完善的 CURD、树表等常用的开发代码，其中所需表单控件也是勾选即可直接生成。
-* 认证机制：采用 JWT 的用户状态认证及 casbin 的权限认证
-* 路由模式：得益于 GoFrame 提供了规范化的路由注册方式，无需注解自动生成api文档
-* 模块化设计，面向接口开发
 
+- 高生产率：极强的可扩展性，应用化、模块化、插件化机制敏捷开发，几分钟即可搭建一个应用开发骨架。
+- 多应用入口：多入口分为 Admin (后台)、Home (前台页面)、Api (对外通用接口)、WebSocket (即时通讯接口)，不同的业务，进入不同的应用入口。
+- 极致的插件化： 微核架构，功能隔离，高可定制性，可以渐进式开发，亦可以多人协同开发。支持一键创建插件模板、一键安装、更新、卸载插件、可以非常方便的将插件迁移到新项目中。
+- 快速生成代码：无需编写代码，只需创建表进行简单配置就能生成一个完善的 CURD、树表等常用的开发代码，其中所需表单控件也是勾选即可直接生成。
+- 认证机制：采用 JWT 的用户状态认证及 casbin 的权限认证
+- 路由模式：得益于 GoFrame 提供了规范化的路由注册方式，无需注解自动生成api文档
+- 模块化设计，面向接口开发
 
 ## 内置功能
+
 1. 用户管理：用户是系统操作者，该功能主要完成系统用户配置。
 2. 部门管理：配置系统组织机构（公司、部门、岗位），树结构展现支持数据权限。
 3. 岗位管理：配置系统用户所属担任职务。
@@ -71,14 +73,12 @@
 17. 服务监控：监视当前系统CPU、内存、磁盘、网络、堆栈等相关信息。
 18. 附件管理：文件图片上传，大文件分片上传、断点续传，支持本地、阿里云oss、腾讯云cos、ucloud对象存储、七牛云对象存储、minio等多种上传驱动，后台一键切换配置，并集成了文件选择器。
 19. TCP服务：基于gtcp的服务应用，支持长连接、断线重连、服务认证、路由分发、RPC消息、拦截器和数据绑定等。简化和规范了服务器开发流程。
-20. 消息队列：同时兼容 kafka、redis、rocketmq、磁盘队列，一键配置切换到场景适用的MQ。
+20. 消息队列：同时兼容 kafka、redis、rocketmq、pgsql、磁盘队列，一键配置切换到场景适用的MQ。
 21. 通知公告：采用WebSocket实时推送在线用户最新通知、公告、私信消息。
 22. 地区编码：整合国内通用省市区编码，运用于项目于一身，支持动态省市区选项。
 23. 常用工具：集成常用的工具包和命令行工具，可以快速开发自定义命令行，多种启动入口。
 
-
 > HotGo开源以来得到了大家的很多支持，本项目初衷只为互相学习交流，没有任何盈利性目的！欢迎为HotGo贡献代码或提供建议！
-
 
 ## 演示图
 
@@ -109,8 +109,8 @@
     </tr>
 </table>
 
-
 ## 感谢(排名不分先后)
+
 > gf框架 [https://github.com/gogf/gf](https://github.com/gogf/gf)
 >
 > naive-ui [https://www.naiveui.com](https://www.naiveui.com)
@@ -118,50 +118,39 @@
 > naive-ui-admin [https://github.com/jekip/naive-ui-admin](https://github.com/jekip/naive-ui-admin)
 >
 > websocket [https://github.com/gorilla/websocket](github.com/gorilla/websocket)
-> 
+>
 > casbin [https://github.com/casbin/casbin](https://github.com/casbin/casbin)
 >
 > gopay [https://github.com/go-pay/gopay](https://github.com/go-pay/gopay)
 
-
 ## 交流QQ群
-交流群①：190966648  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=mJafkvme3VNyiQlCFIFNRtY8Xlr7pj9U&jump_from=webapi&authKey=jL10vIESr+vO8wpxwyd6DlChzkrbHpzN9uhAsIHgAinL/Vvd+nvuRyilf2UqUlCy"><img border="0" src="https://gmycos.facms.cn/hotgo/group.png" alt="HotGo框架交流1群" title="HotGo框架交流1群"></a>
-> <img src="https://gmycos.facms.cn/hotgo/hotgo1qun.png" width="400px"/>
 
+交流群①：190966648 <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=mJafkvme3VNyiQlCFIFNRtY8Xlr7pj9U&jump_from=webapi&authKey=jL10vIESr+vO8wpxwyd6DlChzkrbHpzN9uhAsIHgAinL/Vvd+nvuRyilf2UqUlCy"><img border="0" src="https://gmycos.facms.cn/hotgo/group.png" alt="HotGo框架交流1群" title="HotGo框架交流1群"></a>
+
+> <img src="https://gmycos.facms.cn/hotgo/hotgo1qun.png" width="400px"/>
 
 ## 商用说明
 
 > HotGo 是开源免费的，遵循 MIT 开源协议，意味着您无需支付任何费用，也无需授权，即可将它应用到您的产品中。
 
-* 使用本项目必须保留所有版权信息。
+- 使用本项目必须保留所有版权信息。
 
-* 本项目包含的第三方源码和二进制文件之版权信息另行标注。
+- 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-* 版权所有Copyright © 2020-2026 by Ms (https://github.com/bufanyun/hotgo)
+- 版权所有Copyright © 2020 by Ms (https://github.com/bufanyun/hotgo)
 
-* All rights reserved。
-
+- All rights reserved。
 
 ## 免责声明：
-* HotGo为开源学习项目，一切商业行为与HotGo无关。
 
-* 用户不得利用HotGo从事非法行为，用户应当合法合规的使用，发现用户在使用产品时有任何的非法行为，HotGo有权配合有关机关进行调查或向政府部门举报，HotGo不承担用户因非法行为造成的任何法律责任，一切法律责任由用户自行承担，如因用户使用造成第三方损害的，用户应当依法予以赔偿。
+- HotGo为开源学习项目，一切商业行为与HotGo无关。
 
-* 所有与使用HotGo相关的资源直接风险均由用户承担。
+- 用户不得利用HotGo从事非法行为，用户应当合法合规的使用，发现用户在使用产品时有任何的非法行为，HotGo有权配合有关机关进行调查或向政府部门举报，HotGo不承担用户因非法行为造成的任何法律责任，一切法律责任由用户自行承担，如因用户使用造成第三方损害的，用户应当依法予以赔偿。
 
+- 所有与使用HotGo相关的资源直接风险均由用户承担。
 
 #### 如果对您有帮助，您可以点右上角 💘Star💘支持
 
-
-
-## [感谢JetBrains提供的免费GoLand](https://jb.gg/OpenSource)
-[![avatar](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://jb.gg/OpenSource)
-
-
 ## License
-[MIT © HotGo-2026](./LICENSE)
-  
 
-
-  
-
+[MIT © HotGo](./LICENSE)

@@ -1,7 +1,13 @@
 <template>
   <n-layout class="layout" :position="fixedMenu" has-sider>
+    <template v-if="!isMobile && navMode === 'double-column'">
+      <DoubleColumnMenu
+        v-model:collapsed="collapsed"
+        v-model:secondMenuCollapsed="secondMenuCollapsed"
+      />
+    </template>
     <n-layout-sider
-      v-if="
+      v-else-if="
         !isMobile && isMixMenuNoneSub && (navMode === 'vertical' || navMode === 'horizontal-mix')
       "
       show-trigger="bar"
@@ -30,9 +36,13 @@
       <AsideMenu @clickMenuItem="collapsed = false" />
     </n-drawer>
 
-    <n-layout :inverted="inverted">
+    <n-layout :inverted="inverted" :style="doubleColumnLayoutStyle">
       <n-layout-header :inverted="getHeaderInverted" :position="fixedHeader">
-        <PageHeader v-model:collapsed="collapsed" :inverted="inverted" />
+        <PageHeader
+          v-model:collapsed="collapsed"
+          v-model:secondMenuCollapsed="secondMenuCollapsed"
+          :inverted="inverted"
+        />
       </n-layout-header>
 
       <n-layout-content
@@ -46,7 +56,11 @@
             'fluid-header': fixedHeader === 'static',
           }"
         >
-          <TabsView v-if="isMultiTabs" v-model:collapsed="collapsed" />
+          <TabsView
+            v-if="isMultiTabs"
+            v-model:collapsed="collapsed"
+            :secondMenuCollapsed="secondMenuCollapsed"
+          />
           <div
             class="main-view"
             :class="{
@@ -70,6 +84,7 @@
   import { TabsView } from './components/TagsView';
   import { MainView } from './components/Main';
   import { AsideMenu } from './components/Menu';
+  import DoubleColumnMenu from './components/Menu/DoubleColumnMenu.vue';
   import { PageHeader } from './components/Header';
   import { useProjectSetting } from '@/hooks/setting/useProjectSetting';
   import { useDesignSetting } from '@/hooks/setting/useDesignSetting';
@@ -95,6 +110,7 @@
   const navMode = getNavMode;
 
   const collapsed = ref<boolean>(false);
+  const secondMenuCollapsed = ref<boolean>(false);
 
   const { mobileWidth, menuWidth } = unref(getMenuSetting);
 
@@ -104,13 +120,13 @@
   });
 
   const fixedHeader = computed(() => {
+    if (unref(navMode) === 'double-column') return 'static';
     const { fixed } = unref(getHeaderSetting);
     return fixed ? 'absolute' : 'static';
   });
 
-
   const isMixMenuNoneSub = computed(() => {
-    const mixMenu = settingStore.menuSetting.mixMenu;
+    const mixMenu = unref(getMenuSetting).mixMenu;
     // const currentRoute = useRoute();
     if (unref(navMode) != 'horizontal-mix') return true;
     if (unref(navMode) === 'horizontal-mix' && mixMenu && route.meta.isRoot) {
@@ -120,6 +136,7 @@
   });
 
   const fixedMenu = computed(() => {
+    if (unref(navMode) === 'double-column') return 'static';
     const { fixed } = unref(getHeaderSetting);
     return fixed ? 'absolute' : 'static';
   });
@@ -155,6 +172,16 @@
 
   const getMenuLocation = computed(() => {
     return 'left';
+  });
+
+  const doubleColumnLayoutStyle = computed(() => {
+    if (unref(navMode) === 'double-column' && !isMobile.value) {
+      const secondMenuWidth = secondMenuCollapsed.value ? 50 : 160;
+      return {
+        paddingLeft: `${80 + secondMenuWidth}px`,
+      };
+    }
+    return {};
   });
 
   // 控制显示或隐藏移动端侧边栏
@@ -252,6 +279,14 @@
     .n-layout-footer {
       background: none;
     }
+  }
+
+  :deep(.double-column-menu) {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 13;
+    box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
   }
 
   .layout-content-main {
