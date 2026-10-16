@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
-	"syscall"
 	"time"
 
 	"hotgo/internal/library/queue/disk"
@@ -67,10 +66,10 @@ func withDelayFile(path string, fn func(f *os.File) error) error {
 		return err
 	}
 	defer f.Close()
-	if err = syscall.Flock(int(f.Fd()), syscall.LOCK_EX); err != nil {
+	if err = lockFile(f); err != nil {
 		return err
 	}
-	defer syscall.Flock(int(f.Fd()), syscall.LOCK_UN)
+	defer unlockFile(f)
 	return fn(f)
 }
 
