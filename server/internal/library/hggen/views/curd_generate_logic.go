@@ -41,19 +41,20 @@ func (l *gCurd) logicTplData(ctx context.Context, in *CurdPreviewInput) (data g.
 }
 
 func (l *gCurd) generateLogicDeletedUpdate(ctx context.Context, in *CurdPreviewInput) string {
-	isDestroy := false
+	hasDeletedAt := false
 	var update string
 	for _, field := range in.masterFields {
 		if field.GoName == "DeletedBy" {
 			update += "\t\tdao." + in.In.DaoName + ".Columns().DeletedBy: contexts.GetUserId(ctx),\n"
-			isDestroy = true
 		}
 		if field.GoName == "DeletedAt" {
 			update += "\t\tdao." + in.In.DaoName + ".Columns().DeletedAt: gtime.Now(),\n"
+			hasDeletedAt = true
 		}
 	}
 
-	if !isDestroy {
+	// 软删除以 deleted_at 为准，deleted_by 只是附带记录
+	if !hasDeletedAt {
 		return ""
 	}
 

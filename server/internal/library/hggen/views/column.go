@@ -8,6 +8,7 @@ package views
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"hotgo/internal/consts"
@@ -83,6 +84,14 @@ func DoTableColumns(ctx context.Context, in *sysin.GenCodesColumnListInp, config
 	}
 
 	for _, field := range fields {
+		if conf.Type == consts.DBPgsql && field.DefaultValue != nil {
+			// PG 读回的是默认值表达式而非字面值，不清洗会原样写进生成代码
+			if v, ok := cleanPgDefault(gconv.String(field.DefaultValue)); ok {
+				field.DefaultValue = v
+			} else {
+				field.DefaultValue = nil
+			}
+		}
 		if in.IsLink == 1 {
 			CustomLinkAttributes(ctx, in.Alias, field, config)
 		} else {
@@ -302,4 +311,49 @@ func getJsonTagFromCase(str, caseStr string) string {
 		return gstr.CaseSnakeScreaming(str)
 	}
 	return str
+}
+
+var (
+	pgNumberRegex = regexp.MustCompile(`^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$`)
+	// 只认单个类型转换，带运算或多重转换的表达式不是字面值
+	pgCastRegex = regexp.MustCompile(`^(::[a-z][a-z ]*(\(\d+(,\d+)?\))?(\[\])?)?$`)
+)
+
+// cleanPgDefault 把 PG 列默认值表达式还原成字面值；NULL、函数调用等无法作为前端初值的返回 ok=false
+func cleanPgDefault(expr string) (value string, ok bool) {
+	expr = strings.TrimSpace(expr)
+	if strings.HasPrefix(expr, "'") {
+		var b strings.Builder
+		for i := 1; i < len(expr); i++ {
+			if expr[i] != '\'' {
+				b.WriteByte(expr[i])
+				continue
+			}
+			if i+1 < len(expr) && expr[i+1] == '\'' {
+				b.WriteByte('\'')
+				i++
+				continue
+			}
+			if pgCastRegex.MatchString(strings.TrimSpace(expr[i+1:])) {
+				return b.String(), true
+			}
+			return "", false
+		}
+		return "", false
+	}
+
+	literal, cast := expr, ""
+	if idx := strings.Index(expr, "::"); idx >= 0 {
+		literal, cast = strings.TrimSpace(expr[:idx]), strings.TrimSpace(expr[idx:])
+	}
+	if !pgCastRegex.MatchString(cast) {
+		return "", false
+	}
+	if lower := strings.ToLower(literal); lower == "true" || lower == "false" {
+		return lower, true
+	}
+	if pgNumberRegex.MatchString(literal) {
+		return literal, true
+	}
+	return "", false
 }
