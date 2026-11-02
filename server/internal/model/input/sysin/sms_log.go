@@ -7,11 +7,12 @@ package sysin
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
+
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
 // SmsLogEditInp 修改/新增数据
@@ -72,7 +73,7 @@ type SmsLogStatusModel struct{}
 type SendCodeInp struct {
 	Event    string `json:"event"     description:"事件"`  // 必填
 	Mobile   string `json:"mobile"    description:"手机号"` // 必填
-	Code     string `json:"code"      description:"验证码或短信内容"`
+	Code     string `json:"-"         description:"验证码或短信内容"`
 	Template string `json:"-"         description:"发信模板 "`
 }
 

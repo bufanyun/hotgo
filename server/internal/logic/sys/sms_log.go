@@ -125,9 +125,7 @@ func (s *sSysSmsLog) SendCode(ctx context.Context, in *sysin.SendCodeInp) (err e
 		return
 	}
 
-	if in.Code == "" {
-		in.Code = grand.Digits(4)
-	}
+	in.Code = grand.Digits(4)
 
 	if err = sms.New(config.SmsDrive).SendCode(ctx, in); err != nil {
 		return
