@@ -38,6 +38,7 @@ type Config struct {
 	Redis     RedisConf
 	Rocketmq  RocketmqConf
 	Kafka     KafkaConf
+	Rabbitmq  RabbitmqConf
 	Disk      *disk.Config
 	Pgsql     *PgsqlConf `json:"pgsql"`
 }
@@ -66,6 +67,12 @@ type KafkaConf struct {
 	Version       string   `json:"version"`
 	RandClient    bool     `json:"randClient"`
 	MultiConsumer bool     `json:"multiConsumer"`
+}
+
+type RabbitmqConf struct {
+	Address  string `json:"address"`
+	Exchange string `json:"exchange"`
+	Prefetch int    `json:"prefetch"`
 }
 
 type MqMsg struct {
@@ -134,6 +141,12 @@ func NewProducer(groupName string) (mqClient MqProducer, err error) {
 			GroupID: groupName,
 			Version: config.Kafka.Version,
 		})
+	case "rabbitmq":
+		if config.Rabbitmq.Address == "" {
+			err = gerror.New("queue.rabbitmq.address is empty.")
+			return
+		}
+		mqClient, err = RegisterRabbitMqProducer(groupName)
 	case "redis":
 		if _, err = g.Redis().Do(ctx, "ping"); err == nil {
 			mqClient = RegisterRedisMqProducer(RedisOption{
@@ -201,6 +214,12 @@ func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 			Version:  config.Kafka.Version,
 			ClientId: clientId,
 		})
+	case "rabbitmq":
+		if config.Rabbitmq.Address == "" {
+			err = gerror.New("queue.rabbitmq.address is empty.")
+			return
+		}
+		mqClient, err = RegisterRabbitMqConsumer(groupName)
 	case "redis":
 		if _, err = g.Redis().Do(ctx, "ping"); err == nil {
 			mqClient = RegisterRedisMqConsumer(RedisOption{

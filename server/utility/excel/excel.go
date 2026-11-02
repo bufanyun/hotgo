@@ -3,23 +3,28 @@
 // @Copyright  Copyright (c) 2023 HotGo CLI
 // @Author  Ms <133814250@qq.com>
 // @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
+//
+
 package excel
 
 import (
 	"context"
 	"fmt"
-	"github.com/gogf/gf/v2/errors/gcode"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/net/ghttp"
-	"github.com/gogf/gf/v2/os/gctx"
-	"github.com/gogf/gf/v2/util/gconv"
-	"github.com/xuri/excelize/v2"
+	"io"
+
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/model"
 	"net/url"
 	"reflect"
 	"time"
 	"unicode"
+
+	"github.com/gogf/gf/v2/errors/gcode"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/util/gconv"
+	"github.com/xuri/excelize/v2"
 )
 
 var (
@@ -42,49 +47,9 @@ var (
 // ExportByStructs 导出切片结构体到excel表格
 func ExportByStructs(ctx context.Context, tags []string, list interface{}, fileName string, sheetName string) (err error) {
 	f := excelize.NewFile()
-	f.SetSheetName("Sheet1", sheetName)
-	_ = f.SetRowHeight("Sheet1", 1, 30)
-
-	rowStyleID, _ := f.NewStyle(defaultRowStyle)
-	if err != nil {
+	defer f.Close()
+	if err = fillByStructs(f, tags, list, sheetName); err != nil {
 		return
-	}
-	_ = f.SetSheetRow(sheetName, "A1", &tags)
-
-	var (
-		length    = len(tags)
-		headStyle = letter(length)
-		lastRow   string
-		widthRow  string
-	)
-
-	for k, v := range headStyle {
-		if k == length-1 {
-			lastRow = fmt.Sprintf("%s1", v)
-			widthRow = v
-		}
-	}
-
-	if err = f.SetColWidth(sheetName, "A", widthRow, 30); err != nil {
-		return err
-	}
-
-	var rowNum = 1
-	for _, v := range gconv.Interfaces(list) {
-		t := reflect.TypeOf(v)
-		value := reflect.ValueOf(v)
-		row := make([]interface{}, 0)
-		for l := 0; l < t.NumField(); l++ {
-			val := value.Field(l).Interface()
-			row = append(row, val)
-		}
-		rowNum++
-		if err = f.SetSheetRow(sheetName, "A"+gconv.String(rowNum), &row); err != nil {
-			return
-		}
-		if err = f.SetCellStyle(sheetName, fmt.Sprintf("A%d", rowNum), lastRow, rowStyleID); err != nil {
-			return
-		}
 	}
 
 	r := ghttp.RequestFromCtx(ctx)
@@ -113,6 +78,60 @@ func ExportByStructs(ctx context.Context, tags []string, list interface{}, fileN
 	return
 }
 
+// WriteByStructs 将表格写入文件或压缩包，复用HTTP导出的表头和行样式。
+func WriteByStructs(writer io.Writer, tags []string, list interface{}, sheetName string) error {
+	f := excelize.NewFile()
+	defer f.Close()
+	if err := fillByStructs(f, tags, list, sheetName); err != nil {
+		return err
+	}
+	return f.Write(writer)
+}
+
+func fillByStructs(f *excelize.File, tags []string, list interface{}, sheetName string) (err error) {
+	if err = f.SetSheetName("Sheet1", sheetName); err != nil {
+		return
+	}
+	_ = f.SetRowHeight(sheetName, 1, 30)
+
+	rowStyleID, err := f.NewStyle(defaultRowStyle)
+	if err != nil {
+		return
+	}
+	if err = f.SetSheetRow(sheetName, "A1", &tags); err != nil {
+		return
+	}
+
+	widthRow := numToChars(len(tags))
+	if err = f.SetColWidth(sheetName, "A", widthRow, 30); err != nil {
+		return err
+	}
+
+	var rowNum = 1
+	for _, v := range gconv.Interfaces(list) {
+		t := reflect.TypeOf(v)
+		value := reflect.ValueOf(v)
+		row := make([]interface{}, 0)
+		for l := 0; l < t.NumField(); l++ {
+			val := value.Field(l).Interface()
+			row = append(row, val)
+		}
+		rowNum++
+		if err = f.SetSheetRow(sheetName, "A"+gconv.String(rowNum), &row); err != nil {
+			return
+		}
+	}
+
+	// 数据写完后统一设置样式，避免每行都重复处理从首行到当前行的整个区域。
+	if rowNum > 1 {
+		if err = f.SetCellStyle(sheetName, "A1", fmt.Sprintf("%s%d", widthRow, rowNum), rowStyleID); err != nil {
+			return
+		}
+	}
+
+	return
+}
+
 // ExportByStructsStream 按批拉取行并写入，避免一次性把全部数据放进内存。
 // fetchRows 返回空切片时结束。
 func ExportByStructsStream(ctx context.Context, tags []string, fileName string, sheetName string, batchSize int, fetchRows func(offset, limit int) ([][]interface{}, error)) (err error) {
@@ -120,13 +139,46 @@ func ExportByStructsStream(ctx context.Context, tags []string, fileName string, 
 	if r == nil {
 		return gerror.New("ctx not http request")
 	}
+	f := excelize.NewFile()
+	defer f.Close()
+	if err = fillByStructsStream(f, tags, sheetName, batchSize, fetchRows); err != nil {
+		return
+	}
+
+	writer := r.Response.Writer
+	writer.Header().Set("Content-Type", "application/octet-stream")
+	writer.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s.xlsx", url.QueryEscape(fileName)))
+	writer.Header().Set("Content-Transfer-Encoding", "binary")
+	writer.Header().Set("Access-Control-Expose-Headers", "Content-Disposition")
+	if err = f.Write(writer); err != nil {
+		return gerror.Wrap(err, "写入Excel文件失败")
+	}
+	contexts.SetResponse(ctx, &model.Response{
+		Code:      gcode.CodeOK.Code(),
+		Message:   "export successfully!",
+		Timestamp: time.Now().Unix(),
+		TraceID:   gctx.CtxId(ctx),
+	})
+	return
+}
+
+// WriteByStructsStream 按批流式写入文件或压缩包，复用HTTP流式导出的行样式。
+func WriteByStructsStream(writer io.Writer, tags []string, sheetName string, batchSize int, fetchRows func(offset, limit int) ([][]interface{}, error)) error {
+	f := excelize.NewFile()
+	defer f.Close()
+	if err := fillByStructsStream(f, tags, sheetName, batchSize, fetchRows); err != nil {
+		return err
+	}
+	return f.Write(writer)
+}
+
+func fillByStructsStream(f *excelize.File, tags []string, sheetName string, batchSize int, fetchRows func(offset, limit int) ([][]interface{}, error)) (err error) {
 	if batchSize <= 0 {
 		batchSize = 500
 	}
-
-	f := excelize.NewFile()
-	defer f.Close()
-	f.SetSheetName("Sheet1", sheetName)
+	if err = f.SetSheetName("Sheet1", sheetName); err != nil {
+		return gerror.Wrap(err, "设置工作表名称失败")
+	}
 
 	sw, err := f.NewStreamWriter(sheetName)
 	if err != nil {
@@ -180,7 +232,10 @@ func ExportByStructsStream(ctx context.Context, tags []string, fileName string, 
 			for i, v := range cols {
 				cells[i] = excelize.Cell{Value: v, StyleID: styleID}
 			}
-			cell, _ := excelize.CoordinatesToCellName(1, rowIdx)
+			cell, cellErr := excelize.CoordinatesToCellName(1, rowIdx)
+			if cellErr != nil {
+				return gerror.Wrap(cellErr, "生成数据行坐标失败")
+			}
 			if err = sw.SetRow(cell, cells, excelize.RowOpts{Height: 24}); err != nil {
 				return gerror.Wrap(err, "写入数据行失败")
 			}
@@ -195,20 +250,6 @@ func ExportByStructsStream(ctx context.Context, tags []string, fileName string, 
 		return gerror.Wrap(err, "Flush失败")
 	}
 
-	writer := r.Response.Writer
-	writer.Header().Set("Content-Type", "application/octet-stream")
-	writer.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s.xlsx", url.QueryEscape(fileName)))
-	writer.Header().Set("Content-Transfer-Encoding", "binary")
-	writer.Header().Set("Access-Control-Expose-Headers", "Content-Disposition")
-	if err = f.Write(writer); err != nil {
-		return gerror.Wrap(err, "写入Excel文件失败")
-	}
-	contexts.SetResponse(ctx, &model.Response{
-		Code:      gcode.CodeOK.Code(),
-		Message:   "export successfully!",
-		Timestamp: time.Now().Unix(),
-		TraceID:   gctx.CtxId(ctx),
-	})
 	return
 }
 
