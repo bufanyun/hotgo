@@ -194,7 +194,7 @@ token:
 # 消息队列
 queue:
   switch: true                                        # 队列开关，可选：true|false，默认为true
-  driver: "disk"                                      # 队列驱动，可选：disk|redis|rocketmq|kafka|pgsql，默认为disk
+  driver: "disk"                                      # 队列驱动，可选：disk|redis|rocketmq|kafka|rabbitmq|pgsql，默认为disk
   groupName: "hotgo"                                  # mq群组名称
   # 磁盘队列
   disk:
@@ -218,6 +218,10 @@ queue:
     version: "2.0.0.0"                                # kafka专属配置，默认2.0.0.0
     randClient: true                                  # 开启随机生成clientID，可以实现启动多实例同时一起消费相同topic，加速消费能力的特性，默认为true
     multiConsumer: true                               # 是否支持创建多个消费者
+  rabbitmq:
+    address: "amqp://guest:guest@127.0.0.1:5672/"     # 连接地址，格式：amqp://用户名:密码@地址:端口/vhost
+    exchange: ""                                      # 交换机名称，为空时使用groupName
+    prefetch: 10                                      # 每个消费者预取消息数量，默认为10
   # pgsql:
   #   retry: 5
   #   retryInterval: 1
