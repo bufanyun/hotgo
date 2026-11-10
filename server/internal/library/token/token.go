@@ -18,7 +18,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/cache"
-	"hotgo/internal/library/contexts"
 	"hotgo/internal/model"
 	"hotgo/utility/simple"
 	"time"
@@ -109,12 +108,10 @@ func Logout(r *ghttp.Request) (err error) {
 	}
 
 	var (
-		// 认证key
-		authKey = GetAuthKey(header)
-		// 登录token
-		tokenKey = GetTokenKey(contexts.GetModule(ctx), authKey)
-		// 身份绑定
-		bindKey = GetBindKey(contexts.GetModule(ctx), claims.Id)
+		// 认证key。登录时按用户 App 写入，登出必须用同一标识
+		authKey  = GetAuthKey(header)
+		tokenKey = GetTokenKey(claims.App, authKey)
+		bindKey  = GetBindKey(claims.App, claims.Id)
 	)
 
 	// 删除token

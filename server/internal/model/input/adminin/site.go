@@ -31,6 +31,13 @@ func (in *RegisterInp) Filter(ctx context.Context) (err error) {
 	return
 }
 
+// LoginFailCount 登录失败次数
+type LoginFailCount struct {
+	Tag           string `json:"tag"`
+	Count         int    `json:"count"`
+	LastLoginTime int64  `json:"lastLoginTime"`
+}
+
 // LoginModel 统一登录响应
 type LoginModel struct {
 	Id       int64  `json:"id"              dc:"用户ID"`

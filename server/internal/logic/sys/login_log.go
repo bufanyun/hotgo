@@ -168,7 +168,9 @@ func (s *sSysLoginLog) Push(ctx context.Context, in *sysin.LoginLogPushInp) {
 
 	models.Response = gjson.New(consts.NilJsonToString)
 	if in.Response != nil {
-		models.Response = gjson.New(in.Response)
+		copied := *in.Response
+		copied.Token = ""
+		models.Response = gjson.New(copied)
 	}
 
 	if err = queue.Push(consts.QueueLoginLogTopic, models); err != nil {

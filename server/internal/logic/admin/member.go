@@ -584,8 +584,14 @@ func (s *sAdminMember) Edit(ctx context.Context, in *adminin.MemberEditInp) (err
 
 // View 获取用户信息
 func (s *sAdminMember) View(ctx context.Context, in *adminin.MemberViewInp) (res *adminin.MemberViewModel, err error) {
-	if err = s.FilterAuthModel(ctx, contexts.GetUserId(ctx)).Hook(hook.MemberInfo).WherePri(in.Id).Scan(&res); err != nil {
+	cols := dao.AdminMember.Columns()
+	if err = s.FilterAuthModel(ctx, contexts.GetUserId(ctx)).FieldsEx(cols.PasswordHash, cols.Salt).Hook(hook.MemberInfo).WherePri(in.Id).Scan(&res); err != nil {
 		err = gerror.Wrap(err, "获取用户信息失败，请稍后重试！")
+		return
+	}
+	if res != nil {
+		res.PasswordHash = ""
+		res.Salt = ""
 	}
 	return
 }
@@ -631,12 +637,14 @@ func (s *sAdminMember) List(ctx context.Context, in *adminin.MemberListInp) (lis
 		mod = mod.WhereBetween(cols.CreatedAt, gtime.New(in.CreatedAt[0]), gtime.New(in.CreatedAt[1]))
 	}
 
-	if err = mod.Hook(hook.MemberInfo).Page(in.Page, in.PerPage).OrderDesc(cols.Id).ScanAndCount(&list, &totalCount, true); err != nil {
+	if err = mod.FieldsEx(cols.PasswordHash, cols.Salt).Hook(hook.MemberInfo).Page(in.Page, in.PerPage).OrderDesc(cols.Id).ScanAndCount(&list, &totalCount, true); err != nil {
 		err = gerror.Wrap(err, "获取用户列表失败！")
 		return
 	}
 
 	for _, v := range list {
+		v.PasswordHash = ""
+		v.Salt = ""
 		columns, err := dao.AdminMemberPost.Ctx(ctx).Fields(dao.AdminMemberPost.Columns().PostId).Where(dao.AdminMemberPost.Columns().MemberId, v.Id).Array()
 		if err != nil {
 			err = gerror.Wrap(err, "获取用户岗位数据失败！")

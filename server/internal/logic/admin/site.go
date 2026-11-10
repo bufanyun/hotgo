@@ -9,6 +9,7 @@ import (
 	"context"
 	"hotgo/internal/consts"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/cache"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/token"
 	"hotgo/internal/model"
@@ -17,6 +18,7 @@ import (
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/simple"
+	"time"
 
 	"github.com/gogf/gf/v2/crypto/gmd5"
 	"github.com/gogf/gf/v2/database/gdb"
@@ -145,7 +147,14 @@ func (s *sAdminSite) Register(ctx context.Context, in *adminin.RegisterInp) (err
 func (s *sAdminSite) AccountLogin(ctx context.Context, in *adminin.AccountLoginInp) (res *adminin.LoginModel, err error) {
 	defer func() {
 		service.SysLoginLog().Push(ctx, &sysin.LoginLogPushInp{Response: res, Err: err})
+		if err == nil {
+			_ = s.delLoginFailTimes(ctx, in.Username)
+		}
 	}()
+
+	if err = s.verifyMaxFailCount(ctx, in.Username); err != nil {
+		return nil, err
+	}
 
 	var mb *entity.AdminMember
 	if err = dao.AdminMember.Ctx(ctx).Where("username", in.Username).Scan(&mb); err != nil {
@@ -154,6 +163,7 @@ func (s *sAdminSite) AccountLogin(ctx context.Context, in *adminin.AccountLoginI
 	}
 
 	if mb == nil {
+		_ = s.setLoginFailTimes(ctx, in.Username)
 		err = gerror.New("用户名或密码错误")
 		return
 	}
@@ -167,6 +177,8 @@ func (s *sAdminSite) AccountLogin(ctx context.Context, in *adminin.AccountLoginI
 	}
 
 	if err = simple.CheckPassword(in.Password, mb.Salt, mb.PasswordHash); err != nil {
+		_ = s.setLoginFailTimes(ctx, in.Username)
+		err = gerror.New("用户名或密码错误")
 		return
 	}
 
@@ -183,7 +195,14 @@ func (s *sAdminSite) AccountLogin(ctx context.Context, in *adminin.AccountLoginI
 func (s *sAdminSite) MobileLogin(ctx context.Context, in *adminin.MobileLoginInp) (res *adminin.LoginModel, err error) {
 	defer func() {
 		service.SysLoginLog().Push(ctx, &sysin.LoginLogPushInp{Response: res, Err: err})
+		if err == nil {
+			_ = s.delLoginFailTimes(ctx, in.Mobile)
+		}
 	}()
+
+	if err = s.verifyMaxFailCount(ctx, in.Mobile); err != nil {
+		return nil, err
+	}
 
 	var mb *entity.AdminMember
 	if err = dao.AdminMember.Ctx(ctx).Where("mobile ", in.Mobile).Scan(&mb); err != nil {
@@ -192,7 +211,8 @@ func (s *sAdminSite) MobileLogin(ctx context.Context, in *adminin.MobileLoginInp
 	}
 
 	if mb == nil {
-		err = gerror.New("账号不存在")
+		_ = s.setLoginFailTimes(ctx, in.Mobile)
+		err = gerror.New("验证码错误")
 		return
 	}
 
@@ -207,6 +227,7 @@ func (s *sAdminSite) MobileLogin(ctx context.Context, in *adminin.MobileLoginInp
 	})
 
 	if err != nil {
+		_ = s.setLoginFailTimes(ctx, in.Mobile)
 		return
 	}
 
@@ -216,6 +237,59 @@ func (s *sAdminSite) MobileLogin(ctx context.Context, in *adminin.MobileLoginInp
 	}
 
 	res, err = s.handleLogin(ctx, mb)
+	return
+}
+
+// getLoginFailTimes 读取账号的连续登录失败次数
+func (s *sAdminSite) getLoginFailTimes(ctx context.Context, tag string) (res *adminin.LoginFailCount, err error) {
+	get, err := cache.Instance().Get(ctx, "loginFailLock:"+tag)
+	if err != nil {
+		return nil, err
+	}
+	if err = get.Scan(&res); err != nil {
+		return nil, err
+	}
+	if res == nil {
+		res = &adminin.LoginFailCount{Tag: tag}
+	}
+	return
+}
+
+// setLoginFailTimes 累计一次登录失败
+func (s *sAdminSite) setLoginFailTimes(ctx context.Context, tag string) (err error) {
+	times, err := s.getLoginFailTimes(ctx, tag)
+	if err != nil {
+		return err
+	}
+	times.Count++
+	times.LastLoginTime = gtime.Timestamp()
+	return cache.Instance().Set(ctx, "loginFailLock:"+tag, times, time.Hour*2)
+}
+
+// delLoginFailTimes 登录成功后清除失败次数
+func (s *sAdminSite) delLoginFailTimes(ctx context.Context, tag string) (err error) {
+	_, err = cache.Instance().Remove(ctx, "loginFailLock:"+tag)
+	return
+}
+
+// verifyMaxFailCount 连续失败达到配置次数后，在锁定时间内拒绝登录
+func (s *sAdminSite) verifyMaxFailCount(ctx context.Context, tag string) (err error) {
+	cfg := token.GetConfig()
+	if cfg == nil || cfg.MaxLoginFailures <= 0 || cfg.LoginLockMinutes <= 0 {
+		return
+	}
+	times, err := s.getLoginFailTimes(ctx, tag)
+	if err != nil {
+		return err
+	}
+	if times.Count < cfg.MaxLoginFailures {
+		return
+	}
+	passed := gtime.Timestamp() - times.LastLoginTime
+	if passed > int64(cfg.LoginLockMinutes*60) {
+		return s.delLoginFailTimes(ctx, tag)
+	}
+	err = gerror.Newf("登录失败次数过多，请于%v秒后重试！", int64(cfg.LoginLockMinutes*60)-passed)
 	return
 }
 

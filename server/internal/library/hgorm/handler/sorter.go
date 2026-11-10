@@ -162,15 +162,10 @@ func removeSorterIndexes(slice []*form.Sorter, indexes []int) []*form.Sorter {
 	return removed
 }
 
-// mappingAndFilterToTableFields 将排序字段映射为实际的表字段
+// mappingAndFilterToTableFields 将排序字段映射为实际的表字段，不在表中的字段丢弃
 func mappingAndFilterToTableFields(fieldsMap map[string]*gdb.TableField, sorters []*form.Sorter) (ser []*form.Sorter) {
-	if len(fieldsMap) == 0 {
+	if len(fieldsMap) == 0 || len(sorters) == 0 {
 		return
-	}
-
-	var fields []string
-	for _, v := range sorters {
-		fields = append(fields, v.ColumnKey)
 	}
 
 	fieldsKeyMap := make(map[string]interface{}, len(fieldsMap))
@@ -178,23 +173,21 @@ func mappingAndFilterToTableFields(fieldsMap map[string]*gdb.TableField, sorters
 		fieldsKeyMap[k] = nil
 	}
 
-	var inputFieldsArray = gstr.SplitAndTrim(gstr.Join(fields, ","), ",")
-	for _, field := range inputFieldsArray {
+	for _, sorter := range sorters {
+		field := sorter.ColumnKey
 		if _, ok := fieldsKeyMap[field]; ok {
+			ser = append(ser, sorter)
 			continue
 		}
-
 		if !gregex.IsMatchString(`^[\w\-]+$`, field) {
 			continue
 		}
-
-		if foundKey, _ := gutil.MapPossibleItemByKey(fieldsKeyMap, field); foundKey != "" {
-			for _, v := range sorters {
-				if v.ColumnKey == field {
-					v.ColumnKey = foundKey
-				}
-			}
+		foundKey, _ := gutil.MapPossibleItemByKey(fieldsKeyMap, field)
+		if foundKey == "" {
+			continue
 		}
+		sorter.ColumnKey = foundKey
+		ser = append(ser, sorter)
 	}
-	return sorters
+	return
 }

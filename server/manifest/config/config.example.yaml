@@ -187,6 +187,8 @@ token:
   refreshInterval: 86400                 # 刷新间隔，单位：秒。必须小于expires，否则无法触发。默认1天内只允许刷新一次
   maxRefreshTimes: 30                    # 最大允许刷新次数，-1不限制。默认30次
   multiLogin: true                       # 是否允许多端登录， false|true 默认为true
+  maxLoginFailures: 5                    # 连续登录失败次数，达到后锁定。0 表示不限制，默认5次
+  loginLockMinutes: 1                    # 锁定时长，单位：分钟。0 表示不锁定，默认1分钟
 
 
 # 消息队列

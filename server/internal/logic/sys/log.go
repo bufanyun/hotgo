@@ -270,13 +270,13 @@ func (s *sSysLog) SimplifyHeaderParams(data *gjson.Json) *gjson.Json {
 	if data == nil || data.IsNil() {
 		return data
 	}
-	var filters = []string{"Accept", "Authorization", "Cookie"}
-	for _, filter := range filters {
-		v := data.Get(filter)
-		if len(v.String()) > 128 {
-			data.MustRemove(filter)
-		}
+	if len(data.Get("Accept").String()) > 128 {
+		data.MustRemove("Accept")
 	}
+	data.MustRemove("Authorization")
+	data.MustRemove("authorization")
+	data.MustRemove("Cookie")
+	data.MustRemove("cookie")
 	return data
 }
 
@@ -319,6 +319,12 @@ func (s *sSysLog) View(ctx context.Context, in *sysin.LogViewInp) (res *sysin.Lo
 		       "` + consts.DemoTips + `"
 		   ]
 		}`)
+	}
+	if contexts.GetRoleKey(ctx) != consts.SuperRoleKey && res.HeaderData != nil {
+		res.HeaderData.MustRemove("Authorization")
+		res.HeaderData.MustRemove("authorization")
+		res.HeaderData.MustRemove("Cookie")
+		res.HeaderData.MustRemove("cookie")
 	}
 	return
 }
