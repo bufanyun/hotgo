@@ -50,6 +50,7 @@
   import { useMessage } from 'naive-ui';
   import { newState, State } from '@/views/permission/role/model';
   import { getDeptList } from '@/api/org/dept';
+  import { convertListToTree } from '@/utils/hotgo';
 
   const emit = defineEmits(['reloadTable']);
   const message = useMessage();
@@ -93,10 +94,21 @@
     }
   }
 
+  function removeEmptyChildren(list: any[]) {
+    list.forEach((item) => {
+      if (item.children?.length) {
+        removeEmptyChildren(item.children);
+      } else {
+        delete item.children;
+      }
+    });
+    return list;
+  }
+
   async function loadDeptList() {
     const res = await getDeptList({});
     if (res.list) {
-      deptList.value = res.list;
+      deptList.value = removeEmptyChildren(convertListToTree(res.list));
     }
   }
 
