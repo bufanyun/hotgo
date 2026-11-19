@@ -111,6 +111,10 @@ func (s *sAdminRole) GetMemberList(ctx context.Context, id int64) (list []*admin
 
 // GetPermissions 更改角色菜单权限
 func (s *sAdminRole) GetPermissions(ctx context.Context, in *adminin.GetPermissionsInp) (res *adminin.GetPermissionsModel, err error) {
+	if err = s.verifyRoleScope(ctx, in.RoleId); err != nil {
+		return
+	}
+
 	values, err := dao.AdminRoleMenu.Ctx(ctx).Fields(dao.AdminRoleMenu.Columns().MenuId).Where(dao.AdminRoleMenu.Columns().RoleId, in.RoleId).Array()
 	if err != nil {
 		return
@@ -129,7 +133,58 @@ func (s *sAdminRole) GetPermissions(ctx context.Context, in *adminin.GetPermissi
 
 // UpdatePermissions 更改角色菜单权限
 func (s *sAdminRole) UpdatePermissions(ctx context.Context, in *adminin.UpdatePermissionsInp) (err error) {
+	in.MenuIds = convert.UniqueSlice(in.MenuIds)
+	isSuper := service.AdminMember().VerifySuperId(ctx, contexts.GetUserId(ctx))
+	if !isSuper {
+		if err = s.VerifyRoleId(ctx, in.RoleId); err != nil {
+			return
+		}
+	}
+
 	err = dao.AdminRoleMenu.Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
+		if !isSuper && len(in.MenuIds) > 0 {
+			// 加锁防止校验后、写入前目标菜单被并发改动
+			existingQuery := dao.AdminRoleMenu.Ctx(ctx).
+				Fields(dao.AdminRoleMenu.Columns().MenuId).
+				Where(dao.AdminRoleMenu.Columns().RoleId, in.RoleId)
+			// SQLite 不支持 FOR UPDATE；读后库被改的话写入会报 BUSY 失败，不会带着过期校验写入
+			dbType := dao.AdminRoleMenu.DB().GetConfig().Type
+			if dbType == consts.DBMysql || dbType == consts.DBPgsql {
+				existingQuery = existingQuery.LockUpdate()
+			}
+			existingValues, err := existingQuery.Array()
+			if err != nil {
+				return gerror.Wrap(err, consts.ErrorORM)
+			}
+
+			values, err := dao.AdminRoleMenu.Ctx(ctx).
+				Fields(dao.AdminRoleMenu.Columns().MenuId).
+				Where(dao.AdminRoleMenu.Columns().RoleId, contexts.GetRoleId(ctx)).
+				Array()
+			if err != nil {
+				return gerror.Wrap(err, consts.ErrorORM)
+			}
+
+			existing := make(map[int64]struct{}, len(existingValues))
+			for _, v := range existingValues {
+				existing[v.Int64()] = struct{}{}
+			}
+			owned := make(map[int64]struct{}, len(values))
+			for _, v := range values {
+				owned[v.Int64()] = struct{}{}
+			}
+
+			// 目标原有的菜单可能超出调用者权限，原样保留不算授予
+			for _, menuId := range in.MenuIds {
+				if _, ok := existing[menuId]; ok {
+					continue
+				}
+				if _, ok := owned[menuId]; !ok {
+					return gerror.New("不能授予自己没有的权限")
+				}
+			}
+		}
+
 		if _, err = dao.AdminRoleMenu.Ctx(ctx).Where("role_id", in.RoleId).Delete(); err != nil {
 			err = gerror.Wrap(err, consts.ErrorORM)
 			return
@@ -161,6 +216,24 @@ func (s *sAdminRole) UpdatePermissions(ctx context.Context, in *adminin.UpdatePe
 }
 
 func (s *sAdminRole) Edit(ctx context.Context, in *adminin.RoleEditInp) (err error) {
+	if !service.AdminMember().VerifySuperId(ctx, contexts.GetUserId(ctx)) {
+		if in.Id > 0 {
+			if err = s.VerifyRoleId(ctx, in.Id); err != nil {
+				return
+			}
+		}
+
+		if in.Pid != contexts.GetRoleId(ctx) {
+			if err = s.VerifyRoleId(ctx, in.Pid); err != nil {
+				return
+			}
+		}
+
+		if err = s.keepDataScope(ctx, in); err != nil {
+			return
+		}
+	}
+
 	if err = hgorm.IsUnique(ctx, &dao.AdminRole, g.Map{dao.AdminRole.Columns().Name: in.Name}, "名称已存在", in.Id); err != nil {
 		return
 	}
@@ -218,6 +291,10 @@ func updateRoleChildrenTree(ctx context.Context, _id int64, _level int, _tree st
 }
 
 func (s *sAdminRole) Delete(ctx context.Context, in *adminin.RoleDeleteInp) (err error) {
+	if err = s.verifyRoleScope(ctx, in.Id); err != nil {
+		return
+	}
+
 	var models *entity.AdminRole
 	if err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
 		return
@@ -270,6 +347,20 @@ func (s *sAdminRole) DataScopeSelect() (res form.Selects) {
 }
 
 func (s *sAdminRole) DataScopeEdit(ctx context.Context, in *adminin.DataScopeEditInp) (err error) {
+	if err = s.verifyRoleScope(ctx, in.Id); err != nil {
+		return
+	}
+
+	if !service.AdminMember().VerifySuperId(ctx, contexts.GetUserId(ctx)) {
+		all, err := s.callerDataScopeAll(ctx)
+		if err != nil {
+			return err
+		}
+		if !all {
+			return gerror.New("只有数据范围为全部权限的角色才能修改下级的数据范围")
+		}
+	}
+
 	var models *entity.AdminRole
 	if err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Scan(&models); err != nil {
 		return
@@ -316,6 +407,56 @@ func (s *sAdminRole) treeList(pid int64, nodes []*entity.AdminRole) (list []*adm
 		}
 	}
 	return
+}
+
+func (s *sAdminRole) callerDataScopeAll(ctx context.Context) (all bool, err error) {
+	var role *entity.AdminRole
+	if err = dao.AdminRole.Ctx(ctx).
+		Fields(dao.AdminRole.Columns().DataScope).
+		Where(dao.AdminRole.Columns().Id, contexts.GetRoleId(ctx)).
+		Scan(&role); err != nil {
+		return false, gerror.Wrap(err, consts.ErrorORM)
+	}
+	return role != nil && role.DataScope == consts.RoleDataAll, nil
+}
+
+// keepDataScope 防止没有全部数据权限的调用者借编辑角色放大数据范围
+func (s *sAdminRole) keepDataScope(ctx context.Context, in *adminin.RoleEditInp) (err error) {
+	all, err := s.callerDataScopeAll(ctx)
+	if err != nil {
+		return err
+	}
+	if all {
+		return nil
+	}
+
+	roleId := in.Pid
+	if in.Id > 0 {
+		roleId = in.Id
+	}
+
+	var source *entity.AdminRole
+	if err = dao.AdminRole.Ctx(ctx).
+		Fields(dao.AdminRole.Columns().DataScope, dao.AdminRole.Columns().CustomDept).
+		Where(dao.AdminRole.Columns().Id, roleId).
+		Scan(&source); err != nil {
+		return gerror.Wrap(err, consts.ErrorORM)
+	}
+	if source == nil {
+		return gerror.New("角色不存在")
+	}
+
+	in.DataScope = source.DataScope
+	in.CustomDept = source.CustomDept
+	return nil
+}
+
+// verifyRoleScope 防止非超管改自己或上级角色给自己提权
+func (s *sAdminRole) verifyRoleScope(ctx context.Context, roleId int64) (err error) {
+	if service.AdminMember().VerifySuperId(ctx, contexts.GetUserId(ctx)) {
+		return nil
+	}
+	return s.VerifyRoleId(ctx, roleId)
 }
 
 // VerifyRoleId 验证角色ID
