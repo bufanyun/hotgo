@@ -13,6 +13,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/gmode"
 	"hotgo/internal/dao"
+	"hotgo/internal/global"
 	"hotgo/internal/library/hgorm"
 	"hotgo/internal/library/hgorm/handler"
 	"hotgo/internal/model/entity"
@@ -136,6 +137,8 @@ func (s *sSysServeLog) View(ctx context.Context, in *sysin.ServeLogViewInp) (res
 
 // RealWrite 真实写入
 func (s *sSysServeLog) RealWrite(ctx context.Context, models entity.SysServeLog) (err error) {
-	_, err = dao.SysServeLog.Ctx(ctx).FieldsEx(dao.SysLog.Columns().Id).Data(models).OmitEmptyData().Insert()
+	// 写库失败时数据库组件会打日志，防止写回服务日志表
+	ctx = global.MarkServeLogWrite(ctx)
+	_, err = dao.SysServeLog.Ctx(ctx).FieldsEx(dao.SysServeLog.Columns().Id).Data(models).OmitEmptyData().Insert()
 	return
 }

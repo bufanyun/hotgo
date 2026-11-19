@@ -62,10 +62,27 @@ func Init(ctx context.Context) {
 	SubscribeClusterSync(ctx)
 }
 
+type serveLogWriteCtxKey struct{}
+
+// MarkServeLogWrite 写库失败的日志若写回服务日志表会死循环，写之前打标记跳过
+func MarkServeLogWrite(ctx context.Context) context.Context {
+	return context.WithValue(ctx, serveLogWriteCtxKey{}, true)
+}
+
+// IsServeLogWrite 见 MarkServeLogWrite
+func IsServeLogWrite(ctx context.Context) bool {
+	v, _ := ctx.Value(serveLogWriteCtxKey{}).(bool)
+	return v
+}
+
 // LoggingServeLogHandler 服务日志处理
 // 需要将异常日志保存到服务日志时可以通过SetHandlers设置此方法
 func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 	in.Next(ctx)
+
+	if IsServeLogWrite(ctx) {
+		return
+	}
 
 	err := g.Try(ctx, func(ctx context.Context) {
 		var err error
