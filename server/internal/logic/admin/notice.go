@@ -21,6 +21,7 @@ import (
 	"hotgo/utility/validate"
 
 	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
@@ -369,19 +370,32 @@ func (s *sAdminNotice) UnreadCount(ctx context.Context, in *adminin.NoticeUnread
 
 // messageIds 获取我的消息所有的消息ID
 func (s *sAdminNotice) messageIds(ctx context.Context, memberId int64) (ids []int64, err error) {
-	columns, err := s.Model(ctx, &handler.Option{FilterAuth: false}).
-		Fields(dao.AdminNotice.Columns().Id).
+	// HotGo 支持 MySQL、PostgreSQL、SQLite，收件人在 Go 里过滤，不依赖某种库的 JSON 语法
+	type messageRow struct {
+		Id       int64       `orm:"id"`
+		Type     int64       `orm:"type"`
+		Receiver *gjson.Json `orm:"receiver"`
+	}
+
+	var rows []messageRow
+	err = s.Model(ctx, &handler.Option{FilterAuth: false}).
+		Fields(dao.AdminNotice.Columns().Id, dao.AdminNotice.Columns().Type, dao.AdminNotice.Columns().Receiver).
 		Where(dao.AdminNotice.Columns().Status, consts.StatusEnabled).
-		Where(
-			s.Model(ctx, &handler.Option{FilterAuth: false}).Builder().WhereIn("type", []int{consts.NoticeTypeNotify, consts.NoticeTypeNotice}).
-				WhereOr(s.Model(ctx, &handler.Option{FilterAuth: false}).Builder().Where("type", consts.NoticeTypeLetter)),
-		).Array()
+		WhereIn(dao.AdminNotice.Columns().Type, []int{consts.NoticeTypeNotify, consts.NoticeTypeNotice, consts.NoticeTypeLetter}).
+		Scan(&rows)
 	if err != nil {
 		err = gerror.Wrap(err, "获取我的消息失败！")
 		return
 	}
 
-	ids = g.NewVar(columns).Int64s()
+	for _, row := range rows {
+		if row.Type == consts.NoticeTypeLetter {
+			if row.Receiver == nil || !validate.InSlice(row.Receiver.Var().Int64s(), memberId) {
+				continue
+			}
+		}
+		ids = append(ids, row.Id)
+	}
 	return
 }
 
