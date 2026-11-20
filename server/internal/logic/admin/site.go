@@ -377,7 +377,7 @@ func (s *sAdminSite) BindUserContext(ctx context.Context, claims *model.Identity
 	}
 
 	if mb == nil {
-		err = gerror.Wrap(err, "账号不存在或已被删除！")
+		err = gerror.New("账号不存在或已被删除！")
 		return
 	}
 
