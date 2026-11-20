@@ -17,6 +17,7 @@ import (
 	"hotgo/utility/format"
 	"hotgo/utility/url"
 	"hotgo/utility/validate"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -258,8 +259,20 @@ func HasFile(ctx context.Context, md5 string) (res *entity.SysAttachment, err er
 	return
 }
 
+// md5 会直接拼进分片临时目录，限制字符集避免路径穿越
+var md5Regexp = regexp.MustCompile(`^[0-9a-fA-F]{32}$`)
+
+func isMd5(s string) bool {
+	return md5Regexp.MatchString(s)
+}
+
 // CheckMultipart 检查文件分片
 func CheckMultipart(ctx context.Context, in *CheckMultipartParams) (res *CheckMultipartModel, err error) {
+	if !isMd5(in.Md5) {
+		err = gerror.New("文件md5值格式不正确")
+		return
+	}
+
 	res = new(CheckMultipartModel)
 
 	meta := new(FileMeta)
@@ -378,6 +391,19 @@ func UploadPart(ctx context.Context, in *UploadPartParams) (res *UploadPartModel
 		err = gerror.New("分片事件不存在，请重新上传！")
 		return
 	}
+
+	// 升级前写入的事件缓存可能带非法 md5
+	if !isMd5(in.Md5) {
+		err = gerror.New("文件md5值格式不正确")
+		return
+	}
+
+	if !strings.EqualFold(in.Md5, in.mp.Meta.Md5) {
+		err = gerror.New("分片与上传事件不匹配")
+		return
+	}
+	// 后续驱动拼路径只用事件里记录的 md5
+	in.Md5 = in.mp.Meta.Md5
 
 	if validate.InSlice(in.mp.UploadedIndex, in.Index) {
 		err = gerror.New("该分片已上传过了")
