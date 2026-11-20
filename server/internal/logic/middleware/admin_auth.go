@@ -36,6 +36,12 @@ func (s *sMiddleware) AdminAuth(r *ghttp.Request) {
 		return
 	}
 
+	// 前台(api)等其他应用的 token 也能解析出用户，后台接口只认 App=admin 的 token
+	if user := contexts.GetUser(ctx); user == nil || user.App != consts.AppAdmin {
+		response.JsonExit(r, gcode.CodeNotAuthorized.Code(), "登录身份已失效，请重新登录！")
+		return
+	}
+
 	// 不需要验证权限的路由地址
 	if s.IsExceptAuth(ctx, consts.AppAdmin, path) {
 		r.Middleware.Next()
