@@ -7,9 +7,13 @@ package websocket
 
 import (
 	"context"
+	"hotgo/internal/consts"
+	"runtime/debug"
+	"strings"
+
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
-	"runtime/debug"
 )
 
 // handlerMsg 处理消息
@@ -34,6 +38,12 @@ func handlerMsg(client *Client, message []byte) {
 	fun, ok := routers[request.Event]
 	if !ok {
 		g.Log().Warningf(mctx, "handlerMsg function id %v: not registered", request.Event)
+		return
+	}
+
+	// 前台(api) token 也能连主 WS，admin/ 事件只给后台 token
+	if strings.HasPrefix(request.Event, "admin/") && (client.User == nil || client.User.App != consts.AppAdmin) {
+		SendError(client, request.Event, gerror.New("没有访问权限"))
 		return
 	}
 
