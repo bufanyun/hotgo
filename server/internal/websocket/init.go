@@ -34,6 +34,9 @@ func Stop() {
 	clientManager.closeSignal <- struct{}{}
 }
 
+// 默认不限单条消息大小，一帧就能把内存撑爆
+const maxMessageSize = 512 * 1024
+
 // WsPage ws入口
 func WsPage(r *ghttp.Request) {
 	upGrader := websocket.Upgrader{
@@ -47,6 +50,7 @@ func WsPage(r *ghttp.Request) {
 	if err != nil {
 		return
 	}
+	conn.SetReadLimit(maxMessageSize)
 	currentTime := uint64(gtime.Now().Unix())
 	client := NewClient(r, conn, currentTime)
 	go client.read()
