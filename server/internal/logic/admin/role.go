@@ -259,6 +259,13 @@ func (s *sAdminRole) Edit(ctx context.Context, in *adminin.RoleEditInp) (err err
 			// 如果当前角色有子级,更新子级tree关系树
 			return updateRoleChildrenTree(ctx, in.Id, in.Level, in.Tree)
 		})
+		if err != nil {
+			return
+		}
+		// 角色状态影响权限，事务提交后再刷新
+		if err = casbin.Refresh(ctx); err != nil {
+			return gerror.Wrap(err, "数据已保存，但权限刷新失败，请稍后重试保存或联系管理员")
+		}
 		return
 	}
 
@@ -328,8 +335,21 @@ func (s *sAdminRole) Delete(ctx context.Context, in *adminin.RoleDeleteInp) (err
 		return gerror.New("请先删除该角色下得所有用户账号！")
 	}
 
-	if _, err = dao.AdminRole.Ctx(ctx).Where("id", in.Id).Delete(); err != nil {
-		err = gerror.Wrap(err, consts.ErrorORM)
+	err = dao.AdminRole.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+		if _, err = dao.AdminRoleMenu.Ctx(ctx).Where(dao.AdminRoleMenu.Columns().RoleId, in.Id).Delete(); err != nil {
+			return gerror.Wrap(err, consts.ErrorORM)
+		}
+		if _, err = dao.AdminRole.Ctx(ctx).Where(dao.AdminRole.Columns().Id, in.Id).Delete(); err != nil {
+			return gerror.Wrap(err, consts.ErrorORM)
+		}
+		return nil
+	})
+	if err != nil {
+		return
+	}
+	// 角色删除后其权限不该继续生效，事务提交后再刷新
+	if err = casbin.Refresh(ctx); err != nil {
+		return gerror.Wrap(err, "数据已删除，但权限刷新失败，请联系管理员")
 	}
 	return
 }
