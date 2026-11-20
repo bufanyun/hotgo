@@ -7,12 +7,13 @@ package common
 
 import (
 	"context"
+	"errors"
 	"hotgo/internal/library/storager"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
 	"hotgo/utility/file"
 	"hotgo/utility/format"
-	"time"
+	"net/http"
 
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -74,11 +75,27 @@ func (s *sCommonUpload) ImageTransferStorage(ctx context.Context, in *sysin.Imag
 		return nil, gerror.New("仅支持 HTTP/HTTPS 协议的图片链接")
 	}
 
-	resp, err := g.Client().SetTimeout(time.Second*30).Get(ctx, in.Url)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, in.Url, nil)
 	if err != nil {
-		return nil, err
+		g.Log().Warningf(ctx, "图片转存创建请求失败 url:%s err:%+v", in.Url, err)
+		return nil, gerror.New("图片链接格式不正确")
 	}
-	defer resp.Close()
+	resp, err := newTransferClient(false).Do(req)
+	if err != nil {
+		// 底层错误带内网地址等细节，只记日志
+		g.Log().Warningf(ctx, "图片转存请求失败 url:%s err:%+v", in.Url, err)
+		switch {
+		case errors.Is(err, errPrivateAddr):
+			return nil, gerror.New("不允许访问内网地址")
+		case errors.Is(err, errTooManyRedirects):
+			return nil, gerror.New("重定向次数过多")
+		case errors.Is(err, errBadScheme):
+			return nil, gerror.New("仅支持 HTTP/HTTPS 协议的图片链接")
+		default:
+			return nil, gerror.New("请求图片失败，请检查链接是否可访问")
+		}
+	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
 		return nil, gerror.Newf("请求图片资源失败, StatusCode:%v", resp.StatusCode)
@@ -89,7 +106,14 @@ func (s *sCommonUpload) ImageTransferStorage(ctx context.Context, in *sysin.Imag
 		return nil, gerror.New("资源不是图片类型")
 	}
 
-	content := resp.ReadAll()
+	content, err := readImageBody(resp.Body, imageSizeLimitMB())
+	if err != nil {
+		if errors.Is(err, errImageTooLarge) {
+			return nil, err
+		}
+		g.Log().Warningf(ctx, "图片转存读取失败 url:%s err:%+v", in.Url, err)
+		return nil, gerror.New("读取图片失败，请检查链接是否可访问")
+	}
 	if len(content) == 0 {
 		return nil, gerror.New("图片内容为空")
 	}
