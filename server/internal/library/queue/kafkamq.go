@@ -243,7 +243,7 @@ func (consumer *KaConsumer) ConsumeClaim(session sarama.ConsumerGroupSession, cl
 	// https://github.com/Shopify/sarama/blob/master/consumer_group.go#L27-L29
 	// `ConsumeClaim` 方法已经是 goroutine 调用 不要在该方法内进行 goroutine
 	for message := range claim.Messages() {
-		_ = consumer.receiveDoFun(MqMsg{
+		_ = safeReceiveDo(consumer.receiveDoFun, MqMsg{
 			RunType:   ReceiveMsg,
 			Topic:     message.Topic,
 			Body:      message.Value,

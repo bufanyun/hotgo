@@ -139,7 +139,7 @@ func (r *RedisMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg) e
 		for range time.Tick(300 * time.Millisecond) {
 			mqMsgList := r.loopReadQueue(key)
 			for _, mqMsg := range mqMsgList {
-				_ = receiveDo(mqMsg)
+				_ = safeReceiveDo(receiveDo, mqMsg)
 			}
 		}
 	}()
@@ -147,7 +147,7 @@ func (r *RedisMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg) e
 	go func() {
 		mqMsgCh, errCh := r.loopReadDelayQueue(key2)
 		for mqMsg := range mqMsgCh {
-			_ = receiveDo(mqMsg)
+			_ = safeReceiveDo(receiveDo, mqMsg)
 		}
 		for err = range errCh {
 			if err != nil && err != context.Canceled && err != context.DeadlineExceeded {
