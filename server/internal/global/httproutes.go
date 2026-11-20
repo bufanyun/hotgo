@@ -25,7 +25,7 @@ type HTTPRouter struct {
 
 var (
 	httpRoutes         map[string]*HTTPRouter
-	routeMutex         sync.Mutex
+	httpRoutesOnce     sync.Once
 	shortTypeMapForTag = map[string]string{
 		gtag.SummaryShort:      gtag.Summary,
 		gtag.SummaryShort2:     gtag.Summary,
@@ -60,26 +60,25 @@ func GenRouteKey(method, path string) string {
 	return strings.ToUpper(method) + " " + path
 }
 
+// 并发请求不能读到填充中的 map
 func LoadHTTPRoutes(r *ghttp.Request) map[string]*HTTPRouter {
-	if httpRoutes == nil {
-		routeMutex.Lock()
-		defer routeMutex.Unlock()
+	httpRoutesOnce.Do(func() {
+		httpRoutes = buildHTTPRoutes(r.Server.GetRoutes())
+	})
+	return httpRoutes
+}
 
-		if httpRoutes != nil {
-			return httpRoutes
-		}
-
-		httpRoutes = make(map[string]*HTTPRouter, len(r.Server.GetRoutes()))
-		for _, v := range r.Server.GetRoutes() {
-			key := GenFilterRouteKey(v.Handler.Router)
-			if _, ok := httpRoutes[key]; !ok {
-				router := new(HTTPRouter)
-				router.RouterItem = v
-				httpRoutes[key] = setRouterMeta(router)
-			}
+func buildHTTPRoutes(items []ghttp.RouterItem) map[string]*HTTPRouter {
+	routes := make(map[string]*HTTPRouter, len(items))
+	for _, v := range items {
+		key := GenFilterRouteKey(v.Handler.Router)
+		if _, ok := routes[key]; !ok {
+			router := new(HTTPRouter)
+			router.RouterItem = v
+			routes[key] = setRouterMeta(router)
 		}
 	}
-	return httpRoutes
+	return routes
 }
 
 func setRouterMeta(router *HTTPRouter) *HTTPRouter {
