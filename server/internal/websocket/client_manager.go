@@ -86,6 +86,8 @@ func (manager *ClientManager) ClientsRange(f func(client *Client, value bool) (r
 
 // GetClientsLen 获取客户端总数
 func (manager *ClientManager) GetClientsLen() (clientsLen int) {
+	manager.ClientsLock.RLock()
+	defer manager.ClientsLock.RUnlock()
 	clientsLen = len(manager.Clients)
 	return
 }
@@ -106,6 +108,8 @@ func (manager *ClientManager) DelClients(client *Client) {
 
 // GetClient 通过socket ID获取客户端的连接
 func (manager *ClientManager) GetClient(id string) (client *Client) {
+	manager.ClientsLock.RLock()
+	defer manager.ClientsLock.RUnlock()
 	for c := range manager.Clients {
 		if c.ID == id {
 			return c
@@ -152,6 +156,8 @@ func (manager *ClientManager) DelUsers(client *Client) (result bool) {
 
 // GetUsersLen 已登录用户数
 func (manager *ClientManager) GetUsersLen() (userLen int) {
+	manager.UserLock.RLock()
+	defer manager.UserLock.RUnlock()
 	userLen = len(manager.Users)
 	return
 }
