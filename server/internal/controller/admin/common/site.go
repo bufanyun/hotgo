@@ -114,6 +114,25 @@ func (c *cSite) Register(ctx context.Context, req *common.RegisterReq) (res *com
 	return
 }
 
+// IsLock 由客户端传，只有带同账号有效后台 token 才算锁屏解锁
+func canSkipCaptcha(ctx context.Context, username string) bool {
+	// simple.IsDemo 缺省为 true，安全放行不能依赖缺省
+	if g.Cfg().MustGet(ctx, "system.isDemo").Bool() {
+		return true
+	}
+
+	r := g.RequestFromCtx(ctx)
+	if r == nil {
+		return false
+	}
+	// 解锁校验不能顺带续期，单端登录下会与新签的 token 竞争
+	user, err := token.PeekLoginUser(r)
+	if err != nil || user == nil {
+		return false
+	}
+	return user.App == consts.AppAdmin && user.Username == username
+}
+
 // AccountLogin 账号登录
 func (c *cSite) AccountLogin(ctx context.Context, req *common.AccountLoginReq) (res *common.AccountLoginRes, err error) {
 	login, err := service.SysConfig().GetLogin(ctx)
@@ -121,7 +140,7 @@ func (c *cSite) AccountLogin(ctx context.Context, req *common.AccountLoginReq) (
 		return
 	}
 
-	if !req.IsLock && login.CaptchaSwitch == consts.StatusEnabled {
+	if login.CaptchaSwitch == consts.StatusEnabled && !(req.IsLock && canSkipCaptcha(ctx, req.Username)) {
 		// 校验 验证码
 		if !captcha.Verify(req.Cid, req.Code) {
 			err = gerror.New("验证码错误")
