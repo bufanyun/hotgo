@@ -12,7 +12,6 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/guid"
-	"sync"
 	"time"
 )
 
@@ -29,7 +28,6 @@ type Lock struct {
 	watchDog        chan struct{} // 看门狗
 	ttl             time.Duration // 过期时间
 	tryLockInterval time.Duration // 重新获取锁间隔
-	wg              sync.WaitGroup
 }
 
 // NewConfig 初始化一个锁配置
@@ -134,7 +132,7 @@ func (l *Lock) LockFunc(ctx context.Context, f func()) error {
 // It releases the lock after `f` is executed.
 func (l *Lock) TryLockFunc(ctx context.Context, f func()) error {
 	err := l.TryLock(ctx)
-	if err != nil {
+	if err == nil {
 		defer func() {
 			_ = l.Unlock(ctx)
 		}()
@@ -148,9 +146,6 @@ func (l *Lock) startWatchDog() {
 	resetTTLInterval := l.ttl / 3
 	ticker := time.NewTicker(resetTTLInterval)
 	defer ticker.Stop()
-
-	l.wg.Add(1)
-	defer l.wg.Wait()
 
 	conn := g.Redis()
 	for {
@@ -168,7 +163,6 @@ func (l *Lock) startWatchDog() {
 			}
 		case <-l.watchDog:
 			// 已经解锁
-			l.wg.Done()
 			return
 		}
 	}
