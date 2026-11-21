@@ -172,14 +172,15 @@ func InitTrace(ctx context.Context) {
 // SetGFMode 设置gf运行模式
 func SetGFMode(ctx context.Context) {
 	mode := g.Cfg().MustGet(ctx, "system.mode").String()
-	if len(mode) == 0 {
-		mode = gmode.NOT_SET
-	}
 
 	var modes = []string{gmode.DEVELOP, gmode.TESTING, gmode.STAGING, gmode.PRODUCT}
 
-	// 如果是有效的运行模式，就进行设置
+	// 未配置时 GoFrame 会按程序目录自动判断,源码目录会被判成 develop,开发功能会跟着打开
 	if validate.InSlice(modes, mode) {
 		gmode.Set(mode)
+		return
 	}
+
+	g.Log().Warningf(ctx, "system.mode 未配置或无效(%q)，按 product 处理", mode)
+	gmode.Set(gmode.PRODUCT)
 }
