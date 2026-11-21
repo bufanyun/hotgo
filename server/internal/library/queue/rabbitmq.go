@@ -330,7 +330,7 @@ func (r *RabbitMq) consume(ch *amqp.Channel, deliveries <-chan amqp.Delivery, to
 	}()
 
 	for d := range deliveries {
-		_ = receiveDo(MqMsg{
+		_ = safeReceiveDo(receiveDo, MqMsg{
 			RunType:   ReceiveMsg,
 			Topic:     topic,
 			MsgId:     d.MessageId,

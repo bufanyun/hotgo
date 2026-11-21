@@ -131,7 +131,7 @@ func (q *PgsqlConsumerMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg 
 			_ = q.markDead(ctx, row.id, row.retry)
 			continue
 		}
-		if handleErr := receiveDo(mqMsg); handleErr == nil {
+		if handleErr := safeReceiveDo(receiveDo, mqMsg); handleErr == nil {
 			if _, err = q.db.Exec(ctx, "DELETE FROM "+queueTable+" WHERE id=?", row.id); err != nil {
 				return err
 			}

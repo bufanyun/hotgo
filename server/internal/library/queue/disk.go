@@ -85,7 +85,7 @@ func (q *DiskConsumerMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg M
 				Logger().Warningf(ctx, "disk delay pop err:%+v", popErr)
 			}
 			if ok {
-				q.finish(topic, msg, receiveDo(msg), nil)
+				q.finish(topic, msg, safeReceiveDo(receiveDo, msg), nil)
 				continue
 			}
 			if !q.sleep(ctx, 30*time.Millisecond) {
@@ -106,7 +106,7 @@ func (q *DiskConsumerMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg M
 			continue
 		}
 		commit := func() { queue.Commit(index, offset) }
-		q.finish(topic, mqMsg, receiveDo(mqMsg), commit)
+		q.finish(topic, mqMsg, safeReceiveDo(receiveDo, mqMsg), commit)
 	}
 }
 

@@ -193,7 +193,7 @@ func (r *RocketMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg) 
 	err = r.consumerIns.Subscribe(topic, consumer.MessageSelector{}, func(ctx context.Context, msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 		for _, item := range msgs {
 			_ = rocketManager.goPool.Add(ctx, func(ctx context.Context) {
-				_ = receiveDo(MqMsg{
+				_ = safeReceiveDo(receiveDo, MqMsg{
 					RunType: ReceiveMsg,
 					Topic:   item.Topic,
 					MsgId:   item.MsgId,
