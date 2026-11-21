@@ -12,11 +12,13 @@ import (
 	"hotgo/internal/dao"
 	"net/http"
 	"strings"
+	"sync"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/casbin/casbin/v2/model"
 	_ "github.com/gogf/gf/contrib/drivers/mysql/v2"
 	"github.com/gogf/gf/v2/container/gvar"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/os/gres"
@@ -31,7 +33,11 @@ const (
 	ActionAll    = "GET|POST|PUT|DELETE|PATCH|OPTIONS|HEAD"
 )
 
-var Enforcer *casbin.Enforcer
+var (
+	Enforcer *casbin.SyncedEnforcer
+	// 刷新串行化，避免旧快照在并发刷新后覆盖新快照
+	refreshMu sync.Mutex
+)
 
 // InitEnforcer 初始化
 func InitEnforcer(ctx context.Context) {
@@ -64,11 +70,13 @@ func InitEnforcer(ctx context.Context) {
 		g.Log().Panicf(ctx, "casbin NewModelFromString err：%v", err)
 	}
 
-	Enforcer, err = casbin.NewEnforcer(m, a)
+	Enforcer, err = casbin.NewSyncedEnforcer(m, a)
 	if err != nil {
-		g.Log().Panicf(ctx, "casbin NewEnforcer err：%v", err)
+		g.Log().Panicf(ctx, "casbin NewSyncedEnforcer err：%v", err)
 	}
-	loadPermissions(ctx)
+	if err = Refresh(ctx); err != nil {
+		g.Log().Fatalf(ctx, "casbin Refresh err:%v", err)
+	}
 }
 
 // GetDbLink 获取数据库链接
@@ -91,16 +99,12 @@ func getDbLink(ctx context.Context) *gvar.Var {
 
 }
 
-func loadPermissions(ctx context.Context) {
+func buildRules(ctx context.Context) (rules [][]string, err error) {
 	type Policy struct {
 		Key         string `json:"key"`
 		Permissions string `json:"permissions"`
 	}
-	var (
-		rules   [][]string
-		polices []*Policy
-		err     error
-	)
+	var polices []*Policy
 	//别名拼接 r.key m.permissions
 	q := func(alias string, column string) string {
 		return fmt.Sprintf("%s.%s", alias, column)
@@ -115,50 +119,87 @@ func loadPermissions(ctx context.Context) {
 		WhereNot(q("r", dao.AdminRole.Columns().Key), consts.SuperRoleKey).
 		Scan(&polices)
 	if err != nil {
-		g.Log().Fatalf(ctx, "loadPermissions Scan err:%v", err)
-		return
+		return nil, gerror.Wrap(err, "查询角色权限失败")
 	}
 
+	// 同一角色经不同菜单拿到相同权限时只留一条，重复策略会让 AddPolicies 返回 false
+	seen := make(map[string]struct{}, len(polices))
 	for _, policy := range polices {
-		if strings.Contains(policy.Permissions, ",") {
-			lst := strings.Split(policy.Permissions, ",")
-			for _, permissions := range lst {
-				rules = append(rules, []string{policy.Key, permissions, ActionAll})
+		for _, permissions := range strings.Split(policy.Permissions, ",") {
+			permissions = strings.TrimSpace(permissions)
+			if permissions == "" {
+				continue
 			}
-		} else {
-			rules = append(rules, []string{policy.Key, policy.Permissions, ActionAll})
+			key := policy.Key + "\x00" + permissions
+			if _, ok := seen[key]; ok {
+				continue
+			}
+			seen[key] = struct{}{}
+			rules = append(rules, []string{policy.Key, permissions, ActionAll})
 		}
 	}
-
-	if _, err = Enforcer.AddPolicies(rules); err != nil {
-		g.Log().Fatalf(ctx, "loadPermissions AddPolicies err:%v", err)
-		return
-	}
+	return rules, nil
 }
 
 func Clear(ctx context.Context) (err error) {
-	policy, err := Enforcer.GetPolicy()
-	if err != nil {
-		g.Log().Warningf(ctx, "Enforcer RemovePolicies err:%+v", err)
-		return
-	}
-	_, err = Enforcer.RemovePolicies(policy)
-	if err != nil {
-		g.Log().Warningf(ctx, "Enforcer RemovePolicies err:%+v", err)
-		return
-	}
+	refreshMu.Lock()
+	defer refreshMu.Unlock()
 
-	// 检查是否清理干净
-	if len(policy) > 0 {
-		return Clear(ctx)
+	lock := Enforcer.GetLock()
+	lock.Lock()
+	defer lock.Unlock()
+
+	policy, err := Enforcer.Enforcer.GetPolicy()
+	if err != nil {
+		return gerror.Wrap(err, "获取 casbin 策略失败")
+	}
+	if len(policy) == 0 {
+		return
+	}
+	// RemovePolicies 会原地压缩策略切片，不复制会漏删
+	if _, err = Enforcer.Enforcer.RemovePolicies(append([][]string(nil), policy...)); err != nil {
+		return gerror.Wrap(err, "清理 casbin 策略失败")
 	}
 	return
 }
 
+// 查库不持 Enforcer 锁，避免阻塞鉴权
 func Refresh(ctx context.Context) (err error) {
-	if err = Clear(ctx); err != nil {
+	refreshMu.Lock()
+	defer refreshMu.Unlock()
+
+	rules, err := buildRules(ctx)
+	if err != nil {
 		return err
 	}
-	loadPermissions(ctx)
+
+	lock := Enforcer.GetLock()
+	lock.Lock()
+	defer lock.Unlock()
+
+	policy, err := Enforcer.Enforcer.GetPolicy()
+	if err != nil {
+		return gerror.Wrap(err, "获取 casbin 策略失败")
+	}
+	// RemovePolicies 会原地压缩策略切片，不复制会漏删
+	old := append([][]string(nil), policy...)
+	if len(old) > 0 {
+		if _, err = Enforcer.Enforcer.RemovePolicies(old); err != nil {
+			g.Log().Errorf(ctx, "casbin 清理旧策略失败，内存策略可能已部分清除 err:%+v", err)
+			return gerror.Wrap(err, "清理 casbin 策略失败")
+		}
+	}
+	if len(rules) > 0 {
+		ok, addErr := Enforcer.Enforcer.AddPolicies(rules)
+		if addErr != nil || !ok {
+			if _, restoreErr := Enforcer.Enforcer.AddPolicies(old); restoreErr != nil {
+				g.Log().Errorf(ctx, "casbin 恢复旧策略失败 err:%+v", restoreErr)
+			}
+			if addErr != nil {
+				return gerror.Wrap(addErr, "加载 casbin 策略失败")
+			}
+			return gerror.New("加载 casbin 策略失败：规则未写入")
+		}
+	}
 	return
 }

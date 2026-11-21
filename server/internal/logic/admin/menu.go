@@ -53,7 +53,23 @@ func (s *sAdminMenu) Delete(ctx context.Context, in *adminin.MenuDeleteInp) (err
 	if !exist.IsEmpty() {
 		return gerror.New("请先删除该菜单下的所有菜单！")
 	}
-	_, err = dao.AdminMenu.Ctx(ctx).Where(dao.AdminMenu.Columns().Id, in.Id).Delete()
+
+	err = g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+		if _, err = dao.AdminRoleMenu.Ctx(ctx).Where(dao.AdminRoleMenu.Columns().MenuId, in.Id).Delete(); err != nil {
+			return gerror.Wrap(err, consts.ErrorORM)
+		}
+		if _, err = dao.AdminMenu.Ctx(ctx).Where(dao.AdminMenu.Columns().Id, in.Id).Delete(); err != nil {
+			return gerror.Wrap(err, consts.ErrorORM)
+		}
+		return nil
+	})
+	if err != nil {
+		return
+	}
+	// 事务提交后再刷新，事务内查库读不到未提交的删除
+	if err = casbin.Refresh(ctx); err != nil {
+		return gerror.Wrap(err, "数据已删除，但权限刷新失败，请联系管理员")
+	}
 	return
 }
 
@@ -104,7 +120,7 @@ func (s *sAdminMenu) Edit(ctx context.Context, in *adminin.MenuEditInp) (err err
 		return
 	}
 
-	return g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+	err = g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		in.Pid, in.Level, in.Tree, err = hgorm.AutoUpdateTree(ctx, &dao.AdminMenu, in.Id, in.Pid)
 		if err != nil {
 			return err
@@ -121,8 +137,16 @@ func (s *sAdminMenu) Edit(ctx context.Context, in *adminin.MenuEditInp) (err err
 				return err
 			}
 		}
-		return casbin.Refresh(ctx)
+		return nil
 	})
+	if err != nil {
+		return
+	}
+	// 事务提交后再刷新，事务内查库读不到未提交的修改
+	if err = casbin.Refresh(ctx); err != nil {
+		return gerror.Wrap(err, "数据已保存，但权限刷新失败，请稍后重试保存或联系管理员")
+	}
+	return
 }
 
 // List 获取菜单列表
