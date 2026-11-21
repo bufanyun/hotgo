@@ -150,3 +150,30 @@ func Test_Fix_watchDogMemoryLeak(t *testing.T) {
 		i++
 	}
 }
+
+func TestTryLockFunc(t *testing.T) {
+	ctx := context.Background()
+	name := "test:trylockfunc:" + time.Now().Format("150405.000000000")
+
+	ran := false
+	if err := lock.NewConfig(time.Second*5, time.Millisecond*100).Mutex(name).TryLockFunc(ctx, func() { ran = true }); err != nil {
+		t.Fatalf("锁空闲时应成功: %v", err)
+	}
+	if !ran {
+		t.Fatal("拿到锁后应执行回调")
+	}
+
+	holder := lock.NewConfig(time.Second*5, time.Millisecond*100).Mutex(name)
+	if err := holder.TryLock(ctx); err != nil {
+		t.Fatalf("加锁失败: %v", err)
+	}
+	defer func() { _ = holder.Unlock(ctx) }()
+
+	ran = false
+	if err := lock.NewConfig(time.Second*5, time.Millisecond*100).Mutex(name).TryLockFunc(ctx, func() { ran = true }); err == nil {
+		t.Fatal("锁被占用时应返回错误")
+	}
+	if ran {
+		t.Fatal("没拿到锁不应执行回调")
+	}
+}
