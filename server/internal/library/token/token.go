@@ -129,6 +129,71 @@ func Logout(r *ghttp.Request) (err error) {
 
 // ParseLoginUser 解析登录用户信息
 func ParseLoginUser(r *ghttp.Request) (user *model.Identity, err error) {
+	claims, tk, tokenKey, err := parseLoginUser(r)
+	if err != nil {
+		return nil, err
+	}
+
+	var (
+		ctx     = r.Context()
+		now     = gtime.Now()
+		bindKey = GetBindKey(claims.App, claims.Id)
+	)
+
+	// 自动刷新token有效期
+	refreshToken := func() {
+		// 未开启自动刷新
+		if !config.AutoRefresh {
+			return
+		}
+
+		// 刷新次数已达上限
+		if config.MaxRefreshTimes != -1 && tk.RefreshCount >= config.MaxRefreshTimes {
+			return
+		}
+
+		// 未达到刷新间隔
+		if gtime.New(tk.RefreshAt).Unix()+config.RefreshInterval > now.Unix() {
+			return
+		}
+
+		// 刷新有效期
+		tk.ExpireAt = now.Unix() + config.Expires
+		tk.RefreshAt = now.Unix()
+		tk.RefreshCount += 1
+
+		duration := time.Second * gconv.Duration(config.Expires)
+
+		// 在协程里执行，写外层 err 会数据竞争
+		if setErr := cache.Instance().Set(ctx, tokenKey, tk, duration); setErr != nil {
+			g.Log().Warningf(ctx, "token 续期失败 err:%+v", setErr)
+			return
+		}
+
+		if setErr := cache.Instance().Set(ctx, bindKey, tokenKey, duration); setErr != nil {
+			g.Log().Warningf(ctx, "token 续期失败 err:%+v", setErr)
+			return
+		}
+	}
+
+	simple.SafeGo(ctx, func(ctx context.Context) {
+		refreshToken()
+	})
+
+	user = claims.Identity
+	return
+}
+
+// PeekLoginUser 解析登录用户信息但不续期；解锁校验不能顺带续期，单端登录下会与新签的 token 竞争
+func PeekLoginUser(r *ghttp.Request) (*model.Identity, error) {
+	claims, _, _, err := parseLoginUser(r)
+	if err != nil {
+		return nil, err
+	}
+	return claims.Identity, nil
+}
+
+func parseLoginUser(r *ghttp.Request) (claims *Claims, tk *Token, tokenKey string, err error) {
 	var (
 		ctx    = r.Context()
 		header = GetAuthorization(r)
@@ -139,7 +204,7 @@ func ParseLoginUser(r *ghttp.Request) (user *model.Identity, err error) {
 		return
 	}
 
-	claims, err := parseToken(ctx, header)
+	claims, err = parseToken(ctx, header)
 	if err != nil {
 		g.Log().Debugf(ctx, "parseToken err:%+v", err)
 		err = errorLogin
@@ -149,41 +214,38 @@ func ParseLoginUser(r *ghttp.Request) (user *model.Identity, err error) {
 	var (
 		// 认证key
 		authKey = GetAuthKey(header)
-		// 登录token
-		tokenKey = GetTokenKey(claims.App, authKey)
 		// 身份绑定
 		bindKey = GetBindKey(claims.App, claims.Id)
 	)
+	tokenKey = GetTokenKey(claims.App, authKey)
 
 	// 检查token是否存在
-	tk, err := cache.Instance().Get(ctx, tokenKey)
+	tkVal, err := cache.Instance().Get(ctx, tokenKey)
 	if err != nil {
 		g.Log().Debugf(ctx, "get tokenKey err:%+v", err)
 		err = errorLogin
 		return
 	}
 
-	if tk.IsEmpty() {
+	if tkVal.IsEmpty() {
 		g.Log().Debug(ctx, "token isEmpty")
 		err = errorLogin
 		return
 	}
 
-	var token *Token
-	if err = tk.Scan(&token); err != nil {
+	if err = tkVal.Scan(&tk); err != nil {
 		g.Log().Debugf(ctx, "token scan err:%+v", err)
 		err = errorLogin
 		return
 	}
 
-	if token == nil {
+	if tk == nil {
 		g.Log().Debugf(ctx, "token = nil")
 		err = errorLogin
 		return
 	}
 
-	now := gtime.Now()
-	if token.ExpireAt < now.Unix() {
+	if tk.ExpireAt < gtime.Now().Unix() {
 		g.Log().Debugf(ctx, "token expired.")
 		err = errorLogin
 		return
@@ -194,61 +256,19 @@ func ParseLoginUser(r *ghttp.Request) (user *model.Identity, err error) {
 		origin, err := cache.Instance().Get(ctx, bindKey)
 		if err != nil {
 			g.Log().Debugf(ctx, "bindKey get err:%+v", err)
-			err = errorLogin
-			return nil, err
+			return nil, nil, "", errorLogin
 		}
 
 		if origin == nil || origin.IsEmpty() {
 			g.Log().Debug(ctx, "bindKey isEmpty")
-			err = errorLogin
-			return nil, err
+			return nil, nil, "", errorLogin
 		}
 
 		if tokenKey != origin.String() {
 			g.Log().Debugf(ctx, "bindKey offsite login tokenKey:%v, origin:%v", tokenKey, origin.String())
-			err = errorMultiLogin
-			return nil, err
+			return nil, nil, "", errorMultiLogin
 		}
 	}
-
-	// 自动刷新token有效期
-	refreshToken := func() {
-		// 未开启自动刷新
-		if !config.AutoRefresh {
-			return
-		}
-
-		// 刷新次数已达上限
-		if config.MaxRefreshTimes != -1 && token.RefreshCount >= config.MaxRefreshTimes {
-			return
-		}
-
-		// 未达到刷新间隔
-		if gtime.New(token.RefreshAt).Unix()+config.RefreshInterval > now.Unix() {
-			return
-		}
-
-		// 刷新有效期
-		token.ExpireAt = now.Unix() + config.Expires
-		token.RefreshAt = now.Unix()
-		token.RefreshCount += 1
-
-		duration := time.Second * gconv.Duration(config.Expires)
-
-		if err = cache.Instance().Set(ctx, tokenKey, token, duration); err != nil {
-			return
-		}
-
-		if err = cache.Instance().Set(ctx, bindKey, tokenKey, duration); err != nil {
-			return
-		}
-	}
-
-	simple.SafeGo(ctx, func(ctx context.Context) {
-		refreshToken()
-	})
-
-	user = claims.Identity
 	return
 }
 
