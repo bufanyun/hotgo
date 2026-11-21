@@ -16,6 +16,7 @@ import (
 	"hotgo/internal/model"
 	"net/url"
 	"reflect"
+	"strings"
 	"time"
 	"unicode"
 
@@ -89,6 +90,7 @@ func WriteByStructs(writer io.Writer, tags []string, list interface{}, sheetName
 }
 
 func fillByStructs(f *excelize.File, tags []string, list interface{}, sheetName string) (err error) {
+	sheetName = safeSheetName(sheetName)
 	if err = f.SetSheetName("Sheet1", sheetName); err != nil {
 		return
 	}
@@ -114,7 +116,7 @@ func fillByStructs(f *excelize.File, tags []string, list interface{}, sheetName 
 		row := make([]interface{}, 0)
 		for l := 0; l < t.NumField(); l++ {
 			val := value.Field(l).Interface()
-			row = append(row, val)
+			row = append(row, sanitizeCellValue(val))
 		}
 		rowNum++
 		if err = f.SetSheetRow(sheetName, "A"+gconv.String(rowNum), &row); err != nil {
@@ -173,6 +175,7 @@ func WriteByStructsStream(writer io.Writer, tags []string, sheetName string, bat
 }
 
 func fillByStructsStream(f *excelize.File, tags []string, sheetName string, batchSize int, fetchRows func(offset, limit int) ([][]interface{}, error)) (err error) {
+	sheetName = safeSheetName(sheetName)
 	if batchSize <= 0 {
 		batchSize = 500
 	}
@@ -230,7 +233,7 @@ func fillByStructsStream(f *excelize.File, tags []string, sheetName string, batc
 			}
 			cells := make([]interface{}, len(cols))
 			for i, v := range cols {
-				cells[i] = excelize.Cell{Value: v, StyleID: styleID}
+				cells[i] = excelize.Cell{Value: sanitizeCellValue(v), StyleID: styleID}
 			}
 			cell, cellErr := excelize.CoordinatesToCellName(1, rowIdx)
 			if cellErr != nil {
@@ -251,6 +254,39 @@ func fillByStructsStream(f *excelize.File, tags []string, sheetName string, batc
 	}
 
 	return
+}
+
+// 调用方把分页统计拼进 sheet 名，超过 Excel 31 字符上限会让整个导出失败
+func safeSheetName(name string) string {
+	name = strings.Map(func(r rune) rune {
+		switch r {
+		case ':', '\\', '/', '?', '*', '[', ']':
+			return '_'
+		}
+		return r
+	}, name)
+	if runes := []rune(name); len(runes) > 31 {
+		name = string(runes[:31])
+	}
+	// excelize 不允许首尾是单引号
+	name = strings.Trim(name, "'")
+	if name == "" {
+		return "Sheet1"
+	}
+	return name
+}
+
+// 以 = + - @ 开头的文本会被 Excel 当公式执行
+func sanitizeCellValue(v interface{}) interface{} {
+	s, ok := v.(string)
+	if !ok || s == "" {
+		return v
+	}
+	switch s[0] {
+	case '=', '+', '-', '@', '\t', '\r':
+		return "'" + s
+	}
+	return v
 }
 
 var (
